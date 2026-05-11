@@ -1,0 +1,911 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>Calculator.io</title>
+
+<!-- NAVBAR CSS -->
+<link rel="stylesheet" href="navbar/navbar.css">
+
+<style>
+
+*{
+margin:0;
+padding:0;
+box-sizing:border-box;
+-webkit-tap-highlight-color:transparent;
+}
+
+:root{
+
+--bg:#f4f7fb;
+--card:#ffffff;
+--border:#dbe4ee;
+
+--text:#0f172a;
+--muted:#64748b;
+
+--primary:#2563eb;
+--primary-soft:#dbeafe;
+
+--success:#16a34a;
+--danger:#dc2626;
+
+--shadow:
+0 8px 24px rgba(0,0,0,0.06);
+}
+
+/* DARK */
+
+body.dark{
+
+--bg:#020617;
+--card:#0f172a;
+--border:#1e293b;
+
+--text:#f8fafc;
+--muted:#94a3b8;
+
+--primary:#3b82f6;
+--primary-soft:
+rgba(59,130,246,0.15);
+
+--shadow:
+0 12px 28px rgba(0,0,0,0.35);
+}
+
+body{
+
+font-family:
+Inter,
+Arial,
+sans-serif;
+
+background:var(--bg);
+
+color:var(--text);
+
+padding:68px 12px 12px;
+
+transition:0.25s;
+}
+
+/* SUBTITLE */
+
+.subtitle{
+
+color:var(--muted);
+
+font-size:13px;
+
+line-height:1.7;
+
+margin-bottom:18px;
+}
+
+/* CARD */
+
+.card{
+
+background:var(--card);
+
+border:1px solid var(--border);
+
+border-radius:24px;
+
+padding:16px;
+
+box-shadow:var(--shadow);
+}
+
+/* INPUT */
+
+.input-group{
+
+margin-bottom:16px;
+}
+
+.label{
+
+display:flex;
+
+align-items:center;
+
+gap:8px;
+
+margin-bottom:8px;
+
+font-size:13px;
+
+font-weight:800;
+}
+
+/* HELP */
+
+.help{
+
+width:18px;
+
+height:18px;
+
+border-radius:50%;
+
+background:var(--primary);
+
+color:white;
+
+display:flex;
+
+align-items:center;
+
+justify-content:center;
+
+font-size:11px;
+
+cursor:pointer;
+
+position:relative;
+}
+
+.tooltip{
+
+position:absolute;
+
+top:26px;
+
+left:0;
+
+width:220px;
+
+background:#111827;
+
+color:white;
+
+padding:10px;
+
+border-radius:12px;
+
+font-size:12px;
+
+line-height:1.6;
+
+display:none;
+
+z-index:10;
+}
+
+.help:hover .tooltip{
+
+display:block;
+}
+
+/* INPUT */
+
+.input-wrap{
+
+position:relative;
+}
+
+.rp{
+
+position:absolute;
+
+left:14px;
+
+top:50%;
+
+transform:translateY(-50%);
+
+color:var(--muted);
+
+font-weight:700;
+}
+
+input,
+select{
+
+width:100%;
+
+border:none;
+
+outline:none;
+
+background:var(--bg);
+
+border:1px solid var(--border);
+
+color:var(--text);
+
+padding:14px;
+
+border-radius:16px;
+
+font-size:14px;
+
+transition:0.2s;
+}
+
+input:focus,
+select:focus{
+
+border-color:var(--primary);
+}
+
+.money{
+
+padding-left:42px;
+}
+
+/* BUTTON */
+
+.calc-btn{
+
+width:100%;
+
+border:none;
+
+background:linear-gradient(
+90deg,
+var(--primary),
+#4f46e5
+);
+
+color:white;
+
+padding:15px;
+
+border-radius:18px;
+
+font-size:14px;
+
+font-weight:900;
+
+cursor:pointer;
+
+margin-top:5px;
+
+transition:0.2s;
+}
+
+.calc-btn:active{
+
+transform:scale(0.98);
+}
+
+/* RESULT */
+
+.result{
+
+margin-top:18px;
+
+background:var(--bg);
+
+border:1px solid var(--border);
+
+border-radius:20px;
+
+padding:16px;
+}
+
+.result-title{
+
+font-size:15px;
+
+font-weight:900;
+
+margin-bottom:14px;
+}
+
+.result-item{
+
+display:flex;
+
+justify-content:space-between;
+
+gap:10px;
+
+padding:12px 0;
+
+border-bottom:1px solid var(--border);
+
+font-size:13px;
+}
+
+.result-item:last-child{
+
+border-bottom:none;
+}
+
+.result-main{
+
+font-size:22px;
+
+font-weight:900;
+
+color:var(--primary);
+}
+
+/* MOBILE */
+
+@media(max-width:600px){
+
+body{
+padding:68px 10px 10px;
+}
+
+}
+
+</style>
+</head>
+
+<body>
+
+<!-- NAVBAR -->
+<div id="navbar-container"></div>
+
+<!-- SUBTITLE -->
+
+<div class="subtitle">
+
+Simulasi pinjaman modern untuk menghitung cicilan, bunga, tenor, dan total pembayaran dengan cepat dan praktis.
+
+</div>
+
+<!-- CARD -->
+
+<div class="card">
+
+<!-- NAMA -->
+
+<div class="input-group">
+
+<div class="label">
+Nama Barang
+</div>
+
+<input
+type="text"
+id="barang"
+placeholder="Contoh: Motor, Laptop, Mobil"
+>
+
+</div>
+
+<!-- HARGA -->
+
+<div class="input-group">
+
+<div class="label">
+
+Harga Barang
+
+<div class="help">
+
+?
+
+<div class="tooltip">
+
+Total harga barang yang ingin dibeli.
+
+</div>
+
+</div>
+
+</div>
+
+<div class="input-wrap">
+
+<div class="rp">Rp</div>
+
+<input
+type="text"
+id="harga"
+class="money"
+placeholder="0"
+oninput="formatAngka(this)"
+>
+
+</div>
+
+</div>
+
+<!-- DP -->
+
+<div class="input-group">
+
+<div class="label">
+
+Uang Muka (DP)
+
+<div class="help">
+
+?
+
+<div class="tooltip">
+
+Pembayaran awal sebelum cicilan dimulai.
+
+</div>
+
+</div>
+
+</div>
+
+<div class="input-wrap">
+
+<div class="rp">Rp</div>
+
+<input
+type="text"
+id="dp"
+class="money"
+placeholder="0"
+oninput="formatAngka(this)"
+>
+
+</div>
+
+</div>
+
+<!-- BUNGA -->
+
+<div class="input-group">
+
+<div class="label">
+
+Bunga Tahunan (%)
+
+<div class="help">
+
+?
+
+<div class="tooltip">
+
+Persentase bunga pinjaman per tahun.
+
+</div>
+
+</div>
+
+</div>
+
+<input
+type="number"
+id="bunga"
+value="12"
+>
+
+</div>
+
+<!-- ADMIN -->
+
+<div class="input-group">
+
+<div class="label">
+
+Biaya Admin
+
+<div class="help">
+
+?
+
+<div class="tooltip">
+
+Biaya tambahan administrasi pinjaman.
+
+</div>
+
+</div>
+
+</div>
+
+<div class="input-wrap">
+
+<div class="rp">Rp</div>
+
+<input
+type="text"
+id="admin"
+class="money"
+placeholder="0"
+oninput="formatAngka(this)"
+>
+
+</div>
+
+</div>
+
+<!-- ASURANSI -->
+
+<div class="input-group">
+
+<div class="label">
+
+Biaya Asuransi
+
+<div class="help">
+
+?
+
+<div class="tooltip">
+
+Biaya perlindungan selama cicilan berjalan.
+
+</div>
+
+</div>
+
+</div>
+
+<div class="input-wrap">
+
+<div class="rp">Rp</div>
+
+<input
+type="text"
+id="asuransi"
+class="money"
+placeholder="0"
+oninput="formatAngka(this)"
+>
+
+</div>
+
+</div>
+
+<!-- TENOR -->
+
+<div class="input-group">
+
+<div class="label">
+
+Tenor
+
+<div class="help">
+
+?
+
+<div class="tooltip">
+
+Lama cicilan pinjaman berjalan.
+
+</div>
+
+</div>
+
+</div>
+
+<select id="tenor"></select>
+
+</div>
+
+<!-- BUTTON -->
+
+<button
+class="calc-btn"
+onclick="hitungPinjaman()"
+>
+Hitung Simulasi
+</button>
+
+<!-- RESULT -->
+
+<div class="result">
+
+<div class="result-title">
+Hasil Simulasi
+</div>
+
+<div class="result-item">
+
+<span>Pinjaman Pokok</span>
+
+<strong id="hasilPokok">
+Rp0
+</strong>
+
+</div>
+
+<div class="result-item">
+
+<span>Total Bunga</span>
+
+<strong id="hasilBunga">
+Rp0
+</strong>
+
+</div>
+
+<div class="result-item">
+
+<span>Total Keseluruhan</span>
+
+<strong id="hasilTotal">
+Rp0
+</strong>
+
+</div>
+
+<div class="result-item">
+
+<span>Cicilan / Bulan</span>
+
+<div
+class="result-main"
+id="hasilCicilan"
+>
+Rp0
+</div>
+
+</div>
+
+</div>
+
+</div>
+
+<!-- NAVBAR JS -->
+<script src="navbar/navbar.js"></script>
+
+<script>
+
+/* LOAD NAVBAR */
+
+fetch("navbar/navbar.html")
+
+.then(response => response.text())
+
+.then(data => {
+
+document.getElementById(
+"navbar-container"
+).innerHTML = data;
+
+if(
+typeof initNavbar === "function"
+){
+initNavbar();
+}
+
+});
+
+/* THEME */
+
+function toggleTheme(){
+
+document.body.classList.toggle(
+"dark"
+);
+
+localStorage.setItem(
+
+"dashboard_theme",
+
+document.body.classList.contains(
+"dark"
+)
+? "dark"
+: "light"
+);
+}
+
+/* LOAD */
+
+window.onload = ()=>{
+
+if(
+
+localStorage.getItem(
+"dashboard_theme"
+) === "dark"
+
+){
+
+document.body.classList.add(
+"dark"
+);
+}
+
+const tenor =
+document.getElementById("tenor");
+
+for(let i=1;i<=11;i++){
+
+let option =
+document.createElement("option");
+
+option.value = i;
+
+option.text =
+i + " Bulan";
+
+tenor.appendChild(option);
+}
+
+for(let i=1;i<=20;i++){
+
+let bulan = i * 12;
+
+let option =
+document.createElement("option");
+
+option.value = bulan;
+
+option.text =
+i + " Tahun (" +
+bulan +
+" Bulan)";
+
+tenor.appendChild(option);
+}
+
+};
+
+/* FORMAT */
+
+function formatAngka(input){
+
+let angka =
+input.value.replace(/\D/g,'');
+
+input.value =
+angka.replace(
+/\B(?=(\d{3})+(?!\d))/g,
+"."
+);
+}
+
+function ambilAngka(id){
+
+return parseFloat(
+
+document.getElementById(id)
+.value
+.replace(/\./g,'')
+
+) || 0;
+}
+
+function rupiah(angka){
+
+return "Rp" +
+angka.toLocaleString("id-ID");
+}
+
+/* HITUNG */
+
+function hitungPinjaman(){
+
+let harga =
+ambilAngka("harga");
+
+let dp =
+ambilAngka("dp");
+
+let admin =
+ambilAngka("admin");
+
+let asuransi =
+ambilAngka("asuransi");
+
+let bungaTahunan =
+
+parseFloat(
+
+document.getElementById(
+"bunga"
+).value
+
+) || 0;
+
+let tenorBulan =
+
+parseInt(
+
+document.getElementById(
+"tenor"
+).value
+
+);
+
+let pokok =
+harga - dp;
+
+let bungaBulanan =
+bungaTahunan / 12 / 100;
+
+let cicilan = 0;
+
+if(bungaBulanan > 0){
+
+cicilan =
+
+pokok *
+
+(
+
+bungaBulanan *
+
+Math.pow(
+1 + bungaBulanan,
+tenorBulan
+)
+
+)
+
+/
+
+(
+
+Math.pow(
+1 + bungaBulanan,
+tenorBulan
+) - 1
+
+);
+
+}else{
+
+cicilan =
+pokok / tenorBulan;
+}
+
+let total =
+
+(cicilan * tenorBulan)
+
++ admin
+
++ asuransi;
+
+let totalBunga =
+
+total
+
+- pokok
+
+- admin
+
+- asuransi;
+
+let cicilanFinal =
+total / tenorBulan;
+
+document.getElementById(
+"hasilPokok"
+).innerText =
+
+rupiah(
+Math.round(pokok)
+);
+
+document.getElementById(
+"hasilBunga"
+).innerText =
+
+rupiah(
+Math.round(totalBunga)
+);
+
+document.getElementById(
+"hasilTotal"
+).innerText =
+
+rupiah(
+Math.round(total)
+);
+
+document.getElementById(
+"hasilCicilan"
+).innerText =
+
+rupiah(
+Math.round(cicilanFinal)
+);
+}
+
+</script>
+
+</body>
+</html>

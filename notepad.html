@@ -1,0 +1,1503 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+
+<meta charset="UTF-8">
+
+<meta
+name="viewport"
+content="width=device-width, initial-scale=1.0, viewport-fit=cover"
+>
+
+<title>Notepad.io</title>
+
+<link
+rel="stylesheet"
+href="navbar/navbar.css"
+>
+
+<style>
+
+*{
+margin:0;
+padding:0;
+box-sizing:border-box;
+-webkit-tap-highlight-color:transparent;
+}
+
+*::-webkit-scrollbar{
+display:none;
+}
+
+:root{
+
+--bg:#f4f7fb;
+--card:#ffffff;
+--border:#dbe4ee;
+
+--text:#0f172a;
+--muted:#64748b;
+
+--primary:#2563eb;
+--primarySoft:#dbeafe;
+
+--success:#10b981;
+--danger:#ef4444;
+
+--shadow:
+0 8px 24px rgba(0,0,0,0.06);
+}
+
+body.dark{
+
+--bg:#020617;
+--card:#0f172a;
+--border:#1e293b;
+
+--text:#f8fafc;
+--muted:#94a3b8;
+
+--primary:#3b82f6;
+
+--primarySoft:
+rgba(59,130,246,0.15);
+}
+
+body{
+
+font-family:
+Inter,
+Arial,
+sans-serif;
+
+background:var(--bg);
+
+color:var(--text);
+
+padding:12px;
+
+padding-top:68px;
+}
+
+/* SUBTITLE */
+
+.subtitle{
+
+font-size:13px;
+
+line-height:1.7;
+
+color:var(--muted);
+
+margin-bottom:18px;
+}
+
+/* SEARCH */
+
+.search{
+
+margin-bottom:14px;
+}
+
+.search input{
+
+width:100%;
+
+padding:15px;
+
+border:none;
+
+outline:none;
+
+border-radius:18px;
+
+background:var(--card);
+
+border:1px solid var(--border);
+
+font-size:14px;
+
+color:var(--text);
+}
+
+/* FILTER */
+
+.filters{
+
+display:flex;
+
+gap:8px;
+
+overflow-x:auto;
+
+margin-bottom:16px;
+}
+
+.filters button{
+
+flex-shrink:0;
+
+border:none;
+
+padding:10px 14px;
+
+border-radius:999px;
+
+background:var(--card);
+
+border:1px solid var(--border);
+
+font-size:12px;
+
+font-weight:800;
+
+cursor:pointer;
+
+color:var(--muted);
+}
+
+.filters button.active{
+
+background:var(--primary);
+
+border-color:var(--primary);
+
+color:white;
+}
+
+/* NEW BUTTON */
+
+.new-btn{
+
+width:100%;
+
+border:none;
+
+padding:16px;
+
+border-radius:22px;
+
+background:var(--primary);
+
+color:white;
+
+font-size:15px;
+
+font-weight:900;
+
+cursor:pointer;
+
+margin-bottom:16px;
+
+box-shadow:var(--shadow);
+}
+
+/* LIST */
+
+.list{
+
+display:flex;
+
+flex-direction:column;
+
+gap:12px;
+}
+
+/* CARD */
+
+.card{
+
+background:var(--card);
+
+border:1px solid var(--border);
+
+border-radius:22px;
+
+padding:16px;
+
+box-shadow:var(--shadow);
+}
+
+.completed .title,
+.completed .preview,
+.completed .meta-badge{
+
+text-decoration:line-through;
+
+opacity:.55;
+}
+
+.card-top{
+
+display:flex;
+
+justify-content:space-between;
+
+gap:14px;
+}
+
+.card-left{
+
+flex:1;
+
+min-width:0;
+}
+
+.title{
+
+font-size:17px;
+
+font-weight:900;
+
+margin-bottom:10px;
+
+word-break:break-word;
+}
+
+.meta{
+
+display:flex;
+
+gap:8px;
+
+flex-wrap:wrap;
+
+margin-bottom:10px;
+}
+
+.meta-badge{
+
+background:var(--primarySoft);
+
+color:var(--primary);
+
+padding:7px 12px;
+
+border-radius:999px;
+
+font-size:11px;
+
+font-weight:800;
+}
+
+.preview{
+
+font-size:13px;
+
+line-height:1.7;
+
+color:var(--muted);
+
+display:-webkit-box;
+
+-webkit-line-clamp:1;
+
+-webkit-box-orient:vertical;
+
+overflow:hidden;
+}
+
+/* ACTIONS */
+
+.actions{
+
+display:flex;
+
+flex-direction:column;
+
+gap:8px;
+}
+
+.icon-btn{
+
+width:38px;
+height:38px;
+
+border:none;
+
+border-radius:12px;
+
+background:var(--bg);
+
+border:1px solid var(--border);
+
+font-size:14px;
+
+cursor:pointer;
+}
+
+.edit-btn{
+color:var(--primary);
+}
+
+.delete-btn{
+color:var(--danger);
+}
+
+/* EMPTY */
+
+.empty{
+
+text-align:center;
+
+padding:40px;
+
+font-size:14px;
+
+color:var(--muted);
+}
+
+/* POPUP */
+
+.popup{
+
+position:fixed;
+
+inset:0;
+
+background:var(--bg);
+
+z-index:99999;
+
+display:none;
+
+flex-direction:column;
+}
+
+.popup.active{
+display:flex;
+}
+
+/* TOP */
+
+.popup-top{
+
+display:flex;
+
+justify-content:space-between;
+
+align-items:center;
+
+padding:10px;
+
+border-bottom:1px solid var(--border);
+
+background:var(--bg);
+
+position:sticky;
+
+top:0;
+
+z-index:10;
+}
+
+.popup-right{
+
+display:flex;
+
+align-items:center;
+
+gap:8px;
+}
+
+.popup-btn{
+
+width:38px;
+height:38px;
+
+display:flex;
+
+align-items:center;
+
+justify-content:center;
+
+padding:0;
+
+border:none;
+
+border-radius:14px;
+
+background:var(--card);
+
+border:1px solid var(--border);
+
+color:var(--text);
+
+font-size:16px;
+
+font-weight:900;
+
+cursor:pointer;
+
+box-shadow:var(--shadow);
+
+flex-shrink:0;
+}
+
+.channel-toggle{
+
+height:38px;
+
+padding:0 14px;
+
+border:none;
+
+border-radius:14px;
+
+background:var(--card);
+
+border:1px solid var(--border);
+
+color:var(--text);
+
+font-size:12px;
+
+font-weight:800;
+
+cursor:pointer;
+
+box-shadow:var(--shadow);
+}
+
+/* DROPDOWN */
+
+.dropdown-wrap{
+position:relative;
+}
+
+.dropdown{
+
+position:absolute;
+
+top:46px;
+
+right:0;
+
+background:var(--card);
+
+border:1px solid var(--border);
+
+border-radius:16px;
+
+padding:8px;
+
+display:none;
+
+flex-direction:column;
+
+gap:6px;
+
+min-width:170px;
+
+box-shadow:var(--shadow);
+}
+
+.dropdown.active{
+display:flex;
+}
+
+.dropdown button{
+
+border:none;
+
+background:var(--bg);
+
+border:1px solid var(--border);
+
+padding:12px;
+
+border-radius:12px;
+
+font-size:12px;
+
+font-weight:800;
+
+cursor:pointer;
+
+text-align:left;
+
+color:var(--text);
+}
+
+/* EDITOR */
+
+.editor-scroll{
+
+flex:1;
+
+overflow:auto;
+
+padding-bottom:160px;
+}
+
+/* TITLE */
+
+.editor-title{
+
+padding:14px 14px 0 14px;
+}
+
+.editor-title input{
+
+width:100%;
+
+border:none;
+
+outline:none;
+
+background:none;
+
+font-size:18px;
+
+font-weight:700;
+
+color:var(--text);
+}
+
+/* TEXTAREA */
+
+.editor{
+
+padding:6px 14px 30px 14px;
+}
+
+textarea{
+
+width:100%;
+
+min-height:100vh;
+
+border:none;
+
+outline:none;
+
+resize:none;
+
+background:none;
+
+font-size:16px;
+
+line-height:2;
+
+font-family:monospace;
+
+color:var(--text);
+}
+
+/* FOOTER ACTION */
+
+.footer-actions{
+
+position:fixed;
+
+left:0;
+right:0;
+bottom:0;
+
+background:var(--bg);
+
+border-top:1px solid var(--border);
+
+padding:4px 12px 8px;
+
+z-index:100;
+}
+
+.bottom-actions{
+
+display:flex;
+
+gap:8px;
+}
+
+.bottom-actions button{
+
+flex:1;
+
+border:none;
+
+height:46px;
+
+border-radius:14px;
+
+font-size:13px;
+
+font-weight:900;
+
+cursor:pointer;
+}
+
+.draft-btn{
+
+background:var(--card);
+
+border:1px solid var(--border);
+
+color:var(--text);
+}
+
+.done-btn{
+
+background:var(--success);
+
+color:white;
+}
+
+/* WORD COUNT */
+
+.word-fixed{
+
+position:fixed;
+
+left:0;
+right:0;
+
+bottom:58px;
+
+background:var(--bg);
+
+border-top:1px solid var(--border);
+
+padding:4px 14px 2px;
+
+z-index:101;
+
+transition:.2s;
+}
+
+.word-info{
+
+font-size:11px;
+
+font-weight:700;
+
+color:var(--muted);
+
+line-height:1.1;
+
+}
+
+/* KEYBOARD ACTIVE */
+
+body.keyboard-open .word-fixed{
+
+bottom:0;
+}
+
+body.keyboard-open .footer-actions{
+
+bottom:-120px;
+}
+
+</style>
+</head>
+
+<body>
+
+<div id="navbar-placeholder"></div>
+
+<div class="subtitle">
+
+Workspace penulisan script konten untuk menyusun draft dan ide video.
+
+</div>
+
+<div class="search">
+
+<input
+type="text"
+id="search"
+placeholder="Cari script..."
+oninput="render()"
+>
+
+</div>
+
+<div class="filters">
+
+<button
+class="active"
+onclick="setFilter('all',this)"
+>
+Semua
+</button>
+
+<button onclick="setFilter('1',this)">
+Channel 1
+</button>
+
+<button onclick="setFilter('2',this)">
+Channel 2
+</button>
+
+<button onclick="setFilter('draft',this)">
+Draft
+</button>
+
+<button onclick="setFilter('done',this)">
+Selesai
+</button>
+
+</div>
+
+<button
+class="new-btn"
+onclick="openPopup()"
+>
++ Script Baru
+</button>
+
+<div
+class="list"
+id="list"
+></div>
+
+<!-- POPUP -->
+
+<div
+class="popup"
+id="popup"
+>
+
+<div class="popup-top">
+
+<button
+class="popup-btn"
+onclick="closePopup()"
+>
+✕
+</button>
+
+<div class="popup-right">
+
+<!-- CHANNEL -->
+
+<div class="dropdown-wrap">
+
+<button
+class="channel-toggle"
+id="channelBtn"
+onclick="toggleDropdown('channelDropdown')"
+>
+CH 1 ▼
+</button>
+
+<div
+class="dropdown"
+id="channelDropdown"
+>
+
+<button onclick="setChannel('1')">
+Channel 1
+</button>
+
+<button onclick="setChannel('2')">
+Channel 2
+</button>
+
+</div>
+
+</div>
+
+<!-- MORE -->
+
+<div class="dropdown-wrap">
+
+<button
+class="popup-btn"
+onclick="toggleDropdown('moreDropdown')"
+>
+⋮
+</button>
+
+<div
+class="dropdown"
+id="moreDropdown"
+>
+
+<button onclick="showInfo()">
+Show Info
+</button>
+
+</div>
+
+</div>
+
+<button
+class="popup-btn"
+onclick="deleteScript()"
+>
+🗑
+</button>
+
+</div>
+
+</div>
+
+<!-- EDITOR -->
+
+<div class="editor-scroll">
+
+<div class="editor-title">
+
+<input
+type="text"
+id="title"
+placeholder="Judul Script..."
+>
+
+</div>
+
+<div class="editor">
+
+<textarea
+id="content"
+placeholder="Tulis script konten disini..."
+oninput="updateWordCount()"
+></textarea>
+
+</div>
+
+</div>
+
+<!-- WORD COUNT -->
+
+<div class="word-fixed">
+
+<div
+class="word-info"
+id="wordInfo"
+>
+0 kata • 0 karakter
+</div>
+
+</div>
+
+<!-- BUTTONS -->
+
+<div class="footer-actions">
+
+<div class="bottom-actions">
+
+<button
+class="draft-btn"
+onclick="saveScript('draft')"
+>
+Draft
+</button>
+
+<button
+class="done-btn"
+onclick="saveScript('done')"
+>
+Selesai
+</button>
+
+</div>
+
+</div>
+
+<script src="navbar/navbar.js"></script>
+
+<script>
+
+/* KEYBOARD DETECT */
+
+const initialHeight =
+window.innerHeight;
+
+window.addEventListener(
+'resize',
+function(){
+
+if(
+
+window.innerHeight
+<
+initialHeight - 150
+
+){
+
+document.body.classList.add(
+'keyboard-open'
+);
+
+}else{
+
+document.body.classList.remove(
+'keyboard-open'
+);
+}
+
+});
+
+/* NAVBAR */
+
+function loadNavbar(){
+
+fetch('navbar/navbar.html')
+
+.then(response => response.text())
+
+.then(data => {
+
+document.getElementById(
+'navbar-placeholder'
+).innerHTML = data;
+
+if(
+
+localStorage.getItem(
+'dashboard_theme'
+) === 'dark'
+
+){
+
+document.body.classList.add(
+'dark'
+);
+}
+
+});
+}
+
+window.onload = loadNavbar;
+
+/* STORAGE */
+
+function getData(){
+
+return JSON.parse(
+
+localStorage.getItem(
+'notepad_data'
+)
+
+) || [];
+}
+
+function saveData(data){
+
+localStorage.setItem(
+
+'notepad_data',
+
+JSON.stringify(data)
+);
+}
+
+/* GLOBAL */
+
+let currentId = null;
+let currentFilter = 'all';
+let currentChannel = '1';
+
+/* POPUP */
+
+function openPopup(id){
+
+document.getElementById(
+'popup'
+).classList.add('active');
+
+if(id){
+
+const data = getData();
+
+const item =
+data.find(
+x => x.id === id
+);
+
+if(!item){
+return;
+}
+
+currentId = id;
+
+document.getElementById(
+'title'
+).value = item.title;
+
+document.getElementById(
+'content'
+).value = item.content;
+
+currentChannel = item.channel;
+
+}else{
+
+currentId = null;
+
+document.getElementById(
+'title'
+).value = '';
+
+document.getElementById(
+'content'
+).value = '';
+
+currentChannel = '1';
+}
+
+updateChannelButton();
+
+updateWordCount();
+}
+
+function closePopup(){
+
+document.getElementById(
+'popup'
+).classList.remove('active');
+
+closeDropdowns();
+}
+
+/* DROPDOWN */
+
+function toggleDropdown(id){
+
+const target =
+document.getElementById(id);
+
+target.classList.toggle(
+'active'
+);
+}
+
+function closeDropdowns(){
+
+document.querySelectorAll(
+'.dropdown'
+).forEach(drop=>{
+
+drop.classList.remove(
+'active'
+);
+
+});
+}
+
+/* CHANNEL */
+
+function setChannel(ch){
+
+currentChannel = ch;
+
+updateChannelButton();
+
+closeDropdowns();
+}
+
+function updateChannelButton(){
+
+document.getElementById(
+'channelBtn'
+).innerHTML =
+
+'CH ' + currentChannel + ' ▼';
+}
+
+/* WORD */
+
+function updateWordCount(){
+
+const text =
+document.getElementById(
+'content'
+).value;
+
+const words =
+
+text.trim() === ''
+? 0
+: text.trim().split(/\s+/).length;
+
+const chars =
+text.replace(/\s/g,'').length;
+
+document.getElementById(
+'wordInfo'
+).innerHTML =
+
+words +
+' kata • ' +
+chars.toLocaleString('id-ID') +
+' karakter';
+}
+
+/* SAVE */
+
+function saveScript(status){
+
+const title =
+document.getElementById(
+'title'
+).value.trim();
+
+const content =
+document.getElementById(
+'content'
+).value.trim();
+
+if(title === ''){
+
+alert(
+'Judul wajib diisi'
+);
+
+return;
+}
+
+const now = new Date();
+
+const waktu =
+now.toLocaleDateString(
+'id-ID'
+)
+
++
+
+' '
+
++
+
+now.toLocaleTimeString(
+'id-ID',
+{
+hour:'2-digit',
+minute:'2-digit'
+}
+);
+
+const data = getData();
+
+if(currentId){
+
+const index =
+data.findIndex(
+x => x.id === currentId
+);
+
+if(index !== -1){
+
+data[index].title = title;
+data[index].content = content;
+data[index].channel = currentChannel;
+data[index].status = status;
+data[index].updated = waktu;
+}
+
+}else{
+
+data.unshift({
+
+id:Date.now(),
+
+title:title,
+
+content:content,
+
+channel:currentChannel,
+
+status:status,
+
+created:waktu,
+
+updated:waktu
+});
+}
+
+saveData(data);
+
+closePopup();
+
+render();
+}
+
+/* DELETE */
+
+function deleteScript(){
+
+if(!currentId){
+
+closePopup();
+
+return;
+}
+
+if(confirm('Hapus script ini?')){
+
+let data = getData();
+
+data = data.filter(
+x => x.id !== currentId
+);
+
+saveData(data);
+
+closePopup();
+
+render();
+}
+}
+
+/* QUICK DELETE */
+
+function quickDelete(id){
+
+if(confirm('Hapus script ini?')){
+
+let data = getData();
+
+data = data.filter(
+x => x.id !== id
+);
+
+saveData(data);
+
+render();
+}
+}
+
+/* FILTER */
+
+function setFilter(type,el){
+
+currentFilter = type;
+
+document.querySelectorAll(
+'.filters button'
+).forEach(btn=>{
+
+btn.classList.remove(
+'active'
+);
+});
+
+el.classList.add(
+'active'
+);
+
+render();
+}
+
+/* SHOW INFO */
+
+function showInfo(){
+
+if(!currentId){
+
+alert(
+'Script belum disimpan'
+);
+
+return;
+}
+
+const data = getData();
+
+const item =
+data.find(
+x => x.id === currentId
+);
+
+if(!item){
+return;
+}
+
+const text =
+document.getElementById(
+'content'
+).value;
+
+const words =
+
+text.trim() === ''
+? 0
+: text.trim().split(/\s+/).length;
+
+const chars =
+text.replace(/\s/g,'').length;
+
+alert(
+
+'Judul:\n' +
+item.title +
+
+'\n\nChannel:\nCH ' +
+item.channel +
+
+'\n\nDibuat:\n' +
+item.created +
+
+'\n\nTerakhir Diedit:\n' +
+item.updated +
+
+'\n\nJumlah Kata:\n' +
+words +
+
+'\n\nJumlah Karakter:\n' +
+chars.toLocaleString('id-ID') +
+
+'\n\nStatus:\n' +
+
+(
+item.status === 'draft'
+? 'Draft'
+: 'Selesai'
+)
+
+);
+
+closeDropdowns();
+}
+
+/* RENDER */
+
+function render(){
+
+const list =
+document.getElementById(
+'list'
+);
+
+const keyword =
+document.getElementById(
+'search'
+).value.toLowerCase();
+
+let data = getData();
+
+data = data.filter(item=>{
+
+const cocokSearch =
+
+item.title.toLowerCase().includes(
+keyword
+)
+
+||
+
+item.content.toLowerCase().includes(
+keyword
+);
+
+let cocokFilter = true;
+
+if(currentFilter === '1'){
+cocokFilter =
+item.channel === '1';
+}
+
+if(currentFilter === '2'){
+cocokFilter =
+item.channel === '2';
+}
+
+if(currentFilter === 'draft'){
+cocokFilter =
+item.status === 'draft';
+}
+
+if(currentFilter === 'done'){
+cocokFilter =
+item.status === 'done';
+}
+
+return cocokSearch && cocokFilter;
+});
+
+if(data.length === 0){
+
+list.innerHTML =
+
+'<div class=\"empty\">Belum ada script</div>';
+
+return;
+}
+
+let html = '';
+
+data.forEach(item=>{
+
+const completedClass =
+
+item.status === 'done'
+? ' completed'
+: '';
+
+html +=
+
+'<div class=\"card' + completedClass + '\">' +
+
+'<div class=\"card-top\">' +
+
+'<div class=\"card-left\">' +
+
+'<div class=\"title\">' +
+item.title +
+'</div>' +
+
+'<div class=\"meta\">' +
+
+'<div class=\"meta-badge\">CH ' +
+item.channel +
+'</div>' +
+
+'<div class=\"meta-badge\">' +
+
+(
+item.status === 'draft'
+? 'Draft'
+: 'Selesai'
+)
+
++
+
+'</div>' +
+
+'</div>' +
+
+'<div class=\"preview\">' +
+
+(
+item.content
+? item.content
+: 'Belum ada script...'
+)
+
++
+
+'</div>' +
+
+'</div>' +
+
+'<div class=\"actions\">' +
+
+'<button class=\"icon-btn edit-btn\" onclick=\"openPopup(' +
+item.id +
+')\">✏</button>' +
+
+'<button class=\"icon-btn delete-btn\" onclick=\"quickDelete(' +
+item.id +
+')\">🗑</button>' +
+
+'</div>' +
+
+'</div>' +
+
+'</div>';
+
+});
+
+list.innerHTML = html;
+}
+
+render();
+
+</script>
+
+</body>
+</html>
