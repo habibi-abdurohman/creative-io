@@ -1080,24 +1080,27 @@ style="color:var(--danger)"
 
 <div class="editor">
 
-<input
-type="text"
-id="title"
-class="title-input"
-placeholder="Judul Script..."
-autocomplete="off"
-autocorrect="off"
-autocapitalize="off"
-spellcheck="false"
-oninput="triggerAutoSave()"
+<input 
+    type="text" 
+    id="title" 
+    class="title-input" 
+    placeholder="Judul Script..." 
+    autocomplete="one-time-code"
+    name="not-a-password"
+    id="random-title-field"
+    spellcheck="false"
+    oninput="triggerAutoSave()"
 >
 
+
 <textarea
-id="content"
-class="content-input"
-placeholder="Mulai menulis script..."
-oninput="handleTyping()"
+    id="content"
+    class="content-input"
+    placeholder="Mulai menulis script..."
+    autocomplete="off"
+    oninput="handleTyping()"
 ></textarea>
+
 
 </div>
 
