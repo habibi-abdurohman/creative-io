@@ -903,20 +903,20 @@ Selesai
 
 /* KEYBOARD DETECT */
 
-const initialHeight =
+function detectKeyboard(){
+
+if(window.visualViewport){
+
+const viewportHeight =
+window.visualViewport.height;
+
+const windowHeight =
 window.innerHeight;
 
-window.addEventListener(
-'resize',
-function(){
+const keyboardOpen =
+(windowHeight - viewportHeight) > 150;
 
-if(
-
-window.innerHeight
-<
-initialHeight - 150
-
-){
+if(keyboardOpen){
 
 document.body.classList.add(
 'keyboard-open'
@@ -929,7 +929,24 @@ document.body.classList.remove(
 );
 }
 
-});
+}
+}
+
+if(window.visualViewport){
+
+window.visualViewport.addEventListener(
+'resize',
+detectKeyboard
+);
+
+window.visualViewport.addEventListener(
+'scroll',
+detectKeyboard
+);
+
+}
+
+detectKeyboard();
 
 /* NAVBAR */
 
