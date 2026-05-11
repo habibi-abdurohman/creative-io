@@ -31,21 +31,22 @@ display:none;
 
 :root{
 
---bg:#f4f7fb;
+--bg:#f8fafc;
 --card:#ffffff;
---border:#dbe4ee;
+--border:#e2e8f0;
 
 --text:#0f172a;
 --muted:#64748b;
 
 --primary:#2563eb;
---primarySoft:#dbeafe;
+--primary-soft:#eff6ff;
 
 --success:#10b981;
 --danger:#ef4444;
+--warning:#f59e0b;
 
 --shadow:
-0 8px 24px rgba(0,0,0,0.06);
+0 6px 20px rgba(0,0,0,.05);
 }
 
 body.dark{
@@ -59,8 +60,8 @@ body.dark{
 
 --primary:#3b82f6;
 
---primarySoft:
-rgba(59,130,246,0.15);
+--primary-soft:
+rgba(59,130,246,.12);
 }
 
 body{
@@ -74,9 +75,11 @@ background:var(--bg);
 
 color:var(--text);
 
-padding:12px;
+padding:14px;
 
-padding-top:68px;
+padding-top:72px;
+
+padding-bottom:110px;
 }
 
 /* SUBTITLE */
@@ -89,35 +92,168 @@ line-height:1.7;
 
 color:var(--muted);
 
+margin-bottom:14px;
+}
+
+/* STATS */
+
+.stats-toggle{
+
+width:100%;
+
+border:none;
+
+background:var(--card);
+
+border:1px solid var(--border);
+
+border-radius:16px;
+
+padding:12px 14px;
+
+display:flex;
+
+align-items:center;
+
+justify-content:space-between;
+
+font-size:12px;
+
+font-weight:800;
+
+color:var(--text);
+
+cursor:pointer;
+
+margin-bottom:10px;
+}
+
+.stats{
+
+display:flex;
+
+gap:10px;
+
+overflow:auto;
+
 margin-bottom:18px;
+}
+
+.stats.hide{
+display:none;
+}
+
+.stat-card{
+
+flex:1;
+
+min-width:100px;
+
+background:var(--card);
+
+border:1px solid var(--border);
+
+border-radius:16px;
+
+padding:12px;
+
+display:flex;
+
+align-items:center;
+
+gap:10px;
+}
+
+.stat-icon{
+
+font-size:18px;
+}
+
+.stat-info{
+
+display:flex;
+
+flex-direction:column;
+}
+
+.stat-num{
+
+font-size:16px;
+
+font-weight:900;
+
+line-height:1;
+}
+
+.stat-label{
+
+font-size:11px;
+
+font-weight:700;
+
+color:var(--muted);
+
+margin-top:4px;
+}
+
+/* STICKY */
+
+.sticky-tools{
+
+position:sticky;
+
+top:62px;
+
+z-index:50;
+
+background:var(--bg);
+
+padding-bottom:10px;
 }
 
 /* SEARCH */
 
 .search{
 
-margin-bottom:14px;
+position:relative;
+
+margin-bottom:10px;
 }
 
 .search input{
 
 width:100%;
 
-padding:15px;
+padding:14px 14px 14px 44px;
 
 border:none;
 
 outline:none;
 
-border-radius:18px;
-
 background:var(--card);
 
 border:1px solid var(--border);
 
+border-radius:16px;
+
 font-size:14px;
 
 color:var(--text);
+}
+
+.search::before{
+
+content:'🔍';
+
+position:absolute;
+
+left:14px;
+
+top:12px;
+
+font-size:16px;
+
+opacity:.6;
 }
 
 /* FILTER */
@@ -128,9 +264,7 @@ display:flex;
 
 gap:8px;
 
-overflow-x:auto;
-
-margin-bottom:16px;
+overflow:auto;
 }
 
 .filters button{
@@ -147,13 +281,13 @@ background:var(--card);
 
 border:1px solid var(--border);
 
-font-size:12px;
+font-size:11px;
 
 font-weight:800;
 
-cursor:pointer;
-
 color:var(--muted);
+
+cursor:pointer;
 }
 
 .filters button.active{
@@ -165,33 +299,6 @@ border-color:var(--primary);
 color:white;
 }
 
-/* NEW BUTTON */
-
-.new-btn{
-
-width:100%;
-
-border:none;
-
-padding:16px;
-
-border-radius:22px;
-
-background:var(--primary);
-
-color:white;
-
-font-size:15px;
-
-font-weight:900;
-
-cursor:pointer;
-
-margin-bottom:16px;
-
-box-shadow:var(--shadow);
-}
-
 /* LIST */
 
 .list{
@@ -200,7 +307,9 @@ display:flex;
 
 flex-direction:column;
 
-gap:12px;
+gap:14px;
+
+margin-top:16px;
 }
 
 /* CARD */
@@ -216,68 +325,54 @@ border-radius:22px;
 padding:16px;
 
 box-shadow:var(--shadow);
+
+position:relative;
 }
 
-.completed .title,
-.completed .preview,
-.completed .meta-badge{
+.card.pinned{
+
+border-left:4px solid var(--warning);
+}
+
+.card.completed{
+
+opacity:.65;
+}
+
+.card.completed .title,
+.card.completed .preview,
+.card.completed .badge{
 
 text-decoration:line-through;
-
-opacity:.55;
 }
 
-.card-top{
+.card-header{
 
 display:flex;
 
+align-items:flex-start;
+
 justify-content:space-between;
 
-gap:14px;
-}
+gap:10px;
 
-.card-left{
-
-flex:1;
-
-min-width:0;
+margin-bottom:10px;
 }
 
 .title{
 
-font-size:17px;
+font-size:16px;
 
 font-weight:900;
 
-margin-bottom:10px;
+line-height:1.5;
 
 word-break:break-word;
 }
 
-.meta{
+.pin{
 
-display:flex;
-
-gap:8px;
-
-flex-wrap:wrap;
-
-margin-bottom:10px;
-}
-
-.meta-badge{
-
-background:var(--primarySoft);
-
-color:var(--primary);
-
-padding:7px 12px;
-
-border-radius:999px;
-
-font-size:11px;
-
-font-weight:800;
+font-size:14px;
 }
 
 .preview{
@@ -290,28 +385,69 @@ color:var(--muted);
 
 display:-webkit-box;
 
--webkit-line-clamp:1;
+-webkit-line-clamp:2;
 
 -webkit-box-orient:vertical;
 
 overflow:hidden;
+
+margin-bottom:14px;
 }
 
-/* ACTIONS */
+.card-bottom{
+
+display:flex;
+
+align-items:center;
+
+justify-content:space-between;
+
+gap:10px;
+}
+
+.badges{
+
+display:flex;
+
+gap:6px;
+
+flex-wrap:wrap;
+}
+
+.badge{
+
+background:var(--primary-soft);
+
+color:var(--primary);
+
+padding:6px 10px;
+
+border-radius:999px;
+
+font-size:10px;
+
+font-weight:800;
+}
+
+.badge.done{
+
+background:
+rgba(16,185,129,.12);
+
+color:var(--success);
+}
 
 .actions{
 
 display:flex;
 
-flex-direction:column;
-
 gap:8px;
 }
 
-.icon-btn{
+.action-btn{
 
-width:38px;
-height:38px;
+width:36px;
+height:36px;
 
 border:none;
 
@@ -321,17 +457,9 @@ background:var(--bg);
 
 border:1px solid var(--border);
 
-font-size:14px;
-
 cursor:pointer;
-}
 
-.edit-btn{
-color:var(--primary);
-}
-
-.delete-btn{
-color:var(--danger);
+font-size:14px;
 }
 
 /* EMPTY */
@@ -340,11 +468,41 @@ color:var(--danger);
 
 text-align:center;
 
-padding:40px;
+padding:60px 20px;
 
-font-size:14px;
+font-size:13px;
 
 color:var(--muted);
+}
+
+/* FAB */
+
+.fab{
+
+position:fixed;
+
+right:20px;
+bottom:20px;
+
+width:58px;
+height:58px;
+
+border:none;
+
+border-radius:50%;
+
+background:var(--primary);
+
+color:white;
+
+font-size:30px;
+
+cursor:pointer;
+
+box-shadow:
+0 10px 30px rgba(37,99,235,.35);
+
+z-index:100;
 }
 
 /* POPUP */
@@ -368,17 +526,17 @@ flex-direction:column;
 display:flex;
 }
 
-/* TOP */
+/* HEADER */
 
-.popup-top{
+.popup-header{
 
 display:flex;
 
-justify-content:space-between;
-
 align-items:center;
 
-padding:10px;
+justify-content:space-between;
+
+padding:10px 12px;
 
 border-bottom:1px solid var(--border);
 
@@ -391,6 +549,7 @@ top:0;
 z-index:10;
 }
 
+.popup-left,
 .popup-right{
 
 display:flex;
@@ -400,18 +559,10 @@ align-items:center;
 gap:8px;
 }
 
-.popup-btn{
+.top-btn{
 
 width:38px;
 height:38px;
-
-display:flex;
-
-align-items:center;
-
-justify-content:center;
-
-padding:0;
 
 border:none;
 
@@ -425,16 +576,10 @@ color:var(--text);
 
 font-size:16px;
 
-font-weight:900;
-
 cursor:pointer;
-
-box-shadow:var(--shadow);
-
-flex-shrink:0;
 }
 
-.channel-toggle{
+.channel-btn{
 
 height:38px;
 
@@ -448,15 +593,13 @@ background:var(--card);
 
 border:1px solid var(--border);
 
-color:var(--text);
-
-font-size:12px;
+font-size:11px;
 
 font-weight:800;
 
-cursor:pointer;
+color:var(--text);
 
-box-shadow:var(--shadow);
+cursor:pointer;
 }
 
 /* DROPDOWN */
@@ -469,7 +612,7 @@ position:relative;
 
 position:absolute;
 
-top:46px;
+top:48px;
 
 right:0;
 
@@ -487,7 +630,7 @@ flex-direction:column;
 
 gap:6px;
 
-min-width:170px;
+min-width:180px;
 
 box-shadow:var(--shadow);
 }
@@ -510,34 +653,46 @@ border-radius:12px;
 
 font-size:12px;
 
-font-weight:800;
+font-weight:700;
+
+color:var(--text);
 
 cursor:pointer;
 
 text-align:left;
+}
 
-color:var(--text);
+/* SAVE STATUS */
+
+.save-status{
+
+font-size:11px;
+
+font-weight:700;
+
+color:var(--success);
+
+opacity:0;
+
+transition:.2s;
+}
+
+.save-status.show{
+opacity:1;
 }
 
 /* EDITOR */
 
-.editor-scroll{
+.editor{
 
 flex:1;
 
 overflow:auto;
 
-padding-bottom:160px;
+padding:18px 16px 140px;
 }
 
-/* TITLE */
-
-.editor-title{
-
-padding:14px 14px 0 14px;
-}
-
-.editor-title input{
+.title-input{
 
 width:100%;
 
@@ -547,21 +702,22 @@ outline:none;
 
 background:none;
 
-font-size:18px;
+font-size:22px;
 
-font-weight:700;
+font-weight:900;
 
 color:var(--text);
+
+margin-bottom:16px;
+
+appearance:none;
+
+-webkit-appearance:none;
+
+box-shadow:none;
 }
 
-/* TEXTAREA */
-
-.editor{
-
-padding:6px 14px 30px 14px;
-}
-
-textarea{
+.content-input{
 
 width:100%;
 
@@ -582,11 +738,17 @@ line-height:2;
 font-family:monospace;
 
 color:var(--text);
+
+appearance:none;
+
+-webkit-appearance:none;
+
+box-shadow:none;
 }
 
-/* FOOTER ACTION */
+/* FOOTER */
 
-.footer-actions{
+.footer{
 
 position:fixed;
 
@@ -598,25 +760,36 @@ background:var(--bg);
 
 border-top:1px solid var(--border);
 
-padding:4px 12px 8px;
+padding:8px 12px calc(8px + env(safe-area-inset-bottom));
 
-z-index:100;
+z-index:20;
 }
 
-.bottom-actions{
+.word-info{
+
+font-size:11px;
+
+font-weight:700;
+
+color:var(--muted);
+
+margin-bottom:8px;
+}
+
+.footer-buttons{
 
 display:flex;
 
 gap:8px;
 }
 
-.bottom-actions button{
+.footer-buttons button{
 
 flex:1;
 
-border:none;
+height:48px;
 
-height:46px;
+border:none;
 
 border-radius:14px;
 
@@ -643,57 +816,60 @@ background:var(--success);
 color:white;
 }
 
-/* WORD COUNT */
+/* READING MODE */
 
-.word-fixed{
+.reading-mode .popup-header,
+.reading-mode .footer{
 
-position:fixed;
-
-left:0;
-right:0;
-
-bottom:58px;
-
-background:var(--bg);
-
-border-top:1px solid var(--border);
-
-padding:4px 14px 2px;
-
-z-index:101;
-
-transition:.2s;
+display:none;
 }
 
-.word-info{
+.reading-mode .editor{
 
-font-size:11px;
+padding:40px 24px;
 
-font-weight:700;
+max-width:760px;
 
-color:var(--muted);
-
-line-height:1.1;
-
+margin:auto;
 }
 
-/* KEYBOARD ACTIVE */
+.reading-mode .title-input{
 
-body.keyboard-open .word-fixed{
+text-align:center;
 
-bottom:0;
+font-size:28px;
+
+margin-bottom:30px;
+
+padding-top: 20px; 
+    padding-right: 20px;
 }
 
-.footer-actions{
-
-transition:transform .2s ease;
+/* Tombol Keluar khusus Reading Mode */
+.reading-exit-btn {
+    display: none;
+    position: fixed;
+    top: 15px; /* Beri jarak sedikit dari atas layar */
+    right: 15px; /* Beri jarak sedikit dari kanan layar */
+    z-index: 100001; /* Pastikan dia paling depan */
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    background: var(--card);
+    border: 1px solid var(--border);
+    box-shadow: var(--shadow);
+    color: var(--text);
+    font-weight: bold;
+    cursor: pointer;
 }
 
-body.keyboard-open .footer-actions{
 
-transform:translateY(140%);
+/* Munculkan hanya saat class .reading-mode aktif pada popup */
+.reading-mode .reading-exit-btn {
+    display: flex;
+    align-items: center;
+    justify-content: center;
 }
-
 </style>
 </head>
 
@@ -702,10 +878,49 @@ transform:translateY(140%);
 <div id="navbar-placeholder"></div>
 
 <div class="subtitle">
+Workspace penulisan script konten modern untuk menyusun ide, draft, dan workflow video.
+</div>
 
-Workspace penulisan script konten untuk menyusun draft dan ide video.
+<button
+class="stats-toggle"
+onclick="toggleStats()"
+>
+📊 Statistik Script
+<span id="statsArrow">▲</span>
+</button>
+
+<div
+class="stats"
+id="statsBox"
+>
+
+<div class="stat-card">
+<div class="stat-icon">📝</div>
+<div class="stat-info">
+<div class="stat-num" id="totalScript">0</div>
+<div class="stat-label">Total</div>
+</div>
+</div>
+
+<div class="stat-card">
+<div class="stat-icon">🕒</div>
+<div class="stat-info">
+<div class="stat-num" id="totalDraft">0</div>
+<div class="stat-label">Draft</div>
+</div>
+</div>
+
+<div class="stat-card">
+<div class="stat-icon">✅</div>
+<div class="stat-info">
+<div class="stat-num" id="totalDone">0</div>
+<div class="stat-label">Selesai</div>
+</div>
+</div>
 
 </div>
+
+<div class="sticky-tools">
 
 <div class="search">
 
@@ -728,11 +943,11 @@ Semua
 </button>
 
 <button onclick="setFilter('1',this)">
-Channel 1
+CH 1
 </button>
 
 <button onclick="setFilter('2',this)">
-Channel 2
+CH 2
 </button>
 
 <button onclick="setFilter('draft',this)">
@@ -743,19 +958,29 @@ Draft
 Selesai
 </button>
 
+<button onclick="setSort('newest',this)">
+Terbaru
+</button>
+
+<button onclick="setSort('oldest',this)">
+Terlama
+</button>
+
 </div>
 
-<button
-class="new-btn"
-onclick="openPopup()"
->
-+ Script Baru
-</button>
+</div>
 
 <div
 class="list"
 id="list"
 ></div>
+
+<button
+class="fab"
+onclick="openPopup()"
+>
++
+</button>
 
 <!-- POPUP -->
 
@@ -763,111 +988,120 @@ id="list"
 class="popup"
 id="popup"
 >
+    <button class="reading-exit-btn" onclick="toggleReadingMode()">✕</button>
 
-<div class="popup-top">
+<div class="popup-header">
+
+<div class="popup-left">
 
 <button
-class="popup-btn"
+class="top-btn"
 onclick="closePopup()"
 >
 ✕
 </button>
 
+<div
+class="save-status"
+id="saveStatus"
+>
+Tersimpan Lokal
+</div>
+
+</div>
+
 <div class="popup-right">
 
-<!-- CHANNEL -->
+<button
+class="top-btn"
+onclick="togglePin()"
+id="pinBtn"
+>
+📌
+</button>
+
+<div class="dropdown-wrap">
+    <button class="channel-btn" onclick="toggleDropdown('channelDropdown')" id="channelBtn">
+        CH 1 ▼
+    </button>
+    <div class="dropdown" id="channelDropdown">
+        <button onclick="setChannel('1')">Channel 1</button>
+        <button onclick="setChannel('2')">Channel 2</button>
+    </div>
+</div>
+
+<button
+class="top-btn"
+onclick="toggleReadingMode()"
+>
+📖
+</button>
 
 <div class="dropdown-wrap">
 
 <button
-class="channel-toggle"
-id="channelBtn"
-onclick="toggleDropdown('channelDropdown')"
->
-CH 1 ▼
-</button>
-
-<div
-class="dropdown"
-id="channelDropdown"
->
-
-<button onclick="setChannel('1')">
-Channel 1
-</button>
-
-<button onclick="setChannel('2')">
-Channel 2
-</button>
-
-</div>
-
-</div>
-
-<!-- MORE -->
-
-<div class="dropdown-wrap">
-
-<button
-class="popup-btn"
-onclick="toggleDropdown('moreDropdown')"
+class="top-btn"
+onclick="toggleDropdown()"
 >
 ⋮
 </button>
 
 <div
 class="dropdown"
-id="moreDropdown"
+id="dropdown"
 >
+
+<button onclick="copyAll()">
+📋 Copy All
+</button>
+
+<button onclick="exportTXT()">
+📄 Export TXT
+</button>
 
 <button onclick="showInfo()">
-Show Info
+ℹ Show Info
 </button>
-
-</div>
-
-</div>
 
 <button
-class="popup-btn"
 onclick="deleteScript()"
+style="color:var(--danger)"
 >
-🗑
+🗑 Hapus Script
 </button>
 
 </div>
 
 </div>
 
-<!-- EDITOR -->
-
-<div class="editor-scroll">
-
-<div class="editor-title">
-
-<input
-type="text"
-id="title"
-placeholder="Judul Script..."
->
+</div>
 
 </div>
 
 <div class="editor">
 
+<input
+type="text"
+id="title"
+class="title-input"
+placeholder="Judul Script..."
+autocomplete="off"
+autocorrect="off"
+autocapitalize="off"
+spellcheck="false"
+oninput="triggerAutoSave()"
+>
+
 <textarea
 id="content"
-placeholder="Tulis script konten disini..."
-oninput="updateWordCount()"
+class="content-input"
+placeholder="Mulai menulis script..."
+oninput="handleTyping()"
 ></textarea>
 
 </div>
 
-</div>
-
-<!-- WORD COUNT -->
-
-<div class="word-fixed">
+<div class="footer">
 
 <div
 class="word-info"
@@ -876,13 +1110,7 @@ id="wordInfo"
 0 kata • 0 karakter
 </div>
 
-</div>
-
-<!-- BUTTONS -->
-
-<div class="footer-actions">
-
-<div class="bottom-actions">
+<div class="footer-buttons">
 
 <button
 class="draft-btn"
@@ -902,56 +1130,11 @@ Selesai
 
 </div>
 
+</div>
+
 <script src="navbar/navbar.js"></script>
 
 <script>
-
-/* KEYBOARD DETECT */
-
-function detectKeyboard(){
-
-if(window.visualViewport){
-
-const viewportHeight =
-window.visualViewport.height;
-
-const windowHeight =
-window.innerHeight;
-
-const keyboardOpen =
-(windowHeight - viewportHeight) > 150;
-
-if(keyboardOpen){
-
-document.body.classList.add(
-'keyboard-open'
-);
-
-}else{
-
-document.body.classList.remove(
-'keyboard-open'
-);
-}
-
-}
-}
-
-if(window.visualViewport){
-
-window.visualViewport.addEventListener(
-'resize',
-detectKeyboard
-);
-
-window.visualViewport.addEventListener(
-'scroll',
-detectKeyboard
-);
-
-}
-
-detectKeyboard();
 
 /* NAVBAR */
 
@@ -959,9 +1142,9 @@ function loadNavbar(){
 
 fetch('navbar/navbar.html')
 
-.then(response => response.text())
+.then(res=>res.text())
 
-.then(data => {
+.then(data=>{
 
 document.getElementById(
 'navbar-placeholder'
@@ -983,7 +1166,12 @@ document.body.classList.add(
 });
 }
 
-window.onload = loadNavbar;
+window.onload = function(){
+
+loadNavbar();
+
+render();
+};
 
 /* STORAGE */
 
@@ -1011,31 +1199,97 @@ JSON.stringify(data)
 /* GLOBAL */
 
 let currentId = null;
+
 let currentFilter = 'all';
+
+let currentSort = 'newest';
+
 let currentChannel = '1';
+
+let currentPinned = false;
+
+let autoSaveTimeout = null;
+
+/* STATS */
+
+function toggleStats(){
+
+const box =
+document.getElementById(
+'statsBox'
+);
+
+const arrow =
+document.getElementById(
+'statsArrow'
+);
+
+box.classList.toggle(
+'hide'
+);
+
+arrow.innerHTML =
+
+box.classList.contains('hide')
+? '▼'
+: '▲';
+}
+
+/* FILTER */
+
+function setFilter(type,el){
+
+currentFilter = type;
+
+document.querySelectorAll(
+'.filters button'
+).forEach(btn=>{
+
+btn.classList.remove(
+'active'
+);
+});
+
+el.classList.add(
+'active'
+);
+
+render();
+}
+
+/* SORT */
+
+function setSort(type){
+
+currentSort = type;
+
+render();
+}
 
 /* POPUP */
 
-function openPopup(id){
+function openPopup(id=null){
 
 document.getElementById(
 'popup'
 ).classList.add('active');
 
+closeDropdown();
+
 if(id){
 
-const data = getData();
-
 const item =
-data.find(
+getData().find(
 x => x.id === id
 );
 
-if(!item){
-return;
-}
+if(!item) return;
 
-currentId = id;
+currentId = item.id;
+
+currentChannel = item.channel;
+
+currentPinned = item.pinned || false;
 
 document.getElementById(
 'title'
@@ -1045,11 +1299,13 @@ document.getElementById(
 'content'
 ).value = item.content;
 
-currentChannel = item.channel;
-
 }else{
 
 currentId = null;
+
+currentChannel = '1';
+
+currentPinned = false;
 
 document.getElementById(
 'title'
@@ -1058,11 +1314,11 @@ document.getElementById(
 document.getElementById(
 'content'
 ).value = '';
-
-currentChannel = '1';
 }
 
 updateChannelButton();
+
+updatePinButton();
 
 updateWordCount();
 }
@@ -1073,44 +1329,38 @@ document.getElementById(
 'popup'
 ).classList.remove('active');
 
-closeDropdowns();
+document.getElementById(
+'popup'
+).classList.remove('reading-mode');
 }
 
-/* DROPDOWN */
+/* READING MODE */
 
-function toggleDropdown(id){
+function toggleReadingMode(){
 
-const target =
-document.getElementById(id);
-
-target.classList.toggle(
-'active'
+document.getElementById(
+'popup'
+).classList.toggle(
+'reading-mode'
 );
-}
-
-function closeDropdowns(){
-
-document.querySelectorAll(
-'.dropdown'
-).forEach(drop=>{
-
-drop.classList.remove(
-'active'
-);
-
-});
 }
 
 /* CHANNEL */
 
-function setChannel(ch){
-
-currentChannel = ch;
-
-updateChannelButton();
-
-closeDropdowns();
+/* CHANNEL LOGIC BARU */
+function setChannel(ch) {
+    currentChannel = ch;
+    updateChannelButton();
+    triggerAutoSave();
+    closeDropdown(); // Menutup menu setelah memilih
 }
+
+// Hapus fungsi switchChannel yang lama, ganti dengan update ini
+function updateChannelButton() {
+    document.getElementById('channelBtn').innerHTML = 'CH ' + currentChannel + ' ▼';
+}
+
+
 
 function updateChannelButton(){
 
@@ -1118,7 +1368,29 @@ document.getElementById(
 'channelBtn'
 ).innerHTML =
 
-'CH ' + currentChannel + ' ▼';
+'CH ' + currentChannel;
+}
+
+/* PIN */
+
+function togglePin(){
+
+currentPinned = !currentPinned;
+
+updatePinButton();
+
+triggerAutoSave();
+}
+
+function updatePinButton(){
+
+document.getElementById(
+'pinBtn'
+).style.opacity =
+
+currentPinned
+? '1'
+: '.45';
 }
 
 /* WORD */
@@ -1136,8 +1408,7 @@ text.trim() === ''
 ? 0
 : text.trim().split(/\s+/).length;
 
-const chars =
-text.replace(/\s/g,'').length;
+const chars = text.length;
 
 document.getElementById(
 'wordInfo'
@@ -1149,9 +1420,50 @@ chars.toLocaleString('id-ID') +
 ' karakter';
 }
 
+function handleTyping(){
+
+updateWordCount();
+
+triggerAutoSave();
+}
+
+/* AUTOSAVE */
+
+function triggerAutoSave(){
+
+clearTimeout(
+autoSaveTimeout
+);
+
+autoSaveTimeout = setTimeout(
+
+function(){
+
+performSave('draft',true);
+
+const save =
+document.getElementById(
+'saveStatus'
+);
+
+save.classList.add(
+'show'
+);
+
+setTimeout(function(){
+
+save.classList.remove(
+'show'
+);
+
+},2000);
+
+},2000);
+}
+
 /* SAVE */
 
-function saveScript(status){
+function performSave(status,isAuto=false){
 
 const title =
 document.getElementById(
@@ -1161,39 +1473,24 @@ document.getElementById(
 const content =
 document.getElementById(
 'content'
-).value.trim();
+).value;
 
-if(title === ''){
+if(
 
-alert(
-'Judul wajib diisi'
-);
+title === '' &&
+content.trim() === ''
+
+){
 
 return;
 }
 
-const now = new Date();
-
-const waktu =
-now.toLocaleDateString(
+const now =
+new Date().toLocaleString(
 'id-ID'
-)
-
-+
-
-' '
-
-+
-
-now.toLocaleTimeString(
-'id-ID',
-{
-hour:'2-digit',
-minute:'2-digit'
-}
 );
 
-const data = getData();
+let data = getData();
 
 if(currentId){
 
@@ -1204,34 +1501,62 @@ x => x.id === currentId
 
 if(index !== -1){
 
-data[index].title = title;
-data[index].content = content;
-data[index].channel = currentChannel;
-data[index].status = status;
-data[index].updated = waktu;
+data[index] = {
+
+...data[index],
+
+title:
+title || 'Tanpa Judul',
+
+content,
+
+status,
+
+channel:currentChannel,
+
+pinned:currentPinned,
+
+updated:now
+};
 }
 
 }else{
 
+const id = Date.now();
+
+currentId = id;
+
 data.unshift({
 
-id:Date.now(),
+id,
 
-title:title,
+title:
+title || 'Tanpa Judul',
 
-content:content,
+content,
+
+status,
 
 channel:currentChannel,
 
-status:status,
+pinned:currentPinned,
 
-created:waktu,
+created:now,
 
-updated:waktu
+updated:now
 });
 }
 
 saveData(data);
+
+if(!isAuto){
+render();
+}
+}
+
+function saveScript(status){
+
+performSave(status);
 
 closePopup();
 
@@ -1265,8 +1590,6 @@ render();
 }
 }
 
-/* QUICK DELETE */
-
 function quickDelete(id){
 
 if(confirm('Hapus script ini?')){
@@ -1283,29 +1606,77 @@ render();
 }
 }
 
-/* FILTER */
+/* COPY */
 
-function setFilter(type,el){
+function copyAll(){
 
-currentFilter = type;
+const title =
+document.getElementById(
+'title'
+).value;
 
-document.querySelectorAll(
-'.filters button'
-).forEach(btn=>{
+const content =
+document.getElementById(
+'content'
+).value;
 
-btn.classList.remove(
-'active'
+const text =
+title + '\n\n' + content;
+
+navigator.clipboard.writeText(text)
+
+.then(()=>{
+
+alert(
+'Berhasil disalin'
 );
+
 });
-
-el.classList.add(
-'active'
-);
-
-render();
 }
 
-/* SHOW INFO */
+/* EXPORT */
+
+function exportTXT(){
+
+const title =
+document.getElementById(
+'title'
+).value || 'script';
+
+const content =
+document.getElementById(
+'content'
+).value;
+
+const blob =
+new Blob(
+[content],
+{
+type:'text/plain'
+}
+);
+
+const link =
+document.createElement('a');
+
+link.href =
+URL.createObjectURL(blob);
+
+link.download =
+title + '.txt';
+
+document.body.appendChild(
+link
+);
+
+link.click();
+
+document.body.removeChild(
+link
+);
+}
+
+/* INFO */
 
 function showInfo(){
 
@@ -1318,16 +1689,12 @@ alert(
 return;
 }
 
-const data = getData();
-
 const item =
-data.find(
+getData().find(
 x => x.id === currentId
 );
 
-if(!item){
-return;
-}
+if(!item) return;
 
 const text =
 document.getElementById(
@@ -1340,8 +1707,7 @@ text.trim() === ''
 ? 0
 : text.trim().split(/\s+/).length;
 
-const chars =
-text.replace(/\s/g,'').length;
+const chars = text.length;
 
 alert(
 
@@ -1372,8 +1738,28 @@ item.status === 'draft'
 )
 
 );
+}
 
-closeDropdowns();
+/* DROPDOWN */
+
+function toggleDropdown(id = 'dropdown') {
+    // Tutup dropdown lain dulu agar tidak tumpang tindih
+    const allDrops = document.querySelectorAll('.dropdown');
+    allDrops.forEach(d => {
+        if(d.id !== id) d.classList.remove('active');
+    });
+
+    document.getElementById(id).classList.toggle('active');
+}
+
+
+function closeDropdown(){
+
+document.getElementById(
+'dropdown'
+).classList.remove(
+'active'
+);
 }
 
 /* RENDER */
@@ -1392,9 +1778,50 @@ document.getElementById(
 
 let data = getData();
 
-data = data.filter(item=>{
+/* STATS */
 
-const cocokSearch =
+document.getElementById(
+'totalScript'
+).innerHTML = data.length;
+
+document.getElementById(
+'totalDraft'
+).innerHTML =
+
+data.filter(
+x => x.status === 'draft'
+).length;
+
+document.getElementById(
+'totalDone'
+).innerHTML =
+
+data.filter(
+x => x.status === 'done'
+).length;
+
+/* SORT */
+
+data.sort(function(a,b){
+
+if((b.pinned||false)!==(a.pinned||false)){
+
+return (b.pinned||false) - (a.pinned||false);
+}
+
+if(currentSort === 'oldest'){
+
+return a.id - b.id;
+}
+
+return b.id - a.id;
+});
+
+/* FILTER */
+
+data = data.filter(function(item){
+
+const match =
 
 item.title.toLowerCase().includes(
 keyword
@@ -1406,69 +1833,93 @@ item.content.toLowerCase().includes(
 keyword
 );
 
-let cocokFilter = true;
-
-if(currentFilter === '1'){
-cocokFilter =
-item.channel === '1';
-}
-
-if(currentFilter === '2'){
-cocokFilter =
-item.channel === '2';
+if(currentFilter === 'all'){
+return match;
 }
 
 if(currentFilter === 'draft'){
-cocokFilter =
-item.status === 'draft';
+return match && item.status === 'draft';
 }
 
 if(currentFilter === 'done'){
-cocokFilter =
-item.status === 'done';
+return match && item.status === 'done';
 }
 
-return cocokSearch && cocokFilter;
+return match && item.channel === currentFilter;
 });
+
+/* EMPTY */
 
 if(data.length === 0){
 
 list.innerHTML =
 
-'<div class=\"empty\">Belum ada script</div>';
+'<div class="empty">Belum ada script</div>';
 
 return;
 }
 
+/* HTML */
+
 let html = '';
 
-data.forEach(item=>{
-
-const completedClass =
-
-item.status === 'done'
-? ' completed'
-: '';
+data.forEach(function(item){
 
 html +=
 
-'<div class=\"card' + completedClass + '\">' +
+'<div class="card ' +
 
-'<div class=\"card-top\">' +
+(item.pinned ? 'pinned ' : '') +
 
-'<div class=\"card-left\">' +
+(item.status === 'done'
+? 'completed'
+: '') +
 
-'<div class=\"title\">' +
+'">' +
+
+'<div class="card-header">' +
+
+'<div class="title">' +
 item.title +
 '</div>' +
 
-'<div class=\"meta\">' +
+(item.pinned
+? '<div class="pin">📌</div>'
+: '') +
 
-'<div class=\"meta-badge\">CH ' +
+'</div>' +
+
+'<div class="preview">' +
+
+(
+item.content
+? item.content
+: 'Belum ada isi script...'
+)
+
++
+
+'</div>' +
+
+'<div class="card-bottom">' +
+
+'<div class="badges">' +
+
+'<div class="badge">CH ' +
 item.channel +
 '</div>' +
 
-'<div class=\"meta-badge\">' +
+'<div class="badge ' +
+
+(
+item.status === 'done'
+? 'done'
+: ''
+)
+
++
+
+'">' +
 
 (
 item.status === 'draft'
@@ -1482,42 +1933,25 @@ item.status === 'draft'
 
 '</div>' +
 
-'<div class=\"preview\">' +
+'<div class="actions">' +
 
-(
-item.content
-? item.content
-: 'Belum ada script...'
-)
-
-+
-
-'</div>' +
-
-'</div>' +
-
-'<div class=\"actions\">' +
-
-'<button class=\"icon-btn edit-btn\" onclick=\"openPopup(' +
+'<button class="action-btn" onclick="openPopup(' +
 item.id +
-')\">✏</button>' +
+')">✏</button>' +
 
-'<button class=\"icon-btn delete-btn\" onclick=\"quickDelete(' +
+'<button class="action-btn" onclick="quickDelete(' +
 item.id +
-')\">🗑</button>' +
+')">🗑</button>' +
 
 '</div>' +
 
 '</div>' +
 
 '</div>';
-
 });
 
 list.innerHTML = html;
 }
-
-render();
 
 </script>
 
