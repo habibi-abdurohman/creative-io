@@ -1,0 +1,224 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Creative.io</title>
+
+    <link rel="stylesheet" href="navbar/navbar.css">
+    <link rel="manifest" href="manifest.json">
+
+    <meta name="theme-color" content="#2563eb">
+    <meta name="mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            -webkit-tap-highlight-color: transparent;
+        }
+
+        :root {
+            --bg: #f4f7fb;
+            --card: #ffffff;
+            --border: #dbe4ee;
+            --text: #0f172a;
+            --muted: #64748b;
+            --primary: #2563eb;
+            --primary-soft: #dbeafe;
+            --shadow: 0 8px 24px rgba(0,0,0,0.06);
+        }
+
+        /* DARK MODE */
+        body.dark {
+            --bg: #020617;
+            --card: #0f172a;
+            --border: #1e293b;
+            --text: #f8fafc;
+            --muted: #94a3b8;
+            --primary: #3b82f6;
+            --primary-soft: rgba(59,130,246,0.15);
+            --shadow: 0 12px 28px rgba(0,0,0,0.35);
+        }
+
+        body {
+            font-family: Inter, Arial, sans-serif;
+            background: var(--bg);
+            color: var(--text);
+            padding-top: 56px;
+            transition: .25s;
+        }
+
+        .content {
+            padding: 12px;
+        }
+
+        .subtitle {
+            color: var(--muted);
+            font-size: 13px;
+            line-height: 1.7;
+            margin-bottom: 18px;
+        }
+
+        /* GRID */
+        .grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+            gap: 14px;
+        }
+
+        /* TOOL CARD */
+        .tool {
+            background: var(--card);
+            border: 1px solid var(--border);
+            border-radius: 24px;
+            padding: 16px;
+            box-shadow: var(--shadow);
+            text-decoration: none;
+            color: var(--text);
+            display: flex;
+            flex-direction: column;
+            gap: 14px;
+            min-height: 210px;
+            transition: .2s;
+        }
+
+        .tool:active {
+            transform: scale(.98);
+        }
+
+        .icon {
+            width: 58px;
+            height: 58px;
+            border-radius: 18px;
+            background: var(--primary-soft);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 28px;
+        }
+
+        .tool-title {
+            font-size: 18px;
+            font-weight: 900;
+            line-height: 1.4;
+        }
+
+        .tool-desc {
+            color: var(--muted);
+            font-size: 13px;
+            line-height: 1.7;
+            flex: 1;
+        }
+
+        .tag {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            width: max-content;
+            background: var(--primary-soft);
+            color: var(--primary);
+            padding: 8px 12px;
+            border-radius: 999px;
+            font-size: 11px;
+            font-weight: 800;
+        }
+
+        .footer {
+            margin-top: 26px;
+            text-align: center;
+            color: var(--muted);
+            font-size: 12px;
+        }
+
+        /* RESPONSIVE */
+        @media(max-width: 600px) {
+            .grid {
+                grid-template-columns: 1fr;
+            }
+            .tool {
+                min-height: 190px;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <div id="navbar-container"></div>
+
+    <div class="content">
+        <div class="subtitle">
+            Workspace pribadi untuk mengelola ide konten, menulis script video, dan melakukan simulasi keuangan dalam satu dashboard yang rapi, ringan, dan cepat digunakan.
+        </div>
+
+        <div class="grid">
+            <a class="tool" href="planner.html">
+                <div class="icon">🎬</div>
+                <div class="tool-title">Planner.io</div>
+                <div class="tool-desc">
+                    Mengumpulkan link ide konten dari YouTube, TikTok, Instagram, Facebook, dan berbagai sumber lainnya dalam satu tempat, sehingga semua inspirasi bisa tersimpan rapi, mudah diakses, dan siap digunakan kapan saja.
+                </div>
+                <div class="tag">Content Planner</div>
+            </a>
+
+            <a class="tool" href="notepad.html">
+                <div class="icon">📝</div>
+                <div class="tool-title">Notepad.io</div>
+                <div class="tool-desc">
+                    Menyusun script konten yang bisa disimpan, diberi penanda, dan dikelola dengan rapi agar mudah ditinjau kembali serta tidak berantakan saat proses produksi.
+                </div>
+                <div class="tag">Script Writing</div>
+            </a>
+
+            <a class="tool" href="calculator.html">
+                <div class="icon">💰</div>
+                <div class="tool-title">Calculator.io</div>
+                <div class="tool-desc">
+                    Menghitung simulasi pinjaman, termasuk cicilan, tenor, dan estimasi total pembayaran secara cepat dan sederhana.
+                </div>
+                <div class="tag">Financial Tools</div>
+            </a>
+        </div>
+
+        <div class="footer">
+            Dashboard workflow pribadi
+        </div>
+    </div>
+
+    <script>
+        /* THEME ENGINE */
+        function toggleTheme() {
+            document.body.classList.toggle('dark');
+            localStorage.setItem(
+                'dashboard_theme',
+                document.body.classList.contains('dark') ? 'dark' : 'light'
+            );
+        }
+
+        /* INITIAL LOAD */
+        window.addEventListener('load', () => {
+            if (localStorage.getItem('dashboard_theme') === 'dark') {
+                document.body.classList.add('dark');
+            }
+        });
+
+        /* PWA SERVICE WORKER */
+        if ('serviceWorker' in navigator) {
+            window.addEventListener('load', () => {
+                navigator.serviceWorker.register('./sw.js')
+                .then(() => {
+                    console.log('PWA aktif');
+                })
+                .catch(err => {
+                    console.log(err);
+                });
+            });
+        }
+    </script>
+
+    <script src="navbar/navbar.js"></script>
+
+</body>
+</html>

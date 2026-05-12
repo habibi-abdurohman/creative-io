@@ -1,0 +1,851 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+    <title>Notepad.io</title>
+    <link rel="stylesheet" href="navbar/navbar.css">
+
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            -webkit-tap-highlight-color: transparent;
+        }
+
+        *::-webkit-scrollbar {
+            display: none;
+        }
+
+        :root {
+            --bg: #f8fafc;
+            --card: #ffffff;
+            --border: #e2e8f0;
+            --text: #0f172a;
+            --muted: #64748b;
+            --primary: #2563eb;
+            --primary-soft: #eff6ff;
+            --success: #10b981;
+            --danger: #ef4444;
+            --warning: #f59e0b;
+            --shadow: 0 6px 20px rgba(0,0,0,.05);
+            --radius: 26px;
+        }
+
+        body.dark {
+            --bg: #020617;
+            --card: #0f172a;
+            --border: #1e293b;
+            --text: #f8fafc;
+            --muted: #94a3b8;
+            --primary: #3b82f6;
+            --primary-soft: rgba(59,130,246,.12);
+        }
+
+        body {
+            font-family: Inter, Arial, sans-serif;
+            background: var(--bg);
+            color: var(--text);
+            padding: 14px;
+            padding-top: 72px;
+            padding-bottom: 110px;
+        }
+
+        .subtitle {
+            font-size: 13px;
+            line-height: 1.7;
+            color: var(--muted);
+            margin-bottom: 14px;
+        }
+
+        /* STATS SECTION */
+        .stats-toggle {
+            width: 100%;
+            background: var(--card);
+            border: 1px solid var(--border);
+            border-radius: 16px;
+            padding: 12px 14px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            font-size: 12px;
+            font-weight: 800;
+            color: var(--text);
+            cursor: pointer;
+            margin-bottom: 10px;
+        }
+
+        .stats {
+            display: flex;
+            gap: 10px;
+            overflow: auto;
+            margin-bottom: 18px;
+        }
+
+        .stats.hide {
+            display: none;
+        }
+
+        .stat-card {
+            flex: 1;
+            min-width: 100px;
+            background: var(--card);
+            border: 1px solid var(--border);
+            border-radius: 16px;
+            padding: 12px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .stat-num {
+            font-size: 16px;
+            font-weight: 900;
+            line-height: 1;
+        }
+
+        .stat-label {
+            font-size: 11px;
+            font-weight: 700;
+            color: var(--muted);
+            margin-top: 4px;
+        }
+
+        /* STICKY TOOLS */
+        .sticky-tools {
+            position: sticky;
+            top: 56px;
+            z-index: 50;
+            background: var(--bg);
+            padding: 10px 14px;
+            margin: 0 -14px;
+            border-bottom: 1px solid var(--border);
+            backdrop-filter: blur(14px);
+            -webkit-backdrop-filter: blur(14px);
+        }
+
+        .search {
+            position: relative;
+            margin-bottom: 10px;
+        }
+
+        .search input {
+            width: 100%;
+            padding: 14px 14px 14px 44px;
+            outline: none;
+            background: var(--card);
+            border: 1px solid var(--border);
+            border-radius: 16px;
+            font-size: 14px;
+            color: var(--text);
+        }
+
+        .search::before {
+            content: '🔍';
+            position: absolute;
+            left: 14px;
+            top: 12px;
+            font-size: 16px;
+            opacity: .6;
+        }
+
+        .filters {
+            display: flex;
+            gap: 8px;
+            overflow-x: auto;
+            padding-bottom: 4px;
+            scrollbar-width: none;
+        }
+
+        .filters button {
+            flex-shrink: 0;
+            padding: 10px 14px;
+            border-radius: 999px;
+            background: var(--card);
+            border: 1px solid var(--border);
+            font-size: 11px;
+            font-weight: 800;
+            color: var(--muted);
+            cursor: pointer;
+        }
+
+        .filters button.active {
+            background: var(--primary);
+            border-color: var(--primary);
+            color: white;
+        }
+
+        /* EMPTY STATE DESIGN */
+        .empty {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+            padding: 80px 20px;
+            color: var(--muted);
+            background: var(--card); /* Sama dengan background search bar */
+            border: 2px dashed var(--border);
+            border-radius: 24px;
+            margin-top: 20px;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+
+        .empty:active {
+            background: var(--bg);
+            transform: scale(0.98);
+        }
+
+        .empty::before {
+            content: '📂';
+            font-size: 50px;
+            margin-bottom: 16px;
+            display: block;
+            filter: grayscale(1);
+            opacity: 0.5;
+        }
+
+        .empty::after {
+            content: 'Belum ada script yang dibuat. Ketuk area ini untuk mulai menulis script baru.';
+            display: block;
+            font-size: 12px;
+            margin-top: 8px;
+            font-weight: normal;
+            max-width: 220px;
+            line-height: 1.6;
+        }
+
+        /* CARD LIST */
+        .list {
+            display: flex;
+            flex-direction: column;
+            gap: 14px;
+            margin-top: 16px;
+        }
+
+        .card {
+            background: var(--card);
+            border: 1px solid var(--border);
+            border-radius: 22px;
+            padding: 16px;
+            box-shadow: var(--shadow);
+            position: relative;
+        }
+
+        .card.pinned {
+            border-left: 4px solid var(--warning);
+        }
+
+        .card.completed {
+            opacity: .65;
+        }
+
+        .card.completed .title, 
+        .card.completed .preview, 
+        .card.completed .badge {
+            text-decoration: line-through;
+        }
+
+        .card-header {
+            display: flex;
+            align-items: flex-start;
+            justify-content: space-between;
+            gap: 10px;
+            margin-bottom: 10px;
+        }
+
+        .title {
+            font-size: 16px;
+            font-weight: 900;
+            line-height: 1.5;
+            word-break: break-word;
+        }
+
+        .preview {
+            font-size: 13px;
+            line-height: 1.7;
+            color: var(--muted);
+            display: -webkit-box;
+            -webkit-line-clamp: 2;
+            -webkit-box-orient: vertical;
+            overflow: hidden;
+            margin-bottom: 14px;
+        }
+
+        .card-bottom {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .badges {
+            display: flex;
+            gap: 6px;
+            flex-wrap: wrap;
+        }
+
+        .badge {
+            background: var(--primary-soft);
+            color: var(--primary);
+            padding: 6px 10px;
+            border-radius: 999px;
+            font-size: 10px;
+            font-weight: 800;
+        }
+
+        .badge.done {
+            background: rgba(16,185,129,.12);
+            color: var(--success);
+        }
+
+        .actions {
+            display: flex;
+            gap: 8px;
+        }
+
+        .action-btn {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--text);
+            width: 36px;
+            height: 36px;
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            background: var(--bg);
+            cursor: pointer;
+            font-size: 14px;
+        }
+
+        body.dark .action-btn {
+            color: #ffffff;
+            background: var(--card);
+        }
+
+        .fab {
+            position: fixed;
+            right: 20px;
+            bottom: 20px;
+            width: 58px;
+            height: 58px;
+            border: none;
+            border-radius: 50%;
+            background: var(--primary);
+            color: white;
+            font-size: 30px;
+            cursor: pointer;
+            box-shadow: 0 10px 30px rgba(37,99,235,.35);
+            z-index: 100;
+        }
+
+        /* POPUP & EDITOR */
+        .popup {
+            position: fixed;
+            inset: 0;
+            background: var(--bg);
+            z-index: 99999;
+            display: none;
+            flex-direction: column;
+        }
+
+        .popup.active {
+            display: flex;
+        }
+
+        .popup-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 10px 12px;
+            border-bottom: 1px solid var(--border);
+            background: var(--bg);
+            position: sticky;
+            top: 0;
+            z-index: 10;
+        }
+
+        .popup-left, .popup-right {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .top-btn, .channel-btn {
+            background: var(--card);
+            border: 1px solid var(--border);
+            color: var(--text);
+            cursor: pointer;
+            border-radius: 14px;
+        }
+
+        .top-btn {
+            width: 38px;
+            height: 38px;
+        }
+
+        .channel-btn {
+            height: 38px;
+            padding: 0 14px;
+            font-size: 11px;
+            font-weight: 800;
+        }
+
+        .dropdown-wrap {
+            position: relative;
+        }
+
+        .dropdown {
+            position: absolute;
+            top: 48px;
+            right: 0;
+            background: var(--card);
+            border: 1px solid var(--border);
+            border-radius: 16px;
+            padding: 8px;
+            display: none;
+            flex-direction: column;
+            gap: 6px;
+            min-width: 180px;
+            box-shadow: var(--shadow);
+        }
+
+        .dropdown.active {
+            display: flex;
+        }
+
+        .dropdown button {
+            background: var(--bg);
+            border: 1px solid var(--border);
+            padding: 12px;
+            border-radius: 12px;
+            font-size: 12px;
+            font-weight: 700;
+            color: var(--text);
+            cursor: pointer;
+            text-align: left;
+        }
+
+        .save-status {
+            font-size: 11px;
+            font-weight: 700;
+            color: var(--success);
+            opacity: 0;
+            transition: .2s;
+        }
+
+        .save-status.show {
+            opacity: 1;
+        }
+
+        .editor {
+            flex: 1;
+            overflow: auto;
+            padding: 18px 16px 140px;
+        }
+
+        .title-input {
+            width: 100%;
+            border: none;
+            outline: none;
+            background: none;
+            font-size: 22px;
+            font-weight: 900;
+            color: var(--text);
+            margin-bottom: 16px;
+        }
+
+        .content-input {
+            width: 100%;
+            min-height: 100vh;
+            border: none;
+            outline: none;
+            resize: none;
+            background: none;
+            font-size: 16px;
+            line-height: 2;
+            font-family: monospace;
+            color: var(--text);
+        }
+
+        .footer {
+            position: fixed;
+            left: 0; right: 0; bottom: 0;
+            background: var(--bg);
+            border-top: 1px solid var(--border);
+            padding: 8px 12px calc(8px + env(safe-area-inset-bottom));
+            z-index: 20;
+        }
+
+        .word-info {
+            font-size: 11px;
+            font-weight: 700;
+            color: var(--muted);
+            margin-bottom: 8px;
+        }
+
+        .footer-buttons {
+            display: flex;
+            gap: 8px;
+        }
+
+        .footer-buttons button {
+            flex: 1;
+            height: 48px;
+            border: none;
+            border-radius: 14px;
+            font-size: 13px;
+            font-weight: 900;
+            cursor: pointer;
+        }
+
+        .draft-btn { background: var(--card); border: 1px solid var(--border); color: var(--text); }
+        .done-btn { background: var(--success); color: white; }
+
+        /* READING MODE */
+        .reading-mode .popup-header, .reading-mode .footer { display: none; }
+        .reading-mode .editor { padding: 40px 24px; max-width: 760px; margin: auto; }
+        .reading-mode .title-input { text-align: center; font-size: 28px; margin-bottom: 30px; padding-top: 20px; }
+        .reading-exit-btn {
+            display: none;
+            position: fixed;
+            top: 15px; right: 15px;
+            z-index: 100001;
+            width: 40px; height: 40px;
+            border-radius: 50%;
+            background: var(--card);
+            border: 1px solid var(--border);
+            box-shadow: var(--shadow);
+            color: var(--text);
+            cursor: pointer;
+        }
+        .reading-mode .reading-exit-btn { display: flex; align-items: center; justify-content: center; }
+    </style>
+</head>
+
+<body>
+    <div id="navbar-placeholder"></div>
+
+    <div class="subtitle">
+        Workspace penulisan script konten modern untuk menyusun ide, draft, dan workflow pembuatan video secara lebih terstruktur dan efisien.
+    </div>
+
+    <button class="stats-toggle" onclick="toggleStats()">
+        📊 Statistik Script <span id="statsArrow">▲</span>
+    </button>
+
+    <div class="stats" id="statsBox">
+        <div class="stat-card">
+            <div class="stat-icon">📝</div>
+            <div class="stat-info">
+                <div class="stat-num" id="totalScript">0</div>
+                <div class="stat-label">Total</div>
+            </div>
+        </div>
+        <div class="stat-card">
+            <div class="stat-icon">🕒</div>
+            <div class="stat-info">
+                <div class="stat-num" id="totalDraft">0</div>
+                <div class="stat-label">Draft</div>
+            </div>
+        </div>
+        <div class="stat-card">
+            <div class="stat-icon">✅</div>
+            <div class="stat-info">
+                <div class="stat-num" id="totalDone">0</div>
+                <div class="stat-label">Selesai</div>
+            </div>
+        </div>
+    </div>
+
+    <div class="sticky-tools">
+        <div class="search">
+            <input type="text" id="search" placeholder="Cari script..." oninput="render()">
+        </div>
+        <div class="filters">
+            <button class="active" onclick="setFilter('all',this)">Semua</button>
+            <button onclick="setFilter('1',this)">CH 1</button>
+            <button onclick="setFilter('2',this)">CH 2</button>
+            <button onclick="setFilter('draft',this)">Draft</button>
+            <button onclick="setFilter('done',this)">Selesai</button>
+            <button onclick="setSort('newest', this)">Terbaru</button>
+            <button onclick="setSort('oldest', this)">Terlama</button>
+        </div>
+    </div>
+
+    <div class="list" id="list"></div>
+    <button class="fab" onclick="openPopup()">+</button>
+
+    <div class="popup" id="popup">
+        <button class="reading-exit-btn" onclick="toggleReadingMode()">✕</button>
+        <div class="popup-header">
+            <div class="popup-left">
+                <button class="top-btn" onclick="closePopup()">✕</button>
+                <div class="save-status" id="saveStatus">Tersimpan Lokal</div>
+            </div>
+            <div class="popup-right">
+                <button class="top-btn" onclick="togglePin()" id="pinBtn">📌</button>
+                <div class="dropdown-wrap">
+                    <button class="channel-btn" onclick="toggleDropdown('channelDropdown')" id="channelBtn">CH 1 ▼</button>
+                    <div class="dropdown" id="channelDropdown">
+                        <button onclick="setChannel('1')">Channel 1</button>
+                        <button onclick="setChannel('2')">Channel 2</button>
+                    </div>
+                </div>
+                <button class="top-btn" onclick="toggleReadingMode()">📖</button>
+                <div class="dropdown-wrap">
+                    <button class="top-btn" onclick="toggleDropdown()">⋮</button>
+                    <div class="dropdown" id="dropdown">
+                        <button onclick="copyAll()">📋 Copy All</button>
+                        <button onclick="exportTXT()">📄 Export TXT</button>
+                        <button onclick="showInfo()">ℹ Show Info</button>
+                        <button onclick="deleteScript()" style="color:var(--danger)">🗑 Hapus Script</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="editor">
+            <input type="text" id="title" class="title-input" placeholder="Judul Script..." autocomplete="off" spellcheck="false" oninput="triggerAutoSave()">
+            <textarea id="content" class="content-input" placeholder="Mulai menulis script..." autocomplete="off" oninput="handleTyping()"></textarea>
+        </div>
+        <div class="footer">
+            <div class="word-info" id="wordInfo">0 kata • 0 karakter</div>
+            <div class="footer-buttons">
+                <button class="draft-btn" onclick="saveScript('draft')">Draft</button>
+                <button class="done-btn" onclick="saveScript('done')">Selesai</button>
+            </div>
+        </div>
+    </div>
+
+    <script src="navbar/navbar.js"></script>
+    <script>
+        let currentId = null;
+        let currentFilter = 'all';
+        let currentSort = 'newest';
+        let currentChannel = '1';
+        let currentPinned = false;
+        let autoSaveTimeout = null;
+
+        function loadNavbar() {
+            fetch('navbar/navbar.html').then(res => res.text()).then(data => {
+                document.getElementById('navbar-placeholder').innerHTML = data;
+                if (localStorage.getItem('dashboard_theme') === 'dark') document.body.classList.add('dark');
+            });
+        }
+
+        window.onload = function() {
+            loadNavbar();
+            render();
+        };
+
+        function getData() {
+            return JSON.parse(localStorage.getItem('notepad_data')) || [];
+        }
+
+        function saveData(data) {
+            localStorage.setItem('notepad_data', JSON.stringify(data));
+        }
+
+        function toggleStats() {
+            const box = document.getElementById('statsBox');
+            const arrow = document.getElementById('statsArrow');
+            box.classList.toggle('hide');
+            arrow.innerHTML = box.classList.contains('hide') ? '▼' : '▲';
+        }
+
+        function setFilter(type, el) {
+            currentFilter = type;
+            document.querySelectorAll('.filters button').forEach(btn => btn.classList.remove('active'));
+            el.classList.add('active');
+            render();
+        }
+
+        function setSort(type, el) {
+            currentSort = type;
+            document.querySelectorAll('.filters button').forEach(btn => btn.classList.remove('active'));
+            if (el) el.classList.add('active');
+            render();
+        }
+
+        function openPopup(id = null) {
+            document.getElementById('popup').classList.add('active');
+            if (id) {
+                const item = getData().find(x => x.id === id);
+                currentId = item.id;
+                currentChannel = item.channel;
+                currentPinned = item.pinned || false;
+                document.getElementById('title').value = item.title;
+                document.getElementById('content').value = item.content;
+            } else {
+                currentId = null;
+                currentChannel = '1';
+                currentPinned = false;
+                document.getElementById('title').value = '';
+                document.getElementById('content').value = '';
+            }
+            updateChannelButton();
+            updatePinButton();
+            updateWordCount();
+        }
+
+        function closePopup() {
+            document.getElementById('popup').classList.remove('active', 'reading-mode');
+            render();
+        }
+
+        function toggleReadingMode() {
+            document.getElementById('popup').classList.toggle('reading-mode');
+        }
+
+        function setChannel(ch) {
+            currentChannel = ch;
+            updateChannelButton();
+            triggerAutoSave();
+            const drops = document.querySelectorAll('.dropdown');
+            drops.forEach(d => d.classList.remove('active'));
+        }
+
+        function updateChannelButton() {
+            document.getElementById('channelBtn').innerHTML = 'CH ' + currentChannel + ' ▼';
+        }
+
+        function togglePin() {
+            currentPinned = !currentPinned;
+            updatePinButton();
+            triggerAutoSave();
+        }
+
+        function updatePinButton() {
+            document.getElementById('pinBtn').style.opacity = currentPinned ? '1' : '.45';
+        }
+
+        function updateWordCount() {
+            const text = document.getElementById('content').value;
+            const words = text.trim() === '' ? 0 : text.trim().split(/\s+/).length;
+            document.getElementById('wordInfo').innerHTML = words + ' kata • ' + text.length.toLocaleString('id-ID') + ' karakter';
+        }
+
+        function handleTyping() {
+            updateWordCount();
+            triggerAutoSave();
+        }
+
+        function triggerAutoSave() {
+            clearTimeout(autoSaveTimeout);
+            autoSaveTimeout = setTimeout(() => {
+                performSave('draft', true);
+                const save = document.getElementById('saveStatus');
+                save.classList.add('show');
+                setTimeout(() => save.classList.remove('show'), 2000);
+            }, 2000);
+        }
+
+        function performSave(status, isAuto = false) {
+            const title = document.getElementById('title').value.trim();
+            const content = document.getElementById('content').value;
+            if (title === '' && content.trim() === '') return;
+            const now = new Date().toLocaleString('id-ID');
+            let data = getData();
+            if (currentId) {
+                const index = data.findIndex(x => x.id === currentId);
+                if (index !== -1) {
+                    data[index] = { ...data[index], title: title || 'Tanpa Judul', content, status, channel: currentChannel, pinned: currentPinned, updated: now };
+                }
+            } else {
+                currentId = Date.now();
+                data.unshift({ id: currentId, title: title || 'Tanpa Judul', content, status, channel: currentChannel, pinned: currentPinned, created: now, updated: now });
+            }
+            saveData(data);
+            render();
+        }
+
+        function saveScript(status) {
+            performSave(status);
+            closePopup();
+        }
+
+        function deleteScript() {
+            if (currentId && confirm('Hapus script ini?')) {
+                saveData(getData().filter(x => x.id !== currentId));
+                closePopup();
+            }
+        }
+
+        function quickDelete(id) {
+            if (confirm('Hapus script ini?')) {
+                saveData(getData().filter(x => x.id !== id));
+                render();
+            }
+        }
+
+        function copyAll() {
+            const text = document.getElementById('title').value + '\n\n' + document.getElementById('content').value;
+            navigator.clipboard.writeText(text).then(() => alert('Berhasil disalin'));
+        }
+
+        function exportTXT() {
+            const blob = new Blob([document.getElementById('content').value], { type: 'text/plain' });
+            const link = document.createElement('a');
+            link.href = URL.createObjectURL(blob);
+            link.download = (document.getElementById('title').value || 'script') + '.txt';
+            link.click();
+        }
+
+        function showInfo() {
+            const item = getData().find(x => x.id === currentId);
+            if (!item) return alert('Script belum disimpan');
+            alert(`Judul: ${item.title}\nChannel: CH ${item.channel}\nDibuat: ${item.created}\nUpdate: ${item.updated}`);
+        }
+
+        function toggleDropdown(id = 'dropdown') {
+            document.querySelectorAll('.dropdown').forEach(d => {
+                if(d.id !== id) d.classList.remove('active');
+            });
+            document.getElementById(id).classList.toggle('active');
+        }
+
+        function render() {
+            const list = document.getElementById('list');
+            const keyword = document.getElementById('search').value.toLowerCase();
+            let data = getData();
+            document.getElementById('totalScript').innerHTML = data.length;
+            document.getElementById('totalDraft').innerHTML = data.filter(x => x.status === 'draft').length;
+            document.getElementById('totalDone').innerHTML = data.filter(x => x.status === 'done').length;
+
+            data.sort((a, b) => (b.pinned || false) - (a.pinned || false) || (currentSort === 'oldest' ? a.id - b.id : b.id - a.id));
+            data = data.filter(item => {
+                const match = item.title.toLowerCase().includes(keyword) || item.content.toLowerCase().includes(keyword);
+                if (currentFilter === 'all') return match;
+                if (currentFilter === 'draft' || currentFilter === 'done') return match && item.status === currentFilter;
+                return match && item.channel === currentFilter;
+            });
+
+            if (data.length === 0) return list.innerHTML = '<div class="empty" onclick="openPopup()"></div>';
+            
+            let html = '';
+            data.forEach(item => {
+                html += `
+                <div class="card ${item.pinned ? 'pinned' : ''} ${item.status === 'done' ? 'completed' : ''}">
+                    <div class="card-header">
+                        <div class="title">${item.title}</div>
+                        ${item.pinned ? '<div class="pin">📌</div>' : ''}
+                    </div>
+                    <div class="preview">${item.content || 'Belum ada isi script...'}</div>
+                    <div class="card-bottom">
+                        <div class="badges">
+                            <div class="badge">CH ${item.channel}</div>
+                            <div class="badge ${item.status === 'done' ? 'done' : ''}">${item.status === 'draft' ? 'Draft' : 'Selesai'}</div>
+                        </div>
+                        <div class="actions">
+                            <button class="action-btn" onclick="openPopup(${item.id})">✏</button>
+                            <button class="action-btn" onclick="quickDelete(${item.id})">🗑</button>
+                        </div>
+                    </div>
+                </div>`;
+            });
+            list.innerHTML = html;
+        }
+    </script>
+</body>
+</html>
