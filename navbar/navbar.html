@@ -1,0 +1,48 @@
+<div class="navbar">
+    <div class="nav-left">
+        <button 
+            class="menu-btn" 
+            id="menuBtn" 
+            onclick="toggleSidebar()"
+        >
+            ☰
+        </button>
+
+        <div class="logo">
+            Creative.io
+        </div>
+    </div>
+
+    <button 
+        class="theme-btn" 
+        onclick="toggleTheme()"
+    >
+        🌓
+    </button>
+</div>
+
+<div class="sidebar" id="sidebar">
+    <div class="sidebar-menu">
+        <a href="index.html">
+            🏠 Creative.io
+        </a>
+
+        <a href="planner.html">
+            🎬 Planner.io
+        </a>
+
+        <a href="notepad.html">
+            📝 Notepad.io
+        </a>
+
+        <a href="calculator.html">
+            💰 Calculator.io
+        </a>
+    </div>
+</div>
+
+<div 
+    class="overlay" 
+    id="overlay" 
+    onclick="closeSidebar()"
+></div>
