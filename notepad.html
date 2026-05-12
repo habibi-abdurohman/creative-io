@@ -1552,9 +1552,10 @@ updated:now
 
 saveData(data);
 
-if(!isAuto){
-render();
-}
+// Hapus syarat !isAuto agar daftar di depan selalu diperbarui 
+// setiap kali auto-save berjalan
+render(); 
+
 }
 
 function saveScript(status){
