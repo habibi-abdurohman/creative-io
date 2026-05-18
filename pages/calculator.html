@@ -1,0 +1,171 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+    <title>Calculator.io - Creative</title>
+
+    <link rel="stylesheet" href="../navbar/navbar.css">
+    <link rel="manifest" href="../manifest.json">
+    <meta name="theme-color" content="#2563eb">
+
+    <style>
+        /* [CSS SAMA PERSIS SEPERTI SEBELUMNYA] */
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800;900&display=swap');
+        * { margin: 0; padding: 0; box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+        *::-webkit-scrollbar { display: none; }
+        :root { --bg-grad: linear-gradient(180deg, #f8fbff 0%, #eef4ff 100%); --card-glass: rgba(255, 255, 255, 0.9); --card-solid: #ffffff; --card-tint: #f1f5f9; --border: #e2e8f0; --text-main: #0f172a; --text-muted: #64748b; --primary: #2563eb; --primary-grad: linear-gradient(135deg, #3b82f6, #2563eb); --primary-soft: rgba(37, 99, 235, 0.1); --shadow-flat: 0 4px 20px rgba(0, 0, 0, 0.04); --radius-btn: 14px; --radius-card: 24px; }
+        body.dark { --bg-grad: linear-gradient(180deg, #0f172a 0%, #1e293b 100%); --card-glass: rgba(30, 41, 59, 0.9); --card-solid: #1e293b; --card-tint: #0f172a; --border: #334155; --text-main: #f8fafc; --text-muted: #94a3b8; --shadow-flat: 0 4px 20px rgba(0, 0, 0, 0.2); }
+        body { font-family: 'Inter', system-ui, sans-serif; background: var(--bg-grad); color: var(--text-main); min-height: 100vh; padding: 86px 16px 100px; transition: background 0.3s, color 0.3s; opacity: 0; animation: fadeIn 0.5s forwards; }
+        @keyframes fadeIn { to { opacity: 1; } }
+        .bg-glow { position: fixed; border-radius: 50%; filter: blur(90px); z-index: 0; opacity: 0.5; pointer-events: none; }
+        .bg-glow.one { width: 340px; height: 340px; background: rgba(59, 130, 246, 0.15); top: -50px; left: -100px; }
+        .bg-glow.two { width: 320px; height: 320px; background: rgba(96, 165, 250, 0.15); bottom: 100px; right: -100px; }
+        .wrapper { position: relative; z-index: 2; max-width: 800px; margin: 0 auto; }
+        .page-header { margin-bottom: 24px; text-align: center; }
+        .header-title h1 { font-size: 26px; font-weight: 900; letter-spacing: -0.5px; margin-bottom: 8px; }
+        .header-title p { font-size: 13px; color: var(--text-muted); line-height: 1.6; max-width: 500px; margin: 0 auto; }
+        .calc-card { background: var(--card-glass); backdrop-filter: blur(12px); border: 1px solid var(--border); border-radius: var(--radius-card); padding: 24px; box-shadow: var(--shadow-flat); }
+        .input-grid { display: grid; grid-template-columns: 1fr; gap: 16px; margin-bottom: 24px; }
+        @media(min-width: 600px) { .input-grid { grid-template-columns: 1fr 1fr; } .full-width { grid-column: span 2; } }
+        .input-group { display: flex; flex-direction: column; gap: 8px; }
+        .label { display: flex; align-items: center; gap: 8px; font-size: 13px; font-weight: 800; color: var(--text-main); }
+        .help { width: 18px; height: 18px; border-radius: 50%; background: var(--primary-soft); color: var(--primary); display: flex; align-items: center; justify-content: center; font-size: 11px; cursor: pointer; position: relative; font-weight: 900; }
+        .tooltip { position: absolute; bottom: 26px; left: 50%; transform: translateX(-50%); width: 220px; background: var(--text-main); color: var(--card-solid); padding: 10px 14px; border-radius: 12px; font-size: 11px; font-weight: 600; line-height: 1.6; text-align: center; opacity: 0; visibility: hidden; transition: 0.2s; z-index: 10; box-shadow: 0 10px 20px rgba(0,0,0,0.2); pointer-events: none; }
+        .tooltip::after { content: ''; position: absolute; top: 100%; left: 50%; transform: translateX(-50%); border-width: 6px; border-style: solid; border-color: var(--text-main) transparent transparent transparent; }
+        .help:hover .tooltip { opacity: 1; visibility: visible; bottom: 28px; }
+        .input-wrap { position: relative; }
+        .rp { position: absolute; left: 16px; top: 50%; transform: translateY(-50%); color: var(--text-muted); font-weight: 800; font-size: 13px; pointer-events: none; }
+        input, select { width: 100%; border: 1px solid var(--border); background: var(--card-tint); color: var(--text-main); padding: 14px 16px; border-radius: 14px; font-size: 14px; font-weight: 700; outline: none; transition: 0.2s; font-family: inherit; }
+        input:focus, select:focus { border-color: var(--primary); box-shadow: 0 0 0 3px var(--primary-soft); }
+        .money { padding-left: 44px; }
+        .calc-btn { width: 100%; border: none; background: var(--primary-grad); color: white; padding: 16px; border-radius: 16px; font-size: 14px; font-weight: 900; cursor: pointer; transition: 0.2s; box-shadow: 0 10px 25px rgba(37, 99, 235, 0.3); margin-bottom: 24px; }
+        .calc-btn:hover { transform: translateY(-2px); box-shadow: 0 12px 30px rgba(37, 99, 235, 0.4); }
+        .calc-btn:active { transform: translateY(0); }
+        .result-box { background: var(--card-solid); border: 1px solid var(--border); border-radius: 20px; padding: 20px; text-align: center; }
+        .result-title { font-size: 13px; font-weight: 800; color: var(--text-muted); margin-bottom: 20px; text-transform: uppercase; letter-spacing: 1px; }
+        .result-main { font-size: 36px; font-weight: 900; color: var(--primary); margin-bottom: 24px; letter-spacing: -1px; }
+        .result-main-label { font-size: 12px; font-weight: 700; color: var(--text-muted); margin-top: -20px; margin-bottom: 24px; }
+        .result-details { display: grid; grid-template-columns: 1fr; gap: 12px; text-align: left; background: var(--card-tint); border-radius: 14px; padding: 16px; }
+        @media(min-width: 480px) { .result-details { grid-template-columns: 1fr 1fr; } }
+        .detail-item { display: flex; flex-direction: column; gap: 4px; }
+        .detail-label { font-size: 11px; font-weight: 700; color: var(--text-muted); }
+        .detail-value { font-size: 14px; font-weight: 900; color: var(--text-main); }
+    </style>
+</head>
+
+<body>
+    <div id="navbar-container"></div>
+    <div class="bg-glow one"></div><div class="bg-glow two"></div>
+
+    <div class="wrapper">
+        <div class="page-header">
+            <div class="header-title">
+                <h1>Kalkulator Finansial</h1>
+                <p>Simulasi pintar untuk menghitung cicilan, bunga, tenor, dan total pembayaran barang idaman Anda.</p>
+            </div>
+        </div>
+
+        <div class="calc-card">
+            <div class="input-grid">
+                <div class="input-group full-width">
+                    <div class="label">Tujuan Pembiayaan</div>
+                    <input type="text" id="barang" placeholder="Contoh: Motor NMAX, MacBook Pro, Kamera, Rumah...">
+                </div>
+
+                <div class="input-group">
+                    <div class="label">Harga Barang <div class="help">? <div class="tooltip">Total harga tunai barang.</div></div></div>
+                    <div class="input-wrap"><div class="rp">Rp</div><input type="text" id="harga" class="money" placeholder="0" oninput="formatAngka(this)"></div>
+                </div>
+
+                <div class="input-group">
+                    <div class="label">Uang Muka (DP) <div class="help">? <div class="tooltip">Uang yang dibayarkan di awal.</div></div></div>
+                    <div class="input-wrap"><div class="rp">Rp</div><input type="text" id="dp" class="money" placeholder="0" oninput="formatAngka(this)"></div>
+                </div>
+
+                <div class="input-group">
+                    <div class="label">Bunga Tahunan (%) <div class="help">? <div class="tooltip">Suku bunga efektif per tahun.</div></div></div>
+                    <input type="number" id="bunga" value="12" placeholder="Contoh: 12">
+                </div>
+
+                <div class="input-group">
+                    <div class="label">Tenor Cicilan <div class="help">? <div class="tooltip">Jangka waktu pinjaman.</div></div></div>
+                    <select id="tenor"></select>
+                </div>
+
+                <div class="input-group">
+                    <div class="label">Biaya Admin <div class="help">? <div class="tooltip">Tambahan biaya admin opsional.</div></div></div>
+                    <div class="input-wrap"><div class="rp">Rp</div><input type="text" id="admin" class="money" placeholder="0" oninput="formatAngka(this)"></div>
+                </div>
+
+                <div class="input-group">
+                    <div class="label">Biaya Asuransi <div class="help">? <div class="tooltip">Biaya perlindungan opsional.</div></div></div>
+                    <div class="input-wrap"><div class="rp">Rp</div><input type="text" id="asuransi" class="money" placeholder="0" oninput="formatAngka(this)"></div>
+                </div>
+            </div>
+
+            <button class="calc-btn" onclick="hitungPinjaman()">Hitung Simulasi Cicilan</button>
+
+            <!-- HASIL SIMULASI -->
+            <div class="result-box">
+                <div class="result-title">Estimasi Cicilan Anda</div>
+                <div class="result-main" id="hasilCicilan">Rp0</div>
+                <div class="result-main-label">per bulan</div>
+
+                <div class="result-details">
+                    <div class="detail-item"><span class="detail-label">Pinjaman Pokok (Hutang Murni)</span><span class="detail-value" id="hasilPokok">Rp0</span></div>
+                    <div class="detail-item"><span class="detail-label">Total Beban Bunga</span><span class="detail-value" id="hasilBunga">Rp0</span></div>
+                    <div class="detail-item" style="grid-column: 1 / -1; border-top: 1px dashed var(--border); padding-top: 12px;"><span class="detail-label">Total Uang yang Dikeluarkan (Akhir Tenor)</span><span class="detail-value" id="hasilTotal" style="color: var(--primary); font-size: 18px;">Rp0</span></div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="../navbar/navbar.js"></script>
+
+    <script>
+        window.addEventListener('DOMContentLoaded', () => {
+            if (localStorage.getItem("dashboard_theme") === "dark") document.body.classList.add("dark");
+            const tenorSelect = document.getElementById("tenor");
+            for (let i = 1; i <= 11; i++) tenorSelect.add(new Option(`${i} Bulan`, i));
+            for (let i = 1; i <= 20; i++) tenorSelect.add(new Option(`${i} Tahun (${i * 12} Bulan)`, i * 12));
+            tenorSelect.value = "12";
+        });
+
+        function formatAngka(input) {
+            let angka = input.value.replace(/\D/g, '');
+            input.value = angka.replace(/\B(?=(\d{3})+(?!\d))/g, ".");
+        }
+
+        const ambilAngka = (id) => parseFloat(document.getElementById(id).value.replace(/\./g, '')) || 0;
+        const formatRupiah = (angka) => "Rp " + Math.round(angka).toLocaleString("id-ID");
+
+        function hitungPinjaman() {
+            const harga = ambilAngka("harga"), dp = ambilAngka("dp"), admin = ambilAngka("admin"), asuransi = ambilAngka("asuransi");
+            const bungaTahunan = parseFloat(document.getElementById("bunga").value) || 0;
+            const tenorBulan = parseInt(document.getElementById("tenor").value);
+
+            if(harga === 0) { alert("Masukkan Harga Barang."); document.getElementById("harga").focus(); return; }
+            if(dp >= harga) { alert("DP tidak boleh sama atau melebihi harga."); return; }
+
+            const pokokHutang = harga - dp;
+            const bungaBulanan = bungaTahunan / 12 / 100;
+            let cicilanPerBulan = (bungaBulanan > 0) ? pokokHutang * (bungaBulanan * Math.pow(1 + bungaBulanan, tenorBulan)) / (Math.pow(1 + bungaBulanan, tenorBulan) - 1) : pokokHutang / tenorBulan;
+
+            const totalUangDikeluarkan = (cicilanPerBulan * tenorBulan) + dp + admin + asuransi;
+            const totalBebanBunga = (cicilanPerBulan * tenorBulan) - pokokHutang;
+            const cicilanBulanDitambahBiaya = (cicilanPerBulan * tenorBulan + admin + asuransi) / tenorBulan;
+
+            document.getElementById("hasilCicilan").innerText = formatRupiah(cicilanBulanDitambahBiaya);
+            document.getElementById("hasilPokok").innerText = formatRupiah(pokokHutang);
+            document.getElementById("hasilBunga").innerText = formatRupiah(totalBebanBunga);
+            document.getElementById("hasilTotal").innerText = formatRupiah(totalUangDikeluarkan);
+        }
+    </script>
+
+    <!-- KODE FIREBASE CLOUD (DIMATIKAN UNTUK TESTING) -->
+
+    <script type="module" src="../js/guard.js"></script>
+
+</body>
+</html>
