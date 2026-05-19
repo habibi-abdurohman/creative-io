@@ -2,23 +2,23 @@ const CACHE_NAME = 'creative-io-cache-v1';
 
 // Daftar aset statis utama aplikasi yang aman dicache eksternal
 const ASSETS_TO_CACHE = [
-  '/',
-  '/index.html',
-  '/login.html',
-  '/register.html',
-  '/forgot-password.html',
-  '/profil.html',
-  '/manifest.json',
-  '/navbar/navbar.html',
-  '/navbar/navbar.js',
-  '/navbar/navbar.css',
-  '/js/pwa.js',
-  '/pages/dashboard.html',
-  '/pages/notepad.html',
-  '/pages/notes.html',
-  '/pages/planner.html',
-  '/pages/calculator.html',
-  '/pages/trash.html'
+  './',
+  'index.html',
+  'login.html',
+  'register.html',
+  'forgot-password.html',
+  'profil.html',
+  'manifest.json',
+  'navbar/navbar.html',
+  'navbar/navbar.js',
+  'navbar/navbar.css',
+  'js/pwa.js',
+  'pages/dashboard.html',
+  'pages/notepad.html',
+  'pages/notes.html',
+  'pages/planner.html',
+  'pages/calculator.html',
+  'pages/trash.html'
 ];
 
 // Tahap Install: Memasukkan aset statis ke dalam cache offline browser
