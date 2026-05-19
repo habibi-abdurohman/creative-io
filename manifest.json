@@ -3,7 +3,7 @@
   "name": "Creative.io Workspace",
   "short_name": "Creative.io",
   "description": "Workspace kreatif modern untuk produktivitas harian para kreator konten.",
-  "start_url": "/index.html",
+  "start_url": "./index.html",
   "display": "standalone",
   "background_color": "#eef4ff",
   "theme_color": "#2563eb",
