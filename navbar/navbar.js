@@ -162,3 +162,22 @@ function logout(){
     
     window.location.href = "../login.html";
 }
+
+document.addEventListener("DOMContentLoaded", () => {
+    // Cek apakah URL saat ini mengandung folder '/pages/'
+    const isInsidePagesFolder = window.location.pathname.includes('/pages/');
+    
+    // Jika di dalam /pages/, mundur satu folder (../). Jika di luar, tetap di sini (./)
+    const basePath = isInsidePagesFolder ? '../' : './';
+    
+    // Fetch HTML navbar dengan path yang sudah disesuaikan
+    fetch(basePath + 'navbar/navbar.html')
+        .then(response => {
+            if (!response.ok) throw new Error("Navbar tidak ditemukan!");
+            return response.text();
+        })
+        .then(data => {
+            document.getElementById("navbar-container").innerHTML = data;
+        })
+        .catch(error => console.error("Error memuat navbar:", error));
+});
