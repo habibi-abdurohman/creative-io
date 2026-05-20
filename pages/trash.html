@@ -1,0 +1,189 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+    <title>Trash - Creative.io</title>
+
+    <link rel="manifest" href="../manifest.json">
+    <link rel="stylesheet" href="../navbar/navbar.css">
+    <meta name="theme-color" content="#3b82f6">
+
+    <style>
+        /* =========================================================
+           CSS UTAMA TRASH (MODERN CLEAN DESIGN)
+        ========================================================= */
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800;900&display=swap');
+        * { margin: 0; padding: 0; box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+        *::-webkit-scrollbar { display: none; }
+        :root { --bg-grad: linear-gradient(180deg, #f8fbff 0%, #eef4ff 100%); --card-glass: rgba(255, 255, 255, 0.9); --card-solid: #ffffff; --card-tint: #f1f5f9; --border: #e2e8f0; --text-main: #0f172a; --text-muted: #64748b; --primary: #2563eb; --danger: #ef4444; --warning: #f59e0b; --shadow-flat: 0 4px 20px rgba(0, 0, 0, 0.04); --radius-card: 24px; }
+        body.dark { --bg-grad: linear-gradient(180deg, #0f172a 0%, #1e293b 100%); --card-glass: rgba(30, 41, 59, 0.9); --card-solid: #1e293b; --card-tint: #0f172a; --border: #334155; --text-main: #f8fafc; --text-muted: #94a3b8; }
+        body { font-family: 'Inter', system-ui, sans-serif; background: var(--bg-grad); color: var(--text-main); min-height: 100vh; padding: 86px 16px 100px; }
+        
+        .wrapper { position: relative; z-index: 2; max-width: 800px; margin: 0 auto; }
+        .bg-glow { position: fixed; border-radius: 50%; filter: blur(90px); z-index: 0; opacity: 0.5; pointer-events: none; }
+        .bg-glow.one { width: 340px; height: 340px; background: rgba(239, 68, 68, 0.1); top: -50px; left: -100px; }
+        
+        .page-header { margin-bottom: 24px; }
+        .page-header h1 { font-size: 26px; font-weight: 900; letter-spacing: -0.5px; margin-bottom: 8px; }
+        .page-header p { font-size: 13px; color: var(--text-muted); }
+
+        .trash-list { display: flex; flex-direction: column; gap: 16px; }
+        .trash-card { background: var(--card-glass); backdrop-filter: blur(12px); border: 1px solid var(--border); border-radius: 20px; padding: 20px; display: flex; justify-content: space-between; align-items: center; transition: 0.2s; }
+        .trash-card:hover { border-color: #cbd5e1; }
+        
+        .trash-info h3 { font-size: 15px; font-weight: 800; margin-bottom: 4px; }
+        .trash-info p { font-size: 12px; color: var(--text-muted); font-weight: 600; }
+        .badge-type { background: var(--card-tint); padding: 2px 8px; border-radius: 6px; font-size: 10px; font-weight: 800; text-transform: uppercase; margin-right: 8px; }
+
+        .actions { display: flex; gap: 8px; }
+        .btn-act { border: none; padding: 10px 16px; border-radius: 12px; font-size: 12px; font-weight: 800; cursor: pointer; transition: 0.2s; }
+        .btn-restore { background: var(--primary); color: white; }
+        .btn-restore:hover { opacity: 0.9; }
+        .btn-perm { background: rgba(239, 68, 68, 0.1); color: var(--danger); }
+        .btn-perm:hover { background: var(--danger); color: white; }
+
+        .empty-state { text-align: center; padding: 60px 20px; color: var(--text-muted); }
+    </style>
+</head>
+<body>
+
+    <div id="navbar-container"></div>
+    <div class="bg-glow one"></div>
+
+    <main class="wrapper">
+        <div class="page-header">
+            <h1>Tempat Sampah</h1>
+            <p>Data dihapus akan hilang permanen setelah 30 hari.</p>
+        </div>
+        <div class="trash-list" id="trashList">
+            <div class="empty-state">Memuat data...</div>
+        </div>
+    </main>
+
+    <script src="../navbar/navbar.js"></script>
+    <script src="../js/pwa.js"></script>
+
+    <script type="module">
+        const USE_FIREBASE = true;
+        let currentUserUid = null;
+        let dbRef = null;
+        let fsMod = null;
+
+        document.addEventListener("DOMContentLoaded", () => {
+            if (localStorage.getItem("dashboard_theme") === "dark") document.body.classList.add("dark");
+
+            if (USE_FIREBASE) {
+                import("../js/firebase.js").then(module => {
+                    dbRef = module.db;
+                    import("https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js").then(authLib => {
+                        authLib.onAuthStateChanged(module.auth, (user) => {
+                            if (user) {
+                                currentUserUid = user.uid;
+                                loadTrash();
+                            } else {
+                                window.location.replace("../login.html");
+                            }
+                        });
+                    });
+                });
+            } else {
+                if (localStorage.getItem('dummy_logged_in') !== 'true') window.location.replace("../login.html");
+                currentUserUid = 'local_user';
+                loadTrash();
+            }
+        });
+
+        async function loadTrash() {
+            const listContainer = document.getElementById('trashList');
+            let data = [];
+
+            if (USE_FIREBASE) {
+                fsMod = await import("https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js");
+                const q = fsMod.query(fsMod.collection(dbRef, "creative_trash"), fsMod.where("uid", "==", currentUserUid));
+                const snap = await fsMod.getDocs(q);
+                
+                // Cleanup Expired (Otomatis)
+                const now = Date.now();
+                for (let doc of snap.docs) {
+                    if (doc.data().expireAt < now) {
+                        await fsMod.deleteDoc(doc.ref);
+                    } else {
+                        data.push({ id: doc.id, ...doc.data() });
+                    }
+                }
+            } else {
+                data = JSON.parse(localStorage.getItem('creative_trash')) || [];
+                const now = Date.now();
+                data = data.filter(i => i.expireAt > now);
+                localStorage.setItem('creative_trash', JSON.stringify(data));
+            }
+
+            if (data.length === 0) {
+                listContainer.innerHTML = '<div class="empty-state">Tempat sampah kosong.</div>';
+            } else {
+                listContainer.innerHTML = data.map(item => `
+                    <div class="trash-card">
+                        <div class="trash-info">
+                            <h3><span class="badge-type">${item.type}</span>${item.title}</h3>
+                            <p>Dihapus pada: ${new Date(item.deletedAt).toLocaleDateString('id-ID')}</p>
+                        </div>
+                        <div class="actions">
+                            <button class="btn-act btn-restore" onclick="restore('${item.id}')">Pulihkan</button>
+                            <button class="btn-act btn-perm" onclick="delPerm('${item.id}')">Hapus</button>
+                        </div>
+                    </div>
+                `).join('');
+            }
+        }
+
+        window.restore = async function(id) {
+            const data = USE_FIREBASE ? await fsMod.getDoc(fsMod.doc(dbRef, "creative_trash", id)) : 
+                                       (JSON.parse(localStorage.getItem('creative_trash')).find(x => x.id === id));
+            const item = USE_FIREBASE ? data.data() : data;
+            
+            // Re-import ke koleksi asal
+            const targetCol = item.type === 'notes' ? 'creative_notes' : (item.type === 'script' ? 'creative_script' : 'creative_ideas');
+            const restorePayload = {
+                uid: currentUserUid,
+                title: item.title,
+                content: item.content,
+                createdAt: Date.now(),
+                updatedAt: Date.now()
+            };
+
+            if(item.type === 'planner') {
+                const parts = item.content.split(' | Link: ');
+                restorePayload.date = parts[0].replace('Tgl: ', '');
+                restorePayload.link = parts[1] || '-';
+            }
+
+            if (USE_FIREBASE) {
+                await fsMod.setDoc(fsMod.doc(dbRef, targetCol, item.originalId || "restored_" + Date.now()), restorePayload);
+                await fsMod.deleteDoc(fsMod.doc(dbRef, "creative_trash", id));
+            } else {
+                let col = JSON.parse(localStorage.getItem(targetCol === 'creative_notes' ? 'creative_notes_v2' : (targetCol === 'creative_script' ? 'creative_script' : 'creative_planner_ideas'))) || [];
+                col.push({ id: item.originalId, ...restorePayload });
+                localStorage.setItem(targetCol === 'creative_notes' ? 'creative_notes_v2' : (targetCol === 'creative_script' ? 'creative_script' : 'creative_planner_ideas'), JSON.stringify(col));
+                
+                let trash = JSON.parse(localStorage.getItem('creative_trash'));
+                trash = trash.filter(x => x.id !== id);
+                localStorage.setItem('creative_trash', JSON.stringify(trash));
+            }
+            loadTrash();
+        };
+
+        window.delPerm = async function(id) {
+            if(!confirm("Hapus permanen?")) return;
+            if (USE_FIREBASE) {
+                await fsMod.deleteDoc(fsMod.doc(dbRef, "creative_trash", id));
+            } else {
+                let trash = JSON.parse(localStorage.getItem('creative_trash'));
+                trash = trash.filter(x => x.id !== id);
+                localStorage.setItem('creative_trash', JSON.stringify(trash));
+            }
+            loadTrash();
+        };
+    </script>
+</body>
+</html>
