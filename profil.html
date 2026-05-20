@@ -1,0 +1,312 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+    <title>Profil Saya - Creative.io</title>
+
+    <link rel="stylesheet" href="./navbar/navbar.css">
+    <link rel="manifest" href="./manifest.json">
+    <meta name="theme-color" content="#2563eb">
+
+    <style>
+        /* =========================================================
+           RESET & VARIABLES (Selaras dengan Ekosistem Workspace)
+        ========================================================= */
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800;900&display=swap');
+
+        * { margin: 0; padding: 0; box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+        *::-webkit-scrollbar { display: none; }
+
+        :root {
+            --bg-grad: linear-gradient(180deg, #f8fbff 0%, #eef4ff 100%);
+            --card-glass: rgba(255, 255, 255, 0.9);
+            --card-solid: #ffffff;
+            --card-tint: #f1f5f9;
+            --border: #e2e8f0;
+            --text-main: #0f172a;
+            --text-muted: #64748b;
+            --primary: #2563eb;
+            --primary-grad: linear-gradient(135deg, #3b82f6, #2563eb);
+            --primary-soft: rgba(37, 99, 235, 0.1);
+            --success: #16a34a;
+            --danger: #ef4444;
+            --warning: #f59e0b;
+            --shadow-flat: 0 4px 20px rgba(0, 0, 0, 0.04);
+            --radius-btn: 14px;
+            --radius-card: 24px;
+        }
+
+        body.dark {
+            --bg-grad: linear-gradient(180deg, #0f172a 0%, #1e293b 100%);
+            --card-glass: rgba(30, 41, 59, 0.9);
+            --card-solid: #1e293b;
+            --card-tint: #0f172a;
+            --border: #334155;
+            --text-main: #f8fafc;
+            --text-muted: #94a3b8;
+            --primary-soft: rgba(59, 130, 246, 0.2);
+            --shadow-flat: 0 4px 20px rgba(0, 0, 0, 0.2);
+        }
+
+        body {
+            font-family: 'Inter', system-ui, sans-serif;
+            background: var(--bg-grad); color: var(--text-main);
+            min-height: 100vh; padding: 86px 16px 100px;
+            transition: background 0.3s, color 0.3s;
+        }
+
+        /* BACKGROUND GLOW */
+        .bg-glow { position: fixed; border-radius: 50%; filter: blur(90px); z-index: 0; opacity: 0.5; pointer-events: none; }
+        .bg-glow.one { width: 340px; height: 340px; background: rgba(59, 130, 246, 0.15); top: -50px; left: -100px; }
+        .bg-glow.two { width: 320px; height: 320px; background: rgba(96, 165, 250, 0.15); bottom: 100px; right: -100px; }
+
+        .wrapper { position: relative; z-index: 2; max-width: 550px; margin: 0 auto; }
+
+        /* =========================================================
+           PROFILE CARD
+        ========================================================= */
+        .profile-card {
+            background: var(--card-glass); backdrop-filter: blur(12px);
+            border: 1px solid var(--border); border-radius: var(--radius-card);
+            padding: 40px 24px 32px; box-shadow: var(--shadow-flat);
+            text-align: center;
+        }
+
+        /* AVATAR SECTION */
+        .avatar-wrap {
+            position: relative; width: 110px; height: 110px; margin: 0 auto 32px;
+        }
+
+        .avatar-preview {
+            width: 100%; height: 100%; border-radius: 50%; object-fit: cover;
+            border: 4px solid var(--card-solid); box-shadow: 0 8px 24px rgba(0,0,0,0.08);
+            background: var(--card-tint);
+        }
+
+        .btn-upload {
+            position: absolute; bottom: 0; right: 0; width: 34px; height: 34px;
+            background: var(--primary-grad); color: white; border: 2px solid var(--card-solid);
+            border-radius: 50%; display: flex; align-items: center; justify-content: center;
+            font-size: 13px; cursor: pointer; transition: 0.2s; box-shadow: 0 4px 10px rgba(37, 99, 235, 0.3);
+        }
+        .btn-upload:hover { transform: scale(1.1); }
+        #fileInput { display: none; }
+
+        /* FORM FIELD */
+        .form-group { text-align: left; margin-bottom: 20px; }
+        .form-group label {
+            display: block; font-size: 13px; font-weight: 800; color: var(--text-main); margin-bottom: 8px;
+        }
+        .form-group input {
+            width: 100%; border: 1px solid var(--border); background: var(--card-solid);
+            color: var(--text-main); padding: 14px 16px; border-radius: 14px;
+            font-size: 14px; font-weight: 600; outline: none; transition: 0.2s;
+        }
+        .form-group input:focus { border-color: var(--primary); box-shadow: 0 0 0 3px var(--primary-soft); }
+        .form-group input:disabled { background: var(--card-tint); color: var(--text-muted); cursor: not-allowed; opacity: 0.7; }
+
+        /* SEPARATOR LINE */
+        .divider { height: 1px; background: var(--border); margin: 28px 0; }
+
+        /* SAFETY ZONE (PASSWORD) */
+        .security-section { text-align: left; }
+        .security-title { font-size: 14px; font-weight: 800; color: var(--text-main); margin-bottom: 4px; }
+        .security-desc { font-size: 12px; color: var(--text-muted); margin-bottom: 14px; line-height: 1.5; }
+
+        /* ACTIONS BUTTONS */
+        .btn-save {
+            width: 100%; border: none; background: var(--primary-grad); color: white;
+            padding: 16px; border-radius: 16px; font-size: 14px; font-weight: 900;
+            cursor: pointer; transition: 0.2s; box-shadow: 0 10px 25px rgba(37, 99, 235, 0.3);
+        }
+        .btn-save:hover { transform: translateY(-2px); box-shadow: 0 12px 30px rgba(37, 99, 235, 0.4); }
+
+        .btn-reset-pw {
+            width: 100%; border: 1px solid var(--border); background: var(--card-tint); color: var(--text-main);
+            padding: 14px; border-radius: 14px; font-size: 13px; font-weight: 800;
+            cursor: pointer; transition: 0.2s;
+        }
+        .btn-reset-pw:hover { background: rgba(239, 68, 68, 0.05); border-color: rgba(239, 68, 68, 0.2); color: var(--danger); }
+
+        /* TOAST MESSAGE */
+        .toast {
+            position: fixed; bottom: -100px; left: 50%; transform: translateX(-50%);
+            background: var(--success); color: white; padding: 12px 24px; border-radius: 999px;
+            font-size: 13px; font-weight: 800; box-shadow: 0 10px 25px rgba(22, 163, 74, 0.4);
+            transition: bottom 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275); z-index: 10000;
+        }
+        .toast.show { bottom: 40px; }
+        .toast.info { background: var(--primary); box-shadow: 0 10px 25px rgba(37, 99, 235, 0.4); }
+
+    </style>
+</head>
+<body>
+
+    <div id="navbar-container"></div>
+    <div class="bg-glow one"></div><div class="bg-glow two"></div>
+
+    <div class="wrapper">
+        <div class="profile-card">
+            
+            <div class="avatar-wrap">
+                <img src="https://ui-avatars.com/api/?name=Kreator&background=2563eb&color=fff&size=200" alt="Profile" class="avatar-preview" id="avatarPreview">
+                <label for="fileInput" class="btn-upload" title="Ganti Foto">📷</label>
+                <input type="file" id="fileInput" accept="image/png, image/jpeg, image/jpg">
+            </div>
+
+            <div class="form-group">
+                <label>Nama Lengkap</label>
+                <input type="text" id="inputName" placeholder="Masukkan nama Anda...">
+            </div>
+
+            <div class="form-group">
+                <label>Email Terdaftar</label>
+                <input type="email" id="inputEmail" value="kreator@creative.io" disabled title="Email diikat demi keamanan akun">
+            </div>
+
+            <button class="btn-save" onclick="saveProfile()">Simpan Perubahan</button>
+
+            <div class="divider"></div>
+
+            <div class="security-section">
+                <div class="security-title">Kata Sandi / Keamanan</div>
+                <div class="security-desc">Demi alasan privasi, kami akan mengirimkan tautan khusus ke email Anda untuk melakukan perubahan kata sandi secara aman.</div>
+                <button class="btn-reset-pw" onclick="sendResetPasswordLink()">🔒 Kirim Link Ubah Password</button>
+            </div>
+
+        </div>
+    </div>
+
+    <div class="toast" id="toastMsg">✅ Profil berhasil diperbarui!</div>
+
+    <script src="./navbar/navbar.js"></script>
+
+    <script type="module">
+        const USE_FIREBASE = true;
+
+        if (localStorage.getItem("dashboard_theme") === "dark") document.body.classList.add("dark");
+
+        const avatarPreview = document.getElementById('avatarPreview');
+        const inputName = document.getElementById('inputName');
+        const inputEmail = document.getElementById('inputEmail');
+        const fileInput = document.getElementById('fileInput');
+        const toast = document.getElementById('toastMsg');
+
+        let currentUser = null;
+        let auth, updateProfile, sendPasswordResetEmail;
+
+        // FUNGSI: Preview Gambar Lokal
+        fileInput.addEventListener('change', function(event) {
+            const file = event.target.files[0];
+            if (file) {
+                if (file.size > 2 * 1024 * 1024) { alert("File terlalu besar! Maksimal 2MB."); return; }
+                const reader = new FileReader();
+                reader.onload = function(e) { avatarPreview.src = e.target.result; }
+                reader.readAsDataURL(file);
+            }
+        });
+
+        // FUNGSI: Tampilkan Toast Notifikasi
+        function showToast(msg, type = "success") {
+            toast.innerText = msg;
+            toast.className = "toast show";
+            if(type === "info") toast.classList.add("info");
+            setTimeout(() => { toast.classList.remove('show'); }, 2500);
+        }
+
+        // =========================================================
+        // INISIALISASI DATA USER SAAT HALAMAN DIMUAT
+        // =========================================================
+        if (USE_FIREBASE) {
+            import("./js/firebase.js").then(module => {
+                auth = module.auth;
+                import("https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js").then(authLib => {
+                    updateProfile = authLib.updateProfile;
+                    sendPasswordResetEmail = authLib.sendPasswordResetEmail;
+
+                    authLib.onAuthStateChanged(auth, (user) => {
+                        if (user) {
+                            currentUser = user;
+                            inputName.value = user.displayName || "Kreator";
+                            inputEmail.value = user.email || "";
+                            
+                            // Ambil foto tersimpan khusus UID milik user ini
+                            const savedPhoto = localStorage.getItem(`creative_photo_${user.uid}`);
+                            if (savedPhoto) {
+                                avatarPreview.src = savedPhoto;
+                            } else if (user.photoURL) {
+                                avatarPreview.src = user.photoURL;
+                            } else {
+                                // Default Avatar API berdasarkan nama
+                                avatarPreview.src = `https://ui-avatars.com/api/?name=${encodeURIComponent(user.displayName || "Kreator")}&background=2563eb&color=fff&size=200`;
+                            }
+                        } else {
+                            window.location.replace("./login.html");
+                        }
+                    });
+                });
+            }).catch(err => console.error("Gagal memuat Firebase Auth:", err));
+        } else {
+            // Mode Cadangan Lokal
+            if (localStorage.getItem('dummy_logged_in') !== 'true') {
+                window.location.replace("./login.html");
+            } else {
+                const savedProfile = JSON.parse(localStorage.getItem('creative_user_profile'));
+                if (savedProfile) {
+                    if (savedProfile.name) inputName.value = savedProfile.name;
+                    if (savedProfile.photo) avatarPreview.src = savedProfile.photo;
+                } else {
+                    inputName.value = "Kreator";
+                }
+            }
+        }
+
+        // =========================================================
+        // FUNGSI: SIMPAN DATA PROFIL
+        // =========================================================
+        window.saveProfile = async function() {
+            const newName = inputName.value.trim();
+            if (!newName) return alert("Nama tidak boleh kosong!");
+
+            if (USE_FIREBASE && currentUser) {
+                try {
+                    // Update ke Google Cloud (Firebase)
+                    await updateProfile(currentUser, { displayName: newName });
+                    
+                    // Update Foto ke Lokal terikat dengan UID Firebase
+                    localStorage.setItem(`creative_photo_${currentUser.uid}`, avatarPreview.src);
+                    
+                    showToast("✅ Profil Anda berhasil diperbarui di Cloud!");
+                    setTimeout(() => { window.location.reload(); }, 1200);
+                } catch (error) {
+                    alert("Gagal memperbarui profil: " + error.message);
+                }
+            } else {
+                localStorage.setItem('creative_user_profile', JSON.stringify({
+                    name: newName, photo: avatarPreview.src
+                }));
+                showToast("✅ Profil lokal berhasil diperbarui!");
+                setTimeout(() => { window.location.reload(); }, 1200);
+            }
+        }
+
+        // =========================================================
+        // FUNGSI: KIRIM LINK RESET PASSWORD
+        // =========================================================
+        window.sendResetPasswordLink = async function() {
+            if (USE_FIREBASE && currentUser) {
+                try {
+                    await sendPasswordResetEmail(auth, currentUser.email);
+                    showToast("📩 Link reset password resmi terkirim ke email Anda!", "info");
+                } catch (error) {
+                    alert("Kesalahan: " + error.message);
+                }
+            } else {
+                showToast("📩 Mode Lokal: Link perubahan sandi disimulasikan!", "info");
+            }
+        }
+    </script>
+    <script src="./js/pwa.js"></script>
+</body>
+</html>

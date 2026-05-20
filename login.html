@@ -1,0 +1,221 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login - Creative.io</title>
+    
+    <link rel="manifest" href="manifest.json">
+    <meta name="theme-color" content="#3b82f6">
+
+    <style>
+        /* =========================================================
+           CSS UTAMA (Dipertahankan 100% Sesuai Desain Anda)
+        ========================================================= */
+        * { margin: 0; padding: 0; box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+        body { font-family: 'Inter', Arial, sans-serif; min-height: 100vh; overflow-x: hidden; background: linear-gradient(180deg, #f8fbff 0%, #eef4ff 100%); color: #0f172a; display: flex; align-items: center; justify-content: center; padding: 24px; }
+        .bg-glow { position: fixed; border-radius: 50%; filter: blur(90px); z-index: 0; opacity: 0.5; pointer-events: none; }
+        .bg-glow.one { width: 340px; height: 340px; background: rgba(59, 130, 246, 0.15); top: -120px; left: -100px; }
+        .bg-glow.two { width: 320px; height: 320px; background: rgba(96, 165, 250, 0.15); bottom: -120px; right: -100px; }
+        .login-wrapper { position: relative; z-index: 2; width: 100%; max-width: 440px; }
+        .login-card { width: 100%; background: rgba(255, 255, 255, 0.9); border: 1px solid rgba(255, 255, 255, 0.8); border-radius: 32px; padding: 48px 36px; backdrop-filter: blur(24px); box-shadow: 0 10px 40px rgba(0, 0, 0, 0.05); }
+        .logo { display: flex; align-items: center; justify-content: center; gap: 14px; margin-bottom: 34px; }
+        .logo-box { width: 56px; height: 56px; border-radius: 18px; background: linear-gradient(135deg, #3b82f6, #2563eb); display: flex; align-items: center; justify-content: center; }
+        .logo-box img { width: 28px; height: 28px; object-fit: contain; filter: brightness(0) invert(1); }
+        .logo-text { font-size: 26px; font-weight: 900; letter-spacing: -0.5px; }
+        .logo-text span { color: #2563eb; }
+        .title { font-size: 32px; font-weight: 900; text-align: center; line-height: 1.15; letter-spacing: -1px; margin-bottom: 12px; }
+        .subtitle { font-size: 14px; line-height: 1.6; text-align: center; color: #64748b; margin-bottom: 34px; padding: 0 10px; }
+        .form-group { margin-bottom: 20px; }
+        .label { display: block; font-size: 13px; font-weight: 700; margin-bottom: 8px; color: #1e293b; }
+        .input { width: 100%; height: 52px; background: #f8fafc; border: 1px solid #e2e8f0; border-radius: 16px; padding: 0 18px; font-size: 14px; color: #0f172a; outline: none; transition: all 0.2s ease; }
+        .input:focus { border-color: #3b82f6; background: white; box-shadow: 0 0 0 4px rgba(59, 130, 246, 0.1); }
+        .options { display: flex; align-items: center; justify-content: space-between; gap: 10px; margin-bottom: 28px; }
+        .remember { display: flex; align-items: center; gap: 8px; font-size: 13px; color: #64748b; cursor: pointer; }
+        .remember input { width: 16px; height: 16px; accent-color: #2563eb; cursor: pointer; }
+        .forgot { text-decoration: none; font-size: 13px; font-weight: 700; color: #2563eb; transition: color 0.2s; }
+        .forgot:hover { color: #1d4ed8; }
+        .login-btn { width: 100%; height: 52px; border: none; border-radius: 16px; background: linear-gradient(135deg, #3b82f6, #2563eb); color: white; font-size: 15px; font-weight: 700; cursor: pointer; transition: all 0.2s ease; }
+        .login-btn:hover { transform: translateY(-2px); background: linear-gradient(135deg, #2563eb, #1d4ed8); }
+        .login-btn:disabled { opacity: 0.7; cursor: not-allowed; transform: none; }
+        .footer { margin-top: 28px; text-align: center; font-size: 13px; color: #64748b; }
+        .footer a { color: #2563eb; text-decoration: none; font-weight: 700; margin-left: 4px; }
+        .footer a:hover { text-decoration: underline; }
+
+        /* ALERT UNTUK NOTIFIKASI ERROR/SUKSES FIREBASE */
+        .alert { display: none; padding: 12px 16px; border-radius: 14px; font-size: 13px; font-weight: 600; line-height: 1.5; margin-bottom: 20px; text-align: center; }
+        .alert.error { display: block; background: rgba(239, 68, 68, 0.1); color: #dc2626; border: 1px solid rgba(239, 68, 68, 0.15); }
+        .alert.success { display: block; background: rgba(34, 197, 94, 0.1); color: #15803d; border: 1px solid rgba(34, 197, 94, 0.15); }
+
+        /* =========================================================
+           TAMBAHAN: POSISI EYE ICON (MATA PASSWORD)
+        ========================================================= */
+        .password-container { position: relative; width: 100%; }
+        .password-container .input { padding-right: 50px; } /* Beri ruang agar teks tidak tertimpa ikon */
+        .toggle-password { position: absolute; right: 18px; top: 50%; transform: translateY(-50%); background: none; border: none; font-size: 18px; cursor: pointer; color: #94a3b8; user-select: none; display: flex; align-items: center; justify-content: center; height: 100%; padding: 0 4px; }
+        .toggle-password:hover { color: #64748b; }
+
+        @media(max-width: 600px) { body { padding: 16px; } .login-card { padding: 40px 24px; border-radius: 28px; } .title { font-size: 28px; } .logo-text { font-size: 24px; } .options { flex-direction: row; } }
+    </style>
+</head>
+<body>
+
+    <div class="bg-glow one"></div>
+    <div class="bg-glow two"></div>
+
+    <div class="login-wrapper">
+        <div class="login-card">
+            <div class="logo">
+                <div class="logo-box">
+                    <img src="assets/logo.png" alt="Creative.io">
+                </div>
+                <div class="logo-text">
+                    Creative<span>.io</span>
+                </div>
+            </div>
+
+            <h1 class="title">Selamat Datang</h1>
+            <p class="subtitle">Masuk untuk mengakses workspace, planner, dan tools produktivitas Anda.</p>
+
+            <div id="alertBox" class="alert"></div>
+
+            <form id="loginForm">
+                <div class="form-group">
+                    <label class="label">Email</label>
+                    <input type="email" class="input" id="email" placeholder="contoh@email.com" required autocomplete="email">
+                </div>
+
+                <div class="form-group">
+                    <label class="label">Password</label>
+                    <div class="password-container">
+                        <input type="password" class="input" id="password" placeholder="Masukkan password" required autocomplete="current-password">
+                        <button type="button" class="toggle-password" id="eyeIcon" onclick="togglePasswordVisibility()">👁️</button>
+                    </div>
+                </div>
+
+                <div class="options">
+                    <label class="remember">
+                        <input type="checkbox" id="rememberMe"> Ingat saya
+                    </label>
+                    <a href="forgot-password.html" class="forgot">Lupa password?</a>
+                </div>
+
+                <button type="submit" class="login-btn" id="loginBtn">Masuk ke Workspace</button>
+            </form>
+
+            <div class="footer">
+                Belum punya akun? <a href="register.html">Daftar gratis</a>
+            </div>
+        </div>
+    </div>
+
+    <script type="module">
+        // SAKELAR INTEGRASI UTAMA (Ganti false jika ingin uji coba tiruan lokal tanpa Firebase)
+        const USE_FIREBASE = true;
+
+        // Impor Firebase secara dinamis jika mode aktif
+        let auth, signInWithEmailAndPassword;
+        if (USE_FIREBASE) {
+            try {
+                const firebaseModule = await import("./js/firebase.js");
+                auth = firebaseModule.auth;
+                const authLibrary = await import("https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js");
+                signInWithEmailAndPassword = authLibrary.signInWithEmailAndPassword;
+
+                // PROTEKSI GUARD JIKA EMAIL SUHDA AKTIF/LOGIN
+                authLibrary.onAuthStateChanged(auth, (user) => {
+                    if (user) {
+                        window.location.replace("pages/dashboard.html");
+                    }
+                });
+            } catch (err) {
+                console.error("Gagal menginisialisasi modul Firebase Auth:", err);
+            }
+        } else {
+            // Fallback Guard Lokal
+            if (localStorage.getItem('dummy_logged_in') === 'true') {
+                window.location.replace("pages/dashboard.html");
+            }
+        }
+
+        const loginForm = document.getElementById("loginForm");
+        const loginBtn = document.getElementById("loginBtn");
+        const alertBox = document.getElementById("alertBox");
+
+        function showAlert(type, text) {
+            alertBox.className = "alert " + type;
+            alertBox.innerText = text;
+        }
+
+        // TANGKAP INPUT SUBMIT FORM LOGIN
+        loginForm.addEventListener("submit", async (e) => {
+            e.preventDefault();
+            alertBox.style.display = "none";
+            loginBtn.innerText = "Memproses...";
+            loginBtn.disabled = true;
+
+            const emailVal = document.getElementById("email").value.trim();
+            const passwordVal = document.getElementById("password").value;
+            const rememberMe = document.getElementById("rememberMe").checked;
+
+            if (USE_FIREBASE) {
+                // =========================================================
+                // LOGIKA REAL AUTH GOOGLE FIREBASE CLOUD
+                // =========================================================
+                try {
+                    // Set presistensi session jika "Ingat saya" tidak dicentang (opsional, bawaan Firebase adalah local storage persist)
+                    if (!rememberMe) {
+                        const authLibrary = await import("https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js");
+                        await authLibrary.setPersistence(auth, authLibrary.browserSessionPersistence);
+                    }
+                    
+                    await signInWithEmailAndPassword(auth, emailVal, passwordVal);
+                    
+                    // Berhasil masuk, arahkan ke dashboard
+                    window.location.href = "pages/dashboard.html";
+                } catch (error) {
+                    loginBtn.innerText = "Masuk ke Workspace";
+                    loginBtn.disabled = false;
+                    
+                    // Terjemahkan kode error Firebase agar ramah bagi user pengguna
+                    let errorMessage = "Gagal Masuk: Periksa kembali email dan kata sandi Anda.";
+                    if (error.code === "auth/invalid-credential") errorMessage = "Email atau password yang Anda masukkan salah.";
+                    if (error.code === "auth/user-not-found") errorMessage = "Akun dengan email ini tidak ditemukan.";
+                    if (error.code === "auth/wrong-password") errorMessage = "Kata sandi salah. Silakan coba lagi.";
+                    if (error.code === "auth/invalid-email") errorMessage = "Format penulisan alamat email tidak valid.";
+                    if (error.code === "auth/too-many-requests") errorMessage = "Terlalu banyak percobaan gagal. Akun diblokir sementara.";
+                    
+                    showAlert("error", errorMessage);
+                }
+            } else {
+                // =========================================================
+                // LOGIKA LOKAL TESTING OFFLINE (LocalStorage Simulasi Lama)
+                // =========================================================
+                setTimeout(() => {
+                    localStorage.setItem('dummy_logged_in', 'true');
+                    window.location.href = "pages/dashboard.html";
+                }, 1000);
+            }
+        });
+
+        // =========================================================
+        // TAMBAHAN INTERAKTIF UI: SHOW / HIDE PASSWORD
+        // =========================================================
+        window.togglePasswordVisibility = function() {
+            const passwordInput = document.getElementById("password");
+            const eyeIcon = document.getElementById("eyeIcon");
+            
+            if (passwordInput.type === "password") {
+                passwordInput.type = "text";
+                eyeIcon.innerText = "🙈";
+                eyeIcon.setAttribute("title", "Sembunyikan Kata Sandi");
+            } else {
+                passwordInput.type = "password";
+                eyeIcon.innerText = "👁️";
+                eyeIcon.setAttribute("title", "Tampilkan Kata Sandi");
+            }
+        }
+    </script>
+    <script src="js/pwa.js"></script>
+</body>
+</html>
