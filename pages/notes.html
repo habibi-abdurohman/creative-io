@@ -1,0 +1,483 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+    <title>Notes - Creative.io</title>
+    <link rel="stylesheet" href="../navbar/navbar.css">
+    <link rel="manifest" href="../manifest.json">
+    <meta name="theme-color" content="#3b82f6">
+
+    <style>
+        /* =========================================================
+           CSS LENGKAP (TIDAK ADA YANG DIHAPUS)
+        ========================================================= */
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800;900&display=swap');
+        * { margin: 0; padding: 0; box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+        *::-webkit-scrollbar { display: none; }
+        :root { --bg-grad: linear-gradient(180deg, #f8fbff 0%, #eef4ff 100%); --sticky-bg: rgba(248, 251, 255, 0.85); --card-glass: rgba(255, 255, 255, 0.9); --card-solid: #ffffff; --card-tint: #f1f5f9; --border: #e2e8f0; --paper-line: #e2e8f0; --text-main: #0f172a; --text-muted: #64748b; --primary: #2563eb; --primary-soft: rgba(37, 99, 235, 0.1); --warning: #f59e0b; --danger: #ef4444; --shadow-flat: 0 4px 20px rgba(0, 0, 0, 0.04); --radius-btn: 14px; --radius-card: 20px; }
+        body.dark { --bg-grad: linear-gradient(180deg, #0f172a 0%, #1e293b 100%); --sticky-bg: rgba(15, 23, 42, 0.85); --card-glass: rgba(30, 41, 59, 0.9); --card-solid: #1e293b; --card-tint: #0f172a; --border: #334155; --paper-line: rgba(255, 255, 255, 0.05); --text-main: #f8fafc; --text-muted: #94a3b8; --primary-soft: rgba(59, 130, 246, 0.2); --shadow-flat: 0 4px 20px rgba(0, 0, 0, 0.2); }
+        body { font-family: 'Inter', system-ui, sans-serif; background: var(--bg-grad); color: var(--text-main); min-height: 100vh; padding: 76px 16px 100px; }
+        
+        .wrapper { position: relative; z-index: 2; max-width: 1100px; margin: 0 auto; }
+        .bg-glow { position: fixed; border-radius: 50%; filter: blur(90px); z-index: 0; opacity: 0.5; pointer-events: none; }
+        .bg-glow.one { width: 340px; height: 340px; background: rgba(59, 130, 246, 0.15); top: -50px; left: -100px; }
+        .bg-glow.two { width: 320px; height: 320px; background: rgba(96, 165, 250, 0.15); bottom: 100px; right: -100px; }
+        
+        .top-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 18px; }
+        .page-title { font-size: 24px; font-weight: 800; letter-spacing: -0.5px; }
+        .page-subtitle { font-size: 13px; color: var(--text-muted); line-height: 1.6; }
+        .total-badge { padding: 6px 14px; border-radius: 20px; background: var(--primary-soft); color: var(--primary); font-size: 12px; font-weight: 800; border: 1px solid var(--border); white-space: nowrap; }
+        
+        .sticky-tools { position: sticky; top: 52px; z-index: 50; padding: 12px 16px; margin: 0 -16px; background: var(--sticky-bg); backdrop-filter: blur(12px); }
+        .sticky-tools-inner { max-width: 1100px; margin: 0 auto; }
+        .search-box { position: relative; margin-bottom: 12px; }
+        .search-box input { width: 100%; padding: 14px 16px 14px 42px; outline: none; background: var(--card-solid); border: 1px solid var(--border); border-radius: var(--radius-btn); font-size: 13px; color: var(--text-main); box-shadow: var(--shadow-flat); }
+        .search-box input:focus { border-color: var(--primary); }
+        .search-box::before { content: '🔍'; position: absolute; left: 14px; top: 13px; font-size: 14px; opacity: 0.6; }
+        
+        .filter-wrap { display: flex; gap: 8px; overflow-x: auto; padding-bottom: 6px; }
+        .filter-btn { flex-shrink: 0; padding: 8px 16px; border-radius: 12px; background: var(--card-solid); border: 1px solid var(--border); font-size: 12px; font-weight: 700; color: var(--text-muted); cursor: pointer; transition: 0.2s; }
+        .filter-btn.active { background: var(--primary-soft); border-color: var(--primary); color: var(--primary); }
+        .divider { flex-shrink: 0; width: 1px; height: 20px; background: var(--border); margin: 0 4px; align-self: center; }
+        
+        .notes-list { column-count: 4; column-gap: 16px; margin-top: 10px; }
+        .empty-state { column-span: all; text-align: center; padding: 60px 20px; background: var(--card-glass); border: 1px dashed var(--border); border-radius: var(--radius-card); cursor: pointer; transition: 0.2s; }
+        .empty-state:hover { background: var(--card-tint); }
+        .empty-state-icon { font-size: 42px; margin-bottom: 12px; opacity: 0.8; }
+        .empty-state-text { font-size: 13px; color: var(--text-muted); line-height: 1.6; }
+        
+        .note-card { break-inside: avoid; margin-bottom: 16px; padding: 20px 16px 16px 20px; border-radius: var(--radius-card); background: var(--card-glass); border: 1px solid var(--border); cursor: pointer; position: relative; overflow: hidden; box-shadow: var(--shadow-flat); transition: transform 0.2s, border-color 0.2s; background-image: linear-gradient(var(--paper-line) 1px, transparent 1px); background-size: 100% 28px; background-position: 0 12px; }
+        .note-card:hover { transform: translateY(-2px); border-color: #cbd5e1; }
+        .note-card::before { content: ''; position: absolute; left: 16px; top: 0; bottom: 0; width: 1px; background: rgba(239, 68, 68, 0.2); z-index: 1; }
+        .note-card.pinned { border-color: var(--warning); border-width: 2px; }
+        
+        .note-top { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 10px; position: relative; z-index: 2; }
+        .note-title { font-size: 15px; font-weight: 800; line-height: 1.4; color: var(--text-main); }
+        .note-content { font-size: 13px; line-height: 28px; color: var(--text-muted); position: relative; z-index: 2; white-space: pre-wrap; display: -webkit-box; -webkit-line-clamp: 6; -webkit-box-orient: vertical; overflow: hidden; }
+        .note-footer { margin-top: 14px; padding-top: 10px; border-top: 1px dashed var(--border); display: flex; justify-content: space-between; align-items: center; position: relative; z-index: 2; }
+        .note-date { font-size: 11px; font-weight: 700; color: var(--text-muted); }
+        
+        .btn-quick-del { border: none; background: transparent; color: var(--text-muted); font-size: 14px; cursor: pointer; padding: 4px; border-radius: 6px; transition: 0.2s; }
+        .btn-quick-del:hover { background: rgba(239, 68, 68, 0.1); color: var(--danger); }
+        
+        .fab { position: fixed; right: 24px; bottom: 24px; width: 56px; height: 56px; border: none; border-radius: 20px; background: var(--primary); color: white; font-size: 28px; cursor: pointer; box-shadow: 0 10px 25px rgba(37, 99, 235, 0.3); z-index: 100; display: flex; align-items: center; justify-content: center; }
+        
+        /* EDITOR IMMERSIVE */
+        .editor { position: fixed; inset: 0; background: var(--bg-grad); z-index: 99999; display: none; flex-direction: column; }
+        .editor.active { display: flex; }
+        
+        .editor-header { display: flex; justify-content: space-between; align-items: center; padding: 12px 16px; background: rgba(255, 255, 255, 0.85); backdrop-filter: blur(12px); border-bottom: 1px solid var(--border); flex-shrink: 0; }
+        body.dark .editor-header { background: rgba(15, 23, 42, 0.85); }
+        
+        .editor-left, .editor-right { display: flex; align-items: center; gap: 8px; }
+        .auto-save { font-size: 11px; font-weight: 700; color: var(--text-muted); background: var(--card-tint); padding: 4px 10px; border-radius: 8px; opacity: 0; transition: 0.2s; }
+        .icon-btn { width: 36px; height: 36px; border: none; border-radius: 12px; background: var(--card-solid); border: 1px solid var(--border); color: var(--text-main); cursor: pointer; font-size: 15px; display: flex; align-items: center; justify-content: center; transition: 0.2s; }
+        .icon-btn:hover { background: var(--card-tint); }
+        
+        .editor-body { flex: 1; overflow-y: auto; padding: 40px 0 100px; background-image: linear-gradient(var(--paper-line) 1px, transparent 1px); background-size: 100% 32px; background-position: 0 8px; background-attachment: local; }
+        .editor-container { max-width: 1000px; width: 100%; margin: 0 auto; position: relative; padding: 0 24px; display: flex; flex-direction: column; }
+        
+        .title-input { width: 100%; border: none; outline: none; background: transparent; font-size: 32px; font-weight: 900; color: var(--text-main); margin-bottom: 24px; line-height: 1.3; }
+        .content-input { width: 100%; flex: 1; min-height: 70vh; border: none; outline: none; resize: none; background: transparent; font-size: 16px; line-height: 32px; color: var(--text-main); font-family: inherit; }
+        .title-input::placeholder, .content-input::placeholder { color: var(--text-muted); opacity: 0.6; }
+        
+        .editor-footer { position: fixed; left: 0; right: 0; bottom: 0; background: var(--sticky-bg); backdrop-filter: blur(12px); border-top: 1px solid var(--border); padding: 14px 20px calc(14px + env(safe-area-inset-bottom)); display: flex; justify-content: space-between; align-items: center; z-index: 20; }
+        body.dark .editor-footer { background: rgba(15, 23, 42, 0.9); }
+        
+        .word-count { font-size: 12px; font-weight: 700; color: var(--text-muted); }
+        .save-btn { border: none; padding: 12px 28px; border-radius: 12px; background: var(--primary); color: white; font-size: 13px; font-weight: 800; cursor: pointer; transition: 0.2s; box-shadow: 0 6px 16px rgba(37,99,235,0.2); }
+        .save-btn:hover { transform: translateY(-2px); box-shadow: 0 8px 20px rgba(37,99,235,0.3); }
+
+        .info-modal { position: fixed; inset: 0; background: rgba(0,0,0,0.4); backdrop-filter: blur(4px); z-index: 999999; display: none; align-items: center; justify-content: center; padding: 20px; }
+        .info-box { width: 100%; max-width: 340px; padding: 24px; border-radius: 24px; background: var(--card-solid); border: 1px solid var(--border); color: var(--text-main); box-shadow: var(--shadow-flat); }
+        .info-box h3 { margin-bottom: 20px; font-size: 18px; font-weight: 800; text-align: center; }
+        .info-row { display: flex; justify-content: space-between; margin-bottom: 12px; font-size: 13px; }
+        .info-label { color: var(--text-muted); font-weight: 600; }
+        .info-value { font-weight: 800; text-align: right; }
+        .close-info { width: 100%; height: 46px; border: none; margin-top: 20px; border-radius: 14px; background: var(--card-tint); color: var(--text-main); font-weight: 800; cursor: pointer; }
+        
+        @media(max-width: 1024px) { .notes-list { column-count: 3; } }
+        @media(max-width: 768px) { .notes-list { column-count: 2; } }
+        @media(max-width: 480px) { 
+            .notes-list { column-count: 2; column-gap: 12px; } 
+            .note-card { padding: 16px 12px 12px 16px; margin-bottom: 12px; } 
+            .note-title { font-size: 14px; } 
+            .note-content { font-size: 12px; line-height: 24px; } 
+            .editor-container { padding: 0 16px; }
+            .title-input { font-size: 26px; }
+        }
+    </style>
+</head>
+<body>
+
+    <div id="navbar-container"></div>
+    <div class="bg-glow one"></div><div class="bg-glow two"></div>
+
+    <div class="wrapper">
+        <div class="top-header">
+            <div>
+                <h1 class="page-title">Quick Notes</h1>
+                <div class="page-subtitle">Catat ide cepat. Aman terhapus otomatis setelah 30 hari di Trash.</div>
+            </div>
+            <div class="total-badge" id="totalBadge">0 Catatan</div>
+        </div>
+
+        <div class="sticky-tools">
+            <div class="sticky-tools-inner">
+                <div class="search-box">
+                    <input type="text" id="searchInput" placeholder="Cari catatan..." oninput="window.renderNotes()">
+                </div>
+                <div class="filter-wrap">
+                    <button class="filter-btn active" id="filterAll" onclick="setFilter('all', this)">Semua</button>
+                    <button class="filter-btn" id="filterPinned" onclick="setFilter('pinned', this)">📌 Pinned</button>
+                    <div class="divider"></div>
+                    <button class="filter-btn active" id="sortNewest" onclick="setSort('newest')">Terbaru</button>
+                    <button class="filter-btn" id="sortOldest" onclick="setSort('oldest')">Terlama</button>
+                </div>
+            </div>
+        </div>
+
+        <div class="notes-list" id="notesList">
+            <div style="text-align: center; padding: 40px; color: var(--text-muted); column-span: all;">Memuat data...</div>
+        </div>
+
+        <button class="fab" onclick="openEditor()">+</button>
+    </div>
+
+    <div class="editor" id="editor">
+        <div class="editor-header">
+            <div class="editor-left">
+                <button class="icon-btn" onclick="closeEditor()">✕</button>
+                <div class="auto-save" id="autoSaveStatus">Tersimpan ✓</div>
+            </div>
+            <div class="editor-right">
+                <button class="icon-btn" onclick="showInfo()" title="Info">ℹ️</button>
+                <button class="icon-btn" onclick="exportTXT()" title="Export .txt">📄</button>
+                <button class="icon-btn" onclick="togglePin()" id="pinBtn" title="Sematkan">📌</button>
+                <button class="icon-btn" onclick="softDeleteNote()" style="color:var(--danger);" title="Hapus ke Trash">🗑</button>
+            </div>
+        </div>
+
+        <div class="editor-body">
+            <div class="editor-container">
+                <input type="text" id="titleInput" class="title-input" placeholder="Judul catatan..." oninput="triggerAutoSave()">
+                <textarea id="contentInput" class="content-input" placeholder="Mulai menulis secara leluasa..." oninput="updateCounter(); triggerAutoSave();"></textarea>
+            </div>
+        </div>
+
+        <div class="editor-footer">
+            <div class="word-count" id="wordCounter">0 kata | 0 karakter</div>
+            <button class="save-btn" onclick="saveNote()">SIMPAN CATATAN</button>
+        </div>
+    </div>
+
+    <div class="info-modal" id="infoModal">
+        <div class="info-box">
+            <h3>Detail Catatan</h3>
+            <div id="infoContent"></div>
+            <button class="close-info" onclick="document.getElementById('infoModal').style.display='none'">Tutup</button>
+        </div>
+    </div>
+
+    <script src="../navbar/navbar.js"></script>
+    <script src="../js/pwa.js"></script>
+
+    <script type="module">
+        const USE_FIREBASE = true; // Sakelar Firebase Utama
+
+        // Modul Global agar bisa diakses HTML Onclick
+        window.notesData = [];
+        window.currentId = null;
+        window.currentFilter = 'all';
+        window.currentSort = 'newest';
+        window.currentPinned = false;
+        
+        let autoSaveTimeout = null;
+        let currentUserUid = null;
+        let dbRef = null;
+        let fsMod = null; // Modul Firestore
+
+        // Format Waktu Helper
+        const formatFullDate = (ms) => {
+            if(!ms) return '';
+            const d = new Date(ms);
+            const months = ['Januari', 'Februari', 'Maret', 'April', 'Mei', 'Juni', 'Juli', 'Agustus', 'September', 'Oktober', 'November', 'Desember'];
+            const time = String(d.getHours()).padStart(2, '0') + ':' + String(d.getMinutes()).padStart(2, '0');
+            return `${d.getDate()} ${months[d.getMonth()]} ${d.getFullYear()} • ${time}`;
+        };
+
+        // =========================================================
+        // 1. SISTEM AUTENTIKASI DAN INISIALISASI DATA
+        // =========================================================
+        document.addEventListener('DOMContentLoaded', () => {
+            if (localStorage.getItem("dashboard_theme") === "dark") document.body.classList.add("dark");
+
+            if (USE_FIREBASE) {
+                import("../js/firebase.js").then(module => {
+                    dbRef = module.db;
+                    import("https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js").then(authLib => {
+                        authLib.onAuthStateChanged(module.auth, (user) => {
+                            if (user) {
+                                currentUserUid = user.uid;
+                                loadDataFromCloud();
+                            } else {
+                                window.location.replace("../login.html");
+                            }
+                        });
+                    });
+                }).catch(err => console.error("Firebase Error:", err));
+            } else {
+                if (localStorage.getItem('dummy_logged_in') !== 'true') {
+                    window.location.replace("../login.html");
+                } else {
+                    currentUserUid = 'local_user';
+                    window.notesData = JSON.parse(localStorage.getItem('creative_notes_v2')) || [];
+                    window.renderNotes();
+                }
+            }
+        });
+
+        async function loadDataFromCloud() {
+            try {
+                fsMod = await import("https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js");
+                const notesRef = fsMod.collection(dbRef, "creative_notes");
+                const q = fsMod.query(notesRef, fsMod.where("uid", "==", currentUserUid));
+                const snap = await fsMod.getDocs(q);
+                
+                window.notesData = snap.docs.map(doc => ({ id: doc.id, ...doc.data() }));
+                window.renderNotes();
+            } catch (error) {
+                document.getElementById('notesList').innerHTML = `<div class="empty-state">Gagal memuat data dari server.</div>`;
+            }
+        }
+
+        // =========================================================
+        // 2. FUNGSI PENYIMPANAN DATA (HYBRID)
+        // =========================================================
+        window.performSave = async function(isAuto = false) {
+            const title = document.getElementById('titleInput').value.trim();
+            const content = document.getElementById('contentInput').value;
+            
+            if (title === '' && content.trim() === '') return;
+            const now = Date.now();
+            const docId = window.currentId || "qn_" + now;
+            window.currentId = docId;
+
+            // Struktur Payload Proteksi UID
+            const payload = {
+                uid: currentUserUid,
+                title: title || 'Tanpa Judul', 
+                content: content,
+                pinned: window.currentPinned, 
+                updatedAt: now
+            };
+
+            // UPDATE UI ARRAY LOKAL SECARA INSTAN (Optimistic UI)
+            const existingIndex = window.notesData.findIndex(x => x.id === docId);
+            if(existingIndex > -1) {
+                payload.createdAt = window.notesData[existingIndex].createdAt;
+                window.notesData[existingIndex] = { id: docId, ...payload };
+            } else {
+                payload.createdAt = now;
+                window.notesData.unshift({ id: docId, ...payload });
+            }
+
+            if(!isAuto) window.renderNotes();
+
+            // KIRIM DATA KE STORAGE (CLOUD / LOCAL)
+            if (USE_FIREBASE && fsMod && dbRef) {
+                try {
+                    await fsMod.setDoc(fsMod.doc(dbRef, "creative_notes", docId), payload);
+                } catch (e) { console.error("Gagal save cloud", e); }
+            } else {
+                localStorage.setItem('creative_notes_v2', JSON.stringify(window.notesData));
+            }
+        }
+
+        // =========================================================
+        // 3. FUNGSI HAPUS (PINDAH KE TRASH HYBRID)
+        // =========================================================
+        window.softDeleteNote = async function(idOverride = null) {
+            const idToDelete = idOverride || window.currentId;
+            if (!idToDelete) return;
+            if (!confirm('Pindahkan catatan ini ke tempat sampah? (Otomatis terhapus setelah 30 hari)')) return;
+
+            const itemIndex = window.notesData.findIndex(x => x.id === idToDelete);
+            if(itemIndex === -1) return;
+            const item = window.notesData[itemIndex];
+            const now = Date.now();
+            const trashId = 'trash_' + now;
+
+            const trashPayload = {
+                uid: currentUserUid, 
+                originalId: item.id, 
+                type: 'notes',
+                title: item.title, 
+                content: item.content, 
+                deletedAt: now, 
+                expireAt: now + (30 * 24 * 60 * 60 * 1000)
+            };
+
+            // Hapus dari UI List seketika
+            window.notesData.splice(itemIndex, 1);
+            window.closeEditor(); 
+            window.renderNotes();
+
+            // Eksekusi Hapus Storage
+            if (USE_FIREBASE && fsMod && dbRef) {
+                await fsMod.setDoc(fsMod.doc(dbRef, "creative_trash", trashId), trashPayload);
+                await fsMod.deleteDoc(fsMod.doc(dbRef, "creative_notes", item.id));
+            } else {
+                let trashData = JSON.parse(localStorage.getItem('creative_trash')) || [];
+                trashData.push({ id: trashId, ...trashPayload });
+                localStorage.setItem('creative_trash', JSON.stringify(trashData));
+                localStorage.setItem('creative_notes_v2', JSON.stringify(window.notesData));
+            }
+        }
+
+        // =========================================================
+        // 4. KUMPULAN FUNGSI UI & JAVASCRIPT LAMA ANDA
+        // =========================================================
+        window.setFilter = function(type, el) { 
+            window.currentFilter = type; 
+            document.getElementById('filterAll').classList.remove('active');
+            document.getElementById('filterPinned').classList.remove('active');
+            el.classList.add('active');
+            window.renderNotes(); 
+        }
+        
+        window.setSort = function(type) { 
+            window.currentSort = type; 
+            document.getElementById('sortNewest').classList.remove('active');
+            document.getElementById('sortOldest').classList.remove('active');
+            document.getElementById(type === 'newest' ? 'sortNewest' : 'sortOldest').classList.add('active');
+            window.renderNotes(); 
+        }
+
+        window.openEditor = function(id = null) {
+            document.getElementById('editor').classList.add('active');
+            if (id) {
+                const item = window.notesData.find(x => x.id === id);
+                if(item) {
+                    window.currentId = item.id; window.currentPinned = item.pinned || false;
+                    document.getElementById('titleInput').value = item.title;
+                    document.getElementById('contentInput').value = item.content;
+                }
+            } else {
+                window.currentId = null; window.currentPinned = false;
+                document.getElementById('titleInput').value = '';
+                document.getElementById('contentInput').value = '';
+            }
+            updatePin(); updateCounter();
+        }
+
+        window.closeEditor = function() {
+            const title = document.getElementById('titleInput').value.trim();
+            const content = document.getElementById('contentInput').value.trim();
+            if(title || content) {
+                if(typeof window.performSave === "function") window.performSave(true);
+            }
+            document.getElementById('editor').classList.remove('active');
+            window.renderNotes(); 
+        }
+
+        window.togglePin = function() { window.currentPinned = !window.currentPinned; updatePin(); triggerAutoSave(); }
+        function updatePin() { document.getElementById('pinBtn').style.opacity = window.currentPinned ? '1' : '0.4'; }
+
+        window.updateCounter = function() {
+            const text = document.getElementById('contentInput').value;
+            const words = text.trim() === '' ? 0 : text.trim().split(/\s+/).length;
+            document.getElementById('wordCounter').innerHTML = `${words.toLocaleString('id-ID')} kata | ${text.length.toLocaleString('id-ID')} karakter`;
+        }
+
+        window.triggerAutoSave = function() {
+            clearTimeout(autoSaveTimeout);
+            autoSaveTimeout = setTimeout(() => {
+                if(typeof window.performSave === "function") {
+                    window.performSave(true);
+                    const indicator = document.getElementById('autoSaveStatus');
+                    indicator.style.opacity = '1';
+                    setTimeout(() => indicator.style.opacity = '0', 2000);
+                }
+            }, 1000); 
+        }
+
+        window.saveNote = function() {
+            if(typeof window.performSave === "function") window.performSave(false);
+            window.closeEditor();
+        }
+
+        window.exportTXT = function() {
+            const text = document.getElementById('contentInput').value;
+            if(!text) return alert("Catatan masih kosong.");
+            const blob = new Blob([text], { type: 'text/plain' });
+            const link = document.createElement('a'); link.href = URL.createObjectURL(blob);
+            link.download = (document.getElementById('titleInput').value || 'Notes_CreativeIO') + '.txt'; link.click();
+        }
+
+        window.showInfo = function() {
+            if(!window.currentId) return alert("Catatan belum disimpan.");
+            const item = window.notesData.find(x => x.id === window.currentId);
+            if(!item) return;
+
+            const text = document.getElementById('contentInput').value;
+            const words = text.trim() === '' ? 0 : text.trim().split(/\s+/).length;
+
+            document.getElementById('infoContent').innerHTML = `
+                <div class="info-row"><span class="info-label">Judul</span> <span class="info-value">${item.title || 'Tanpa Judul'}</span></div>
+                <div class="info-row"><span class="info-label">Jumlah Kata</span> <span class="info-value">${words.toLocaleString('id-ID')}</span></div>
+                <div class="info-row"><span class="info-label">Karakter</span> <span class="info-value">${text.length.toLocaleString('id-ID')}</span></div>
+                <div class="info-row"><span class="info-label">Dibuat</span> <span class="info-value">${formatFullDate(item.createdAt)}</span></div>
+                <div class="info-row"><span class="info-label">Diubah</span> <span class="info-value">${formatFullDate(item.updatedAt)}</span></div>
+            `;
+            document.getElementById('infoModal').style.display = 'flex';
+        }
+
+        window.renderNotes = function() {
+            const listContainer = document.getElementById('notesList');
+            const keyword = document.getElementById('searchInput').value.toLowerCase();
+            let data = [...window.notesData]; 
+
+            if(window.currentFilter === 'pinned') data = data.filter(x => x.pinned);
+
+            data.sort((a, b) => {
+                if(a.pinned && !b.pinned) return -1;
+                if(!a.pinned && b.pinned) return 1;
+                const timeA = a.createdAt || 0; const timeB = b.createdAt || 0;
+                return window.currentSort === 'oldest' ? timeA - timeB : timeB - timeA; 
+            });
+
+            data = data.filter(item => {
+                const title = item.title ? item.title.toLowerCase() : "";
+                const content = item.content ? item.content.toLowerCase() : "";
+                return title.includes(keyword) || content.includes(keyword);
+            });
+
+            document.getElementById('totalBadge').innerText = `${data.length} Catatan`;
+
+            if (data.length === 0) {
+                listContainer.innerHTML = `<div class="empty-state" onclick="openEditor()"><div class="empty-state-icon">📄</div><div class="empty-state-text">Belum ada catatan.<br>Ketuk di sini untuk menulis.</div></div>`;
+                return;
+            }
+            
+            let html = '';
+            data.forEach(item => {
+                html += `
+                <div class="note-card ${item.pinned ? 'pinned' : ''}" onclick="openEditor('${item.id}')">
+                    <div class="note-top">
+                        <div class="note-title">${item.title}</div>
+                        ${item.pinned ? '<span title="Disematkan" style="font-size:14px;">📌</span>' : ''}
+                    </div>
+                    <div class="note-content">${item.content || '<em>Kosong...</em>'}</div>
+                    <div class="note-footer">
+                        <div class="note-date">${formatFullDate(item.updatedAt)}</div>
+                        <button class="btn-quick-del" onclick="event.stopPropagation(); softDeleteNote('${item.id}')" title="Hapus">🗑️</button>
+                    </div>
+                </div>`;
+            });
+            listContainer.innerHTML = html;
+        }
+    </script>
+</body>
+</html>
