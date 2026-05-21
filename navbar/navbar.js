@@ -1,12 +1,12 @@
-/* =========================================================
-   1. AUTO-ROUTING (CEGAH ERROR 404 DI GITHUB PAGES)
-========================================================= */
+// =========================================================
+// 1. AUTO-ROUTING (CEGAH ERROR 404 DI GITHUB PAGES)
+// =========================================================
 const isInsidePagesFolder = window.location.pathname.includes('/pages/');
 const rootPath = isInsidePagesFolder ? '../' : './';
 
-/* =========================================================
-   2. FETCH & RENDER NAVBAR HTML
-========================================================= */
+// =========================================================
+// 2. FETCH & RENDER NAVBAR HTML
+// =========================================================
 document.addEventListener("DOMContentLoaded", () => {
     const navbarContainer = document.getElementById("navbar-container");
     if (!navbarContainer) return;
@@ -22,19 +22,19 @@ document.addEventListener("DOMContentLoaded", () => {
                 .replace(/href="profil.html"/g, `href="${rootPath}profil.html"`);
                 
             navbarContainer.innerHTML = processedHtml;
-            initNavbar(); // Jalankan fungsi setelah HTML masuk ke layar
+            initNavbarUI(); 
         })
         .catch(error => console.error("Error memuat navbar:", error));
 });
 
-/* =========================================================
-   3. INISIALISASI FITUR NAVBAR
-========================================================= */
-function initNavbar() {
+// =========================================================
+// 3. INISIALISASI FITUR NAVBAR UI
+// =========================================================
+function initNavbarUI() {
     loadTheme();
-    setupFirebaseUserObserver(); // Ini yang menarik data User!
     setActiveMenu();
 
+    // Tutup dropdown jika klik di luar
     window.addEventListener("click", function(e) {
         const profile = document.querySelector(".profile-wrap");
         const dropdown = document.getElementById("profileDropdown");
@@ -44,9 +44,9 @@ function initNavbar() {
     });
 }
 
-/* =========================================================
-   4. SISTEM TEMA & KENDALI UI SIDEBAR
-========================================================= */
+// =========================================================
+// 4. KENDALI SIDEBAR & TEMA
+// =========================================================
 window.toggleTheme = function() {
     document.body.classList.toggle("dark");
     localStorage.setItem("dashboard_theme", document.body.classList.contains("dark") ? "dark" : "light");
@@ -82,72 +82,44 @@ function setActiveMenu() {
         "notepad.html": "nav-notepad", "script.html": "nav-notepad", "notes.html": "nav-notes",
         "calculator.html": "nav-calculator", "trash.html": "nav-trash"
     };
-    const activeId = menus[page];
-    if (activeId) document.getElementById(activeId)?.classList.add("active");
+    if (menus[page]) document.getElementById(menus[page])?.classList.add("active");
 }
 
-/* =========================================================
-   5. SINKRONISASI DATA USER KE SELURUH HALAMAN
-========================================================= */
-const USE_FIREBASE = true;
-
-function setupFirebaseUserObserver() {
-    if (USE_FIREBASE) {
-        import(rootPath + "js/firebase.js").then(module => {
-            import("https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js").then(authLib => {
-                authLib.onAuthStateChanged(module.auth, (user) => {
-                    if (user) {
-                        // Cek apakah ada foto yang tersimpan di memori HP (LocalStorage)
-                        const savedPhoto = localStorage.getItem(`creative_photo_${user.uid}`);
-                        
-                        // Kirim data ke UI Navbar
-                        renderUserData(user.displayName, user.email, savedPhoto || user.photoURL);
-                    }
-                });
-            });
-        });
-    }
-}
-
-function renderUserData(name, email, photoURL) {
-    const firstLetter = (name || "User").charAt(0).toUpperCase();
+// =========================================================
+// 5. FUNGSI GLOBAL SINKRONISASI UI (DIPANGGIL OLEH HALAMAN)
+// =========================================================
+window.updateNavbarUI = function(name, email, photoURL) {
+    const safeName = name || "Kreator";
+    const firstLetter = safeName.charAt(0).toUpperCase();
     
-    // Ganti inisial huruf (U)
+    // Update Teks Inisial
     document.querySelectorAll("#avatarText, #profileAvatar").forEach(el => {
         el.innerHTML = firstLetter;
         el.style.display = photoURL ? "none" : "flex"; 
     });
 
-    // Ganti Nama dan Email
-    document.querySelectorAll("#profileName").forEach(el => el.innerHTML = name || "User");
-    document.querySelectorAll("#profileEmail").forEach(el => el.innerHTML = email || "user@email.com");
+    // Update Text Nama dan Email
+    document.querySelectorAll("#profileName").forEach(el => el.innerHTML = safeName);
+    document.querySelectorAll("#profileEmail").forEach(el => el.innerHTML = email || "kreator@creative.io");
 
-    // Ganti Foto Bulat Kecil & Besar di Navbar
+    // Update Gambar Foto Profil
     document.querySelectorAll("#avatarImg, #profileAvatarImg").forEach(el => {
         if (photoURL) {
             el.src = photoURL;
             el.style.display = "block";
         } else {
+            el.src = "";
             el.style.display = "none";
         }
     });
-}
+};
 
-// "Telinga" pendengar jika ada perubahan dari profil.html
-window.addEventListener('profileUpdated', () => {
-    setupFirebaseUserObserver(); // Refresh data navbar seketika
-});
-
-/* =========================================================
-   6. FUNGSI LOGOUT
-========================================================= */
+// =========================================================
+// 6. FUNGSI LOGOUT
+// =========================================================
 window.logout = function() {
     if (!confirm("Apakah Anda yakin ingin keluar dari akun?")) return;
-    if (USE_FIREBASE) {
-        import(rootPath + "js/firebase.js").then(module => {
-            import("https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js").then(authLib => {
-                authLib.signOut(module.auth).then(() => window.location.href = rootPath + "login.html");
-            });
-        });
-    }
+    // Pindah ke login (Firebase SignOut akan ditangani di halaman masing-masing jika perlu, atau otomatis terputus)
+    localStorage.removeItem('dummy_logged_in');
+    window.location.href = rootPath + "login.html";
 };
