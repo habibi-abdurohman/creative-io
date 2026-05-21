@@ -10,9 +10,6 @@
     <meta name="theme-color" content="#2563eb">
 
     <style>
-        /* =========================================================
-           CSS UTAMA DAN REVISI LAYOUT CARD (100% UTUH)
-        ========================================================= */
         @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800;900&display=swap');
         * { margin: 0; padding: 0; box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
         *::-webkit-scrollbar { display: none; }
@@ -35,6 +32,14 @@
         .board-container { display: grid; grid-template-columns: repeat(auto-fill, minmax(320px, 1fr)); gap: 20px; align-items: start; }
         .board-card { background: var(--card-glass); backdrop-filter: blur(12px); border: 1px solid var(--border); border-radius: var(--radius-card); padding: 20px; box-shadow: var(--shadow-flat); display: flex; flex-direction: column; transition: 0.2s; min-width: 0; }
         .board-card:hover { border-color: #cbd5e1; }
+        
+        /* DESAIN KHUSUS PAPAN PULIHAN TRASH */
+        .board-card.pulihan-trash { background: rgba(245, 158, 11, 0.05); border: 1px dashed var(--warning); box-shadow: none; }
+        body.dark .board-card.pulihan-trash { background: rgba(245, 158, 11, 0.05); border: 1px dashed rgba(245, 158, 11, 0.5); }
+        .board-card.pulihan-trash .board-title { color: var(--warning); }
+        .board-card.pulihan-trash .counter { background: rgba(245, 158, 11, 0.1); color: var(--warning); border-color: rgba(245, 158, 11, 0.2); }
+        .board-card.pulihan-trash .trash-notice { font-size: 12px; color: var(--text-muted); font-weight: 600; margin-bottom: 16px; line-height: 1.5; background: var(--card-tint); padding: 12px; border-radius: 12px; border: 1px solid var(--border); }
+        
         .board-top { display: flex; justify-content: space-between; align-items: center; gap: 10px; margin-bottom: 20px; }
         .board-title { font-size: 16px; font-weight: 800; color: var(--text-main); display: flex; align-items: center; gap: 8px; }
         .board-actions { display: flex; align-items: center; gap: 8px; }
@@ -71,7 +76,7 @@
         .item-badges::-webkit-scrollbar { display: none; }
         
         .badge { display: inline-flex; align-items: center; gap: 4px; background: var(--card-tint); color: var(--text-muted); border: 1px solid var(--border); padding: 5px 12px; border-radius: 8px; font-size: 11px; font-weight: 800; white-space: nowrap; flex-shrink: 0; }
-        .badge.restored { background: var(--warning); color: white; border: none; }
+        .badge.restored { background: rgba(245, 158, 11, 0.1); color: var(--warning); border-color: rgba(245, 158, 11, 0.2); }
 
         .link-box { width: 100%; overflow-x: auto; background: var(--primary-soft); color: var(--primary); border-radius: 10px; padding: 10px 12px; font-size: 12px; font-weight: 700; white-space: nowrap; cursor: text; border: 1px dashed rgba(37, 99, 235, 0.3); }
         .link-box::-webkit-scrollbar { display: none; }
@@ -89,6 +94,11 @@
         .modal-card p { font-size: 13px; color: var(--text-muted); margin-bottom: 20px; line-height: 1.5; }
         .modal-input { width: 100%; padding: 14px 16px; border-radius: 14px; border: 1px solid var(--border); background: var(--card-tint); color: var(--text-main); font-size: 14px; font-weight: 600; outline: none; margin-bottom: 12px; transition: 0.2s; }
         .modal-input:focus { border-color: var(--primary); box-shadow: 0 0 0 3px var(--primary-soft); }
+        
+        /* Dropdown Papan di Modal Edit */
+        .modal-select { width: 100%; padding: 14px 16px; border-radius: 14px; border: 1px solid var(--border); background: var(--card-tint); color: var(--text-main); font-size: 14px; font-weight: 600; outline: none; margin-bottom: 12px; transition: 0.2s; appearance: none; }
+        .modal-select:focus { border-color: var(--primary); box-shadow: 0 0 0 3px var(--primary-soft); }
+        
         .modal-actions { display: flex; gap: 12px; margin-top: 8px; }
         .btn-modal { flex: 1; padding: 12px; border-radius: 12px; font-size: 13px; font-weight: 800; cursor: pointer; border: none; transition: 0.2s; }
         .btn-cancel { background: var(--card-tint); color: var(--text-main); border: 1px solid var(--border); }
@@ -142,13 +152,18 @@
                 <span>Tanggal</span>
                 <input type="text" id="editDateInput" class="modal-input" style="padding-left:80px; margin-bottom:0;" placeholder="Misal: 17 Agustus 2026">
             </div>
-            <div class="input-wrap" style="margin-bottom:16px;">
+            <div class="input-wrap" style="margin-bottom:12px;">
                 <span>Link</span>
-                <input type="url" id="editLinkInput" class="modal-input" style="padding-left:80px; margin-bottom:0;" placeholder="Tautan referensi...">
+                <input type="text" id="editLinkInput" class="modal-input" style="padding-left:80px; margin-bottom:0;" placeholder="Tautan referensi...">
+            </div>
+            <div class="input-wrap" style="margin-bottom:16px;">
+                <span>Papan</span>
+                <select id="editBoardSelect" class="modal-select" style="padding-left:80px; margin-bottom:0;">
+                    </select>
             </div>
             <div class="modal-actions">
                 <button class="btn-modal btn-cancel" onclick="closeEditModal()">Batal</button>
-                <button class="btn-modal btn-confirm" onclick="saveEdit()">Simpan</button>
+                <button class="btn-modal btn-confirm" onclick="saveEdit()">Simpan Pindahan</button>
             </div>
         </div>
     </div>
@@ -189,7 +204,7 @@
                 } else {
                     currentUserUid = "local_user";
                     window.boards = JSON.parse(localStorage.getItem("creative_planner_boards")) || [];
-                    window.ideas = JSON.parse(localStorage.getItem("creative_planner_ideas")) || [];
+                    window.ideas = JSON.parse(localStorage.getItem("creative_ideas")) || []; // Perbaikan nama lokal
                     window.renderWorkspace();
                 }
             }
@@ -205,6 +220,16 @@
                 const qI = fsMod.query(fsMod.collection(dbRef, "creative_ideas"), fsMod.where("uid", "==", currentUserUid));
                 const snapI = await fsMod.getDocs(qI);
                 window.ideas = snapI.docs.map(doc => ({ id: doc.id, ...doc.data() }));
+                
+                // Pastikan papan "Pulihan Trash" ada JIKA ada ide yang terdampar di sana
+                const pulihanBoardId = "board_pulihan_" + currentUserUid;
+                const hasPulihanIdeas = window.ideas.some(i => i.boardId === pulihanBoardId);
+                const hasPulihanBoard = window.boards.some(b => b.id === pulihanBoardId);
+                
+                if (hasPulihanIdeas && !hasPulihanBoard) {
+                    window.boards.push({ id: pulihanBoardId, uid: currentUserUid, name: "Pulihan Trash", createdAt: Date.now() });
+                }
+                
                 window.renderWorkspace();
             } catch (e) { console.error(e); }
         }
@@ -238,19 +263,30 @@
             document.getElementById('date_'+boardId).value = "";
             document.getElementById('link_'+boardId).value = "";
             if(USE_FIREBASE && fsMod) await fsMod.setDoc(fsMod.doc(dbRef, "creative_ideas", ideaId), payload);
-            else localStorage.setItem("creative_planner_ideas", JSON.stringify(window.ideas));
+            else localStorage.setItem("creative_ideas", JSON.stringify(window.ideas));
         }
 
         window.deleteBoard = async (boardId) => {
-            if(!confirm("Hapus papan permanen?")) return;
+            const isPulihan = boardId.includes("board_pulihan");
+            const msg = isPulihan 
+                ? "Hapus Papan Pulihan beserta semua ide di dalamnya secara permanen?" 
+                : "Hapus papan permanen beserta isinya?";
+            if(!confirm(msg)) return;
+            
+            // Hapus papan & ide dari UI
             window.boards = window.boards.filter(b => b.id !== boardId);
+            const ideasToDelete = window.ideas.filter(i => i.boardId === boardId);
             window.ideas = window.ideas.filter(i => i.boardId !== boardId);
             window.renderWorkspace();
+            
             if(USE_FIREBASE && fsMod) {
                 await fsMod.deleteDoc(fsMod.doc(dbRef, "creative_planner_boards", boardId));
+                for(let idea of ideasToDelete) {
+                    await fsMod.deleteDoc(fsMod.doc(dbRef, "creative_ideas", idea.id));
+                }
             } else {
                 localStorage.setItem("creative_planner_boards", JSON.stringify(window.boards));
-                localStorage.setItem("creative_planner_ideas", JSON.stringify(window.ideas));
+                localStorage.setItem("creative_ideas", JSON.stringify(window.ideas));
             }
         }
 
@@ -270,7 +306,7 @@
                 let trash = JSON.parse(localStorage.getItem('creative_trash')) || [];
                 trash.push({ id: trashId, ...trashPayload });
                 localStorage.setItem('creative_trash', JSON.stringify(trash));
-                localStorage.setItem("creative_planner_ideas", JSON.stringify(window.ideas));
+                localStorage.setItem("creative_ideas", JSON.stringify(window.ideas));
             }
         }
 
@@ -278,31 +314,57 @@
             const idea = window.ideas.find(i => i.id === ideaId);
             if(!idea) return;
             window.editCurrentId = ideaId;
-            let displayDate = idea.date;
-            let displayLink = idea.link;
-            if (idea.date === "Dipulihkan" || (idea.link && idea.link.startsWith("Tgl:"))) {
-                if (idea.link.includes(" | Link: ")) {
-                    const parts = idea.link.split(" | Link: ");
-                    displayDate = parts[0].replace("Tgl: ", "").trim();
-                    displayLink = parts[1].trim();
-                }
-            }
+            
             document.getElementById('editTitleInput').value = idea.title;
-            document.getElementById('editDateInput').value = displayDate;
-            document.getElementById('editLinkInput').value = displayLink === "-" ? "" : displayLink;
+            document.getElementById('editDateInput').value = idea.date === "Dipulihkan" ? "" : idea.date;
+            document.getElementById('editLinkInput').value = idea.link === "-" ? "" : idea.link;
+            
+            // Isi Opsi Papan (Sembunyikan papan pulihan)
+            const selectEl = document.getElementById('editBoardSelect');
+            selectEl.innerHTML = window.boards
+                .filter(b => !b.id.includes("board_pulihan")) 
+                .map(b => `<option value="${b.id}" ${b.id === idea.boardId ? 'selected' : ''}>${b.name}</option>`)
+                .join('');
+                
+            if (selectEl.options.length === 0) {
+                selectEl.innerHTML = `<option value="">-- Buat Papan Normal Dulu --</option>`;
+            }
+                
             document.getElementById('editIdeaModal').classList.add('active');
         }
 
         window.saveEdit = async () => {
             if(!window.editCurrentId) return;
             const idea = window.ideas.find(i => i.id === window.editCurrentId);
+            const targetBoardId = document.getElementById('editBoardSelect').value;
+            
+            if(!targetBoardId) {
+                alert("Anda harus memilih papan tujuan atau membuat papan baru terlebih dahulu!");
+                return;
+            }
+            
             idea.title = document.getElementById('editTitleInput').value.trim();
-            idea.date = document.getElementById('editDateInput').value.trim();
+            idea.date = document.getElementById('editDateInput').value.trim() || "-";
             idea.link = document.getElementById('editLinkInput').value.trim() || "-";
+            
+            // Pindahkan ide ke papan yang dipilih
+            idea.boardId = targetBoardId;
+            
             window.renderWorkspace();
             window.closeEditModal();
+            
             if(USE_FIREBASE && fsMod) await fsMod.setDoc(fsMod.doc(dbRef, "creative_ideas", idea.id), idea);
-            else localStorage.setItem("creative_planner_ideas", JSON.stringify(window.ideas));
+            else localStorage.setItem("creative_ideas", JSON.stringify(window.ideas));
+            
+            // Cek apakah Papan Pulihan sudah kosong, jika ya, hapus papannya
+            const pulihanBoardId = "board_pulihan_" + currentUserUid;
+            const remainingPulihanIdeas = window.ideas.filter(i => i.boardId === pulihanBoardId).length;
+            if (remainingPulihanIdeas === 0 && window.boards.some(b => b.id === pulihanBoardId)) {
+                 window.boards = window.boards.filter(b => b.id !== pulihanBoardId);
+                 window.renderWorkspace();
+                 if(USE_FIREBASE && fsMod) await fsMod.deleteDoc(fsMod.doc(dbRef, "creative_planner_boards", pulihanBoardId));
+                 else localStorage.setItem("creative_planner_boards", JSON.stringify(window.boards));
+            }
         }
 
         window.toggleDone = async (ideaId) => {
@@ -310,7 +372,7 @@
             idea.done = !idea.done;
             window.renderWorkspace();
             if(USE_FIREBASE && fsMod) await fsMod.setDoc(fsMod.doc(dbRef, "creative_ideas", ideaId), idea);
-            else localStorage.setItem("creative_planner_ideas", JSON.stringify(window.ideas));
+            else localStorage.setItem("creative_ideas", JSON.stringify(window.ideas));
         }
 
         window.selectText = (el) => {
@@ -321,37 +383,66 @@
         window.renderWorkspace = function() {
             const container = document.getElementById("boardContainer");
             if (window.boards.length === 0) {
-                container.innerHTML = `<div class="empty-state-global">Belum ada papan channel.</div>`;
+                container.innerHTML = `<div class="empty-state-global">Belum ada papan channel. Klik "Buat Papan Channel" untuk memulai.</div>`;
                 return;
             }
-            container.innerHTML = window.boards.map(b => `
-                <div class="board-card">
-                    <div class="board-top">
-                        <div class="board-title">📺 ${b.name}</div>
-                        <div class="board-actions"><div class="counter">${window.ideas.filter(i => i.boardId === b.id).length} Ide</div><button class="btn-del-board" onclick="deleteBoard('${b.id}')">🗑</button></div>
-                    </div>
-                    <div class="form">
+            
+            // Sortir papan: Papan pulihan selalu di atas, sisanya sesuai tanggal dibuat
+            const sortedBoards = [...window.boards].sort((a, b) => {
+                if(a.id.includes("board_pulihan")) return -1;
+                if(b.id.includes("board_pulihan")) return 1;
+                return b.createdAt - a.createdAt;
+            });
+            
+            container.innerHTML = sortedBoards.map(b => {
+                const isPulihan = b.id.includes("board_pulihan");
+                const boardClass = isPulihan ? "board-card pulihan-trash" : "board-card";
+                const boardIcon = isPulihan ? "♻️" : "📺";
+                const ideasInBoard = window.ideas.filter(i => i.boardId === b.id);
+                
+                // Form input disembunyikan jika ini papan pulihan
+                const formHTML = isPulihan 
+                    ? `<div class="trash-notice">Papan khusus penampungan. Ketik tombol ✏️ (Edit) untuk memindahkan ide ke papan asli Anda.</div>` 
+                    : `<div class="form">
                         <div class="input-wrap"><span>Konten</span><input type="text" id="title_${b.id}" placeholder="Judul ide..."></div>
                         <div class="input-wrap"><span>Tanggal</span><input type="text" id="date_${b.id}" placeholder="Tgl..."></div>
                         <div class="input-wrap"><span>Link</span><input type="url" id="link_${b.id}" placeholder="Link..."></div>
                         <button class="add-btn" onclick="addIdea('${b.id}')">+ Tambah Ide</button>
+                    </div>`;
+
+                return `
+                <div class="${boardClass}">
+                    <div class="board-top">
+                        <div class="board-title">${boardIcon} ${b.name}</div>
+                        <div class="board-actions"><div class="counter">${ideasInBoard.length} Ide</div><button class="btn-del-board" onclick="deleteBoard('${b.id}')" title="Hapus Papan">🗑</button></div>
                     </div>
-                    <div class="list">${window.ideas.filter(i => i.boardId === b.id).map(i => `
-                        <div class="item ${i.done ? "completed" : ""}">
-                            <div class="item-header">
-                                <div class="item-title">${i.title}</div>
-                                <div class="right-actions">
-                                    <button class="btn-icon btn-edit" onclick="openEditModal('${i.id}')">✏️</button>
-                                    <button class="btn-icon btn-done ${i.done ? "active" : ""}" onclick="toggleDone('${i.id}')">✓</button>
-                                    <button class="btn-icon btn-del" onclick="deleteIdea('${i.id}')">🗑</button>
+                    ${formHTML}
+                    <div class="list">
+                        ${ideasInBoard.length === 0 && isPulihan ? '<div class="empty-board">Papan kosong.</div>' : ''}
+                        ${ideasInBoard.map(i => {
+                            const badgeHTML = i.date === "Dipulihkan" 
+                                ? `<div class="badge restored">♻️ Dipulihkan</div>` 
+                                : `<div class="badge">📅 ${i.date}</div>`;
+                                
+                            return `
+                            <div class="item ${i.done ? "completed" : ""}">
+                                <div class="item-header">
+                                    <div class="item-title">${i.title}</div>
+                                    <div class="right-actions">
+                                        <button class="btn-icon btn-edit" onclick="openEditModal('${i.id}')" title="Edit / Pindahkan">✏️</button>
+                                        <button class="btn-icon btn-done ${i.done ? "active" : ""}" onclick="toggleDone('${i.id}')" title="Tandai Selesai">✓</button>
+                                        <button class="btn-icon btn-del" onclick="deleteIdea('${i.id}')" title="Hapus">🗑</button>
+                                    </div>
                                 </div>
+                                <div class="item-badges">${badgeHTML}</div>
+                                <div class="link-box" onclick="selectText(this)">${i.link}</div>
                             </div>
-                            <div class="item-badges"><div class="badge">📅 ${i.date}</div></div>
-                            <div class="link-box" onclick="selectText(this)">${i.link}</div>
-                        </div>
-                    `).join('')}</div>
+                            `;
+                        }).join('')}
+                    </div>
                 </div>
-            `).join('');
+                `;
+            }).join('');
         }
     </script>
 </body>
