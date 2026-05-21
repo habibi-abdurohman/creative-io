@@ -175,7 +175,11 @@
             window.renderTrash();
 
             try {
-                const targetCol = item.type === 'notes' ? 'creative_notes' : (item.type === 'script' ? 'creative_script' : 'creative_ideas');
+                // Tentukan nama database tujuannya
+                let targetCol = 'creative_ideas';
+                if (item.type === 'notes') targetCol = 'creative_notes_v2';
+                if (item.type === 'script') targetCol = 'creative_script';
+                if (item.type === 'planner') targetCol = 'creative_planner_ideas';
                 
                 const restorePayload = {
                     uid: currentUserUid,
@@ -185,28 +189,52 @@
                     updatedAt: Date.now()
                 };
 
-                // Penyesuaian skema koleksi spesifik
+                // KHUSUS PLANNER / IDEAS (Harus dibuatkan Papan penampung)
                 if(item.type === 'planner') {
-                    const parts = item.content.split(' | Link: ');
+                    const parts = (item.content || "").split(' | Link: ');
                     restorePayload.date = "Dipulihkan";
+                    restorePayload.done = false; // Tandai belum selesai
+                    
                     if (parts.length > 0) {
                        restorePayload.date = parts[0].replace('Tgl: ', '');
                        restorePayload.link = parts[1] || '-';
                     }
-                } else if(item.type === 'script') {
+
+                    // ID unik untuk papan pulihan
+                    const boardId = "board_pulihan_" + currentUserUid;
+                    restorePayload.boardId = boardId; // Ikat item ini ke papan pulihan
+
+                    if (USE_FIREBASE) {
+                        // Buat papan "Pulihan Trash" jika belum ada (merge: true agar tidak tertimpa)
+                        await fsMod.setDoc(fsMod.doc(dbRef, "creative_planner_boards", boardId), {
+                            uid: currentUserUid, 
+                            name: "Pulihan Trash", 
+                            createdAt: Date.now()
+                        }, { merge: true });
+                    } else {
+                        // Mode Lokal
+                        let boards = JSON.parse(localStorage.getItem('creative_planner_boards')) || [];
+                        if(!boards.find(b => b.id === boardId)) {
+                            boards.push({ id: boardId, uid: currentUserUid, name: "Pulihan Trash", createdAt: Date.now() });
+                            localStorage.setItem('creative_planner_boards', JSON.stringify(boards));
+                        }
+                    }
+                } 
+                // KHUSUS SCRIPT
+                else if(item.type === 'script') {
                     restorePayload.status = 'draft';
                     restorePayload.channel = 'Dipulihkan';
                     restorePayload.pinned = false;
                 }
 
+                // SIMPAN KE DATABASE ASAL & HAPUS DARI TRASH
                 if (USE_FIREBASE) {
                     await fsMod.setDoc(fsMod.doc(dbRef, targetCol, item.originalId || "restored_" + Date.now()), restorePayload);
                     await fsMod.deleteDoc(fsMod.doc(dbRef, "creative_trash", id));
                 } else {
-                    let lsKey = targetCol === 'creative_notes' ? 'creative_notes_v2' : (targetCol === 'creative_script' ? 'creative_script' : 'creative_planner_ideas');
-                    let col = JSON.parse(localStorage.getItem(lsKey)) || [];
+                    let col = JSON.parse(localStorage.getItem(targetCol)) || [];
                     col.push({ id: item.originalId || "restored_" + Date.now(), ...restorePayload });
-                    localStorage.setItem(lsKey, JSON.stringify(col));
+                    localStorage.setItem(targetCol, JSON.stringify(col));
                     
                     let trashLocal = JSON.parse(localStorage.getItem('creative_trash'));
                     localStorage.setItem('creative_trash', JSON.stringify(trashLocal.filter(x => x.id !== id)));
@@ -214,7 +242,7 @@
 
             } catch (error) {
                 alert("Gagal memulihkan: " + error.message);
-                await fetchTrash(); // reload jika gagal
+                await fetchTrash(); // Muat ulang data jika gagal
             }
         }
 
