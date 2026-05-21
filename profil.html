@@ -141,6 +141,7 @@
         let currentUser = null;
         let auth, updateProfile, sendPasswordResetEmail;
 
+        // Preview Foto saat dipilih
         fileInput.addEventListener('change', function(e) {
             const file = e.target.files[0];
             if (file) {
@@ -150,19 +151,28 @@
             }
         });
 
+        // Inisialisasi Firebase & Load Data
         if (USE_FIREBASE) {
             import("./js/firebase.js").then(module => {
                 auth = module.auth;
                 import("https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js").then(authLib => {
                     updateProfile = authLib.updateProfile;
                     sendPasswordResetEmail = authLib.sendPasswordResetEmail;
+                    
                     authLib.onAuthStateChanged(auth, (user) => {
                         if (user) {
                             currentUser = user;
                             inputName.value = user.displayName || "";
                             inputEmail.value = user.email || "";
+                            
+                            // Ambil foto dari LocalStorage
                             const savedPhoto = localStorage.getItem(`creative_photo_${user.uid}`);
-                            if (savedPhoto) avatarPreview.src = savedPhoto;
+                            if (savedPhoto) {
+                                avatarPreview.src = savedPhoto;
+                            }
+                            
+                            // Sinkronkan ke Navbar secara paksa saat pertama buka
+                            setTimeout(() => forceUpdateNavbar(user.displayName, user.email, savedPhoto), 500);
                         } else {
                             window.location.replace("./login.html");
                         }
@@ -171,29 +181,66 @@
             });
         }
 
-        window.saveProfile = async function() {
-            const newName = inputName.value.trim();
-            if (USE_FIREBASE && currentUser) {
-                // Update profil ke Firebase
-                await updateProfile(currentUser, { displayName: newName });
-                
-                // Simpan foto ke LocalStorage
-                localStorage.setItem(`creative_photo_${currentUser.uid}`, avatarPreview.src);
-                
-                // Tampilkan notifikasi (Toast)
-                toast.classList.add('show');
-                setTimeout(() => toast.classList.remove('show'), 2500);
-
-                // --- TAMBAHKAN BARIS INI ---
-                // Beritahu Navbar (dan seluruh aplikasi) bahwa profil sudah berubah!
-                window.dispatchEvent(new Event('profileUpdated'));
+        // FUNGSI PAKSA UPDATE NAVBAR (Tuntas 100%)
+        function forceUpdateNavbar(name, email, photo) {
+            document.querySelectorAll("#profileName").forEach(el => el.innerHTML = name || "Kreator");
+            document.querySelectorAll("#profileEmail").forEach(el => el.innerHTML = email || "");
+            
+            if (photo) {
+                document.querySelectorAll("#avatarImg, #profileAvatarImg").forEach(el => {
+                    el.src = photo;
+                    el.style.display = "block";
+                });
+                document.querySelectorAll("#avatarText, #profileAvatar").forEach(el => el.style.display = "none");
             }
         }
 
+        // FUNGSI SIMPAN PROFIL
+        window.saveProfile = async function() {
+            const newName = inputName.value.trim();
+            if (USE_FIREBASE && currentUser) {
+                try {
+                    // Simpan Nama ke Firebase
+                    await updateProfile(currentUser, { displayName: newName });
+                    
+                    // Simpan Foto ke LocalStorage HP
+                    const newPhoto = avatarPreview.src;
+                    localStorage.setItem(`creative_photo_${currentUser.uid}`, newPhoto);
+                    
+                    // LANGSUNG UBAH NAVBAR TANPA REFRESH
+                    forceUpdateNavbar(newName, currentUser.email, newPhoto);
+                    
+                    // Tampilkan Notifikasi Sukses
+                    toast.classList.add('show');
+                    setTimeout(() => toast.classList.remove('show'), 2500);
+                } catch (error) {
+                    alert("Gagal menyimpan profil: " + error.message);
+                }
+            }
+        }
+
+        // FUNGSI RESET PASSWORD
         window.sendResetPasswordLink = async function() {
             if (USE_FIREBASE && currentUser) {
-                await sendPasswordResetEmail(auth, currentUser.email);
-                alert("Tautan reset password telah dikirim ke email Anda.");
+                const btn = document.querySelector('.btn-reset-pw');
+                const originalText = btn.innerHTML;
+                
+                try {
+                    // Animasi Loading
+                    btn.innerHTML = "⏳ Sedang mengirim...";
+                    btn.disabled = true;
+
+                    await sendPasswordResetEmail(auth, currentUser.email);
+                    alert(`✅ Tautan reset password berhasil dikirim ke: ${currentUser.email}\n\nPENTING: Silakan periksa folder INBOX atau SPAM Anda.`);
+                    
+                } catch (error) {
+                    // Jika gagal, tampilkan pesan error yang jelas
+                    alert("❌ Gagal mengirim link.\nAlasan: " + error.message);
+                } finally {
+                    // Kembalikan tombol seperti semula
+                    btn.innerHTML = originalText;
+                    btn.disabled = false;
+                }
             }
         }
     </script>
