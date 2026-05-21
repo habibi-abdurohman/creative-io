@@ -131,6 +131,9 @@
     <script src="./js/pwa.js"></script>
 
     <script type="module">
+        import { auth } from "./js/firebase.js";
+        import { onAuthStateChanged, updateProfile, sendPasswordResetEmail } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
+
         const USE_FIREBASE = true;
         const avatarPreview = document.getElementById('avatarPreview');
         const inputName = document.getElementById('inputName');
@@ -139,7 +142,6 @@
         const toast = document.getElementById('toastMsg');
 
         let currentUser = null;
-        let auth, updateProfile, sendPasswordResetEmail;
 
         // Preview Foto Lokal Saat Memilih File
         fileInput.addEventListener('change', function(e) {
@@ -151,35 +153,32 @@
             }
         });
 
-        // Tembak Data Saat Halaman Dimuat
+        // 1. CEK LOGIN & SINKRONKAN DATA KE NAVBAR
         if (USE_FIREBASE) {
-            import("./js/firebase.js").then(module => {
-                auth = module.auth;
-                import("https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js").then(authLib => {
-                    updateProfile = authLib.updateProfile;
-                    sendPasswordResetEmail = authLib.sendPasswordResetEmail;
+            onAuthStateChanged(auth, (user) => {
+                if (user) {
+                    currentUser = user;
                     
-                    authLib.onAuthStateChanged(auth, (user) => {
-                        if (user) {
-                            currentUser = user;
-                            
-                            // 1. ISI OTOMATIS KOLOM NAMA & EMAIL
-                            inputName.value = user.displayName || "";
-                            inputEmail.value = user.email || "";
-                            
-                            // 2. TAMPILKAN FOTO DI TENGAH PROFIL
-                            const savedPhoto = localStorage.getItem(`creative_photo_${user.uid}`);
-                            if (savedPhoto) avatarPreview.src = savedPhoto;
-                            
-                        } else {
-                            window.location.replace("./login.html");
-                        }
-                    });
-                });
+                    // Isi Form
+                    inputName.value = user.displayName || "";
+                    inputEmail.value = user.email || "";
+                    
+                    // Tampilkan Foto Tengah
+                    const savedPhoto = localStorage.getItem(`creative_photo_${user.uid}`);
+                    if (savedPhoto) avatarPreview.src = savedPhoto;
+
+                    // PAKSA NAVBAR UPDATE SAAT HALAMAN DIBUKA (Delay 300ms agar HTML Navbar siap)
+                    setTimeout(() => {
+                        if(window.updateNavbarUI) window.updateNavbarUI(user.displayName, user.email, savedPhoto);
+                    }, 300);
+                    
+                } else {
+                    window.location.replace("./login.html");
+                }
             });
         }
 
-        // Simpan Perubahan ke Firebase & Navbar
+        // 2. SIMPAN PERUBAHAN
         window.saveProfile = async function() {
             const newName = inputName.value.trim();
             const btn = document.querySelector('.btn-save');
@@ -187,16 +186,16 @@
             if (USE_FIREBASE && currentUser) {
                 btn.innerHTML = "⏳ Menyimpan...";
                 try {
-                    // Update nama di Firebase Cloud
+                    // Update Firebase
                     await updateProfile(currentUser, { displayName: newName });
                     
-                    // Simpan Foto di penyimpanan Lokal HP
+                    // Simpan Foto
                     localStorage.setItem(`creative_photo_${currentUser.uid}`, avatarPreview.src);
                     
-                    // BERITAHU NAVBAR UNTUK UPDATE OTOMATIS (FOTO KECIL & NAMA)
-                    window.dispatchEvent(new Event('profileUpdated'));
+                    // UPDATE NAVBAR SAAT ITU JUGA
+                    if(window.updateNavbarUI) window.updateNavbarUI(newName, currentUser.email, avatarPreview.src);
                     
-                    // Notifikasi Hijau
+                    // Notifikasi Sukses
                     toast.classList.add('show');
                     setTimeout(() => toast.classList.remove('show'), 2500);
                 } catch (error) {
@@ -207,7 +206,7 @@
             }
         }
 
-        // Kirim Link Reset Password
+        // 3. RESET PASSWORD (Dengan Penanganan Error)
         window.sendResetPasswordLink = async function() {
             if (USE_FIREBASE && currentUser) {
                 const btn = document.querySelector('.btn-reset-pw');
@@ -218,7 +217,7 @@
                     btn.disabled = true;
 
                     await sendPasswordResetEmail(auth, currentUser.email);
-                    alert(`✅ Link ubah password berhasil dikirim ke: ${currentUser.email}\nSilakan cek kotak masuk (atau folder SPAM) Anda.`);
+                    alert(`✅ Link ubah password berhasil dikirim ke: ${currentUser.email}\nSilakan cek kotak masuk atau SPAM Anda.`);
                     
                 } catch (error) {
                     alert("❌ Gagal mengirim link.\nAlasan: " + error.message);
