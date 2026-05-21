@@ -1,0 +1,317 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+    <title>Masuk - Creative.io</title>
+    
+    <link rel="manifest" href="./manifest.json">
+    <meta name="theme-color" content="#2563eb">
+
+    <style>
+        /* =========================================================
+           CSS UTAMA HALAMAN LOGIN (Font disamakan dengan register.html)
+        ========================================================= */
+        * { margin: 0; padding: 0; box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+        
+        :root { 
+            --bg-grad: linear-gradient(180deg, #f8fbff 0%, #eef4ff 100%); 
+            --card-glass: rgba(255, 255, 255, 0.95); 
+            --card-tint: #f1f5f9; 
+            --border: #e2e8f0; 
+            --text-main: #0f172a; 
+            --text-muted: #64748b; 
+            --primary: #2563eb; 
+            --primary-grad: linear-gradient(135deg, #3b82f6, #2563eb); 
+            --primary-soft: rgba(37, 99, 235, 0.1); 
+            --danger: #ef4444;
+            --danger-soft: rgba(239, 68, 68, 0.1);
+            --shadow-flat: 0 4px 20px rgba(0, 0, 0, 0.04); 
+            --radius-btn: 14px; 
+            --radius-card: 24px; 
+        }
+        
+        body.dark { 
+            --bg-grad: linear-gradient(180deg, #0f172a 0%, #1e293b 100%); 
+            --card-glass: rgba(30, 41, 59, 0.95); 
+            --card-tint: #0f172a; 
+            --border: #334155; 
+            --text-main: #f8fafc; 
+            --text-muted: #94a3b8; 
+            --danger-soft: rgba(239, 68, 68, 0.15);
+            --shadow-flat: 0 4px 20px rgba(0, 0, 0, 0.3); 
+        }
+        
+        body { 
+            font-family: 'Inter', Arial, sans-serif; 
+            background: var(--bg-grad); 
+            color: var(--text-main); 
+            min-height: 100vh; 
+            display: flex; 
+            align-items: center; 
+            justify-content: center; 
+            padding: 20px;
+            overflow: hidden;
+        }
+        
+        /* Elemen Dekorasi Background */
+        .bg-glow { position: absolute; border-radius: 50%; filter: blur(90px); z-index: 0; opacity: 0.5; pointer-events: none; }
+        .bg-glow.one { width: 400px; height: 400px; background: rgba(59, 130, 246, 0.2); top: -100px; left: -100px; }
+        .bg-glow.two { width: 350px; height: 350px; background: rgba(96, 165, 250, 0.2); bottom: -100px; right: -50px; }
+
+        .auth-container {
+            width: 100%;
+            max-width: 420px;
+            background: var(--card-glass);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            border: 1px solid var(--border);
+            border-radius: var(--radius-card);
+            padding: 40px 32px;
+            box-shadow: var(--shadow-flat);
+            position: relative;
+            z-index: 2;
+            animation: slideUp 0.5s ease;
+        }
+
+        @keyframes slideUp {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .auth-header { text-align: center; margin-bottom: 32px; }
+        .brand-logo { width: 56px; height: 56px; border-radius: 16px; background: var(--primary-grad); display: inline-flex; align-items: center; justify-content: center; margin-bottom: 16px; box-shadow: 0 8px 20px rgba(37, 99, 235, 0.3); }
+        .brand-logo img { width: 32px; height: 32px; filter: brightness(0) invert(1); }
+        .auth-title { font-size: 24px; font-weight: 900; letter-spacing: -0.5px; margin-bottom: 8px; }
+        .auth-subtitle { font-size: 14px; color: var(--text-muted); line-height: 1.5; }
+
+        .input-group { margin-bottom: 16px; display: flex; flex-direction: column; gap: 8px; position: relative; }
+        .input-label { font-size: 13px; font-weight: 700; color: var(--text-main); }
+        .auth-input { width: 100%; border: 1px solid var(--border); background: var(--card-tint); color: var(--text-main); padding: 14px 16px; border-radius: var(--radius-btn); font-size: 14px; font-weight: 600; outline: none; transition: 0.2s; font-family: inherit; }
+        .auth-input:focus { border-color: var(--primary); box-shadow: 0 0 0 3px var(--primary-soft); background: transparent; }
+        
+        .toggle-password { position: absolute; right: 16px; top: 38px; color: var(--text-muted); background: transparent; border: none; font-size: 16px; cursor: pointer; padding: 4px; border-radius: 8px; }
+        .toggle-password:hover { color: var(--text-main); }
+
+        .auth-options { display: flex; justify-content: space-between; align-items: center; margin-bottom: 24px; font-size: 13px; font-weight: 600; }
+        .forgot-link { color: var(--primary); text-decoration: none; transition: 0.2s; }
+        .forgot-link:hover { text-decoration: underline; }
+
+        /* KOTAK NOTIFIKASI ERROR */
+        .error-box { 
+            background: var(--danger-soft); 
+            border: 1px solid rgba(239, 68, 68, 0.3); 
+            color: var(--danger); 
+            padding: 12px 16px; 
+            border-radius: 12px; 
+            font-size: 13px; 
+            font-weight: 700; 
+            margin-bottom: 16px; 
+            display: none; 
+            align-items: center; 
+            gap: 10px;
+            animation: shake 0.4s ease;
+        }
+        .error-box.show { display: flex; }
+        .error-icon { font-size: 16px; }
+
+        @keyframes shake {
+            0%, 100% { transform: translateX(0); }
+            25% { transform: translateX(-5px); }
+            50% { transform: translateX(5px); }
+            75% { transform: translateX(-5px); }
+        }
+
+        .auth-btn { width: 100%; border: none; background: var(--primary-grad); color: white; padding: 16px; border-radius: var(--radius-btn); font-size: 15px; font-weight: 800; cursor: pointer; transition: 0.2s; box-shadow: 0 8px 20px rgba(37, 99, 235, 0.25); display: flex; justify-content: center; align-items: center; gap: 8px; }
+        .auth-btn:hover { transform: translateY(-2px); box-shadow: 0 12px 25px rgba(37, 99, 235, 0.35); }
+        .auth-btn:active { transform: translateY(0); }
+        .auth-btn:disabled { opacity: 0.7; cursor: not-allowed; transform: none; box-shadow: none; }
+
+        .auth-footer { margin-top: 24px; text-align: center; font-size: 14px; font-weight: 600; color: var(--text-muted); }
+        .auth-footer a { color: var(--primary); text-decoration: none; transition: 0.2s; }
+        .auth-footer a:hover { text-decoration: underline; }
+
+        /* Spinner Animasi Loading */
+        .spinner { width: 18px; height: 18px; border: 3px solid rgba(255,255,255,0.3); border-radius: 50%; border-top-color: #fff; animation: spin 1s ease-in-out infinite; display: none; }
+        .auth-btn.loading .spinner { display: block; }
+        @keyframes spin { to { transform: rotate(360deg); } }
+
+    </style>
+</head>
+<body>
+
+    <div class="bg-glow one"></div>
+    <div class="bg-glow two"></div>
+
+    <div class="auth-container">
+        <div class="auth-header">
+            <div class="brand-logo">
+                <img src="./assets/logo.png" alt="Logo" onerror="this.style.display='none'; this.parentElement.innerHTML='✨';">
+            </div>
+            <h1 class="auth-title">Selamat Datang</h1>
+            <p class="auth-subtitle">Masuk ke workspace kreatif Anda.</p>
+        </div>
+
+        <form id="loginForm" onsubmit="handleLogin(event)">
+            <div class="input-group">
+                <label class="input-label">Email</label>
+                <input type="email" id="emailInput" class="auth-input" placeholder="nama@email.com" required oninput="hideError()">
+            </div>
+            
+            <div class="input-group">
+                <label class="input-label">Password</label>
+                <input type="password" id="passwordInput" class="auth-input" placeholder="Masukkan password Anda" required oninput="hideError()">
+                <button type="button" class="toggle-password" onclick="togglePassword()" title="Tampilkan/Sembunyikan">👁️</button>
+            </div>
+
+            <div class="auth-options">
+                <label style="display: flex; align-items: center; gap: 8px; cursor: pointer;">
+                    <input type="checkbox" id="rememberMe" style="accent-color: var(--primary);"> Ingat saya
+                </label>
+                <a href="./forgot-password.html" class="forgot-link">Lupa Password?</a>
+            </div>
+
+            <div id="errorBox" class="error-box">
+                <span class="error-icon">⚠️</span>
+                <span id="errorText">Password yang Anda masukkan salah.</span>
+            </div>
+
+            <button type="submit" id="loginBtn" class="auth-btn">
+                <span class="spinner"></span>
+                <span id="btnText">Masuk Sekarang</span>
+            </button>
+        </form>
+
+        <div class="auth-footer">
+            Belum punya akun? <a href="./register.html">Daftar Gratis</a>
+        </div>
+    </div>
+
+    <!-- Script PWA Pendaftaran Service Worker -->
+    <script src="./js/pwa.js"></script>
+
+    <script type="module">
+        // Sakelar Utama: Mode Firebase atau LocalStorage
+        const USE_FIREBASE = true; 
+
+        // Deteksi Tema dari LocalStorage
+        document.addEventListener('DOMContentLoaded', () => {
+            if (localStorage.getItem("dashboard_theme") === "dark") {
+                document.body.classList.add("dark");
+            }
+        });
+
+        // Fitur Melihat Password yang terekspos ke window
+        window.togglePassword = function() {
+            const pwdInput = document.getElementById('passwordInput');
+            if (pwdInput.type === "password") {
+                pwdInput.type = "text";
+            } else {
+                pwdInput.type = "password";
+            }
+        }
+
+        // Menyembunyikan Error saat user mengetik
+        window.hideError = function() {
+            document.getElementById('errorBox').classList.remove('show');
+        }
+
+        // Tampilkan Box Error Animasi
+        function showError(message) {
+            const errorBox = document.getElementById('errorBox');
+            document.getElementById('errorText').innerText = message;
+            errorBox.classList.remove('show');
+            void errorBox.offsetWidth; // trigger reflow untuk restart animasi
+            errorBox.classList.add('show');
+        }
+
+        // Setel status tombol loading
+        function setLoading(isLoading) {
+            const btn = document.getElementById('loginBtn');
+            const btnText = document.getElementById('btnText');
+            if (isLoading) {
+                btn.disabled = true;
+                btn.classList.add('loading');
+                btnText.innerText = "Memeriksa...";
+            } else {
+                btn.disabled = false;
+                btn.classList.remove('loading');
+                btnText.innerText = "Masuk Sekarang";
+            }
+        }
+
+        // Proses Submit Login
+        window.handleLogin = async function(e) {
+            e.preventDefault(); 
+            hideError();
+            setLoading(true);
+
+            const email = document.getElementById('emailInput').value.trim();
+            const password = document.getElementById('passwordInput').value;
+
+            if (USE_FIREBASE) {
+                try {
+                    const module = await import('./js/firebase.js');
+                    const authLib = await import("https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js");
+                    
+                    // Eksekusi Login Firebase
+                    await authLib.signInWithEmailAndPassword(module.auth, email, password);
+                    
+                    // Sukses -> Redirect relatif ke dashboard
+                    window.location.replace("./pages/dashboard.html");
+                    
+                } catch (error) {
+                    setLoading(false);
+                    const errorCode = error.code;
+                    
+                    // Terjemahan pesan error
+                    if (errorCode === 'auth/wrong-password' || errorCode === 'auth/invalid-credential') {
+                        showError("Email atau Password yang Anda masukkan salah.");
+                    } else if (errorCode === 'auth/user-not-found') {
+                        showError("Akun dengan email tersebut tidak ditemukan.");
+                    } else if (errorCode === 'auth/too-many-requests') {
+                        showError("Terlalu banyak percobaan gagal. Coba lagi nanti.");
+                    } else if (errorCode === 'auth/invalid-email') {
+                        showError("Format email tidak valid.");
+                    } else {
+                        showError("Gagal masuk. Periksa koneksi internet Anda.");
+                        console.error(error);
+                    }
+                }
+            } else {
+                // Logika Mode Lokal (Testing)
+                setTimeout(() => {
+                    if (email === "admin@creative.io" && password === "admin123") {
+                        localStorage.setItem('dummy_logged_in', 'true');
+                        localStorage.setItem('creative_user_profile', JSON.stringify({
+                            name: "Admin Creative",
+                            email: email
+                        }));
+                        window.location.replace("./pages/dashboard.html");
+                    } else {
+                        setLoading(false);
+                        showError("Email/Password salah. (Gunakan: admin@creative.io / admin123)");
+                    }
+                }, 1000);
+            }
+        }
+
+        // Proteksi Redirect: Jika sudah login, langsung lempar ke dashboard (Guard Lokal Halaman Auth)
+        if (!USE_FIREBASE) {
+            if (localStorage.getItem('dummy_logged_in') === 'true') {
+                window.location.replace("./pages/dashboard.html");
+            }
+        } else {
+            import('./js/firebase.js').then(module => {
+                import("https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js").then(authLib => {
+                    authLib.onAuthStateChanged(module.auth, (user) => {
+                        if (user) {
+                            window.location.replace("./pages/dashboard.html");
+                        }
+                    });
+                });
+            }).catch(e => console.log("Menunggu aksi pengguna."));
+        }
+    </script>
+</body>
+</html>
