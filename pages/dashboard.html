@@ -5,14 +5,13 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
     <title>Dashboard - Creative.io</title>
     
-    <!-- Path relatif yang benar untuk GitHub Pages -->
     <link rel="stylesheet" href="../navbar/navbar.css">
     <link rel="manifest" href="../manifest.json">
     <meta name="theme-color" content="#2563eb">
 
     <style>
         /* =========================================================
-           RESET & BASE (Dipertahankan 100% Sesuai Desain Anda)
+           RESET & BASE
         ========================================================= */
         @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800;900&display=swap');
 
@@ -84,6 +83,10 @@
         .stat-icon { width: 48px; height: 48px; border-radius: 14px; background: var(--primary-soft); color: var(--primary); display: flex; align-items: center; justify-content: center; font-size: 20px; }
         .stat-info span { display: block; font-size: 12px; font-weight: 800; color: var(--text-muted); margin-bottom: 4px; }
         .stat-info h2 { font-size: 24px; font-weight: 900; color: var(--text-main); }
+        
+        /* Animasi memuat angka (Skeleton Shimmer) */
+        .loading-pulse { animation: pulse 1.5s infinite; opacity: 0.5; color: var(--text-muted) !important; }
+        @keyframes pulse { 0% { opacity: 0.3; } 50% { opacity: 0.7; } 100% { opacity: 0.3; } }
 
         /* TOOLS SECTION */
         .section-header { margin-bottom: 20px; }
@@ -121,28 +124,28 @@
                 <div class="stat-icon">📝</div>
                 <div class="stat-info">
                     <span>Script Writer</span>
-                    <h2 id="totalScript">0</h2>
+                    <h2 id="totalScript" class="loading-pulse">0</h2>
                 </div>
             </div>
             <div class="stat-card">
                 <div class="stat-icon">📋</div>
                 <div class="stat-info">
                     <span>Idea Board</span>
-                    <h2 id="totalIdeas">0</h2>
+                    <h2 id="totalIdeas" class="loading-pulse">0</h2>
                 </div>
             </div>
             <div class="stat-card">
                 <div class="stat-icon">📌</div>
                 <div class="stat-info">
                     <span>Notes</span>
-                    <h2 id="totalNotes">0</h2>
+                    <h2 id="totalNotes" class="loading-pulse">0</h2>
                 </div>
             </div>
             <div class="stat-card">
                 <div class="stat-icon">🗑️</div>
                 <div class="stat-info">
                     <span>Trash</span>
-                    <h2 id="totalTrash">0</h2>
+                    <h2 id="totalTrash" class="loading-pulse">0</h2>
                 </div>
             </div>
         </section>
@@ -182,7 +185,6 @@
         </section>
     </main>
 
-    <!-- Script Navbar & PWA -->
     <script src="../navbar/navbar.js"></script>
     <script src="../js/pwa.js"></script>
 
@@ -193,17 +195,75 @@
             document.body.classList.add("dark");
         }
 
-        const showContent = () => document.getElementById("dashboardContent").style.opacity = "1";
+        // FUNGSI UTAMA HITUNG STATISTIK ANALITIK
+        async function fetchDashboardStats(uid, db) {
+            try {
+                if (USE_FIREBASE) {
+                    const fsMod = await import("https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js");
+                    
+                    // Kita pakai query count (getCountFromServer) agar super cepat dan hemat kuota Firebase
+                    const qScript = fsMod.query(fsMod.collection(db, "creative_script"), fsMod.where("uid", "==", uid));
+                    const qIdeas = fsMod.query(fsMod.collection(db, "creative_planner_ideas"), fsMod.where("uid", "==", uid));
+                    const qNotes = fsMod.query(fsMod.collection(db, "creative_notes_v2"), fsMod.where("uid", "==", uid));
+                    const qTrash = fsMod.query(fsMod.collection(db, "creative_trash"), fsMod.where("uid", "==", uid));
 
-        // Autentikasi Guard
+                    const [snapScript, snapIdeas, snapNotes, snapTrash] = await Promise.all([
+                        fsMod.getCountFromServer(qScript),
+                        fsMod.getCountFromServer(qIdeas),
+                        fsMod.getCountFromServer(qNotes),
+                        fsMod.getCountFromServer(qTrash)
+                    ]);
+
+                    updateStatsUI(
+                        snapScript.data().count, 
+                        snapIdeas.data().count, 
+                        snapNotes.data().count, 
+                        snapTrash.data().count
+                    );
+                } else {
+                    // Jika Mode Offline (Local Storage)
+                    const countLocal = (key) => (JSON.parse(localStorage.getItem(key)) || []).length;
+                    
+                    updateStatsUI(
+                        countLocal('creative_script'),
+                        countLocal('creative_planner_ideas'),
+                        countLocal('creative_notes_v2'),
+                        countLocal('creative_trash')
+                    );
+                }
+            } catch (error) {
+                console.error("Gagal menarik statistik:", error);
+                updateStatsUI("-", "-", "-", "-"); // Munculkan strip jika gagal
+            }
+        }
+
+        function updateStatsUI(sCount, iCount, nCount, tCount) {
+            const setStat = (id, val) => {
+                const el = document.getElementById(id);
+                el.innerText = val;
+                el.classList.remove("loading-pulse"); // Hapus animasi kedip
+            };
+            
+            setStat("totalScript", sCount);
+            setStat("totalIdeas", iCount);
+            setStat("totalNotes", nCount);
+            setStat("totalTrash", tCount);
+        }
+
+        // GUARD AUTENTIKASI 
         if (USE_FIREBASE) {
             import("../js/firebase.js").then(module => {
                 const auth = module.auth;
+                const db = module.db;
+                
                 import("https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js").then(authLib => {
                     authLib.onAuthStateChanged(auth, async (user) => {
                         if (user) {
+                            // Sapa Nama Depan
                             document.getElementById("welcomeText").innerText = `Halo, ${(user.displayName || "Kreator").split(' ')[0]} 👋`;
-                            showContent();
+                            
+                            // Hitung Statistik
+                            fetchDashboardStats(user.uid, db);
                         } else {
                             window.location.replace("../login.html");
                         }
@@ -214,7 +274,8 @@
             if (localStorage.getItem('dummy_logged_in') !== 'true') {
                 window.location.replace("../login.html");
             } else {
-                showContent();
+                document.getElementById("welcomeText").innerText = "Halo, Kreator 👋";
+                fetchDashboardStats('local_user', null);
             }
         }
     </script>
