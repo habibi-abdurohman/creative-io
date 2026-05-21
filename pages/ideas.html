@@ -1,0 +1,358 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+    <title>Idea Board - Creative.io</title>
+
+    <link rel="stylesheet" href="../navbar/navbar.css">
+    <link rel="manifest" href="../manifest.json">
+    <meta name="theme-color" content="#2563eb">
+
+    <style>
+        /* =========================================================
+           CSS UTAMA DAN REVISI LAYOUT CARD (100% UTUH)
+        ========================================================= */
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800;900&display=swap');
+        * { margin: 0; padding: 0; box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+        *::-webkit-scrollbar { display: none; }
+        :root { --bg-grad: linear-gradient(180deg, #f8fbff 0%, #eef4ff 100%); --card-glass: rgba(255, 255, 255, 0.9); --card-solid: #ffffff; --card-tint: #f1f5f9; --border: #e2e8f0; --text-main: #0f172a; --text-muted: #64748b; --primary: #2563eb; --primary-grad: linear-gradient(135deg, #3b82f6, #2563eb); --primary-soft: rgba(37, 99, 235, 0.1); --success: #16a34a; --danger: #ef4444; --warning: #f59e0b; --shadow-flat: 0 4px 20px rgba(0, 0, 0, 0.04); --radius-btn: 14px; --radius-card: 24px; }
+        body.dark { --bg-grad: linear-gradient(180deg, #0f172a 0%, #1e293b 100%); --card-glass: rgba(30, 41, 59, 0.9); --card-solid: #1e293b; --card-tint: #0f172a; --border: #334155; --text-main: #f8fafc; --text-muted: #94a3b8; --primary-soft: rgba(59, 130, 246, 0.2); --shadow-flat: 0 4px 20px rgba(0, 0, 0, 0.2); }
+        body { font-family: 'Inter', system-ui, sans-serif; background: var(--bg-grad); color: var(--text-main); min-height: 100vh; padding: 86px 16px 100px; transition: background 0.3s, color 0.3s; }
+        
+        .bg-glow { position: fixed; border-radius: 50%; filter: blur(90px); z-index: 0; opacity: 0.5; pointer-events: none; }
+        .bg-glow.one { width: 340px; height: 340px; background: rgba(59, 130, 246, 0.15); top: -50px; left: -100px; }
+        .bg-glow.two { width: 320px; height: 320px; background: rgba(96, 165, 250, 0.15); bottom: 100px; right: -100px; }
+        
+        .wrapper { position: relative; z-index: 2; max-width: 1200px; margin: 0 auto; }
+        .page-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 24px; flex-wrap: wrap; gap: 16px; }
+        .header-title h1 { font-size: 26px; font-weight: 900; letter-spacing: -0.5px; }
+        .header-title p { font-size: 13px; color: var(--text-muted); margin-top: 4px; line-height: 1.6; }
+        
+        .btn-add-board { background: var(--primary-grad); color: white; border: none; padding: 12px 20px; border-radius: var(--radius-btn); font-size: 13px; font-weight: 800; cursor: pointer; box-shadow: 0 10px 25px rgba(37, 99, 235, 0.3); transition: 0.2s; display: flex; align-items: center; gap: 8px; }
+        .btn-add-board:hover { transform: translateY(-2px); box-shadow: 0 12px 30px rgba(37, 99, 235, 0.4); }
+        
+        .board-container { display: grid; grid-template-columns: repeat(auto-fill, minmax(320px, 1fr)); gap: 20px; align-items: start; }
+        .board-card { background: var(--card-glass); backdrop-filter: blur(12px); border: 1px solid var(--border); border-radius: var(--radius-card); padding: 20px; box-shadow: var(--shadow-flat); display: flex; flex-direction: column; transition: 0.2s; min-width: 0; }
+        .board-card:hover { border-color: #cbd5e1; }
+        .board-top { display: flex; justify-content: space-between; align-items: center; gap: 10px; margin-bottom: 20px; }
+        .board-title { font-size: 16px; font-weight: 800; color: var(--text-main); display: flex; align-items: center; gap: 8px; }
+        .board-actions { display: flex; align-items: center; gap: 8px; }
+        
+        .counter { background: var(--primary-soft); color: var(--primary); padding: 6px 12px; border-radius: 20px; font-size: 12px; font-weight: 800; white-space: nowrap; border: 1px solid var(--border); }
+        .btn-del-board { background: rgba(239, 68, 68, 0.1); color: var(--danger); border: none; width: 32px; height: 32px; border-radius: 10px; display: flex; align-items: center; justify-content: center; cursor: pointer; transition: 0.2s; }
+        .btn-del-board:hover { background: var(--danger); color: white; }
+        
+        .form { display: flex; flex-direction: column; gap: 10px; margin-bottom: 20px; padding-bottom: 20px; border-bottom: 1px dashed var(--border); }
+        .input-wrap { position: relative; }
+        .input-wrap span { position: absolute; left: 14px; top: 50%; transform: translateY(-50%); font-size: 12px; font-weight: 800; color: var(--text-muted); pointer-events: none; }
+        .input-wrap input { width: 100%; border: 1px solid var(--border); background: var(--card-solid); border-radius: 14px; color: var(--text-main); padding: 12px 14px 12px 80px; font-size: 13px; font-weight: 600; outline: none; transition: 0.2s; }
+        .input-wrap input:focus { border-color: var(--primary); box-shadow: 0 0 0 3px var(--primary-soft); }
+        .add-btn { border: none; background: var(--card-tint); color: var(--text-main); border: 1px solid var(--border); padding: 12px; border-radius: 14px; font-size: 13px; font-weight: 800; cursor: pointer; transition: 0.2s; }
+        .add-btn:hover { background: var(--primary-soft); color: var(--primary); border-color: var(--primary); }
+        
+        .list { display: flex; flex-direction: column; gap: 12px; max-height: 50vh; overflow-y: auto; padding-right: 4px; }
+        .list::-webkit-scrollbar { display: none; }
+        
+        .item { background: var(--card-solid); border: 1px solid var(--border); border-radius: 16px; padding: 16px; display: flex; flex-direction: column; transition: 0.2s; min-width: 0; }
+        .item-header { display: flex; justify-content: space-between; align-items: flex-start; gap: 12px; min-width: 0; }
+        .item-title { font-size: 14px; font-weight: 800; line-height: 1.4; word-break: break-word; color: var(--text-main); flex: 1; }
+        .right-actions { display: flex; gap: 6px; flex-shrink: 0; }
+        
+        .btn-icon { width: 32px; height: 32px; border-radius: 10px; cursor: pointer; border: 1px solid var(--border); display: flex; align-items: center; justify-content: center; transition: 0.2s; background: var(--card-solid); font-size: 14px; color: var(--text-main); }
+        .btn-edit { color: var(--text-muted); }
+        .btn-edit:hover { background: var(--card-tint); color: var(--primary); border-color: var(--primary); }
+        .btn-done { color: var(--border); font-size: 16px; }
+        .btn-done.active { background: var(--success); border-color: var(--success); color: white; }
+        .btn-del { color: var(--danger); }
+        .btn-del:hover { background: var(--danger); color: white; border-color: var(--danger); }
+        
+        .item-badges { display: flex; gap: 6px; overflow-x: auto; flex-wrap: nowrap; padding-bottom: 2px; margin-top: 8px; margin-bottom: 8px; width: 100%; }
+        .item-badges::-webkit-scrollbar { display: none; }
+        
+        .badge { display: inline-flex; align-items: center; gap: 4px; background: var(--card-tint); color: var(--text-muted); border: 1px solid var(--border); padding: 5px 12px; border-radius: 8px; font-size: 11px; font-weight: 800; white-space: nowrap; flex-shrink: 0; }
+        .badge.restored { background: var(--warning); color: white; border: none; }
+
+        .link-box { width: 100%; overflow-x: auto; background: var(--primary-soft); color: var(--primary); border-radius: 10px; padding: 10px 12px; font-size: 12px; font-weight: 700; white-space: nowrap; cursor: text; border: 1px dashed rgba(37, 99, 235, 0.3); }
+        .link-box::-webkit-scrollbar { display: none; }
+        
+        .completed { opacity: 0.5; }
+        .completed .item-title { text-decoration: line-through; }
+        
+        .empty-board { text-align: center; padding: 20px; font-size: 12px; font-weight: 600; color: var(--text-muted); }
+        .empty-state-global { grid-column: 1 / -1; text-align: center; padding: 60px 20px; background: var(--card-glass); border: 1px dashed var(--border); border-radius: var(--radius-card); color: var(--text-muted); font-size: 14px; font-weight: 600; }
+        
+        .modal-overlay { position: fixed; inset: 0; background: rgba(0,0,0,0.4); backdrop-filter: blur(4px); z-index: 100000; display: none; align-items: center; justify-content: center; padding: 20px; }
+        .modal-overlay.active { display: flex; }
+        .modal-card { background: var(--card-solid); width: 100%; max-width: 360px; border-radius: var(--radius-card); padding: 24px; box-shadow: var(--shadow-flat); border: 1px solid var(--border); }
+        .modal-card h3 { font-size: 18px; font-weight: 900; margin-bottom: 8px; color: var(--text-main); }
+        .modal-card p { font-size: 13px; color: var(--text-muted); margin-bottom: 20px; line-height: 1.5; }
+        .modal-input { width: 100%; padding: 14px 16px; border-radius: 14px; border: 1px solid var(--border); background: var(--card-tint); color: var(--text-main); font-size: 14px; font-weight: 600; outline: none; margin-bottom: 12px; transition: 0.2s; }
+        .modal-input:focus { border-color: var(--primary); box-shadow: 0 0 0 3px var(--primary-soft); }
+        .modal-actions { display: flex; gap: 12px; margin-top: 8px; }
+        .btn-modal { flex: 1; padding: 12px; border-radius: 12px; font-size: 13px; font-weight: 800; cursor: pointer; border: none; transition: 0.2s; }
+        .btn-cancel { background: var(--card-tint); color: var(--text-main); border: 1px solid var(--border); }
+        .btn-cancel:hover { background: #e2e8f0; }
+        body.dark .btn-cancel:hover { background: #334155; }
+        .btn-confirm { background: var(--primary-grad); color: white; }
+        .btn-confirm:hover { opacity: 0.9; }
+        
+        @media(max-width: 600px) { .page-header { flex-direction: column; align-items: flex-start; } .btn-add-board { width: 100%; justify-content: center; } .board-container { grid-template-columns: 1fr; } }
+    </style>
+</head>
+<body>
+
+    <div id="navbar-container"></div>
+    <div class="bg-glow one"></div><div class="bg-glow two"></div>
+
+    <div class="wrapper">
+        <div class="page-header">
+            <div class="header-title">
+                <h1>Idea Board</h1>
+                <p>Kumpulkan ide konten sosmed, simpan referensi tautan, dan kelola workflow Anda.</p>
+            </div>
+            <button class="btn-add-board" onclick="openAddBoardModal()">
+                <span style="font-size:16px;">+</span> Buat Papan Channel
+            </button>
+        </div>
+
+        <div class="board-container" id="boardContainer"></div>
+    </div>
+
+    <div class="modal-overlay" id="addBoardModal">
+        <div class="modal-card">
+            <h3>Buat Papan Baru</h3>
+            <p>Masukkan nama channel atau kategori media sosial yang ingin dikelola.</p>
+            <input type="text" class="modal-input" id="boardNameInput" placeholder="Misal: YouTube Gaming, TikTok Bisnis...">
+            <div class="modal-actions">
+                <button class="btn-modal btn-cancel" onclick="closeAddBoardModal()">Batal</button>
+                <button class="btn-modal btn-confirm" onclick="confirmAddBoard()">Buat Papan</button>
+            </div>
+        </div>
+    </div>
+
+    <div class="modal-overlay" id="editIdeaModal">
+        <div class="modal-card">
+            <h3>Edit Ide Konten</h3>
+            <div class="input-wrap" style="margin-bottom:12px;">
+                <span>Konten</span>
+                <input type="text" id="editTitleInput" class="modal-input" style="padding-left:80px; margin-bottom:0;" placeholder="Judul ide...">
+            </div>
+            <div class="input-wrap" style="margin-bottom:12px;">
+                <span>Tanggal</span>
+                <input type="text" id="editDateInput" class="modal-input" style="padding-left:80px; margin-bottom:0;" placeholder="Misal: 17 Agustus 2026">
+            </div>
+            <div class="input-wrap" style="margin-bottom:16px;">
+                <span>Link</span>
+                <input type="url" id="editLinkInput" class="modal-input" style="padding-left:80px; margin-bottom:0;" placeholder="Tautan referensi...">
+            </div>
+            <div class="modal-actions">
+                <button class="btn-modal btn-cancel" onclick="closeEditModal()">Batal</button>
+                <button class="btn-modal btn-confirm" onclick="saveEdit()">Simpan</button>
+            </div>
+        </div>
+    </div>
+
+    <script src="../navbar/navbar.js"></script>
+    <script src="../js/pwa.js"></script>
+
+    <script type="module">
+        const USE_FIREBASE = true;
+        window.boards = [];
+        window.ideas = [];
+        window.editCurrentId = null;
+
+        let currentUserUid = null;
+        let dbRef = null;
+        let fsMod = null;
+
+        document.addEventListener("DOMContentLoaded", () => {
+            if (localStorage.getItem("dashboard_theme") === "dark") { document.body.classList.add("dark"); }
+
+            if (USE_FIREBASE) {
+                import("../js/firebase.js").then(module => {
+                    dbRef = module.db;
+                    import("https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js").then(authLib => {
+                        authLib.onAuthStateChanged(module.auth, (user) => {
+                            if (user) {
+                                currentUserUid = user.uid;
+                                loadWorkspaceDataCloud();
+                            } else {
+                                window.location.replace("../login.html");
+                            }
+                        });
+                    });
+                }).catch(err => console.error("Firebase Initialization Failure:", err));
+            } else {
+                if (localStorage.getItem('dummy_logged_in') !== 'true') {
+                    window.location.replace("../login.html");
+                } else {
+                    currentUserUid = "local_user";
+                    window.boards = JSON.parse(localStorage.getItem("creative_planner_boards")) || [];
+                    window.ideas = JSON.parse(localStorage.getItem("creative_planner_ideas")) || [];
+                    window.renderWorkspace();
+                }
+            }
+        });
+
+        async function loadWorkspaceDataCloud() {
+            try {
+                fsMod = await import("https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js");
+                const qB = fsMod.query(fsMod.collection(dbRef, "creative_planner_boards"), fsMod.where("uid", "==", currentUserUid));
+                const snapB = await fsMod.getDocs(qB);
+                window.boards = snapB.docs.map(doc => ({ id: doc.id, ...doc.data() }));
+
+                const qI = fsMod.query(fsMod.collection(dbRef, "creative_ideas"), fsMod.where("uid", "==", currentUserUid));
+                const snapI = await fsMod.getDocs(qI);
+                window.ideas = snapI.docs.map(doc => ({ id: doc.id, ...doc.data() }));
+                window.renderWorkspace();
+            } catch (e) { console.error(e); }
+        }
+
+        window.openAddBoardModal = () => document.getElementById('addBoardModal').classList.add('active');
+        window.closeAddBoardModal = () => document.getElementById('addBoardModal').classList.remove('active');
+        window.closeEditModal = () => document.getElementById('editIdeaModal').classList.remove('active');
+
+        window.confirmAddBoard = async () => {
+            const boardName = document.getElementById('boardNameInput').value.trim();
+            if(!boardName) return alert("Nama papan tidak boleh kosong!");
+            const boardId = "board_" + Date.now();
+            const payload = { uid: currentUserUid, name: boardName, createdAt: Date.now() };
+            window.boards.push({ id: boardId, ...payload });
+            window.renderWorkspace();
+            window.closeAddBoardModal();
+            if(USE_FIREBASE && fsMod) await fsMod.setDoc(fsMod.doc(dbRef, "creative_planner_boards", boardId), payload);
+            else localStorage.setItem("creative_planner_boards", JSON.stringify(window.boards));
+        }
+
+        window.addIdea = async (boardId) => {
+            const title = document.getElementById('title_'+boardId).value.trim();
+            const date = document.getElementById('date_'+boardId).value.trim();
+            const link = document.getElementById('link_'+boardId).value.trim() || "-";
+            if(!title || !date) return alert("Form wajib diisi!");
+            const ideaId = "idea_" + Date.now();
+            const payload = { boardId, uid: currentUserUid, title, date, link, done: false, createdAt: Date.now() };
+            window.ideas.unshift({ id: ideaId, ...payload });
+            window.renderWorkspace();
+            document.getElementById('title_'+boardId).value = "";
+            document.getElementById('date_'+boardId).value = "";
+            document.getElementById('link_'+boardId).value = "";
+            if(USE_FIREBASE && fsMod) await fsMod.setDoc(fsMod.doc(dbRef, "creative_ideas", ideaId), payload);
+            else localStorage.setItem("creative_planner_ideas", JSON.stringify(window.ideas));
+        }
+
+        window.deleteBoard = async (boardId) => {
+            if(!confirm("Hapus papan permanen?")) return;
+            window.boards = window.boards.filter(b => b.id !== boardId);
+            window.ideas = window.ideas.filter(i => i.boardId !== boardId);
+            window.renderWorkspace();
+            if(USE_FIREBASE && fsMod) {
+                await fsMod.deleteDoc(fsMod.doc(dbRef, "creative_planner_boards", boardId));
+            } else {
+                localStorage.setItem("creative_planner_boards", JSON.stringify(window.boards));
+                localStorage.setItem("creative_planner_ideas", JSON.stringify(window.ideas));
+            }
+        }
+
+        window.deleteIdea = async (ideaId) => {
+            if(!confirm("Hapus ide ke Trash?")) return;
+            const item = window.ideas.find(i => i.id === ideaId);
+            const now = Date.now();
+            const trashId = 'trash_' + now;
+            const trashPayload = { uid: currentUserUid, originalId: item.id, type: 'planner', title: item.title, content: `Tgl: ${item.date} | Link: ${item.link}`, deletedAt: now, expireAt: now + (30*24*60*60*1000) };
+            
+            window.ideas = window.ideas.filter(i => i.id !== ideaId);
+            window.renderWorkspace();
+            if(USE_FIREBASE && fsMod) {
+                await fsMod.setDoc(fsMod.doc(dbRef, "creative_trash", trashId), trashPayload);
+                await fsMod.deleteDoc(fsMod.doc(dbRef, "creative_ideas", ideaId));
+            } else {
+                let trash = JSON.parse(localStorage.getItem('creative_trash')) || [];
+                trash.push({ id: trashId, ...trashPayload });
+                localStorage.setItem('creative_trash', JSON.stringify(trash));
+                localStorage.setItem("creative_planner_ideas", JSON.stringify(window.ideas));
+            }
+        }
+
+        window.openEditModal = (ideaId) => {
+            const idea = window.ideas.find(i => i.id === ideaId);
+            if(!idea) return;
+            window.editCurrentId = ideaId;
+            let displayDate = idea.date;
+            let displayLink = idea.link;
+            if (idea.date === "Dipulihkan" || (idea.link && idea.link.startsWith("Tgl:"))) {
+                if (idea.link.includes(" | Link: ")) {
+                    const parts = idea.link.split(" | Link: ");
+                    displayDate = parts[0].replace("Tgl: ", "").trim();
+                    displayLink = parts[1].trim();
+                }
+            }
+            document.getElementById('editTitleInput').value = idea.title;
+            document.getElementById('editDateInput').value = displayDate;
+            document.getElementById('editLinkInput').value = displayLink === "-" ? "" : displayLink;
+            document.getElementById('editIdeaModal').classList.add('active');
+        }
+
+        window.saveEdit = async () => {
+            if(!window.editCurrentId) return;
+            const idea = window.ideas.find(i => i.id === window.editCurrentId);
+            idea.title = document.getElementById('editTitleInput').value.trim();
+            idea.date = document.getElementById('editDateInput').value.trim();
+            idea.link = document.getElementById('editLinkInput').value.trim() || "-";
+            window.renderWorkspace();
+            window.closeEditModal();
+            if(USE_FIREBASE && fsMod) await fsMod.setDoc(fsMod.doc(dbRef, "creative_ideas", idea.id), idea);
+            else localStorage.setItem("creative_planner_ideas", JSON.stringify(window.ideas));
+        }
+
+        window.toggleDone = async (ideaId) => {
+            const idea = window.ideas.find(i => i.id === ideaId);
+            idea.done = !idea.done;
+            window.renderWorkspace();
+            if(USE_FIREBASE && fsMod) await fsMod.setDoc(fsMod.doc(dbRef, "creative_ideas", ideaId), idea);
+            else localStorage.setItem("creative_planner_ideas", JSON.stringify(window.ideas));
+        }
+
+        window.selectText = (el) => {
+            const range = document.createRange(); range.selectNodeContents(el);
+            const sel = window.getSelection(); sel.removeAllRanges(); sel.addRange(range);
+        }
+
+        window.renderWorkspace = function() {
+            const container = document.getElementById("boardContainer");
+            if (window.boards.length === 0) {
+                container.innerHTML = `<div class="empty-state-global">Belum ada papan channel.</div>`;
+                return;
+            }
+            container.innerHTML = window.boards.map(b => `
+                <div class="board-card">
+                    <div class="board-top">
+                        <div class="board-title">📺 ${b.name}</div>
+                        <div class="board-actions"><div class="counter">${window.ideas.filter(i => i.boardId === b.id).length} Ide</div><button class="btn-del-board" onclick="deleteBoard('${b.id}')">🗑</button></div>
+                    </div>
+                    <div class="form">
+                        <div class="input-wrap"><span>Konten</span><input type="text" id="title_${b.id}" placeholder="Judul ide..."></div>
+                        <div class="input-wrap"><span>Tanggal</span><input type="text" id="date_${b.id}" placeholder="Tgl..."></div>
+                        <div class="input-wrap"><span>Link</span><input type="url" id="link_${b.id}" placeholder="Link..."></div>
+                        <button class="add-btn" onclick="addIdea('${b.id}')">+ Tambah Ide</button>
+                    </div>
+                    <div class="list">${window.ideas.filter(i => i.boardId === b.id).map(i => `
+                        <div class="item ${i.done ? "completed" : ""}">
+                            <div class="item-header">
+                                <div class="item-title">${i.title}</div>
+                                <div class="right-actions">
+                                    <button class="btn-icon btn-edit" onclick="openEditModal('${i.id}')">✏️</button>
+                                    <button class="btn-icon btn-done ${i.done ? "active" : ""}" onclick="toggleDone('${i.id}')">✓</button>
+                                    <button class="btn-icon btn-del" onclick="deleteIdea('${i.id}')">🗑</button>
+                                </div>
+                            </div>
+                            <div class="item-badges"><div class="badge">📅 ${i.date}</div></div>
+                            <div class="link-box" onclick="selectText(this)">${i.link}</div>
+                        </div>
+                    `).join('')}</div>
+                </div>
+            `).join('');
+        }
+    </script>
+</body>
+</html>
