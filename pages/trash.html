@@ -5,72 +5,95 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
     <title>Trash - Creative.io</title>
 
-    <!-- Path diperbaiki untuk GitHub Pages -->
-    <link rel="manifest" href="../manifest.json">
     <link rel="stylesheet" href="../navbar/navbar.css">
-    <meta name="theme-color" content="#3b82f6">
+    <link rel="manifest" href="../manifest.json">
+    <meta name="theme-color" content="#2563eb">
 
     <style>
-        /* =========================================================
-           CSS UTAMA TRASH (100% UTUH SESUAI ASLI)
-        ========================================================= */
+        /* [CSS SAMA PERSIS SEPERTI DESAIN ANDA] */
         @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800;900&display=swap');
         * { margin: 0; padding: 0; box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
         *::-webkit-scrollbar { display: none; }
-        :root { --bg-grad: linear-gradient(180deg, #f8fbff 0%, #eef4ff 100%); --card-glass: rgba(255, 255, 255, 0.9); --card-solid: #ffffff; --card-tint: #f1f5f9; --border: #e2e8f0; --text-main: #0f172a; --text-muted: #64748b; --primary: #2563eb; --danger: #ef4444; --warning: #f59e0b; --shadow-flat: 0 4px 20px rgba(0, 0, 0, 0.04); --radius-card: 24px; }
-        body.dark { --bg-grad: linear-gradient(180deg, #0f172a 0%, #1e293b 100%); --card-glass: rgba(30, 41, 59, 0.9); --card-solid: #1e293b; --card-tint: #0f172a; --border: #334155; --text-main: #f8fafc; --text-muted: #94a3b8; }
+        :root { --bg-grad: linear-gradient(180deg, #f8fbff 0%, #eef4ff 100%); --card-glass: rgba(255, 255, 255, 0.9); --card-solid: #ffffff; --card-tint: #f1f5f9; --border: #e2e8f0; --text-main: #0f172a; --text-muted: #64748b; --primary: #2563eb; --primary-soft: rgba(37, 99, 235, 0.1); --success: #16a34a; --danger: #ef4444; --danger-soft: rgba(239, 68, 68, 0.1); --warning: #f59e0b; --shadow-flat: 0 4px 20px rgba(0, 0, 0, 0.04); --radius-btn: 14px; --radius-card: 24px; }
+        body.dark { --bg-grad: linear-gradient(180deg, #0f172a 0%, #1e293b 100%); --card-glass: rgba(30, 41, 59, 0.9); --card-solid: #1e293b; --card-tint: #0f172a; --border: #334155; --text-main: #f8fafc; --text-muted: #94a3b8; --primary-soft: rgba(59, 130, 246, 0.2); --danger-soft: rgba(239, 68, 68, 0.15); --shadow-flat: 0 4px 20px rgba(0, 0, 0, 0.2); }
         body { font-family: 'Inter', system-ui, sans-serif; background: var(--bg-grad); color: var(--text-main); min-height: 100vh; padding: 86px 16px 100px; transition: background 0.3s, color 0.3s; }
-        
-        .wrapper { position: relative; z-index: 2; max-width: 800px; margin: 0 auto; }
         .bg-glow { position: fixed; border-radius: 50%; filter: blur(90px); z-index: 0; opacity: 0.5; pointer-events: none; }
-        .bg-glow.one { width: 340px; height: 340px; background: rgba(239, 68, 68, 0.1); top: -50px; left: -100px; }
-        
-        .page-header { margin-bottom: 24px; }
-        .page-header h1 { font-size: 26px; font-weight: 900; letter-spacing: -0.5px; margin-bottom: 8px; }
-        .page-header p { font-size: 13px; color: var(--text-muted); }
-
-        .trash-list { display: flex; flex-direction: column; gap: 16px; }
-        .trash-card { background: var(--card-glass); backdrop-filter: blur(12px); border: 1px solid var(--border); border-radius: 20px; padding: 20px; display: flex; justify-content: space-between; align-items: center; transition: 0.2s; }
-        .trash-card:hover { border-color: #cbd5e1; }
-        
-        .trash-info h3 { font-size: 15px; font-weight: 800; margin-bottom: 4px; }
-        .trash-info p { font-size: 12px; color: var(--text-muted); font-weight: 600; }
-        .badge-type { background: var(--card-tint); padding: 2px 8px; border-radius: 6px; font-size: 10px; font-weight: 800; text-transform: uppercase; margin-right: 8px; }
-
-        .actions { display: flex; gap: 8px; }
-        .btn-act { border: none; padding: 10px 16px; border-radius: 12px; font-size: 12px; font-weight: 800; cursor: pointer; transition: 0.2s; }
-        .btn-restore { background: var(--primary); color: white; }
-        .btn-restore:hover { opacity: 0.9; }
-        .btn-perm { background: rgba(239, 68, 68, 0.1); color: var(--danger); }
-        .btn-perm:hover { background: var(--danger); color: white; }
-
-        .empty-state { text-align: center; padding: 60px 20px; color: var(--text-muted); }
+        .bg-glow.one { width: 340px; height: 340px; background: rgba(59, 130, 246, 0.15); top: -50px; left: -100px; }
+        .bg-glow.two { width: 320px; height: 320px; background: rgba(96, 165, 250, 0.15); bottom: 100px; right: -100px; }
+        .wrapper { position: relative; z-index: 2; max-width: 900px; margin: 0 auto; }
+        .page-header { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 20px; flex-wrap: wrap; gap: 16px; }
+        .header-title h1 { font-size: 26px; font-weight: 900; letter-spacing: -0.5px; display: flex; align-items: center; gap: 10px; }
+        .header-title p { font-size: 13px; color: var(--text-muted); margin-top: 6px; line-height: 1.6; max-width: 450px; }
+        .btn-empty-trash { background: var(--danger-soft); color: var(--danger); border: 1px solid rgba(239, 68, 68, 0.2); padding: 12px 20px; border-radius: var(--radius-btn); font-size: 13px; font-weight: 800; cursor: pointer; transition: 0.2s; display: flex; align-items: center; gap: 8px; }
+        .btn-empty-trash:hover { background: var(--danger); color: white; }
+        .filter-wrap { display: flex; gap: 8px; overflow-x: auto; margin-bottom: 20px; padding-bottom: 4px; }
+        .filter-btn { flex-shrink: 0; padding: 10px 16px; border-radius: 14px; background: var(--card-solid); border: 1px solid var(--border); font-size: 13px; font-weight: 700; color: var(--text-muted); cursor: pointer; transition: 0.2s; display: flex; align-items: center; gap: 6px; }
+        .filter-btn:hover { background: var(--card-tint); }
+        .filter-btn.active { background: var(--primary-soft); border-color: var(--primary); color: var(--primary); }
+        .trash-list { display: flex; flex-direction: column; gap: 14px; }
+        .trash-card { background: var(--card-glass); backdrop-filter: blur(12px); border: 1px solid var(--border); border-radius: var(--radius-card); padding: 20px; box-shadow: var(--shadow-flat); display: flex; justify-content: space-between; align-items: center; gap: 20px; transition: 0.2s; }
+        .trash-card:hover { border-color: #cbd5e1; transform: translateY(-2px); }
+        .card-left { display: flex; align-items: flex-start; gap: 16px; flex: 1; min-width: 0; }
+        .source-icon { width: 48px; height: 48px; border-radius: 16px; display: flex; align-items: center; justify-content: center; font-size: 24px; flex-shrink: 0; }
+        .icon-notepad { background: rgba(59, 130, 246, 0.1); color: #3b82f6; }
+        .icon-notes { background: rgba(245, 158, 11, 0.1); color: #f59e0b; }
+        .icon-planner { background: rgba(139, 92, 246, 0.1); color: #8b5cf6; }
+        .card-info { flex: 1; min-width: 0; }
+        .card-title { font-size: 16px; font-weight: 800; color: var(--text-main); margin-bottom: 4px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+        .card-desc { font-size: 13px; color: var(--text-muted); line-height: 1.5; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; }
+        .card-right { display: flex; flex-direction: column; align-items: flex-end; gap: 12px; flex-shrink: 0; }
+        .badge-countdown { display: inline-flex; align-items: center; gap: 6px; background: var(--danger-soft); color: var(--danger); padding: 6px 12px; border-radius: 12px; font-size: 11px; font-weight: 800; }
+        .badge-countdown.warning { background: rgba(245, 158, 11, 0.1); color: var(--warning); }
+        .card-actions { display: flex; gap: 8px; }
+        .btn-action { padding: 10px 16px; border-radius: 12px; font-size: 12px; font-weight: 800; cursor: pointer; transition: 0.2s; border: none; }
+        .btn-restore { background: var(--card-tint); color: var(--primary); border: 1px solid var(--border); }
+        .btn-restore:hover { background: var(--primary-soft); border-color: var(--primary); }
+        .btn-delete { background: transparent; color: var(--text-muted); padding: 10px; font-size: 16px; }
+        .btn-delete:hover { color: var(--danger); }
+        .empty-state { text-align: center; padding: 80px 20px; background: var(--card-glass); border: 1px dashed var(--border); border-radius: var(--radius-card); }
+        .empty-icon { font-size: 56px; margin-bottom: 16px; opacity: 0.5; filter: grayscale(1); }
+        .empty-text { font-size: 14px; color: var(--text-muted); font-weight: 600; line-height: 1.6; }
+        @media(max-width: 600px) { .page-header { flex-direction: column; align-items: stretch; } .btn-empty-trash { justify-content: center; } .trash-card { flex-direction: column; align-items: stretch; gap: 16px; } .card-right { flex-direction: row; justify-content: space-between; align-items: center; } .card-actions { flex: 1; justify-content: flex-end; } }
     </style>
 </head>
 <body>
 
     <div id="navbar-container"></div>
-    <div class="bg-glow one"></div>
+    <div class="bg-glow one"></div><div class="bg-glow two"></div>
 
-    <main class="wrapper">
+    <div class="wrapper">
         <div class="page-header">
-            <h1>Tempat Sampah</h1>
-            <p>Data dihapus akan hilang permanen setelah 30 hari.</p>
+            <div class="header-title">
+                <h1>🗑️ Tempat Sampah</h1>
+                <p>Item di sini akan otomatis dihancurkan secara permanen setelah 30 hari.</p>
+            </div>
+            <button class="btn-empty-trash" onclick="emptyTrash()">Kosongkan Sampah</button>
         </div>
-        <div class="trash-list" id="trashList">
-            <div class="empty-state">Memuat data...</div>
+
+        <div class="filter-wrap">
+            <button class="filter-btn active" onclick="setFilter('all', this)">Semua</button>
+            <button class="filter-btn" onclick="setFilter('script', this)">📝 Script</button>
+            <button class="filter-btn" onclick="setFilter('notes', this)">📌 Notes</button>
+            <button class="filter-btn" onclick="setFilter('planner', this)">📅 Ideas</button>
         </div>
-    </main>
+
+        <div class="trash-list" id="trashList"></div>
+    </div>
 
     <script src="../navbar/navbar.js"></script>
     <script src="../js/pwa.js"></script>
 
     <script type="module">
-        const USE_FIREBASE = true;
+        const USE_FIREBASE = true; // SAKELAR HYBRID
+
         let currentUserUid = null;
         let dbRef = null;
         let fsMod = null;
+        
+        window.trashData = [];
+        window.currentFilter = 'all';
 
+        // 1. Cek User Login & Load Data
         document.addEventListener("DOMContentLoaded", () => {
             if (localStorage.getItem("dashboard_theme") === "dark") document.body.classList.add("dark");
 
@@ -79,116 +102,206 @@
                     dbRef = module.db;
                     import("https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js").then(authLib => {
                         authLib.onAuthStateChanged(module.auth, (user) => {
-                            if (user) {
-                                currentUserUid = user.uid;
-                                loadTrash();
+                            if (user) { 
+                                currentUserUid = user.uid; 
+                                fetchTrash(); 
                             } else {
                                 window.location.replace("../login.html");
                             }
                         });
                     });
-                });
+                }).catch(err => console.error("Firebase Error:", err));
             } else {
                 if (localStorage.getItem('dummy_logged_in') !== 'true') window.location.replace("../login.html");
                 currentUserUid = 'local_user';
-                loadTrash();
+                fetchTrash();
             }
         });
 
-        async function loadTrash() {
-            const listContainer = document.getElementById('trashList');
-            let data = [];
-
-            if (USE_FIREBASE) {
-                fsMod = await import("https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js");
-                const q = fsMod.query(fsMod.collection(dbRef, "creative_trash"), fsMod.where("uid", "==", currentUserUid));
-                const snap = await fsMod.getDocs(q);
-                
+        // 2. Fungsi Menarik Data Sampah & Auto Delete 30 Hari
+        async function fetchTrash() {
+            try {
+                let validTrash = [];
                 const now = Date.now();
-                for (let doc of snap.docs) {
-                    if (doc.data().expireAt < now) {
-                        await fsMod.deleteDoc(doc.ref);
-                    } else {
-                        data.push({ id: doc.id, ...doc.data() });
+
+                if (USE_FIREBASE) {
+                    fsMod = await import("https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js");
+                    const q = fsMod.query(fsMod.collection(dbRef, "creative_trash"), fsMod.where("uid", "==", currentUserUid));
+                    const snap = await fsMod.getDocs(q);
+                    
+                    for (let document of snap.docs) {
+                        const data = { id: document.id, ...document.data() };
+                        if (data.expireAt < now) {
+                            await fsMod.deleteDoc(fsMod.doc(dbRef, "creative_trash", document.id));
+                        } else {
+                            validTrash.push(data);
+                        }
                     }
+                } else {
+                    let localData = JSON.parse(localStorage.getItem('creative_trash')) || [];
+                    validTrash = localData.filter(i => i.expireAt > now);
+                    localStorage.setItem('creative_trash', JSON.stringify(validTrash));
                 }
-            } else {
-                data = JSON.parse(localStorage.getItem('creative_trash')) || [];
-                const now = Date.now();
-                data = data.filter(i => i.expireAt > now);
-                localStorage.setItem('creative_trash', JSON.stringify(data));
-            }
-
-            if (data.length === 0) {
-                listContainer.innerHTML = '<div class="empty-state">Tempat sampah kosong.</div>';
-            } else {
-                listContainer.innerHTML = data.map(item => `
-                    <div class="trash-card">
-                        <div class="trash-info">
-                            <h3><span class="badge-type">${item.type}</span>${item.title}</h3>
-                            <p>Dihapus pada: ${new Date(item.deletedAt).toLocaleDateString('id-ID')}</p>
-                        </div>
-                        <div class="actions">
-                            <button class="btn-act btn-restore" onclick="restore('${item.id}')">Pulihkan</button>
-                            <button class="btn-act btn-perm" onclick="delPerm('${item.id}')">Hapus</button>
-                        </div>
-                    </div>
-                `).join('');
+                
+                window.trashData = validTrash;
+                window.renderTrash();
+            } catch (error) {
+                console.error("Gagal memuat Trash:", error);
             }
         }
 
-        window.restore = async function(id) {
-            let item;
-            if (USE_FIREBASE) {
-                const docSnap = await fsMod.getDoc(fsMod.doc(dbRef, "creative_trash", id));
-                item = docSnap.data();
-            } else {
-                const trash = JSON.parse(localStorage.getItem('creative_trash'));
-                item = trash.find(x => x.id === id);
-            }
-            
-            const targetCol = item.type === 'notes' ? 'creative_notes' : (item.type === 'script' ? 'creative_script' : 'creative_ideas');
-            const restorePayload = {
-                uid: currentUserUid,
-                title: item.title,
-                content: item.content,
-                createdAt: Date.now(),
-                updatedAt: Date.now()
-            };
+        // 3. Fungsi Filter UI
+        window.setFilter = function(type, el) {
+            window.currentFilter = type;
+            document.querySelectorAll('.filter-btn').forEach(btn => btn.classList.remove('active'));
+            el.classList.add('active');
+            window.renderTrash();
+        }
 
-            if(item.type === 'planner') {
-                const parts = item.content.split(' | Link: ');
-                restorePayload.date = "Dipulihkan";
-                restorePayload.link = parts[1] || '-';
-            }
+        // Fungsi Hitung Sisa Hari
+        function getDaysRemaining(expireAt) {
+            const diff = expireAt - Date.now();
+            return diff <= 0 ? 0 : Math.ceil(diff / (1000 * 60 * 60 * 24));
+        }
 
-            if (USE_FIREBASE) {
-                await fsMod.setDoc(fsMod.doc(dbRef, targetCol, item.originalId || "restored_" + Date.now()), restorePayload);
-                await fsMod.deleteDoc(fsMod.doc(dbRef, "creative_trash", id));
-            } else {
-                let colName = targetCol === 'creative_notes' ? 'creative_notes_v2' : (targetCol === 'creative_script' ? 'creative_script' : 'creative_planner_ideas');
-                let col = JSON.parse(localStorage.getItem(colName)) || [];
-                col.push({ id: item.originalId, ...restorePayload });
-                localStorage.setItem(colName, JSON.stringify(col));
+        // 4. FUNGSI RESTORE (PULIHKAN DATA KE CLOUD/LOKAL)
+        window.restoreItem = async function(id) {
+            const itemIndex = window.trashData.findIndex(x => x.id === id);
+            if(itemIndex === -1) return;
+            const item = window.trashData[itemIndex];
+
+            // Hapus dari UI sementara loading
+            window.trashData.splice(itemIndex, 1);
+            window.renderTrash();
+
+            try {
+                const targetCol = item.type === 'notes' ? 'creative_notes' : (item.type === 'script' ? 'creative_script' : 'creative_ideas');
                 
-                let trash = JSON.parse(localStorage.getItem('creative_trash'));
-                trash = trash.filter(x => x.id !== id);
-                localStorage.setItem('creative_trash', JSON.stringify(trash));
-            }
-            loadTrash();
-        };
+                const restorePayload = {
+                    uid: currentUserUid,
+                    title: item.title,
+                    content: item.content,
+                    createdAt: Date.now(),
+                    updatedAt: Date.now()
+                };
 
-        window.delPerm = async function(id) {
-            if(!confirm("Hapus permanen?")) return;
-            if (USE_FIREBASE) {
-                await fsMod.deleteDoc(fsMod.doc(dbRef, "creative_trash", id));
-            } else {
-                let trash = JSON.parse(localStorage.getItem('creative_trash'));
-                trash = trash.filter(x => x.id !== id);
-                localStorage.setItem('creative_trash', JSON.stringify(trash));
+                // Penyesuaian skema koleksi spesifik
+                if(item.type === 'planner') {
+                    const parts = item.content.split(' | Link: ');
+                    restorePayload.date = "Dipulihkan";
+                    if (parts.length > 0) {
+                       restorePayload.date = parts[0].replace('Tgl: ', '');
+                       restorePayload.link = parts[1] || '-';
+                    }
+                } else if(item.type === 'script') {
+                    restorePayload.status = 'draft';
+                    restorePayload.channel = 'Dipulihkan';
+                    restorePayload.pinned = false;
+                }
+
+                if (USE_FIREBASE) {
+                    await fsMod.setDoc(fsMod.doc(dbRef, targetCol, item.originalId || "restored_" + Date.now()), restorePayload);
+                    await fsMod.deleteDoc(fsMod.doc(dbRef, "creative_trash", id));
+                } else {
+                    let lsKey = targetCol === 'creative_notes' ? 'creative_notes_v2' : (targetCol === 'creative_script' ? 'creative_script' : 'creative_planner_ideas');
+                    let col = JSON.parse(localStorage.getItem(lsKey)) || [];
+                    col.push({ id: item.originalId || "restored_" + Date.now(), ...restorePayload });
+                    localStorage.setItem(lsKey, JSON.stringify(col));
+                    
+                    let trashLocal = JSON.parse(localStorage.getItem('creative_trash'));
+                    localStorage.setItem('creative_trash', JSON.stringify(trashLocal.filter(x => x.id !== id)));
+                }
+
+            } catch (error) {
+                alert("Gagal memulihkan: " + error.message);
+                await fetchTrash(); // reload jika gagal
             }
-            loadTrash();
-        };
+        }
+
+        // 5. Fungsi Hapus Permanen 1 Item
+        window.deletePermanently = async function(id) {
+            if (confirm("Hapus permanen item ini? Tindakan ini tidak dapat dibatalkan.")) {
+                // Hapus dari UI
+                window.trashData = window.trashData.filter(x => x.id !== id);
+                window.renderTrash();
+                
+                if(USE_FIREBASE) {
+                    await fsMod.deleteDoc(fsMod.doc(dbRef, "creative_trash", id));
+                } else {
+                    let trashLocal = JSON.parse(localStorage.getItem('creative_trash'));
+                    localStorage.setItem('creative_trash', JSON.stringify(trashLocal.filter(x => x.id !== id)));
+                }
+            }
+        }
+
+        // 6. Fungsi Kosongkan Semua Sampah (Atau sesuai filter)
+        window.emptyTrash = async function() {
+            let itemsToDelete = window.currentFilter === 'all' 
+                ? window.trashData 
+                : window.trashData.filter(x => x.type === window.currentFilter);
+            
+            if (itemsToDelete.length === 0) return alert("Tidak ada item untuk dikosongkan.");
+            
+            if (confirm(`Kosongkan ${itemsToDelete.length} item secara permanen?`)) {
+                // Hapus dari UI
+                if (window.currentFilter === 'all') window.trashData = [];
+                else window.trashData = window.trashData.filter(x => x.type !== window.currentFilter);
+                window.renderTrash();
+
+                // Hapus satu per satu dari Cloud/Lokal
+                if(USE_FIREBASE) {
+                    for (let item of itemsToDelete) {
+                        await fsMod.deleteDoc(fsMod.doc(dbRef, "creative_trash", item.id));
+                    }
+                } else {
+                    let trashLocal = JSON.parse(localStorage.getItem('creative_trash'));
+                    const idsToDelete = itemsToDelete.map(x => x.id);
+                    localStorage.setItem('creative_trash', JSON.stringify(trashLocal.filter(x => !idsToDelete.includes(x.id))));
+                }
+            }
+        }
+
+        // 7. Fungsi Render UI HTML
+        window.renderTrash = function() {
+            const container = document.getElementById("trashList");
+            let filteredData = window.currentFilter === 'all' 
+                ? window.trashData 
+                : window.trashData.filter(x => x.type === window.currentFilter);
+
+            if (filteredData.length === 0) {
+                container.innerHTML = `<div class="empty-state"><div class="empty-icon">🍃</div><div class="empty-text">Tempat sampah bersih dan kosong.<br>Item yang dihapus akan menetap di sini selama 30 hari.</div></div>`;
+                return;
+            }
+
+            filteredData.sort((a, b) => a.expireAt - b.expireAt);
+            let html = "";
+            filteredData.forEach(item => {
+                let icon = "📝"; let iconClass = "icon-notepad"; let sourceName = "Script";
+                if (item.type === "notes") { icon = "📌"; iconClass = "icon-notes"; sourceName = "Notes"; }
+                if (item.type === "planner") { icon = "📅"; iconClass = "icon-planner"; sourceName = "Ideas"; }
+
+                const daysLeft = getDaysRemaining(item.expireAt);
+                const badgeClass = daysLeft > 10 ? "badge-countdown warning" : "badge-countdown";
+
+                html += `<div class="trash-card">
+                    <div class="card-left">
+                        <div class="source-icon ${iconClass}" title="Berasal dari ${sourceName}">${icon}</div>
+                        <div class="card-info">
+                            <div class="card-title">${item.title || 'Tanpa Judul'}</div>
+                            <div class="card-desc">${item.content || '<em>Tidak ada isi...</em>'}</div>
+                        </div>
+                    </div>
+                    <div class="card-right">
+                        <div class="${badgeClass}">⏳ Sisa ${daysLeft} Hari</div>
+                        <div class="card-actions">
+                            <button class="btn-action btn-restore" onclick="restoreItem('${item.id}')" title="Pulihkan">♻️ Pulihkan</button>
+                            <button class="btn-action btn-delete" onclick="deletePermanently('${item.id}')" title="Hapus Permanen">🗑️</button>
+                        </div>
+                    </div>
+                </div>`;
+            });
+            container.innerHTML = html;
+        }
     </script>
 </body>
 </html>
