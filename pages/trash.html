@@ -10,7 +10,9 @@
     <meta name="theme-color" content="#2563eb">
 
     <style>
-        /* [CSS SAMA PERSIS SEPERTI DESAIN ANDA] */
+        /* =========================================================
+           CSS TRASH (Sesuai Desain Anda)
+        ========================================================= */
         @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800;900&display=swap');
         * { margin: 0; padding: 0; box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
         *::-webkit-scrollbar { display: none; }
@@ -84,7 +86,7 @@
     <script src="../js/pwa.js"></script>
 
     <script type="module">
-        const USE_FIREBASE = true; // SAKELAR HYBRID
+        const USE_FIREBASE = true;
 
         let currentUserUid = null;
         let dbRef = null;
@@ -93,7 +95,6 @@
         window.trashData = [];
         window.currentFilter = 'all';
 
-        // 1. Cek User Login & Load Data
         document.addEventListener("DOMContentLoaded", () => {
             if (localStorage.getItem("dashboard_theme") === "dark") document.body.classList.add("dark");
 
@@ -118,7 +119,6 @@
             }
         });
 
-        // 2. Fungsi Menarik Data Sampah & Auto Delete 30 Hari
         async function fetchTrash() {
             try {
                 let validTrash = [];
@@ -150,7 +150,6 @@
             }
         }
 
-        // 3. Fungsi Filter UI
         window.setFilter = function(type, el) {
             window.currentFilter = type;
             document.querySelectorAll('.filter-btn').forEach(btn => btn.classList.remove('active'));
@@ -158,13 +157,14 @@
             window.renderTrash();
         }
 
-        // Fungsi Hitung Sisa Hari
         function getDaysRemaining(expireAt) {
             const diff = expireAt - Date.now();
             return diff <= 0 ? 0 : Math.ceil(diff / (1000 * 60 * 60 * 24));
         }
 
-        // 4. FUNGSI RESTORE (PULIHKAN DATA KE CLOUD/LOKAL)
+        // =========================================================
+        // PERBAIKAN LOGIKA RESTORE IDEAS (BENTROK KOLEKSI TERATASI)
+        // =========================================================
         window.restoreItem = async function(id) {
             const itemIndex = window.trashData.findIndex(x => x.id === id);
             if(itemIndex === -1) return;
@@ -175,44 +175,40 @@
             window.renderTrash();
 
             try {
-                // Tentukan nama database tujuannya
-                let targetCol = 'creative_ideas';
+                // DI IDEAS.HTML, koleksi yang digunakan adalah "creative_ideas" (bukan "creative_planner_ideas")
+                let targetCol = 'creative_ideas'; 
                 if (item.type === 'notes') targetCol = 'creative_notes_v2';
                 if (item.type === 'script') targetCol = 'creative_script';
-                if (item.type === 'planner') targetCol = 'creative_planner_ideas';
                 
                 const restorePayload = {
                     uid: currentUserUid,
                     title: item.title,
-                    content: item.content,
-                    createdAt: Date.now(),
-                    updatedAt: Date.now()
+                    createdAt: Date.now()
                 };
 
-                // KHUSUS PLANNER / IDEAS (Harus dibuatkan Papan penampung)
+                // JIKA IDEAS
                 if(item.type === 'planner') {
                     const parts = (item.content || "").split(' | Link: ');
                     restorePayload.date = "Dipulihkan";
-                    restorePayload.done = false; // Tandai belum selesai
+                    restorePayload.done = false; 
                     
                     if (parts.length > 0) {
                        restorePayload.date = parts[0].replace('Tgl: ', '');
                        restorePayload.link = parts[1] || '-';
+                    } else {
+                       restorePayload.link = "-";
                     }
 
-                    // ID unik untuk papan pulihan
                     const boardId = "board_pulihan_" + currentUserUid;
-                    restorePayload.boardId = boardId; // Ikat item ini ke papan pulihan
+                    restorePayload.boardId = boardId;
 
                     if (USE_FIREBASE) {
-                        // Buat papan "Pulihan Trash" jika belum ada (merge: true agar tidak tertimpa)
                         await fsMod.setDoc(fsMod.doc(dbRef, "creative_planner_boards", boardId), {
                             uid: currentUserUid, 
                             name: "Pulihan Trash", 
                             createdAt: Date.now()
                         }, { merge: true });
                     } else {
-                        // Mode Lokal
                         let boards = JSON.parse(localStorage.getItem('creative_planner_boards')) || [];
                         if(!boards.find(b => b.id === boardId)) {
                             boards.push({ id: boardId, uid: currentUserUid, name: "Pulihan Trash", createdAt: Date.now() });
@@ -220,21 +216,30 @@
                         }
                     }
                 } 
-                // KHUSUS SCRIPT
+                // JIKA SCRIPT
                 else if(item.type === 'script') {
+                    restorePayload.content = item.content;
                     restorePayload.status = 'draft';
                     restorePayload.channel = 'Dipulihkan';
                     restorePayload.pinned = false;
+                    restorePayload.updatedAt = Date.now();
+                }
+                // JIKA NOTES
+                else if(item.type === 'notes') {
+                    restorePayload.content = item.content;
+                    restorePayload.pinned = false;
+                    restorePayload.updatedAt = Date.now();
                 }
 
-                // SIMPAN KE DATABASE ASAL & HAPUS DARI TRASH
                 if (USE_FIREBASE) {
                     await fsMod.setDoc(fsMod.doc(dbRef, targetCol, item.originalId || "restored_" + Date.now()), restorePayload);
                     await fsMod.deleteDoc(fsMod.doc(dbRef, "creative_trash", id));
                 } else {
-                    let col = JSON.parse(localStorage.getItem(targetCol)) || [];
+                    // Penyesuaian nama localStorage yang digunakan di ideas.html
+                    let lsKey = targetCol === 'creative_ideas' ? 'creative_planner_ideas' : targetCol;
+                    let col = JSON.parse(localStorage.getItem(lsKey)) || [];
                     col.push({ id: item.originalId || "restored_" + Date.now(), ...restorePayload });
-                    localStorage.setItem(targetCol, JSON.stringify(col));
+                    localStorage.setItem(lsKey, JSON.stringify(col));
                     
                     let trashLocal = JSON.parse(localStorage.getItem('creative_trash'));
                     localStorage.setItem('creative_trash', JSON.stringify(trashLocal.filter(x => x.id !== id)));
@@ -242,14 +247,12 @@
 
             } catch (error) {
                 alert("Gagal memulihkan: " + error.message);
-                await fetchTrash(); // Muat ulang data jika gagal
+                await fetchTrash(); // reload jika gagal
             }
         }
 
-        // 5. Fungsi Hapus Permanen 1 Item
         window.deletePermanently = async function(id) {
             if (confirm("Hapus permanen item ini? Tindakan ini tidak dapat dibatalkan.")) {
-                // Hapus dari UI
                 window.trashData = window.trashData.filter(x => x.id !== id);
                 window.renderTrash();
                 
@@ -262,7 +265,6 @@
             }
         }
 
-        // 6. Fungsi Kosongkan Semua Sampah (Atau sesuai filter)
         window.emptyTrash = async function() {
             let itemsToDelete = window.currentFilter === 'all' 
                 ? window.trashData 
@@ -271,12 +273,10 @@
             if (itemsToDelete.length === 0) return alert("Tidak ada item untuk dikosongkan.");
             
             if (confirm(`Kosongkan ${itemsToDelete.length} item secara permanen?`)) {
-                // Hapus dari UI
                 if (window.currentFilter === 'all') window.trashData = [];
                 else window.trashData = window.trashData.filter(x => x.type !== window.currentFilter);
                 window.renderTrash();
 
-                // Hapus satu per satu dari Cloud/Lokal
                 if(USE_FIREBASE) {
                     for (let item of itemsToDelete) {
                         await fsMod.deleteDoc(fsMod.doc(dbRef, "creative_trash", item.id));
@@ -289,7 +289,6 @@
             }
         }
 
-        // 7. Fungsi Render UI HTML
         window.renderTrash = function() {
             const container = document.getElementById("trashList");
             let filteredData = window.currentFilter === 'all' 
