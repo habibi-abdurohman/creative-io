@@ -157,30 +157,32 @@ function setupFirebaseUserObserver() {
 }
 
 function renderUserData(name, email, photoURL) {
-    const firstLetter = name ? name.charAt(0).toUpperCase() : "U";
+    // Kunci: Hanya cari elemen yang ada di DALAM navbar/sidebar
+    const navContainer = document.getElementById("navbar-container") || document;
+    const sidebar = document.getElementById("sidebar") || document;
+
+    const firstLetter = (name || "K").charAt(0).toUpperCase();
     
-    const avatarTextEl = document.getElementById("avatarText");
-    const profileAvatarEl = document.getElementById("profileAvatar");
-    if(avatarTextEl) avatarTextEl.innerHTML = firstLetter;
-    if(profileAvatarEl) profileAvatarEl.innerHTML = firstLetter;
+    // Update Teks Inisial
+    navContainer.querySelectorAll("#avatarText, #profileAvatar").forEach(el => {
+        el.innerHTML = firstLetter;
+        el.style.display = photoURL ? "none" : "flex"; 
+    });
 
-    const profileNameEl = document.getElementById("profileName");
-    const profileEmailEl = document.getElementById("profileEmail");
-    if(profileNameEl) profileNameEl.innerHTML = name;
-    if(profileEmailEl) profileEmailEl.innerHTML = email;
+    // Update Nama dan Email
+    navContainer.querySelectorAll("#profileName").forEach(el => el.innerHTML = name || "Kreator");
+    navContainer.querySelectorAll("#profileEmail").forEach(el => el.innerHTML = email || "kreator@creative.io");
 
-    const avatarImgEl = document.getElementById("avatarImg");
-    const profileAvatarImgEl = document.getElementById("profileAvatarImg");
-
-    if (photoURL && avatarImgEl && profileAvatarImgEl) {
-        avatarImgEl.src = photoURL;
-        avatarImgEl.style.display = "block";
-        if(avatarTextEl) avatarTextEl.style.display = "none";
-
-        profileAvatarImgEl.src = photoURL;
-        profileAvatarImgEl.style.display = "block";
-        if(profileAvatarEl) profileAvatarEl.style.display = "none";
-    }
+    // Update Foto Profil
+    navContainer.querySelectorAll("#avatarImg, #profileAvatarImg").forEach(el => {
+        if (photoURL) {
+            el.src = photoURL;
+            el.style.display = "block";
+        } else {
+            el.src = "";
+            el.style.display = "none";
+        }
+    });
 }
 
 /* =========================================================
@@ -203,3 +205,7 @@ window.logout = function() {
         window.location.href = rootPath + "login.html";
     }
 };
+
+window.addEventListener('profileUpdated', () => {
+    setupFirebaseUserObserver(); // Tarik data ulang seketika!
+});
