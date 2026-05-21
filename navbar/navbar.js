@@ -132,26 +132,29 @@ function setupFirebaseUserObserver() {
                     .then(authLib => {
                         authLib.onAuthStateChanged(module.auth, (user) => {
                             if (user) {
+                                // AMBIL FOTO DARI LOCALSTORAGE
+                                const savedPhoto = localStorage.getItem(`creative_photo_${user.uid}`);
+                                
+                                // Render ke UI
                                 renderUserData(
                                     user.displayName || "Kreator", 
                                     user.email, 
-                                    user.photoURL
+                                    savedPhoto || user.photoURL
                                 );
                             } else {
-                                // Jika tidak login, arahkan ke login page (Kecuali sudah di login/register)
-                                const path = window.location.pathname;
-                                if (!path.includes("login.html") && !path.includes("register.html") && !path.includes("forgot-password.html")) {
-                                    window.location.href = rootPath + "login.html";
-                                }
+                                window.location.href = rootPath + "login.html";
                             }
                         });
                     });
             })
-            .catch(err => console.log("Mode Offline/Lokal"));
+            .catch(err => console.log("Gagal memuat Firebase di Navbar."));
     } else {
+        // Mode Lokal
         const savedProfile = JSON.parse(localStorage.getItem('creative_user_profile'));
         if (savedProfile) {
             renderUserData(savedProfile.name || "Kreator", "kreator@creative.io", savedProfile.photo || null);
+        } else {
+            renderUserData("Kreator", "kreator@creative.io", null);
         }
     }
 }
