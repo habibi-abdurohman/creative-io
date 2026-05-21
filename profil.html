@@ -174,10 +174,19 @@
         window.saveProfile = async function() {
             const newName = inputName.value.trim();
             if (USE_FIREBASE && currentUser) {
+                // Update profil ke Firebase
                 await updateProfile(currentUser, { displayName: newName });
+                
+                // Simpan foto ke LocalStorage
                 localStorage.setItem(`creative_photo_${currentUser.uid}`, avatarPreview.src);
+                
+                // Tampilkan notifikasi (Toast)
                 toast.classList.add('show');
                 setTimeout(() => toast.classList.remove('show'), 2500);
+
+                // --- TAMBAHKAN BARIS INI ---
+                // Beritahu Navbar (dan seluruh aplikasi) bahwa profil sudah berubah!
+                window.dispatchEvent(new Event('profileUpdated'));
             }
         }
 
