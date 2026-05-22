@@ -31,13 +31,13 @@
         .total-badge { padding: 6px 14px; border-radius: 20px; background: var(--primary-soft); color: var(--primary); font-size: 12px; font-weight: 800; border: 1px solid var(--border); white-space: nowrap; }
         
         /* =========================================================
-           REVISI UI: FLOATING ISLAND + EXPANDABLE SEARCH
+           REVISI UI: SEARCH BAR IKUT TER-SCROLL
         ========================================================= */
         .sticky-tools { 
             position: sticky; 
             top: 76px; 
             z-index: 50; 
-            padding: 10px 16px; /* Padding lebih tipis karena 1 baris */
+            padding: 10px 16px; 
             margin: 16px 0 24px 0; 
             background: var(--sticky-bg); 
             backdrop-filter: blur(16px); 
@@ -47,21 +47,25 @@
             box-shadow: 0 12px 32px rgba(0, 0, 0, 0.05); 
             transition: box-shadow 0.3s ease;
         }
-        body.dark .sticky-tools {
-            box-shadow: 0 12px 32px rgba(0, 0, 0, 0.3);
-        }
+        body.dark .sticky-tools { box-shadow: 0 12px 32px rgba(0, 0, 0, 0.3); }
         
+        /* Inner Container diset ke Flexbox & Scrollable (Mencakup Search + Filter) */
         .sticky-tools-inner { 
             position: relative; 
             display: flex; 
             align-items: center; 
-            height: 38px; /* Menjaga tinggi agar tidak melompat */
+            height: 38px; 
+            gap: 8px; /* Jarak antara search dan filter */
             max-width: 100%; 
             margin: 0 auto; 
+            overflow-x: auto; 
+            scrollbar-width: none; /* Menyembunyikan scrollbar di Firefox */
         }
+        .sticky-tools-inner::-webkit-scrollbar { display: none; } /* Menyembunyikan scrollbar di Webkit */
         
-        /* Komponen Expandable Search */
+        /* Komponen Expandable Search (Menjadi flex-item biasa agar ikut scroll) */
         .search-expandable { 
+            flex-shrink: 0; 
             display: flex; 
             align-items: center; 
             background: var(--card-solid); 
@@ -75,88 +79,35 @@
             z-index: 10; 
             box-shadow: var(--shadow-flat);
         }
+        /* Saat diekspansi, ia akan mendorong filter ke kanan secara otomatis */
         .search-expandable.expanded { 
-            width: 100%; 
+            width: 240px; 
             border-color: var(--primary); 
         }
+        @media(min-width: 480px) { .search-expandable.expanded { width: 300px; } }
+        @media(min-width: 768px) { .search-expandable.expanded { width: 400px; } }
         
         .search-icon-btn { 
-            min-width: 38px; 
-            height: 38px; 
-            background: transparent; 
-            border: none; 
-            font-size: 14px; 
-            cursor: pointer; 
-            color: var(--text-muted); 
-            display: flex; 
-            align-items: center; 
-            justify-content: center; 
-            transition: 0.2s;
+            min-width: 38px; height: 38px; background: transparent; border: none; font-size: 14px; 
+            cursor: pointer; color: var(--text-muted); display: flex; align-items: center; justify-content: center; transition: 0.2s;
         }
-        .search-expandable.expanded .search-icon-btn { 
-            color: var(--primary); 
-            pointer-events: none; /* Matikan klik saat sudah panjang */
-        }
+        .search-expandable.expanded .search-icon-btn { color: var(--primary); pointer-events: none; }
         
         .search-expandable input { 
-            flex: 1; 
-            border: none; 
-            outline: none; 
-            background: transparent; 
-            font-size: 13px; 
-            color: var(--text-main); 
-            padding: 0 4px; 
-            opacity: 0; 
-            pointer-events: none; 
-            transition: opacity 0.2s 0.1s; /* Delay halus saat muncul */
+            flex: 1; border: none; outline: none; background: transparent; font-size: 13px; 
+            color: var(--text-main); padding: 0 4px; opacity: 0; pointer-events: none; transition: opacity 0.2s 0.1s; 
         }
-        .search-expandable.expanded input { 
-            opacity: 1; 
-            pointer-events: auto; 
-        }
+        .search-expandable.expanded input { opacity: 1; pointer-events: auto; }
         
         .close-search-btn { 
-            min-width: 38px; 
-            height: 38px; 
-            background: transparent; 
-            border: none; 
-            font-size: 14px; 
-            cursor: pointer; 
-            color: var(--text-muted); 
-            opacity: 0; 
-            pointer-events: none; 
-            transition: 0.2s; 
-            display: flex; 
-            align-items: center; 
-            justify-content: center; 
+            min-width: 38px; height: 38px; background: transparent; border: none; font-size: 14px; 
+            cursor: pointer; color: var(--text-muted); opacity: 0; pointer-events: none; transition: 0.2s; 
+            display: flex; align-items: center; justify-content: center; 
         }
         .close-search-btn:hover { color: var(--danger); }
-        .search-expandable.expanded .close-search-btn { 
-            opacity: 1; 
-            pointer-events: auto; 
-        }
+        .search-expandable.expanded .close-search-btn { opacity: 1; pointer-events: auto; }
         
-        /* Komponen Filter Wrap Absolute */
-        .filter-wrap { 
-            position: absolute; 
-            left: 48px; /* 38px width search + 10px gap */
-            right: 0; 
-            top: 0; 
-            bottom: 0; 
-            display: flex; 
-            gap: 8px; 
-            align-items: center; 
-            overflow-x: auto; 
-            transition: opacity 0.2s, visibility 0.2s; 
-            scrollbar-width: none; /* Firefox */
-        }
-        .filter-wrap::-webkit-scrollbar { display: none; } /* Chrome/Safari */
-        .filter-wrap.hidden { 
-            opacity: 0; 
-            visibility: hidden; 
-            pointer-events: none;
-        }
-        
+        /* Tombol Filter */
         .filter-btn { flex-shrink: 0; padding: 8px 14px; border-radius: 10px; background: var(--card-solid); border: 1px solid var(--border); font-size: 12px; font-weight: 700; color: var(--text-muted); cursor: pointer; transition: 0.2s; white-space: nowrap; }
         .filter-btn.active { background: var(--primary-soft); border-color: var(--primary); color: var(--primary); }
         .divider { flex-shrink: 0; width: 1px; height: 18px; background: var(--border); margin: 0 2px; }
@@ -171,25 +122,10 @@
         .note-card:hover { transform: translateY(-2px); border-color: #cbd5e1; }
         .note-card.pinned { border-color: var(--warning); border-width: 2px; }
         
-        .note-card.restored { 
-            border-left: 5px solid var(--warning); 
-            background-color: rgba(245, 158, 11, 0.03); 
-            padding-top: 24px; 
-        }
-        body.dark .note-card.restored { 
-            background-color: rgba(245, 158, 11, 0.05); 
-        }
+        .note-card.restored { border-left: 5px solid var(--warning); background-color: rgba(245, 158, 11, 0.03); padding-top: 24px; }
+        body.dark .note-card.restored { background-color: rgba(245, 158, 11, 0.05); }
         
-        .badge-corner { 
-            position: absolute; top: 0; right: 0; 
-            background: rgba(245, 158, 11, 0.15); 
-            color: var(--warning); font-size: 10px; font-weight: 800; 
-            padding: 5px 12px; 
-            border-bottom-left-radius: 12px; border-top-right-radius: 19px; 
-            border-bottom: 1px solid rgba(245, 158, 11, 0.2); 
-            border-left: 1px solid rgba(245, 158, 11, 0.2); 
-            z-index: 10; 
-        }
+        .badge-corner { position: absolute; top: 0; right: 0; background: rgba(245, 158, 11, 0.15); color: var(--warning); font-size: 10px; font-weight: 800; padding: 5px 12px; border-bottom-left-radius: 12px; border-top-right-radius: 19px; border-bottom: 1px solid rgba(245, 158, 11, 0.2); border-left: 1px solid rgba(245, 158, 11, 0.2); z-index: 10; }
         body.dark .badge-corner { background: rgba(245, 158, 11, 0.25); }
         
         .note-top { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 10px; position: relative; z-index: 2; }
@@ -264,20 +200,19 @@
         </div>
 
         <div class="sticky-tools">
-            <div class="sticky-tools-inner">
+            <div class="sticky-tools-inner" id="filterWrap">
+                
                 <div class="search-expandable" id="searchContainer">
-                    <button class="search-icon-btn" onclick="openSearch()" title="Cari Catatan">🔍</button>
+                    <button class="search-icon-btn" onclick="openSearch(event)" title="Cari Catatan">🔍</button>
                     <input type="text" id="searchInput" placeholder="Cari catatan..." oninput="window.renderNotes()">
-                    <button class="close-search-btn" onclick="closeSearch()" title="Tutup Pencarian">✕</button>
+                    <button class="close-search-btn" onclick="closeSearch(event)" title="Tutup Pencarian">✕</button>
                 </div>
                 
-                <div class="filter-wrap" id="filterWrap">
-                    <button class="filter-btn active" id="filterAll" onclick="setFilter('all', this)">Semua</button>
-                    <button class="filter-btn" id="filterPinned" onclick="setFilter('pinned', this)">📌 Pinned</button>
-                    <div class="divider"></div>
-                    <button class="filter-btn active" id="sortNewest" onclick="setSort('newest')">Terbaru</button>
-                    <button class="filter-btn" id="sortOldest" onclick="setSort('oldest')">Terlama</button>
-                </div>
+                <button class="filter-btn active" id="filterAll" onclick="setFilter('all', this)">Semua</button>
+                <button class="filter-btn" id="filterPinned" onclick="setFilter('pinned', this)">📌 Pinned</button>
+                <div class="divider"></div>
+                <button class="filter-btn active" id="sortNewest" onclick="setSort('newest')">Terbaru</button>
+                <button class="filter-btn" id="sortOldest" onclick="setSort('oldest')">Terlama</button>
             </div>
         </div>
 
@@ -377,7 +312,6 @@
 
         async function loadDataFromCloud() {
             try {
-                // Menggunakan koleksi creative_notes_v2 agar sinkron dengan trash.html
                 const q = query(collection(db, "creative_notes_v2"), where("uid", "==", currentUserUid));
                 const snap = await getDocs(q);
                 
@@ -389,17 +323,23 @@
         }
 
         // ==========================================
-        // HANDLER ANIMASI EXPANDABLE SEARCH
+        // HANDLER ANIMASI & LOGIKA EXPANDABLE SEARCH
         // ==========================================
-        window.openSearch = function() {
+        window.openSearch = function(event) {
+            if (event) event.stopPropagation(); // Mencegah klik langsung tertangkap listener global
+            
+            // Auto-scroll ke paling kiri agar saat terbuka tidak terpotong
+            const wrap = document.getElementById('filterWrap');
+            wrap.scrollTo({left: 0, behavior: 'smooth'}); 
+            
             document.getElementById('searchContainer').classList.add('expanded');
-            document.getElementById('filterWrap').classList.add('hidden');
-            setTimeout(() => { document.getElementById('searchInput').focus(); }, 300); // Focus input setelah animasi
+            setTimeout(() => { document.getElementById('searchInput').focus(); }, 300);
         }
 
-        window.closeSearch = function() {
+        window.closeSearch = function(event) {
+            if (event) event.stopPropagation();
+            
             document.getElementById('searchContainer').classList.remove('expanded');
-            document.getElementById('filterWrap').classList.remove('hidden');
             const input = document.getElementById('searchInput');
             if (input.value !== '') {
                 input.value = '';
@@ -407,7 +347,18 @@
             }
         }
 
-        // 2. FUNGSI SIMPAN
+        // Listener global: Klik di luar untuk menutup
+        document.addEventListener('click', function(e) {
+            const searchContainer = document.getElementById('searchContainer');
+            // Jika search bar sedang terbuka DAN area yang diklik bukan bagian dari search bar
+            if (searchContainer && searchContainer.classList.contains('expanded') && !searchContainer.contains(e.target)) {
+                window.closeSearch();
+            }
+        });
+
+        // ==========================================
+        // FUNGSI SIMPAN & UI LAINNYA
+        // ==========================================
         window.performSave = async function(isAuto = false) {
             const title = document.getElementById('titleInput').value.trim();
             const content = document.getElementById('contentInput').value;
@@ -422,7 +373,7 @@
                 title: title || 'Tanpa Judul', 
                 content: content,
                 pinned: window.currentPinned, 
-                isRestored: window.isRestored, // Simpan status "restored"
+                isRestored: window.isRestored,
                 updatedAt: now
             };
 
@@ -438,21 +389,17 @@
             if(!isAuto) window.renderNotes();
 
             if (USE_FIREBASE) {
-                try {
-                    await setDoc(doc(db, "creative_notes_v2", docId), payload);
-                } catch (e) { console.error("Gagal save cloud", e); }
+                try { await setDoc(doc(db, "creative_notes_v2", docId), payload); } 
+                catch (e) { console.error("Gagal save cloud", e); }
             } else {
                 localStorage.setItem('creative_notes_v2', JSON.stringify(window.notesData));
             }
         }
 
         window.markAsEdited = function() {
-            if (window.isRestored) {
-                window.isRestored = false;
-            }
+            if (window.isRestored) window.isRestored = false;
         }
 
-        // 3. FUNGSI HAPUS KE TRASH
         window.softDeleteNote = async function(idOverride = null) {
             const idToDelete = idOverride || window.currentId;
             if (!idToDelete) return;
@@ -465,13 +412,8 @@
             const trashId = 'trash_' + now;
 
             const trashPayload = {
-                uid: currentUserUid, 
-                originalId: item.id, 
-                type: 'notes',
-                title: item.title, 
-                content: item.content, 
-                deletedAt: now, 
-                expireAt: now + (30 * 24 * 60 * 60 * 1000)
+                uid: currentUserUid, originalId: item.id, type: 'notes',
+                title: item.title, content: item.content, deletedAt: now, expireAt: now + (30 * 24 * 60 * 60 * 1000)
             };
 
             window.notesData.splice(itemIndex, 1);
@@ -489,7 +431,6 @@
             }
         }
 
-        // 4. UI HANDLERS
         window.setFilter = function(type, el) { 
             window.currentFilter = type; 
             document.getElementById('filterAll').classList.remove('active');
@@ -518,11 +459,8 @@
                     document.getElementById('contentInput').value = item.content;
                 }
             } else {
-                window.currentId = null; 
-                window.currentPinned = false;
-                window.isRestored = false;
-                document.getElementById('titleInput').value = '';
-                document.getElementById('contentInput').value = '';
+                window.currentId = null; window.currentPinned = false; window.isRestored = false;
+                document.getElementById('titleInput').value = ''; document.getElementById('contentInput').value = '';
             }
             updatePin(); updateCounter();
         }
