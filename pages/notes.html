@@ -3,118 +3,56 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
-    <title>Notes - Creative.io</title>
-    
+    <title>Trash - Creative.io</title>
+
     <link rel="stylesheet" href="../navbar/navbar.css">
     <link rel="manifest" href="../manifest.json">
-    <meta name="theme-color" content="#3b82f6">
+    <meta name="theme-color" content="#2563eb">
 
     <style>
-        /* =========================================================
-           CSS LENGKAP (TIDAK ADA YANG DIHAPUS)
-        ========================================================= */
         @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800;900&display=swap');
         * { margin: 0; padding: 0; box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
         *::-webkit-scrollbar { display: none; }
-        :root { --bg-grad: linear-gradient(180deg, #f8fbff 0%, #eef4ff 100%); --sticky-bg: rgba(248, 251, 255, 0.85); --card-glass: rgba(255, 255, 255, 0.9); --card-solid: #ffffff; --card-tint: #f1f5f9; --border: #e2e8f0; --paper-line: #e2e8f0; --text-main: #0f172a; --text-muted: #64748b; --primary: #2563eb; --primary-soft: rgba(37, 99, 235, 0.1); --warning: #f59e0b; --danger: #ef4444; --shadow-flat: 0 4px 20px rgba(0, 0, 0, 0.04); --radius-btn: 14px; --radius-card: 20px; }
-        body.dark { --bg-grad: linear-gradient(180deg, #0f172a 0%, #1e293b 100%); --sticky-bg: rgba(15, 23, 42, 0.85); --card-glass: rgba(30, 41, 59, 0.9); --card-solid: #1e293b; --card-tint: #0f172a; --border: #334155; --paper-line: rgba(255, 255, 255, 0.05); --text-main: #f8fafc; --text-muted: #94a3b8; --primary-soft: rgba(59, 130, 246, 0.2); --shadow-flat: 0 4px 20px rgba(0, 0, 0, 0.2); }
-        body { font-family: 'Inter', system-ui, sans-serif; background: var(--bg-grad); color: var(--text-main); min-height: 100vh; padding: 76px 16px 100px; }
-        
-        .wrapper { position: relative; z-index: 2; max-width: 1100px; margin: 0 auto; }
+        :root { --bg-grad: linear-gradient(180deg, #f8fbff 0%, #eef4ff 100%); --card-glass: rgba(255, 255, 255, 0.9); --card-solid: #ffffff; --card-tint: #f1f5f9; --border: #e2e8f0; --text-main: #0f172a; --text-muted: #64748b; --primary: #2563eb; --primary-soft: rgba(37, 99, 235, 0.1); --success: #16a34a; --danger: #ef4444; --danger-soft: rgba(239, 68, 68, 0.1); --warning: #f59e0b; --shadow-flat: 0 4px 20px rgba(0, 0, 0, 0.04); --radius-btn: 14px; --radius-card: 24px; }
+        body.dark { --bg-grad: linear-gradient(180deg, #0f172a 0%, #1e293b 100%); --card-glass: rgba(30, 41, 59, 0.9); --card-solid: #1e293b; --card-tint: #0f172a; --border: #334155; --text-main: #f8fafc; --text-muted: #94a3b8; --primary-soft: rgba(59, 130, 246, 0.2); --danger-soft: rgba(239, 68, 68, 0.15); --shadow-flat: 0 4px 20px rgba(0, 0, 0, 0.2); }
+        body { font-family: 'Inter', system-ui, sans-serif; background: var(--bg-grad); color: var(--text-main); min-height: 100vh; padding: 86px 16px 100px; transition: background 0.3s, color 0.3s; }
         .bg-glow { position: fixed; border-radius: 50%; filter: blur(90px); z-index: 0; opacity: 0.5; pointer-events: none; }
         .bg-glow.one { width: 340px; height: 340px; background: rgba(59, 130, 246, 0.15); top: -50px; left: -100px; }
         .bg-glow.two { width: 320px; height: 320px; background: rgba(96, 165, 250, 0.15); bottom: 100px; right: -100px; }
-        
-        .top-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 18px; }
-        .page-title { font-size: 24px; font-weight: 800; letter-spacing: -0.5px; }
-        .page-subtitle { font-size: 13px; color: var(--text-muted); line-height: 1.6; }
-        .total-badge { padding: 6px 14px; border-radius: 20px; background: var(--primary-soft); color: var(--primary); font-size: 12px; font-weight: 800; border: 1px solid var(--border); white-space: nowrap; }
-        
-        .sticky-tools { position: sticky; top: 52px; z-index: 50; padding: 12px 16px; margin: 0 -16px; background: var(--sticky-bg); backdrop-filter: blur(12px); }
-        .sticky-tools-inner { max-width: 1100px; margin: 0 auto; }
-        .search-box { position: relative; margin-bottom: 12px; }
-        .search-box input { width: 100%; padding: 14px 16px 14px 42px; outline: none; background: var(--card-solid); border: 1px solid var(--border); border-radius: var(--radius-btn); font-size: 13px; color: var(--text-main); box-shadow: var(--shadow-flat); }
-        .search-box input:focus { border-color: var(--primary); }
-        .search-box::before { content: '🔍'; position: absolute; left: 14px; top: 13px; font-size: 14px; opacity: 0.6; }
-        
-        .filter-wrap { display: flex; gap: 8px; overflow-x: auto; padding-bottom: 6px; }
-        .filter-btn { flex-shrink: 0; padding: 8px 16px; border-radius: 12px; background: var(--card-solid); border: 1px solid var(--border); font-size: 12px; font-weight: 700; color: var(--text-muted); cursor: pointer; transition: 0.2s; }
+        .wrapper { position: relative; z-index: 2; max-width: 900px; margin: 0 auto; }
+        .page-header { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 20px; flex-wrap: wrap; gap: 16px; }
+        .header-title h1 { font-size: 26px; font-weight: 900; letter-spacing: -0.5px; display: flex; align-items: center; gap: 10px; }
+        .header-title p { font-size: 13px; color: var(--text-muted); margin-top: 6px; line-height: 1.6; max-width: 450px; }
+        .btn-empty-trash { background: var(--danger-soft); color: var(--danger); border: 1px solid rgba(239, 68, 68, 0.2); padding: 12px 20px; border-radius: var(--radius-btn); font-size: 13px; font-weight: 800; cursor: pointer; transition: 0.2s; display: flex; align-items: center; gap: 8px; }
+        .btn-empty-trash:hover { background: var(--danger); color: white; }
+        .filter-wrap { display: flex; gap: 8px; overflow-x: auto; margin-bottom: 20px; padding-bottom: 4px; }
+        .filter-btn { flex-shrink: 0; padding: 10px 16px; border-radius: 14px; background: var(--card-solid); border: 1px solid var(--border); font-size: 13px; font-weight: 700; color: var(--text-muted); cursor: pointer; transition: 0.2s; display: flex; align-items: center; gap: 6px; }
+        .filter-btn:hover { background: var(--card-tint); }
         .filter-btn.active { background: var(--primary-soft); border-color: var(--primary); color: var(--primary); }
-        .divider { flex-shrink: 0; width: 1px; height: 20px; background: var(--border); margin: 0 4px; align-self: center; }
-        
-        .notes-list { column-count: 4; column-gap: 16px; margin-top: 10px; }
-        .empty-state { column-span: all; text-align: center; padding: 60px 20px; background: var(--card-glass); border: 1px dashed var(--border); border-radius: var(--radius-card); cursor: pointer; transition: 0.2s; }
-        .empty-state:hover { background: var(--card-tint); }
-        .empty-state-icon { font-size: 42px; margin-bottom: 12px; opacity: 0.8; }
-        .empty-state-text { font-size: 13px; color: var(--text-muted); line-height: 1.6; }
-        
-        .note-card { break-inside: avoid; margin-bottom: 16px; padding: 20px 16px 16px 20px; border-radius: var(--radius-card); background: var(--card-glass); border: 1px solid var(--border); cursor: pointer; position: relative; overflow: hidden; box-shadow: var(--shadow-flat); transition: transform 0.2s, border-color 0.2s; background-image: linear-gradient(var(--paper-line) 1px, transparent 1px); background-size: 100% 28px; background-position: 0 12px; }
-        .note-card:hover { transform: translateY(-2px); border-color: #cbd5e1; }
-        .note-card::before { content: ''; position: absolute; left: 16px; top: 0; bottom: 0; width: 1px; background: rgba(239, 68, 68, 0.2); z-index: 1; }
-        .note-card.pinned { border-color: var(--warning); border-width: 2px; }
-        
-        /* DESAIN UNIK UNTUK NOTES YANG DIPULIHKAN */
-        .note-card.restored { border: 1px dashed var(--warning); background-color: rgba(245, 158, 11, 0.05); }
-        body.dark .note-card.restored { border: 1px dashed rgba(245, 158, 11, 0.5); background-color: rgba(245, 158, 11, 0.05); }
-        .note-card.restored::before { background: rgba(245, 158, 11, 0.4); }
-        
-        .note-top { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 10px; position: relative; z-index: 2; }
-        .note-title { font-size: 15px; font-weight: 800; line-height: 1.4; color: var(--text-main); }
-        .note-content { font-size: 13px; line-height: 28px; color: var(--text-muted); position: relative; z-index: 2; white-space: pre-wrap; display: -webkit-box; -webkit-line-clamp: 6; -webkit-box-orient: vertical; overflow: hidden; }
-        .note-footer { margin-top: 14px; padding-top: 10px; border-top: 1px dashed var(--border); display: flex; justify-content: space-between; align-items: center; position: relative; z-index: 2; }
-        .note-date { font-size: 11px; font-weight: 700; color: var(--text-muted); }
-        
-        .btn-quick-del { border: none; background: transparent; color: var(--text-muted); font-size: 14px; cursor: pointer; padding: 4px; border-radius: 6px; transition: 0.2s; }
-        .btn-quick-del:hover { background: rgba(239, 68, 68, 0.1); color: var(--danger); }
-        
-        .badge-restored { font-size: 10px; font-weight: 800; background: rgba(245, 158, 11, 0.15); color: var(--warning); padding: 4px 8px; border-radius: 6px; border: 1px solid rgba(245, 158, 11, 0.3); margin-right: 8px; }
-        
-        .fab { position: fixed; right: 24px; bottom: 24px; width: 56px; height: 56px; border: none; border-radius: 20px; background: var(--primary); color: white; font-size: 28px; cursor: pointer; box-shadow: 0 10px 25px rgba(37, 99, 235, 0.3); z-index: 100; display: flex; align-items: center; justify-content: center; }
-        
-        /* EDITOR IMMERSIVE */
-        .editor { position: fixed; inset: 0; background: var(--bg-grad); z-index: 99999; display: none; flex-direction: column; }
-        .editor.active { display: flex; }
-        
-        .editor-header { display: flex; justify-content: space-between; align-items: center; padding: 12px 16px; background: rgba(255, 255, 255, 0.85); backdrop-filter: blur(12px); border-bottom: 1px solid var(--border); flex-shrink: 0; }
-        body.dark .editor-header { background: rgba(15, 23, 42, 0.85); }
-        
-        .editor-left, .editor-right { display: flex; align-items: center; gap: 8px; }
-        .auto-save { font-size: 11px; font-weight: 700; color: var(--text-muted); background: var(--card-tint); padding: 4px 10px; border-radius: 8px; opacity: 0; transition: 0.2s; }
-        .icon-btn { width: 36px; height: 36px; border: none; border-radius: 12px; background: var(--card-solid); border: 1px solid var(--border); color: var(--text-main); cursor: pointer; font-size: 15px; display: flex; align-items: center; justify-content: center; transition: 0.2s; }
-        .icon-btn:hover { background: var(--card-tint); }
-        
-        .editor-body { flex: 1; overflow-y: auto; padding: 40px 0 100px; background-image: linear-gradient(var(--paper-line) 1px, transparent 1px); background-size: 100% 32px; background-position: 0 8px; background-attachment: local; }
-        .editor-container { max-width: 1000px; width: 100%; margin: 0 auto; position: relative; padding: 0 24px; display: flex; flex-direction: column; }
-        
-        .title-input { width: 100%; border: none; outline: none; background: transparent; font-size: 32px; font-weight: 900; color: var(--text-main); margin-bottom: 24px; line-height: 1.3; }
-        .content-input { width: 100%; flex: 1; min-height: 70vh; border: none; outline: none; resize: none; background: transparent; font-size: 16px; line-height: 32px; color: var(--text-main); font-family: inherit; }
-        .title-input::placeholder, .content-input::placeholder { color: var(--text-muted); opacity: 0.6; }
-        
-        .editor-footer { position: fixed; left: 0; right: 0; bottom: 0; background: var(--sticky-bg); backdrop-filter: blur(12px); border-top: 1px solid var(--border); padding: 14px 20px calc(14px + env(safe-area-inset-bottom)); display: flex; justify-content: space-between; align-items: center; z-index: 20; }
-        body.dark .editor-footer { background: rgba(15, 23, 42, 0.9); }
-        
-        .word-count { font-size: 12px; font-weight: 700; color: var(--text-muted); }
-        .save-btn { border: none; padding: 12px 28px; border-radius: 12px; background: var(--primary); color: white; font-size: 13px; font-weight: 800; cursor: pointer; transition: 0.2s; box-shadow: 0 6px 16px rgba(37,99,235,0.2); }
-        .save-btn:hover { transform: translateY(-2px); box-shadow: 0 8px 20px rgba(37,99,235,0.3); }
-
-        .info-modal { position: fixed; inset: 0; background: rgba(0,0,0,0.4); backdrop-filter: blur(4px); z-index: 999999; display: none; align-items: center; justify-content: center; padding: 20px; }
-        .info-box { width: 100%; max-width: 340px; padding: 24px; border-radius: 24px; background: var(--card-solid); border: 1px solid var(--border); color: var(--text-main); box-shadow: var(--shadow-flat); }
-        .info-box h3 { margin-bottom: 20px; font-size: 18px; font-weight: 800; text-align: center; }
-        .info-row { display: flex; justify-content: space-between; margin-bottom: 12px; font-size: 13px; }
-        .info-label { color: var(--text-muted); font-weight: 600; }
-        .info-value { font-weight: 800; text-align: right; }
-        .close-info { width: 100%; height: 46px; border: none; margin-top: 20px; border-radius: 14px; background: var(--card-tint); color: var(--text-main); font-weight: 800; cursor: pointer; }
-        
-        @media(max-width: 1024px) { .notes-list { column-count: 3; } }
-        @media(max-width: 768px) { .notes-list { column-count: 2; } }
-        @media(max-width: 480px) { 
-            .notes-list { column-count: 2; column-gap: 12px; } 
-            .note-card { padding: 16px 12px 12px 16px; margin-bottom: 12px; } 
-            .note-title { font-size: 14px; } 
-            .note-content { font-size: 12px; line-height: 24px; } 
-            .editor-container { padding: 0 16px; }
-            .title-input { font-size: 26px; }
-        }
+        .trash-list { display: flex; flex-direction: column; gap: 14px; }
+        .trash-card { background: var(--card-glass); backdrop-filter: blur(12px); border: 1px solid var(--border); border-radius: var(--radius-card); padding: 20px; box-shadow: var(--shadow-flat); display: flex; justify-content: space-between; align-items: center; gap: 20px; transition: 0.2s; }
+        .trash-card:hover { border-color: #cbd5e1; transform: translateY(-2px); }
+        .card-left { display: flex; align-items: flex-start; gap: 16px; flex: 1; min-width: 0; }
+        .source-icon { width: 48px; height: 48px; border-radius: 16px; display: flex; align-items: center; justify-content: center; font-size: 24px; flex-shrink: 0; }
+        .icon-notepad { background: rgba(59, 130, 246, 0.1); color: #3b82f6; }
+        .icon-notes { background: rgba(245, 158, 11, 0.1); color: #f59e0b; }
+        .icon-planner { background: rgba(139, 92, 246, 0.1); color: #8b5cf6; }
+        .card-info { flex: 1; min-width: 0; }
+        .card-title { font-size: 16px; font-weight: 800; color: var(--text-main); margin-bottom: 4px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+        .card-desc { font-size: 13px; color: var(--text-muted); line-height: 1.5; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; }
+        .card-right { display: flex; flex-direction: column; align-items: flex-end; gap: 12px; flex-shrink: 0; }
+        .badge-countdown { display: inline-flex; align-items: center; gap: 6px; background: var(--danger-soft); color: var(--danger); padding: 6px 12px; border-radius: 12px; font-size: 11px; font-weight: 800; }
+        .badge-countdown.warning { background: rgba(245, 158, 11, 0.1); color: var(--warning); }
+        .card-actions { display: flex; gap: 8px; }
+        .btn-action { padding: 10px 16px; border-radius: 12px; font-size: 12px; font-weight: 800; cursor: pointer; transition: 0.2s; border: none; }
+        .btn-restore { background: var(--card-tint); color: var(--primary); border: 1px solid var(--border); }
+        .btn-restore:hover { background: var(--primary-soft); border-color: var(--primary); }
+        .btn-delete { background: transparent; color: var(--text-muted); padding: 10px; font-size: 16px; }
+        .btn-delete:hover { color: var(--danger); }
+        .empty-state { text-align: center; padding: 80px 20px; background: var(--card-glass); border: 1px dashed var(--border); border-radius: var(--radius-card); }
+        .empty-icon { font-size: 56px; margin-bottom: 16px; opacity: 0.5; filter: grayscale(1); }
+        .empty-text { font-size: 14px; color: var(--text-muted); font-weight: 600; line-height: 1.6; }
+        @media(max-width: 600px) { .page-header { flex-direction: column; align-items: stretch; } .btn-empty-trash { justify-content: center; } .trash-card { flex-direction: column; align-items: stretch; gap: 16px; } .card-right { flex-direction: row; justify-content: space-between; align-items: center; } .card-actions { flex: 1; justify-content: flex-end; } }
     </style>
 </head>
 <body>
@@ -123,367 +61,266 @@
     <div class="bg-glow one"></div><div class="bg-glow two"></div>
 
     <div class="wrapper">
-        <div class="top-header">
-            <div>
-                <h1 class="page-title">Quick Notes</h1>
-                <div class="page-subtitle">Catat ide cepat. Aman terhapus otomatis setelah 30 hari di Trash.</div>
+        <div class="page-header">
+            <div class="header-title">
+                <h1>🗑️ Tempat Sampah</h1>
+                <p>Item di sini akan otomatis dihancurkan secara permanen setelah 30 hari.</p>
             </div>
-            <div class="total-badge" id="totalBadge">0 Catatan</div>
+            <button class="btn-empty-trash" onclick="emptyTrash()">Kosongkan Sampah</button>
         </div>
 
-        <div class="sticky-tools">
-            <div class="sticky-tools-inner">
-                <div class="search-box">
-                    <input type="text" id="searchInput" placeholder="Cari catatan..." oninput="window.renderNotes()">
-                </div>
-                <div class="filter-wrap">
-                    <button class="filter-btn active" id="filterAll" onclick="setFilter('all', this)">Semua</button>
-                    <button class="filter-btn" id="filterPinned" onclick="setFilter('pinned', this)">📌 Pinned</button>
-                    <div class="divider"></div>
-                    <button class="filter-btn active" id="sortNewest" onclick="setSort('newest')">Terbaru</button>
-                    <button class="filter-btn" id="sortOldest" onclick="setSort('oldest')">Terlama</button>
-                </div>
-            </div>
+        <div class="filter-wrap">
+            <button class="filter-btn active" onclick="setFilter('all', this)">Semua</button>
+            <button class="filter-btn" onclick="setFilter('script', this)">📝 Script</button>
+            <button class="filter-btn" onclick="setFilter('notes', this)">📌 Notes</button>
+            <button class="filter-btn" onclick="setFilter('planner', this)">📅 Ideas</button>
         </div>
 
-        <div class="notes-list" id="notesList">
-            <div style="text-align: center; padding: 40px; color: var(--text-muted); column-span: all;">Memuat data...</div>
-        </div>
-
-        <button class="fab" onclick="openEditor()">+</button>
-    </div>
-
-    <div class="editor" id="editor">
-        <div class="editor-header">
-            <div class="editor-left">
-                <button class="icon-btn" onclick="closeEditor()">✕</button>
-                <div class="auto-save" id="autoSaveStatus">Tersimpan ✓</div>
-            </div>
-            <div class="editor-right">
-                <button class="icon-btn" onclick="showInfo()" title="Info">ℹ️</button>
-                <button class="icon-btn" onclick="exportTXT()" title="Export .txt">📄</button>
-                <button class="icon-btn" onclick="togglePin()" id="pinBtn" title="Sematkan">📌</button>
-                <button class="icon-btn" onclick="softDeleteNote()" style="color:var(--danger);" title="Hapus ke Trash">🗑</button>
-            </div>
-        </div>
-
-        <div class="editor-body">
-            <div class="editor-container">
-                <input type="text" id="titleInput" class="title-input" placeholder="Judul catatan..." oninput="markAsEdited(); triggerAutoSave()">
-                <textarea id="contentInput" class="content-input" placeholder="Mulai menulis secara leluasa..." oninput="updateCounter(); markAsEdited(); triggerAutoSave();"></textarea>
-            </div>
-        </div>
-
-        <div class="editor-footer">
-            <div class="word-count" id="wordCounter">0 kata | 0 karakter</div>
-            <button class="save-btn" onclick="saveNote()">SIMPAN CATATAN</button>
-        </div>
-    </div>
-
-    <div class="info-modal" id="infoModal">
-        <div class="info-box">
-            <h3>Detail Catatan</h3>
-            <div id="infoContent"></div>
-            <button class="close-info" onclick="document.getElementById('infoModal').style.display='none'">Tutup</button>
-        </div>
+        <div class="trash-list" id="trashList"></div>
     </div>
 
     <script src="../navbar/navbar.js"></script>
     <script src="../js/pwa.js"></script>
 
     <script type="module">
-        import { auth, db } from "../js/firebase.js";
-        import { onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
-        import { collection, query, where, getDocs, setDoc, doc, deleteDoc } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
-
         const USE_FIREBASE = true;
 
-        window.notesData = [];
-        window.currentId = null;
-        window.currentFilter = 'all';
-        window.currentSort = 'newest';
-        window.currentPinned = false;
-        window.isRestored = false; 
-        
-        let autoSaveTimeout = null;
         let currentUserUid = null;
+        let dbRef = null;
+        let fsMod = null;
+        
+        window.trashData = [];
+        window.currentFilter = 'all';
 
-        const formatFullDate = (ms) => {
-            if(!ms) return '';
-            const d = new Date(ms);
-            const months = ['Januari', 'Februari', 'Maret', 'April', 'Mei', 'Juni', 'Juli', 'Agustus', 'September', 'Oktober', 'November', 'Desember'];
-            const time = String(d.getHours()).padStart(2, '0') + ':' + String(d.getMinutes()).padStart(2, '0');
-            return `${d.getDate()} ${months[d.getMonth()]} ${d.getFullYear()} • ${time}`;
-        };
-
-        // 1. INIT AUTH & LOAD DATA
-        document.addEventListener('DOMContentLoaded', () => {
+        document.addEventListener("DOMContentLoaded", () => {
             if (localStorage.getItem("dashboard_theme") === "dark") document.body.classList.add("dark");
 
             if (USE_FIREBASE) {
-                onAuthStateChanged(auth, (user) => {
-                    if (user) {
-                        currentUserUid = user.uid;
-                        loadDataFromCloud();
-                    } else {
-                        window.location.replace("../login.html");
-                    }
-                });
+                import("../js/firebase.js").then(module => {
+                    dbRef = module.db;
+                    import("https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js").then(authLib => {
+                        authLib.onAuthStateChanged(module.auth, (user) => {
+                            if (user) { 
+                                currentUserUid = user.uid; 
+                                fetchTrash(); 
+                            } else {
+                                window.location.replace("../login.html");
+                            }
+                        });
+                    });
+                }).catch(err => console.error("Firebase Error:", err));
             } else {
-                if (localStorage.getItem('dummy_logged_in') !== 'true') {
-                    window.location.replace("../login.html");
-                } else {
-                    currentUserUid = 'local_user';
-                    window.notesData = JSON.parse(localStorage.getItem('creative_notes_v2')) || [];
-                    window.renderNotes();
-                }
+                if (localStorage.getItem('dummy_logged_in') !== 'true') window.location.replace("../login.html");
+                currentUserUid = 'local_user';
+                fetchTrash();
             }
         });
 
-        async function loadDataFromCloud() {
+        async function fetchTrash() {
             try {
-                // Menggunakan koleksi creative_notes_v2 agar sinkron dengan trash.html
-                const q = query(collection(db, "creative_notes_v2"), where("uid", "==", currentUserUid));
-                const snap = await getDocs(q);
+                let validTrash = [];
+                const now = Date.now();
+
+                if (USE_FIREBASE) {
+                    fsMod = await import("https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js");
+                    const q = fsMod.query(fsMod.collection(dbRef, "creative_trash"), fsMod.where("uid", "==", currentUserUid));
+                    const snap = await fsMod.getDocs(q);
+                    
+                    for (let document of snap.docs) {
+                        const data = { id: document.id, ...document.data() };
+                        if (data.expireAt < now) {
+                            await fsMod.deleteDoc(fsMod.doc(dbRef, "creative_trash", document.id));
+                        } else {
+                            validTrash.push(data);
+                        }
+                    }
+                } else {
+                    let localData = JSON.parse(localStorage.getItem('creative_trash')) || [];
+                    validTrash = localData.filter(i => i.expireAt > now);
+                    localStorage.setItem('creative_trash', JSON.stringify(validTrash));
+                }
                 
-                window.notesData = snap.docs.map(doc => ({ id: doc.id, ...doc.data() }));
-                window.renderNotes();
+                window.trashData = validTrash;
+                window.renderTrash();
             } catch (error) {
-                document.getElementById('notesList').innerHTML = `<div class="empty-state">Gagal memuat data dari server.<br>${error.message}</div>`;
+                console.error("Gagal memuat Trash:", error);
             }
         }
 
-        // 2. FUNGSI SIMPAN
-        window.performSave = async function(isAuto = false) {
-            const title = document.getElementById('titleInput').value.trim();
-            const content = document.getElementById('contentInput').value;
-            
-            if (title === '' && content.trim() === '') return;
-            const now = Date.now();
-            const docId = window.currentId || "qn_" + now;
-            window.currentId = docId;
-
-            const payload = {
-                uid: currentUserUid,
-                title: title || 'Tanpa Judul', 
-                content: content,
-                pinned: window.currentPinned, 
-                isRestored: window.isRestored, // Simpan status "restored"
-                updatedAt: now
-            };
-
-            const existingIndex = window.notesData.findIndex(x => x.id === docId);
-            if(existingIndex > -1) {
-                payload.createdAt = window.notesData[existingIndex].createdAt;
-                window.notesData[existingIndex] = { id: docId, ...payload };
-            } else {
-                payload.createdAt = now;
-                window.notesData.unshift({ id: docId, ...payload });
-            }
-
-            if(!isAuto) window.renderNotes();
-
-            if (USE_FIREBASE) {
-                try {
-                    await setDoc(doc(db, "creative_notes_v2", docId), payload);
-                } catch (e) { console.error("Gagal save cloud", e); }
-            } else {
-                localStorage.setItem('creative_notes_v2', JSON.stringify(window.notesData));
-            }
-        }
-
-        // Fungsi menghapus lencana/badge "restored" jika catatan di edit
-        window.markAsEdited = function() {
-            if (window.isRestored) {
-                window.isRestored = false;
-            }
-        }
-
-        // 3. FUNGSI HAPUS KE TRASH
-        window.softDeleteNote = async function(idOverride = null) {
-            const idToDelete = idOverride || window.currentId;
-            if (!idToDelete) return;
-            if (!confirm('Pindahkan catatan ini ke tempat sampah? (Otomatis terhapus setelah 30 hari)')) return;
-
-            const itemIndex = window.notesData.findIndex(x => x.id === idToDelete);
-            if(itemIndex === -1) return;
-            const item = window.notesData[itemIndex];
-            const now = Date.now();
-            const trashId = 'trash_' + now;
-
-            const trashPayload = {
-                uid: currentUserUid, 
-                originalId: item.id, 
-                type: 'notes',
-                title: item.title, 
-                content: item.content, 
-                deletedAt: now, 
-                expireAt: now + (30 * 24 * 60 * 60 * 1000)
-            };
-
-            window.notesData.splice(itemIndex, 1);
-            window.closeEditor(); 
-            window.renderNotes();
-
-            if (USE_FIREBASE) {
-                await setDoc(doc(db, "creative_trash", trashId), trashPayload);
-                await deleteDoc(doc(db, "creative_notes_v2", item.id));
-            } else {
-                let trashData = JSON.parse(localStorage.getItem('creative_trash')) || [];
-                trashData.push({ id: trashId, ...trashPayload });
-                localStorage.setItem('creative_trash', JSON.stringify(trashData));
-                localStorage.setItem('creative_notes_v2', JSON.stringify(window.notesData));
-            }
-        }
-
-        // 4. UI HANDLERS
-        window.setFilter = function(type, el) { 
-            window.currentFilter = type; 
-            document.getElementById('filterAll').classList.remove('active');
-            document.getElementById('filterPinned').classList.remove('active');
+        window.setFilter = function(type, el) {
+            window.currentFilter = type;
+            document.querySelectorAll('.filter-btn').forEach(btn => btn.classList.remove('active'));
             el.classList.add('active');
-            window.renderNotes(); 
-        }
-        
-        window.setSort = function(type) { 
-            window.currentSort = type; 
-            document.getElementById('sortNewest').classList.remove('active');
-            document.getElementById('sortOldest').classList.remove('active');
-            document.getElementById(type === 'newest' ? 'sortNewest' : 'sortOldest').classList.add('active');
-            window.renderNotes(); 
+            window.renderTrash();
         }
 
-        window.openEditor = function(id = null) {
-            document.getElementById('editor').classList.add('active');
-            if (id) {
-                const item = window.notesData.find(x => x.id === id);
-                if(item) {
-                    window.currentId = item.id; 
-                    window.currentPinned = item.pinned || false;
-                    window.isRestored = item.isRestored || false; 
-                    document.getElementById('titleInput').value = item.title;
-                    document.getElementById('contentInput').value = item.content;
+        function getDaysRemaining(expireAt) {
+            const diff = expireAt - Date.now();
+            return diff <= 0 ? 0 : Math.ceil(diff / (1000 * 60 * 60 * 24));
+        }
+
+        window.restoreItem = async function(id) {
+            const itemIndex = window.trashData.findIndex(x => x.id === id);
+            if(itemIndex === -1) return;
+            const item = window.trashData[itemIndex];
+
+            // Hapus dari UI sementara loading
+            window.trashData.splice(itemIndex, 1);
+            window.renderTrash();
+
+            try {
+                let targetCol = 'creative_ideas'; 
+                if (item.type === 'notes') targetCol = 'creative_notes_v2';
+                if (item.type === 'script') targetCol = 'creative_script';
+                
+                const restorePayload = {
+                    uid: currentUserUid,
+                    title: item.title,
+                    createdAt: Date.now()
+                };
+
+                // JIKA IDEAS
+                if(item.type === 'planner') {
+                    const parts = (item.content || "").split(' | Link: ');
+                    restorePayload.date = "Dipulihkan";
+                    restorePayload.done = false; 
+                    
+                    if (parts.length > 0) {
+                       restorePayload.date = parts[0].replace('Tgl: ', '');
+                       restorePayload.link = parts[1] || '-';
+                    } else {
+                       restorePayload.link = "-";
+                    }
+
+                    const boardId = "board_pulihan_" + currentUserUid;
+                    restorePayload.boardId = boardId;
+
+                    if (USE_FIREBASE) {
+                        await fsMod.setDoc(fsMod.doc(dbRef, "creative_planner_boards", boardId), {
+                            uid: currentUserUid, 
+                            name: "Pulihan Trash", 
+                            createdAt: Date.now()
+                        }, { merge: true });
+                    } else {
+                        let boards = JSON.parse(localStorage.getItem('creative_planner_boards')) || [];
+                        if(!boards.find(b => b.id === boardId)) {
+                            boards.push({ id: boardId, uid: currentUserUid, name: "Pulihan Trash", createdAt: Date.now() });
+                            localStorage.setItem('creative_planner_boards', JSON.stringify(boards));
+                        }
+                    }
+                } 
+                // JIKA SCRIPT
+                else if(item.type === 'script') {
+                    restorePayload.content = item.content;
+                    restorePayload.status = 'draft';
+                    restorePayload.channel = 'Dipulihkan';
+                    restorePayload.pinned = false;
+                    restorePayload.updatedAt = Date.now();
                 }
-            } else {
-                window.currentId = null; 
-                window.currentPinned = false;
-                window.isRestored = false;
-                document.getElementById('titleInput').value = '';
-                document.getElementById('contentInput').value = '';
-            }
-            updatePin(); updateCounter();
-        }
-
-        window.closeEditor = function() {
-            const title = document.getElementById('titleInput').value.trim();
-            const content = document.getElementById('contentInput').value.trim();
-            if(title || content) {
-                if(typeof window.performSave === "function") window.performSave(true);
-            }
-            document.getElementById('editor').classList.remove('active');
-            window.renderNotes(); 
-        }
-
-        window.togglePin = function() { window.currentPinned = !window.currentPinned; updatePin(); triggerAutoSave(); }
-        function updatePin() { document.getElementById('pinBtn').style.opacity = window.currentPinned ? '1' : '0.4'; }
-
-        window.updateCounter = function() {
-            const text = document.getElementById('contentInput').value;
-            const words = text.trim() === '' ? 0 : text.trim().split(/\s+/).length;
-            document.getElementById('wordCounter').innerHTML = `${words.toLocaleString('id-ID')} kata | ${text.length.toLocaleString('id-ID')} karakter`;
-        }
-
-        window.triggerAutoSave = function() {
-            clearTimeout(autoSaveTimeout);
-            autoSaveTimeout = setTimeout(() => {
-                if(typeof window.performSave === "function") {
-                    window.performSave(true);
-                    const indicator = document.getElementById('autoSaveStatus');
-                    indicator.style.opacity = '1';
-                    setTimeout(() => indicator.style.opacity = '0', 2000);
+                // JIKA NOTES (KODE INI YANG MENJADI PENYELAMAT BADGE)
+                else if(item.type === 'notes') {
+                    restorePayload.content = item.content;
+                    restorePayload.pinned = false;
+                    restorePayload.isRestored = true; // <---- INI DIA KUNCINYA
+                    restorePayload.updatedAt = Date.now();
                 }
-            }, 1000); 
+
+                if (USE_FIREBASE) {
+                    await fsMod.setDoc(fsMod.doc(dbRef, targetCol, item.originalId || "restored_" + Date.now()), restorePayload);
+                    await fsMod.deleteDoc(fsMod.doc(dbRef, "creative_trash", id));
+                } else {
+                    let lsKey = targetCol === 'creative_ideas' ? 'creative_planner_ideas' : targetCol;
+                    let col = JSON.parse(localStorage.getItem(lsKey)) || [];
+                    col.push({ id: item.originalId || "restored_" + Date.now(), ...restorePayload });
+                    localStorage.setItem(lsKey, JSON.stringify(col));
+                    
+                    let trashLocal = JSON.parse(localStorage.getItem('creative_trash'));
+                    localStorage.setItem('creative_trash', JSON.stringify(trashLocal.filter(x => x.id !== id)));
+                }
+
+            } catch (error) {
+                alert("Gagal memulihkan: " + error.message);
+                await fetchTrash(); // reload jika gagal
+            }
         }
 
-        window.saveNote = function() {
-            if(typeof window.performSave === "function") window.performSave(false);
-            window.closeEditor();
+        window.deletePermanently = async function(id) {
+            if (confirm("Hapus permanen item ini? Tindakan ini tidak dapat dibatalkan.")) {
+                window.trashData = window.trashData.filter(x => x.id !== id);
+                window.renderTrash();
+                
+                if(USE_FIREBASE) {
+                    await fsMod.deleteDoc(fsMod.doc(dbRef, "creative_trash", id));
+                } else {
+                    let trashLocal = JSON.parse(localStorage.getItem('creative_trash'));
+                    localStorage.setItem('creative_trash', JSON.stringify(trashLocal.filter(x => x.id !== id)));
+                }
+            }
         }
 
-        window.exportTXT = function() {
-            const text = document.getElementById('contentInput').value;
-            if(!text) return alert("Catatan masih kosong.");
-            const blob = new Blob([text], { type: 'text/plain' });
-            const link = document.createElement('a'); link.href = URL.createObjectURL(blob);
-            link.download = (document.getElementById('titleInput').value || 'Notes_CreativeIO') + '.txt'; link.click();
+        window.emptyTrash = async function() {
+            let itemsToDelete = window.currentFilter === 'all' 
+                ? window.trashData 
+                : window.trashData.filter(x => x.type === window.currentFilter);
+            
+            if (itemsToDelete.length === 0) return alert("Tidak ada item untuk dikosongkan.");
+            
+            if (confirm(`Kosongkan ${itemsToDelete.length} item secara permanen?`)) {
+                if (window.currentFilter === 'all') window.trashData = [];
+                else window.trashData = window.trashData.filter(x => x.type !== window.currentFilter);
+                window.renderTrash();
+
+                if(USE_FIREBASE) {
+                    for (let item of itemsToDelete) {
+                        await fsMod.deleteDoc(fsMod.doc(dbRef, "creative_trash", item.id));
+                    }
+                } else {
+                    let trashLocal = JSON.parse(localStorage.getItem('creative_trash'));
+                    const idsToDelete = itemsToDelete.map(x => x.id);
+                    localStorage.setItem('creative_trash', JSON.stringify(trashLocal.filter(x => !idsToDelete.includes(x.id))));
+                }
+            }
         }
 
-        window.showInfo = function() {
-            if(!window.currentId) return alert("Catatan belum disimpan.");
-            const item = window.notesData.find(x => x.id === window.currentId);
-            if(!item) return;
+        window.renderTrash = function() {
+            const container = document.getElementById("trashList");
+            let filteredData = window.currentFilter === 'all' 
+                ? window.trashData 
+                : window.trashData.filter(x => x.type === window.currentFilter);
 
-            const text = document.getElementById('contentInput').value;
-            const words = text.trim() === '' ? 0 : text.trim().split(/\s+/).length;
-
-            document.getElementById('infoContent').innerHTML = `
-                <div class="info-row"><span class="info-label">Judul</span> <span class="info-value">${item.title || 'Tanpa Judul'}</span></div>
-                <div class="info-row"><span class="info-label">Jumlah Kata</span> <span class="info-value">${words.toLocaleString('id-ID')}</span></div>
-                <div class="info-row"><span class="info-label">Karakter</span> <span class="info-value">${text.length.toLocaleString('id-ID')}</span></div>
-                <div class="info-row"><span class="info-label">Dibuat</span> <span class="info-value">${formatFullDate(item.createdAt)}</span></div>
-                <div class="info-row"><span class="info-label">Diubah</span> <span class="info-value">${formatFullDate(item.updatedAt)}</span></div>
-            `;
-            document.getElementById('infoModal').style.display = 'flex';
-        }
-
-        window.renderNotes = function() {
-            const listContainer = document.getElementById('notesList');
-            const keyword = document.getElementById('searchInput').value.toLowerCase();
-            let data = [...window.notesData]; 
-
-            if(window.currentFilter === 'pinned') data = data.filter(x => x.pinned);
-
-            data.sort((a, b) => {
-                if(a.pinned && !b.pinned) return -1;
-                if(!a.pinned && b.pinned) return 1;
-                const timeA = a.createdAt || 0; const timeB = b.createdAt || 0;
-                return window.currentSort === 'oldest' ? timeA - timeB : timeB - timeA; 
-            });
-
-            data = data.filter(item => {
-                const title = item.title ? item.title.toLowerCase() : "";
-                const content = item.content ? item.content.toLowerCase() : "";
-                return title.includes(keyword) || content.includes(keyword);
-            });
-
-            document.getElementById('totalBadge').innerText = `${data.length} Catatan`;
-
-            if (data.length === 0) {
-                listContainer.innerHTML = `<div class="empty-state" onclick="openEditor()"><div class="empty-state-icon">📄</div><div class="empty-state-text">Belum ada catatan.<br>Ketuk di sini untuk menulis.</div></div>`;
+            if (filteredData.length === 0) {
+                container.innerHTML = `<div class="empty-state"><div class="empty-icon">🍃</div><div class="empty-text">Tempat sampah bersih dan kosong.<br>Item yang dihapus akan menetap di sini selama 30 hari.</div></div>`;
                 return;
             }
-            
-            let html = '';
-            data.forEach(item => {
-                const cardClass = `note-card ${item.pinned ? 'pinned' : ''} ${item.isRestored ? 'restored' : ''}`;
-                
-                html += `
-                <div class="${cardClass}" onclick="openEditor('${item.id}')">
-                    <div class="note-top">
-                        <div class="note-title">${item.title}</div>
-                        ${item.pinned ? '<span title="Disematkan" style="font-size:14px;">📌</span>' : ''}
-                    </div>
-                    <div class="note-content">${item.content || '<em>Kosong...</em>'}</div>
-                    <div class="note-footer">
-                        <div style="display:flex; align-items:center;">
-                            ${item.isRestored ? '<span class="badge-restored">♻️ Dipulihkan</span>' : ''}
-                            <div class="note-date">${formatFullDate(item.updatedAt)}</div>
+
+            filteredData.sort((a, b) => a.expireAt - b.expireAt);
+            let html = "";
+            filteredData.forEach(item => {
+                let icon = "📝"; let iconClass = "icon-notepad"; let sourceName = "Script";
+                if (item.type === "notes") { icon = "📌"; iconClass = "icon-notes"; sourceName = "Notes"; }
+                if (item.type === "planner") { icon = "📅"; iconClass = "icon-planner"; sourceName = "Ideas"; }
+
+                const daysLeft = getDaysRemaining(item.expireAt);
+                const badgeClass = daysLeft > 10 ? "badge-countdown warning" : "badge-countdown";
+
+                html += `<div class="trash-card">
+                    <div class="card-left">
+                        <div class="source-icon ${iconClass}" title="Berasal dari ${sourceName}">${icon}</div>
+                        <div class="card-info">
+                            <div class="card-title">${item.title || 'Tanpa Judul'}</div>
+                            <div class="card-desc">${item.content || '<em>Tidak ada isi...</em>'}</div>
                         </div>
-                        <button class="btn-quick-del" onclick="event.stopPropagation(); softDeleteNote('${item.id}')" title="Hapus">🗑️</button>
+                    </div>
+                    <div class="card-right">
+                        <div class="${badgeClass}">⏳ Sisa ${daysLeft} Hari</div>
+                        <div class="card-actions">
+                            <button class="btn-action btn-restore" onclick="restoreItem('${item.id}')" title="Pulihkan">♻️ Pulihkan</button>
+                            <button class="btn-action btn-delete" onclick="deletePermanently('${item.id}')" title="Hapus Permanen">🗑️</button>
+                        </div>
                     </div>
                 </div>`;
             });
-            listContainer.innerHTML = html;
+            container.innerHTML = html;
         }
     </script>
 </body>
