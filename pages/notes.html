@@ -11,7 +11,7 @@
 
     <style>
         /* =========================================================
-           CSS LENGKAP (REVISI DESAIN "RESTORED" SIMPEL & ESTETIK)
+           CSS LENGKAP (TIDAK ADA DESAIN YANG DIHILANGKAN)
         ========================================================= */
         @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800;900&display=swap');
         * { margin: 0; padding: 0; box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
@@ -31,69 +31,44 @@
         .total-badge { padding: 6px 14px; border-radius: 20px; background: var(--primary-soft); color: var(--primary); font-size: 12px; font-weight: 800; border: 1px solid var(--border); white-space: nowrap; }
         
         /* =========================================================
-           REVISI UI: SEARCH BAR OVERLAY & SCROLLABLE
+           REVISI UI: SEARCH BAR MENGGANTIKAN FILTER (REPLACE)
         ========================================================= */
         .sticky-tools { 
-            position: sticky; 
-            top: 76px; 
-            z-index: 50; 
-            padding: 10px 16px; 
-            margin: 16px 0 24px 0; 
-            background: var(--sticky-bg); 
-            backdrop-filter: blur(16px); 
-            -webkit-backdrop-filter: blur(16px); 
-            border: 1px solid var(--border);
-            border-radius: 20px; 
-            box-shadow: 0 12px 32px rgba(0, 0, 0, 0.05); 
-            transition: box-shadow 0.3s ease;
+            position: sticky; top: 76px; z-index: 50; padding: 10px 16px; margin: 16px 0 24px 0; 
+            background: var(--sticky-bg); backdrop-filter: blur(16px); -webkit-backdrop-filter: blur(16px); 
+            border: 1px solid var(--border); border-radius: 20px; 
+            box-shadow: 0 12px 32px rgba(0, 0, 0, 0.05); transition: box-shadow 0.3s ease;
         }
-        body.dark .sticky-tools { box-shadow: 0 12px 32px rgba(0, 0, 0, 0.3); }
+        body.dark .sticky-tools { box-shadow: 0 12px 32px rgba(0, 0, 0, 0.4); }
         
         .sticky-tools-inner { 
-            position: relative; 
-            display: flex; 
-            align-items: center; 
-            height: 38px; 
-            gap: 8px; 
-            max-width: 100%; 
-            margin: 0 auto; 
-            overflow-x: auto; 
-            scrollbar-width: none; /* Firefox */
+            position: relative; display: flex; align-items: center; 
+            height: 38px; gap: 8px; max-width: 100%; margin: 0 auto; 
+            overflow-x: auto; scrollbar-width: none; transition: gap 0.3s cubic-bezier(0.4, 0, 0.2, 1);
         }
-        .sticky-tools-inner::-webkit-scrollbar { display: none; } /* Safari/Chrome */
+        .sticky-tools-inner::-webkit-scrollbar { display: none; }
         
-        /* Container pelindung agar posisi search bar absolut tetap mengikuti scroll */
-        .search-wrapper {
-            position: relative;
-            width: 38px; 
-            height: 38px; 
-            flex-shrink: 0;
-            z-index: 20;
+        /* Ketika Search Aktif, gap dihilangkan dan scroll dikunci */
+        .sticky-tools-inner.searching {
+            gap: 0;
+            overflow: hidden; 
         }
 
-        /* Search Bar kini memanjang secara overlay (menutupi filter) tanpa mendorongnya */
         .search-expandable { 
-            position: absolute;
-            top: 0;
-            left: 0;
-            display: flex; 
-            align-items: center; 
-            background: var(--card-solid); 
-            border: 1px solid var(--border); 
-            border-radius: 12px; 
-            height: 38px; 
-            width: 38px; /* Ukuran default kotak icon */
-            overflow: hidden; 
-            transition: width 0.3s cubic-bezier(0.4, 0, 0.2, 1), border-color 0.3s; 
+            flex-shrink: 0; /* Mencegah elemen memipih */
+            display: flex; align-items: center; background: var(--card-solid); 
+            border: 1px solid var(--border); border-radius: 12px; 
+            height: 38px; width: 38px; overflow: hidden; 
+            transition: width 0.3s cubic-bezier(0.4, 0, 0.2, 1), border-color 0.3s, box-shadow 0.3s; 
             box-shadow: var(--shadow-flat);
         }
-        .search-expandable.expanded { 
-            border-color: var(--primary); 
-            /* width diatur via JS agar presisi menutupi layar */
-        }
+        body.dark .search-expandable { background: var(--card-solid); border-color: var(--border); }
         
-        .search-icon-btn { 
-            min-width: 38px; height: 38px; background: transparent; border: none; font-size: 14px; 
+        .search-expandable.expanded { border-color: var(--primary); }
+        body.dark .search-expandable.expanded { box-shadow: 0 4px 16px rgba(37, 99, 235, 0.25); border-color: var(--primary); }
+        
+        .search-icon-btn, .close-search-btn { 
+            flex-shrink: 0; min-width: 38px; height: 38px; background: transparent; border: none; font-size: 14px; 
             cursor: pointer; color: var(--text-muted); display: flex; align-items: center; justify-content: center; transition: 0.2s;
         }
         .search-expandable.expanded .search-icon-btn { color: var(--primary); pointer-events: none; }
@@ -104,13 +79,23 @@
         }
         .search-expandable.expanded input { opacity: 1; pointer-events: auto; }
         
-        .close-search-btn { 
-            min-width: 38px; height: 38px; background: transparent; border: none; font-size: 14px; 
-            cursor: pointer; color: var(--text-muted); opacity: 0; pointer-events: none; transition: 0.2s; 
-            display: flex; align-items: center; justify-content: center; 
-        }
+        .close-search-btn { opacity: 0; pointer-events: none; }
         .close-search-btn:hover { color: var(--danger); }
         .search-expandable.expanded .close-search-btn { opacity: 1; pointer-events: auto; }
+        
+        /* Container untuk Filter yang akan menyusut dan menghilang secara mulus */
+        .filters-wrapper {
+            display: flex; align-items: center; gap: 8px; 
+            max-width: 1000px; /* Nilai cukup besar untuk menampung tombol */
+            opacity: 1; overflow: hidden;
+            transition: max-width 0.3s cubic-bezier(0.4, 0, 0.2, 1), opacity 0.2s ease;
+        }
+        /* State saat Search aktif: Filter menyusut ke 0px dan memudar */
+        .sticky-tools-inner.searching .filters-wrapper {
+            max-width: 0;
+            opacity: 0;
+            transition: max-width 0.3s cubic-bezier(0.4, 0, 0.2, 1), opacity 0.1s ease;
+        }
         
         .filter-btn { flex-shrink: 0; padding: 8px 14px; border-radius: 10px; background: var(--card-solid); border: 1px solid var(--border); font-size: 12px; font-weight: 700; color: var(--text-muted); cursor: pointer; transition: 0.2s; white-space: nowrap; }
         .filter-btn.active { background: var(--primary-soft); border-color: var(--primary); color: var(--primary); }
@@ -206,19 +191,20 @@
         <div class="sticky-tools">
             <div class="sticky-tools-inner" id="filterWrap">
                 
-                <div class="search-wrapper">
-                    <div class="search-expandable" id="searchContainer">
-                        <button class="search-icon-btn" onclick="openSearch(event)" title="Cari Catatan">🔍</button>
-                        <input type="text" id="searchInput" placeholder="Cari catatan..." oninput="window.renderNotes()">
-                        <button class="close-search-btn" onclick="closeSearch(event)" title="Tutup Pencarian">✕</button>
-                    </div>
+                <div class="search-expandable" id="searchContainer">
+                    <button class="search-icon-btn" onclick="openSearch(event)" title="Cari Catatan">🔍</button>
+                    <input type="text" id="searchInput" placeholder="Cari catatan..." oninput="window.renderNotes()">
+                    <button class="close-search-btn" onclick="closeSearch(event)" title="Tutup Pencarian">✕</button>
                 </div>
                 
-                <button class="filter-btn active" id="filterAll" onclick="setFilter('all', this)">Semua</button>
-                <button class="filter-btn" id="filterPinned" onclick="setFilter('pinned', this)">📌 Pinned</button>
-                <div class="divider"></div>
-                <button class="filter-btn active" id="sortNewest" onclick="setSort('newest')">Terbaru</button>
-                <button class="filter-btn" id="sortOldest" onclick="setSort('oldest')">Terlama</button>
+                <div class="filters-wrapper" id="filterButtons">
+                    <button class="filter-btn active" id="filterAll" onclick="setFilter('all', this)">Semua</button>
+                    <button class="filter-btn" id="filterPinned" onclick="setFilter('pinned', this)">📌 Pinned</button>
+                    <div class="divider"></div>
+                    <button class="filter-btn active" id="sortNewest" onclick="setSort('newest')">Terbaru</button>
+                    <button class="filter-btn" id="sortOldest" onclick="setSort('oldest')">Terlama</button>
+                </div>
+
             </div>
         </div>
 
@@ -328,7 +314,7 @@
         }
 
         // ==========================================
-        // HANDLER ANIMASI & LOGIKA EXPANDABLE SEARCH
+        // HANDLER ANIMASI EXPANDABLE SEARCH (REPLACE)
         // ==========================================
         window.openSearch = function(event) {
             if (event) event.stopPropagation();
@@ -336,15 +322,15 @@
             const wrap = document.getElementById('filterWrap');
             const searchBox = document.getElementById('searchContainer');
             
-            // Auto-scroll ke paling kiri agar tidak terpotong saat direntangkan
+            // Auto-scroll ke paling kiri agar saat direntangkan tidak terpotong
             wrap.scrollTo({left: 0, behavior: 'smooth'}); 
             
-            // Lebar pencarian akan mengambil 100% dari ruang container yang terlihat (overlaying filter)
+            // Beri tahu CSS bahwa kita sedang searching (menyembunyikan filter dan margin)
+            wrap.classList.add('searching');
+            
+            // Lebar pencarian mengikuti ruang container yang ada
             searchBox.style.width = wrap.clientWidth + 'px';
             searchBox.classList.add('expanded');
-            
-            // Kunci overflow agar user tidak bisa iseng scroll selagi search terbuka
-            wrap.style.overflowX = 'hidden'; 
             
             setTimeout(() => { document.getElementById('searchInput').focus(); }, 300);
         }
@@ -355,11 +341,12 @@
             const wrap = document.getElementById('filterWrap');
             const searchBox = document.getElementById('searchContainer');
             
+            // Kembalikan kotak pencarian jadi icon kecil
             searchBox.style.width = '38px';
             searchBox.classList.remove('expanded');
             
-            // Kembalikan kemampuan scroll untuk filter
-            wrap.style.overflowX = 'auto'; 
+            // Mengembalikan filter dan fungsi scroll bawaan
+            wrap.classList.remove('searching');
             
             const input = document.getElementById('searchInput');
             if (input.value !== '') {
@@ -372,14 +359,13 @@
         document.addEventListener('click', function(e) {
             const searchContainer = document.getElementById('searchContainer');
             if (searchContainer && searchContainer.classList.contains('expanded')) {
-                // Mengecek apakah area yang diklik bukan elemen anak dari searchContainer
                 if (!searchContainer.contains(e.target)) {
                     window.closeSearch();
                 }
             }
         });
 
-        // Responsif: Sesuaikan lebar search box saat orientasi layar atau ukuran window berubah
+        // Responsif: Sesuaikan kembali lebar search jika ukuran layar berubah
         window.addEventListener('resize', () => {
             const searchBox = document.getElementById('searchContainer');
             if(searchBox && searchBox.classList.contains('expanded')) {
@@ -389,7 +375,7 @@
         });
 
         // ==========================================
-        // FUNGSI SIMPAN & UI APLIKASI
+        // FUNGSI SIMPAN & UI APLIKASI LAINNYA
         // ==========================================
         window.performSave = async function(isAuto = false) {
             const title = document.getElementById('titleInput').value.trim();
