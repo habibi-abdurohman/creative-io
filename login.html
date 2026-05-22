@@ -2,8 +2,8 @@
 <html lang="id">
 <head>
     <meta charset="UTF-8">
-    <!-- PERBAIKAN 1: Tambahan maximum-scale dan user-scalable untuk mencegah zoom bocor di ponsel -->
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+    <!-- PERBAIKAN: Dikembalikan ke standar seperti register.html agar bisa di-zoom manual oleh user -->
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
     <title>Masuk - Creative.io</title>
     
     <link rel="manifest" href="./manifest.json">
@@ -52,11 +52,11 @@
             align-items: center; 
             justify-content: center; 
             padding: 20px;
-            /* PERBAIKAN 2: Ubah overflow jadi overflow-x untuk memastikan tidak bisa digeser ke kanan */
+            /* Mengunci pergeseran horizontal yang tidak diinginkan */
             overflow-x: hidden;
         }
         
-        /* PERBAIKAN 3: Ubah position jadi fixed agar glow tidak mendorong lebar layar ponsel */
+        /* Menggunakan fixed (seperti register.html) agar bulatan dekorasi tidak merusak lebar layar saat di-zoom */
         .bg-glow { position: fixed; border-radius: 50%; filter: blur(90px); z-index: 0; opacity: 0.5; pointer-events: none; }
         .bg-glow.one { width: 400px; height: 400px; background: rgba(59, 130, 246, 0.2); top: -100px; left: -100px; }
         .bg-glow.two { width: 350px; height: 350px; background: rgba(96, 165, 250, 0.2); bottom: -100px; right: -50px; }
@@ -92,9 +92,9 @@
         .auth-input { width: 100%; border: 1px solid var(--border); background: var(--card-tint); color: var(--text-main); padding: 14px 16px; border-radius: var(--radius-btn); font-size: 14px; font-weight: 600; outline: none; transition: 0.2s; font-family: inherit; }
         .auth-input:focus { border-color: var(--primary); box-shadow: 0 0 0 3px var(--primary-soft); background: transparent; }
         
-        /* PERBAIKAN 4: CSS Struktur Password & Icon Mata agar sejajar tengah mirip di register.html */
+        /* Posisi Mata Password (Sejajar tengah akurat) */
         .password-container { position: relative; width: 100%; }
-        .password-container .auth-input { padding-right: 48px; } /* Mencegah teks menabrak icon */
+        .password-container .auth-input { padding-right: 48px; }
         .toggle-password { position: absolute; right: 16px; top: 50%; transform: translateY(-50%); color: var(--text-muted); background: transparent; border: none; font-size: 16px; cursor: pointer; padding: 4px; border-radius: 8px; display: flex; align-items: center; justify-content: center; height: 100%; }
         .toggle-password:hover { color: var(--text-main); }
 
@@ -141,7 +141,7 @@
         .auth-btn.loading .spinner { display: block; }
         @keyframes spin { to { transform: rotate(360deg); } }
 
-        /* PERBAIKAN 5: Mencegah Auto-zoom di layar ponsel saat mengetik input */
+        /* Mencegah browser HP melakukan auto-zoom paksa saat input difokuskan, tapi user tetap bebas zoom manual */
         @media(max-width: 600px) { 
             .auth-input { font-size: 16px; } 
         }
@@ -170,7 +170,6 @@
             
             <div class="input-group">
                 <label class="input-label">Password</label>
-                <!-- PERBAIKAN 6: Menggunakan container sama seperti di register.html -->
                 <div class="password-container">
                     <input type="password" id="passwordInput" class="auth-input" placeholder="Masukkan password Anda" required oninput="hideError()">
                     <button type="button" class="toggle-password" onclick="togglePassword()" title="Tampilkan/Sembunyikan">👁️</button>
@@ -202,7 +201,7 @@
 
     <!-- Script PWA Pendaftaran Service Worker -->
     <script src="./js/pwa.js"></script>
-
+    
     <script type="module">
         const USE_FIREBASE = true; 
 
