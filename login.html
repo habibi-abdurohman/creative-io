@@ -190,57 +190,52 @@
     <!-- Script PWA Pendaftaran Service Worker -->
     <script src="./js/pwa.js"></script>
 
+    <!-- ... HTML Form Tetap Sama ... -->
+    
     <script type="module">
-        // Sakelar Utama: Mode Firebase atau LocalStorage
         const USE_FIREBASE = true; 
 
-        // Deteksi Tema dari LocalStorage
         document.addEventListener('DOMContentLoaded', () => {
-            if (localStorage.getItem("dashboard_theme") === "dark") {
-                document.body.classList.add("dark");
+            if (localStorage.getItem("dashboard_theme") === "dark") document.body.classList.add("dark");
+            
+            // REMEMBER ME: Isi otomatis email jika sebelumnya disimpan
+            const savedEmail = localStorage.getItem("creative_remembered_email");
+            if(savedEmail) {
+                document.getElementById('emailInput').value = savedEmail;
+                document.getElementById('rememberMe').checked = true;
             }
         });
 
-        // Fitur Melihat Password yang terekspos ke window
         window.togglePassword = function() {
             const pwdInput = document.getElementById('passwordInput');
-            if (pwdInput.type === "password") {
-                pwdInput.type = "text";
-            } else {
-                pwdInput.type = "password";
-            }
+            pwdInput.type = pwdInput.type === "password" ? "text" : "password";
         }
 
-        // Menyembunyikan Error saat user mengetik
         window.hideError = function() {
             document.getElementById('errorBox').classList.remove('show');
         }
 
-        // Tampilkan Box Error Animasi
         function showError(message) {
             const errorBox = document.getElementById('errorBox');
             document.getElementById('errorText').innerText = message;
             errorBox.classList.remove('show');
-            void errorBox.offsetWidth; // trigger reflow untuk restart animasi
+            void errorBox.offsetWidth; 
             errorBox.classList.add('show');
         }
 
-        // Setel status tombol loading
         function setLoading(isLoading) {
             const btn = document.getElementById('loginBtn');
             const btnText = document.getElementById('btnText');
+            btn.disabled = isLoading;
             if (isLoading) {
-                btn.disabled = true;
                 btn.classList.add('loading');
                 btnText.innerText = "Memeriksa...";
             } else {
-                btn.disabled = false;
                 btn.classList.remove('loading');
                 btnText.innerText = "Masuk Sekarang";
             }
         }
 
-        // Proses Submit Login
         window.handleLogin = async function(e) {
             e.preventDefault(); 
             hideError();
@@ -248,69 +243,61 @@
 
             const email = document.getElementById('emailInput').value.trim();
             const password = document.getElementById('passwordInput').value;
+            const rememberMe = document.getElementById('rememberMe').checked;
+
+            // Handle Remember Me (Hanya simpan email, jangan simpan password)
+            if (rememberMe) localStorage.setItem("creative_remembered_email", email);
+            else localStorage.removeItem("creative_remembered_email");
 
             if (USE_FIREBASE) {
                 try {
                     const module = await import('./js/firebase.js');
                     const authLib = await import("https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js");
                     
-                    // Eksekusi Login Firebase
+                    // SESSION PERSISTENCE FIX
+                    const persistence = rememberMe ? authLib.browserLocalPersistence : authLib.browserSessionPersistence;
+                    await authLib.setPersistence(module.auth, persistence);
+
+                    // Eksekusi Login
                     await authLib.signInWithEmailAndPassword(module.auth, email, password);
-                    
-                    // Sukses -> Redirect relatif ke dashboard
                     window.location.replace("./pages/dashboard.html");
                     
                 } catch (error) {
                     setLoading(false);
                     const errorCode = error.code;
-                    
-                    // Terjemahan pesan error
                     if (errorCode === 'auth/wrong-password' || errorCode === 'auth/invalid-credential') {
                         showError("Email atau Password yang Anda masukkan salah.");
                     } else if (errorCode === 'auth/user-not-found') {
                         showError("Akun dengan email tersebut tidak ditemukan.");
                     } else if (errorCode === 'auth/too-many-requests') {
                         showError("Terlalu banyak percobaan gagal. Coba lagi nanti.");
-                    } else if (errorCode === 'auth/invalid-email') {
-                        showError("Format email tidak valid.");
                     } else {
                         showError("Gagal masuk. Periksa koneksi internet Anda.");
-                        console.error(error);
                     }
                 }
             } else {
-                // Logika Mode Lokal (Testing)
+                // Fallback Mode Offline
                 setTimeout(() => {
                     if (email === "admin@creative.io" && password === "admin123") {
                         localStorage.setItem('dummy_logged_in', 'true');
-                        localStorage.setItem('creative_user_profile', JSON.stringify({
-                            name: "Admin Creative",
-                            email: email
-                        }));
                         window.location.replace("./pages/dashboard.html");
                     } else {
                         setLoading(false);
-                        showError("Email/Password salah. (Gunakan: admin@creative.io / admin123)");
+                        showError("Gagal. Mode lokal gunakan: admin@creative.io / admin123");
                     }
                 }, 1000);
             }
         }
 
-        // Proteksi Redirect: Jika sudah login, langsung lempar ke dashboard (Guard Lokal Halaman Auth)
-        if (!USE_FIREBASE) {
-            if (localStorage.getItem('dummy_logged_in') === 'true') {
-                window.location.replace("./pages/dashboard.html");
-            }
-        } else {
+        // GUARD LOGIC
+        if (USE_FIREBASE) {
             import('./js/firebase.js').then(module => {
                 import("https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js").then(authLib => {
                     authLib.onAuthStateChanged(module.auth, (user) => {
-                        if (user) {
-                            window.location.replace("./pages/dashboard.html");
-                        }
+                        if (user) window.location.replace("./pages/dashboard.html");
                     });
                 });
-            }).catch(e => console.log("Menunggu aksi pengguna."));
+            });
         }
     </script>
 </body>
