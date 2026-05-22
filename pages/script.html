@@ -5,14 +5,13 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
     <title>Script Writer - Creative.io</title>
     
-    <!-- Path Relatif untuk GitHub Pages dari folder /pages/ -->
     <link rel="manifest" href="../manifest.json">
     <link rel="stylesheet" href="../navbar/navbar.css">
     <meta name="theme-color" content="#3b82f6">
 
     <style>
         /* =========================================================
-           CSS UTAMA DAN EDITOR IMMERSIVE (100% UTUH SESUAI ASLI)
+           CSS UTAMA DAN EDITOR IMMERSIVE (100% UTUH)
         ========================================================= */
         @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800;900&display=swap');
         * { margin: 0; padding: 0; box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
@@ -115,8 +114,16 @@
         .editor-body { flex: 1; overflow-y: auto; padding: 32px 24px 140px; max-width: 800px; margin: 0 auto; width: 100%; transition: padding 0.3s; }
         .input-title { width: 100%; border: none; outline: none; background: transparent; font-size: 28px; font-weight: 900; color: var(--text-main); margin-bottom: 8px; letter-spacing: -0.5px; transition: text-align 0.3s; }
         .input-title::placeholder { color: var(--text-muted); opacity: 0.5; }
-        .input-category { width: 100%; border: none; outline: none; background: transparent; font-size: 14px; font-weight: 700; color: var(--primary); margin-bottom: 32px; }
+        
+        /* CSS AUTO-SUGGEST KATEGORI */
+        .category-wrapper { position: relative; width: 100%; margin-bottom: 32px; }
+        .input-category { width: 100%; border: none; outline: none; background: transparent; font-size: 14px; font-weight: 700; color: var(--primary); margin-bottom: 0; }
         .input-category::placeholder { color: var(--text-muted); font-weight: 600; opacity: 0.6; }
+        .suggest-dropdown { position: absolute; top: 100%; left: 0; background: var(--card-solid); border: 1px solid var(--border); border-radius: 12px; padding: 6px; box-shadow: var(--shadow-flat); z-index: 100; min-width: 200px; max-height: 200px; overflow-y: auto; display: none; flex-direction: column; gap: 4px; margin-top: 8px; }
+        .suggest-dropdown.active { display: flex; }
+        .suggest-item { padding: 10px 14px; border-radius: 8px; font-size: 13px; font-weight: 700; color: var(--text-main); cursor: pointer; transition: 0.2s; text-align: left; background: transparent; border: none; }
+        .suggest-item:hover, .suggest-item.focused { background: var(--primary-soft); color: var(--primary); }
+
         .input-content { width: 100%; min-height: 70vh; border: none; outline: none; resize: none; background: transparent; font-size: 16px; line-height: 1.8; color: rgba(15, 23, 42, 0.85); letter-spacing: 0.2px; font-family: inherit; }
         body.dark .input-content { color: rgba(248, 250, 252, 0.85); }
         .input-content::placeholder { color: var(--text-muted); opacity: 0.5; }
@@ -150,25 +157,13 @@
         /* READING MODE STYLES */
         .reading-mode .editor-header { display: none; }
         .reading-mode .editor-footer { display: none; }
-        .reading-mode .input-category { display: none; }
+        .reading-mode .category-wrapper { display: none; }
         .reading-mode .editor-body { padding-top: 80px; max-width: 800px; }
         .reading-mode .input-title { text-align: center; font-size: 32px; margin-bottom: 30px; }
         .btn-exit-read { display: none; position: fixed; top: 20px; right: 20px; z-index: 100001; width: 44px; height: 44px; border-radius: 50%; background: var(--card-solid); border: 1px solid var(--border); color: var(--text-main); font-size: 16px; cursor: pointer; box-shadow: var(--shadow-flat); }
         .reading-mode .btn-exit-read { display: flex; align-items: center; justify-content: center; }
         
         @media(max-width: 600px) { .hero-card { padding: 28px 24px; border-radius: 20px; } .hero-title { font-size: 24px; } .editor-footer { flex-direction: column; gap: 16px; align-items: flex-start; } .footer-actions { width: 100%; } .btn-action { flex: 1; text-align: center; } .word-count { width: 100%; text-align: left; } }
-
-        /* =========================================================
-           CUSTOM AUTO-SUGGEST DROPDOWN UNTUK KATEGORI
-        ========================================================= */
-        .category-wrapper { position: relative; width: 100%; margin-bottom: 32px; }
-        .input-category { width: 100%; border: none; outline: none; background: transparent; font-size: 14px; font-weight: 700; color: var(--primary); margin-bottom: 0; }
-        .input-category::placeholder { color: var(--text-muted); font-weight: 600; opacity: 0.6; }
-        
-        .suggest-dropdown { position: absolute; top: 100%; left: 0; background: var(--card-solid); border: 1px solid var(--border); border-radius: 12px; padding: 6px; box-shadow: var(--shadow-flat); z-index: 100; min-width: 200px; max-height: 200px; overflow-y: auto; display: none; flex-direction: column; gap: 4px; margin-top: 8px; }
-        .suggest-dropdown.active { display: flex; }
-        .suggest-item { padding: 10px 14px; border-radius: 8px; font-size: 13px; font-weight: 700; color: var(--text-main); cursor: pointer; transition: 0.2s; text-align: left; background: transparent; border: none; }
-        .suggest-item:hover, .suggest-item.focused { background: var(--primary-soft); color: var(--primary); }
     </style>
 </head>
 <body>
@@ -205,7 +200,6 @@
         <button class="fab" onclick="openPopup()">+</button>
     </div>
 
-    <!-- POPUP EDITOR -->
     <div class="popup-overlay" id="editorPopup">
         <button class="btn-exit-read" onclick="toggleReadingMode()" title="Keluar Mode Fokus">✕</button>
         
@@ -250,7 +244,6 @@
         </div>
     </div>
 
-    <!-- MODAL INFO -->
     <div class="info-modal-overlay" id="infoModal">
         <div class="info-card">
             <h3>Informasi Script</h3>
@@ -265,11 +258,15 @@
         </div>
     </div>
 
-    <!-- Script Import PWA dan Navbar (Path Diperbaiki) -->
     <script src="../navbar/navbar.js"></script>
     <script src="../js/pwa.js"></script>
 
     <script type="module">
+        // Import Static yang dijamin stabil 100%
+        import { auth, db } from "../js/firebase.js";
+        import { onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
+        import { collection, query, where, getDocs, setDoc, doc, deleteDoc } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
+
         const USE_FIREBASE = true;
 
         window.scriptData = [];
@@ -280,36 +277,30 @@
         
         let autoSaveTimeout = null;
         let currentUserUid = null;
-        let dbRef = null;
-        let fsMod = null;
 
-        // Tutup dropdown menu saat klik di luar
+        // Tutup dropdown/suggest jika klik di luar
         document.addEventListener('click', function(e) {
             if (!e.target.closest('.dropdown-wrap')) {
                 document.querySelectorAll('.dropdown-menu').forEach(m => m.classList.remove('active'));
             }
+            if (!e.target.closest('.category-wrapper')) {
+                document.getElementById('categorySuggestions')?.classList.remove('active');
+            }
         });
 
-        // =========================================================
-        // 1. INISIALISASI AUTHENTIKASI & LOAD DATA
-        // =========================================================
+        // 1. INIT AUTH & LOAD DATA
         document.addEventListener('DOMContentLoaded', () => {
             if (localStorage.getItem("dashboard_theme") === "dark") document.body.classList.add("dark");
 
             if (USE_FIREBASE) {
-                import("../js/firebase.js").then(module => {
-                    dbRef = module.db;
-                    import("https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js").then(authLib => {
-                        authLib.onAuthStateChanged(module.auth, (user) => {
-                            if (user) {
-                                currentUserUid = user.uid;
-                                loadDataCloud();
-                            } else {
-                                window.location.replace("../login.html");
-                            }
-                        });
-                    });
-                }).catch(err => console.error("Firebase Error:", err));
+                onAuthStateChanged(auth, (user) => {
+                    if (user) {
+                        currentUserUid = user.uid;
+                        loadDataCloud();
+                    } else {
+                        window.location.replace("../login.html");
+                    }
+                });
             } else {
                 if (localStorage.getItem('dummy_logged_in') !== 'true') {
                     window.location.replace("../login.html");
@@ -323,21 +314,47 @@
 
         async function loadDataCloud() {
             try {
-                fsMod = await import("https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js");
-                const colRef = fsMod.collection(dbRef, "creative_script");
-                const q = fsMod.query(colRef, fsMod.where("uid", "==", currentUserUid));
-                const snap = await fsMod.getDocs(q);
+                const q = query(collection(db, "creative_script"), where("uid", "==", currentUserUid));
+                const snap = await getDocs(q);
                 
-                window.scriptData = snap.docs.map(doc => ({ id: doc.id, ...doc.data() }));
+                window.scriptData = snap.docs.map(d => ({ id: d.id, ...d.data() }));
                 window.renderList();
             } catch (error) {
-                document.getElementById('listContainer').innerHTML = `<div class="empty-state">Gagal memuat data dari Cloud.</div>`;
+                console.error("Firebase fetch error:", error);
+                document.getElementById('listContainer').innerHTML = `<div class="empty-state">Gagal memuat data dari Cloud.<br><br>Pesan Error: ${error.message}</div>`;
             }
         }
 
-        // =========================================================
-        // 2. FUNGSI SIMPAN (HYBRID)
-        // =========================================================
+        // 2. AUTO-SUGGEST KATEGORI
+        window.showCategorySuggestions = function() {
+            const inputVal = document.getElementById('inputCategory').value.toLowerCase();
+            const suggestBox = document.getElementById('categorySuggestions');
+            
+            const channels = [...new Set(window.scriptData.map(item => item.channel).filter(c => c && c.trim() !== "Umum" && c.trim() !== ""))];
+            const filtered = channels.filter(ch => ch.toLowerCase().includes(inputVal));
+            
+            if (filtered.length > 0) {
+                suggestBox.innerHTML = filtered.map(ch => 
+                    `<button type="button" class="suggest-item" onclick="selectCategory('${ch}')">📺 ${ch}</button>`
+                ).join('');
+                suggestBox.classList.add('active');
+            } else {
+                suggestBox.classList.remove('active');
+            }
+        }
+
+        window.handleCategoryInput = function() {
+            window.triggerAutoSave();
+            window.showCategorySuggestions();
+        }
+
+        window.selectCategory = function(val) {
+            document.getElementById('inputCategory').value = val;
+            document.getElementById('categorySuggestions').classList.remove('active');
+            window.triggerAutoSave();
+        }
+
+        // 3. FUNGSI SIMPAN & AUTO-SAVE
         window.performSave = async function(status, isAuto = false) {
             const title = document.getElementById('inputTitle').value.trim();
             const content = document.getElementById('inputContent').value;
@@ -369,25 +386,34 @@
 
             if(!isAuto) window.renderList();
 
-            if (USE_FIREBASE && fsMod) {
+            if (USE_FIREBASE) {
                 try {
-                    await fsMod.setDoc(fsMod.doc(dbRef, "creative_script", docId), payload);
-                } catch(e) { console.error("Gagal nyimpan di cloud"); }
+                    await setDoc(doc(db, "creative_script", docId), payload);
+                } catch(e) { console.error("Gagal menyimpan ke cloud", e); }
             } else {
                 localStorage.setItem('creative_script', JSON.stringify(window.scriptData));
             }
         }
 
-        // =========================================================
-        // 3. FUNGSI HAPUS (SOFT DELETE HYBRID)
-        // =========================================================
+        window.triggerAutoSave = function() {
+            clearTimeout(autoSaveTimeout);
+            autoSaveTimeout = setTimeout(() => {
+                const curStatus = window.currentId ? (window.scriptData.find(x => x.id === window.currentId)?.status || 'draft') : 'draft';
+                window.performSave(curStatus, true);
+                
+                const indicator = document.getElementById('saveIndicator');
+                indicator.innerText = "Tersimpan"; 
+                indicator.classList.add('show');
+                setTimeout(() => indicator.classList.remove('show'), 2000);
+            }, 1000); 
+        }
+
+        // 4. SOFT DELETE (TRASH)
         window.softDeleteScript = async function(idOverride = null) {
             const idToDelete = idOverride || window.currentId;
             if (!idToDelete) return;
             
-            // Tutup dropdown menu jika diklik dari dalam mode baca/editor
             document.getElementById('actionMenu').classList.remove('active');
-            
             if (!confirm('Pindahkan script ini ke tempat sampah? (Terhapus otomatis setelah 30 hari)')) return;
 
             const itemIndex = window.scriptData.findIndex(x => x.id === idToDelete);
@@ -406,9 +432,9 @@
             window.closePopup(); 
             window.renderList();
 
-            if (USE_FIREBASE && fsMod) {
-                await fsMod.setDoc(fsMod.doc(dbRef, "creative_trash", trashId), trashPayload);
-                await fsMod.deleteDoc(fsMod.doc(dbRef, "creative_script", item.id));
+            if (USE_FIREBASE) {
+                await setDoc(doc(db, "creative_trash", trashId), trashPayload);
+                await deleteDoc(doc(db, "creative_script", item.id));
             } else {
                 let trashData = JSON.parse(localStorage.getItem('creative_trash')) || [];
                 trashData.push({ id: trashId, ...trashPayload });
@@ -417,9 +443,7 @@
             }
         }
 
-        // =========================================================
-        // 4. KUMPULAN FUNGSI UI (LENGKAP)
-        // =========================================================
+        // 5. KENDALI UI (POPUP, PIN, WORD COUNT, DLL)
         window.setFilter = function(type) { window.currentFilter = type; window.renderList(); }
         window.setSort = function(type) { window.currentSort = type; window.renderList(); }
 
@@ -439,7 +463,8 @@
                 document.getElementById('inputContent').value = '';
                 document.getElementById('inputCategory').value = '';
             }
-            updatePinButton(); updateWordCount();
+            document.getElementById('saveIndicator').classList.remove('show');
+            updatePinButton(); window.updateWordCount();
         }
 
         window.closePopup = function() {
@@ -447,19 +472,16 @@
             const content = document.getElementById('inputContent').value.trim();
             if(title || content) {
                 const curStatus = window.currentId ? (window.scriptData.find(x => x.id === window.currentId)?.status || 'draft') : 'draft';
-                if(typeof window.performSave === "function") window.performSave(curStatus, true);
+                window.performSave(curStatus, true);
             }
             document.getElementById('editorPopup').classList.remove('active', 'reading-mode');
             window.renderList(); 
         }
 
-        window.toggleReadingMode = function() { 
-            document.getElementById('editorPopup').classList.toggle('reading-mode'); 
-        }
+        window.toggleReadingMode = function() { document.getElementById('editorPopup').classList.toggle('reading-mode'); }
         
-        window.togglePin = function() { 
-            window.currentPinned = !window.currentPinned; updatePinButton(); triggerAutoSave(); 
-        }
+        window.togglePin = function() { window.currentPinned = !window.currentPinned; updatePinButton(); window.triggerAutoSave(); }
+        
         function updatePinButton() { document.getElementById('btnPin').style.opacity = window.currentPinned ? '1' : '0.4'; }
 
         window.updateWordCount = function() {
@@ -468,30 +490,13 @@
             document.getElementById('wordCountDisplay').innerHTML = `${words.toLocaleString('id-ID')} Kata • ${text.length.toLocaleString('id-ID')} Karakter`;
         }
 
-        window.handleTyping = function() { updateWordCount(); triggerAutoSave(); }
+        window.handleTyping = function() { window.updateWordCount(); window.triggerAutoSave(); }
 
-        window.triggerAutoSave = function() {
-            clearTimeout(autoSaveTimeout);
-            autoSaveTimeout = setTimeout(() => {
-                if(typeof window.performSave === "function") {
-                    const curStatus = window.currentId ? (window.scriptData.find(x => x.id === window.currentId)?.status || 'draft') : 'draft';
-                    window.performSave(curStatus, true);
-                    const indicator = document.getElementById('saveIndicator');
-                    indicator.innerText = "Tersimpan"; indicator.classList.add('show');
-                    setTimeout(() => indicator.classList.remove('show'), 2000);
-                }
-            }, 1000); 
-        }
-
-        window.saveScript = function(status) { 
-            if(typeof window.performSave === "function") window.performSave(status, false); 
-            window.closePopup(); 
-        }
+        window.saveScript = function(status) { window.performSave(status, false); window.closePopup(); }
 
         window.toggleDropdown = function(id) {
             const target = document.getElementById(id);
-            const isActive = target.classList.contains('active');
-            if(!isActive) target.classList.add('active');
+            if(!target.classList.contains('active')) target.classList.add('active');
             else target.classList.remove('active');
         }
 
@@ -533,51 +538,8 @@
 
         window.closeInfoModal = function() { document.getElementById('infoModal').classList.remove('active'); }
 
-// =========================================================
-        // FITUR AUTO-SUGGESTION KATEGORI CHANNEL
-        // =========================================================
-        window.showCategorySuggestions = function() {
-            const inputVal = document.getElementById('inputCategory').value.toLowerCase();
-            const suggestBox = document.getElementById('categorySuggestions');
-            
-            // Ambil semua channel unik dari database yang sudah ada
-            const channels = [...new Set(window.scriptData.map(item => item.channel).filter(c => c && c.trim() !== "Umum" && c.trim() !== ""))];
-            
-            // Filter daftar berdasarkan apa yang diketik user
-            const filtered = channels.filter(ch => ch.toLowerCase().includes(inputVal));
-            
-            if (filtered.length > 0) {
-                suggestBox.innerHTML = filtered.map(ch => 
-                    `<button type="button" class="suggest-item" onclick="selectCategory('${ch}')">📺 ${ch}</button>`
-                ).join('');
-                suggestBox.classList.add('active');
-            } else {
-                suggestBox.classList.remove('active');
-            }
-        }
-
-        window.handleCategoryInput = function() {
-            triggerAutoSave();
-            showCategorySuggestions();
-        }
-
-        window.selectCategory = function(val) {
-            document.getElementById('inputCategory').value = val;
-            document.getElementById('categorySuggestions').classList.remove('active');
-            triggerAutoSave();
-        }
-
-        // Tutup kotak suggest jika klik di tempat lain
-        document.addEventListener('click', function(e) {
-            if (!e.target.closest('.category-wrapper')) {
-                document.getElementById('categorySuggestions')?.classList.remove('active');
-            }
-        });
-        
         function generateDynamicChannels(data) {
-            const channels = [...new Set(data.map(item => item.channel).filter(c => c && c.trim() !== ""))];
-            document.getElementById('categoryDatalist').innerHTML = channels.map(ch => `<option value="${ch}">`).join('');
-
+            const channels = [...new Set(data.map(item => item.channel).filter(c => c && c.trim() !== "Umum" && c.trim() !== ""))];
             let html = `
                 <button class="${window.currentFilter === 'all' ? 'active' : ''}" onclick="setFilter('all')">Semua</button>
                 <button class="${window.currentFilter === 'draft' ? 'active' : ''}" onclick="setFilter('draft')">Draft</button>
@@ -587,7 +549,6 @@
                 <button class="${window.currentSort === 'oldest' ? 'active' : ''}" onclick="setSort('oldest')">⏳ Terlama</button>
                 <div class="divider"></div>
             `;
-            
             channels.forEach(ch => {
                 const isActive = window.currentFilter === ch ? 'active' : '';
                 html += `<button class="${isActive}" onclick="setFilter('${ch}')">📺 ${ch}</button>`;
