@@ -2,8 +2,8 @@
 <html lang="id">
 <head>
     <meta charset="UTF-8">
-    <!-- PERBAIKAN: Dikembalikan ke standar seperti register.html agar bisa di-zoom manual oleh user -->
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+    <!-- PERBAIKAN DI SINI: Menghapus maximum-scale=1.0 dan user-scalable=no agar bisa di-zoom -->
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Masuk - Creative.io</title>
     
     <link rel="manifest" href="./manifest.json">
@@ -11,8 +11,10 @@
 
     <style>
         /* =========================================================
-           CSS UTAMA HALAMAN LOGIN (Font disamakan dengan register.html)
+           CSS UTAMA HALAMAN LOGIN - RESPONSIVE & BUG-FREE
         ========================================================= */
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800;900&display=swap');
+        
         * { margin: 0; padding: 0; box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
         
         :root { 
@@ -42,9 +44,10 @@
             --danger-soft: rgba(239, 68, 68, 0.15);
             --shadow-flat: 0 4px 20px rgba(0, 0, 0, 0.3); 
         }
-        
+
+        /* RESET BODY */
         body { 
-            font-family: 'Inter', Arial, sans-serif; 
+            font-family: 'Inter', system-ui, sans-serif; 
             background: var(--bg-grad); 
             color: var(--text-main); 
             min-height: 100vh; 
@@ -52,28 +55,38 @@
             align-items: center; 
             justify-content: center; 
             padding: 20px;
-            /* Mengunci pergeseran horizontal yang tidak diinginkan */
-            overflow-x: hidden;
         }
-        
-        /* Menggunakan fixed (seperti register.html) agar bulatan dekorasi tidak merusak lebar layar saat di-zoom */
-        .bg-glow { position: fixed; border-radius: 50%; filter: blur(90px); z-index: 0; opacity: 0.5; pointer-events: none; }
+
+        /* 
+           FIX HORIZONTAL SCROLL:
+           Bayangan ditaruh di dalam container fixed yang di-hidden,
+           sehingga mustahil membocorkan scrollbar ke samping.
+        */
+        .bg-wrapper {
+            position: fixed;
+            top: 0; left: 0; right: 0; bottom: 0;
+            overflow: hidden;
+            z-index: 0;
+            pointer-events: none;
+        }
+        .bg-glow { position: absolute; border-radius: 50%; filter: blur(90px); opacity: 0.5; }
         .bg-glow.one { width: 400px; height: 400px; background: rgba(59, 130, 246, 0.2); top: -100px; left: -100px; }
         .bg-glow.two { width: 350px; height: 350px; background: rgba(96, 165, 250, 0.2); bottom: -100px; right: -50px; }
 
+        /* KOTAK LOGIN */
         .auth-container {
             width: 100%;
-            max-width: 420px;
+            max-width: 400px;
             background: var(--card-glass);
             backdrop-filter: blur(20px);
             -webkit-backdrop-filter: blur(20px);
             border: 1px solid var(--border);
             border-radius: var(--radius-card);
-            padding: 40px 32px;
+            padding: 40px 30px;
             box-shadow: var(--shadow-flat);
             position: relative;
             z-index: 2;
-            animation: slideUp 0.5s ease;
+            animation: slideUp 0.5s cubic-bezier(0.16, 1, 0.3, 1);
         }
 
         @keyframes slideUp {
@@ -81,77 +94,95 @@
             to { opacity: 1; transform: translateY(0); }
         }
 
-        .auth-header { text-align: center; margin-bottom: 32px; }
+        .auth-header { text-align: center; margin-bottom: 30px; }
         .brand-logo { width: 56px; height: 56px; border-radius: 16px; background: var(--primary-grad); display: inline-flex; align-items: center; justify-content: center; margin-bottom: 16px; box-shadow: 0 8px 20px rgba(37, 99, 235, 0.3); }
         .brand-logo img { width: 32px; height: 32px; filter: brightness(0) invert(1); }
-        .auth-title { font-size: 24px; font-weight: 900; letter-spacing: -0.5px; margin-bottom: 8px; }
-        .auth-subtitle { font-size: 14px; color: var(--text-muted); line-height: 1.5; }
+        .auth-title { font-size: 24px; font-weight: 800; letter-spacing: -0.5px; margin-bottom: 6px; }
+        .auth-subtitle { font-size: 14px; color: var(--text-muted); }
 
-        .input-group { margin-bottom: 16px; display: flex; flex-direction: column; gap: 8px; position: relative; }
+        .input-group { margin-bottom: 18px; display: flex; flex-direction: column; gap: 8px; }
         .input-label { font-size: 13px; font-weight: 700; color: var(--text-main); }
-        .auth-input { width: 100%; border: 1px solid var(--border); background: var(--card-tint); color: var(--text-main); padding: 14px 16px; border-radius: var(--radius-btn); font-size: 14px; font-weight: 600; outline: none; transition: 0.2s; font-family: inherit; }
+        
+        .auth-input { 
+            width: 100%; 
+            border: 1px solid var(--border); 
+            background: var(--card-tint); 
+            color: var(--text-main); 
+            padding: 14px 16px; 
+            border-radius: var(--radius-btn); 
+            font-size: 14px; 
+            font-weight: 600; 
+            outline: none; 
+            transition: 0.2s; 
+            font-family: inherit; 
+        }
         .auth-input:focus { border-color: var(--primary); box-shadow: 0 0 0 3px var(--primary-soft); background: transparent; }
         
-        /* Posisi Mata Password (Sejajar tengah akurat) */
-        .password-container { position: relative; width: 100%; }
-        .password-container .auth-input { padding-right: 48px; }
-        .toggle-password { position: absolute; right: 16px; top: 50%; transform: translateY(-50%); color: var(--text-muted); background: transparent; border: none; font-size: 16px; cursor: pointer; padding: 4px; border-radius: 8px; display: flex; align-items: center; justify-content: center; height: 100%; }
-        .toggle-password:hover { color: var(--text-main); }
+        /* 
+           FIX ICON MATA:
+           Container dibuat strict relative, icon dibuat absolute presisi di tengah.
+        */
+        .password-wrapper { 
+            position: relative; 
+            display: block;
+            width: 100%; 
+        }
+        .password-wrapper .auth-input { 
+            padding-right: 48px; /* Ruang agar teks ketikan tidak menabrak icon mata */
+        }
+        .toggle-password { 
+            position: absolute; 
+            right: 8px; 
+            top: 50%; 
+            transform: translateY(-50%); 
+            background: transparent; 
+            border: none; 
+            color: var(--text-muted); 
+            font-size: 16px; 
+            cursor: pointer; 
+            padding: 8px; /* Memberikan area klik (touch target) yang nyaman untuk jari */
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 8px;
+        }
+        .toggle-password:hover { color: var(--text-main); background: var(--card-tint); }
 
         .auth-options { display: flex; justify-content: space-between; align-items: center; margin-bottom: 24px; font-size: 13px; font-weight: 600; }
         .forgot-link { color: var(--primary); text-decoration: none; transition: 0.2s; }
         .forgot-link:hover { text-decoration: underline; }
 
-        /* KOTAK NOTIFIKASI ERROR */
-        .error-box { 
-            background: var(--danger-soft); 
-            border: 1px solid rgba(239, 68, 68, 0.3); 
-            color: var(--danger); 
-            padding: 12px 16px; 
-            border-radius: 12px; 
-            font-size: 13px; 
-            font-weight: 700; 
-            margin-bottom: 16px; 
-            display: none; 
-            align-items: center; 
-            gap: 10px;
-            animation: shake 0.4s ease;
-        }
+        .error-box { background: var(--danger-soft); border: 1px solid rgba(239, 68, 68, 0.3); color: var(--danger); padding: 12px 16px; border-radius: 12px; font-size: 13px; font-weight: 700; margin-bottom: 16px; display: none; align-items: center; gap: 10px; animation: shake 0.4s ease; }
         .error-box.show { display: flex; }
-        .error-icon { font-size: 16px; }
-
-        @keyframes shake {
-            0%, 100% { transform: translateX(0); }
-            25% { transform: translateX(-5px); }
-            50% { transform: translateX(5px); }
-            75% { transform: translateX(-5px); }
-        }
+        @keyframes shake { 0%, 100% { transform: translateX(0); } 25%, 75% { transform: translateX(-5px); } 50% { transform: translateX(5px); } }
 
         .auth-btn { width: 100%; border: none; background: var(--primary-grad); color: white; padding: 16px; border-radius: var(--radius-btn); font-size: 15px; font-weight: 800; cursor: pointer; transition: 0.2s; box-shadow: 0 8px 20px rgba(37, 99, 235, 0.25); display: flex; justify-content: center; align-items: center; gap: 8px; }
         .auth-btn:hover { transform: translateY(-2px); box-shadow: 0 12px 25px rgba(37, 99, 235, 0.35); }
-        .auth-btn:active { transform: translateY(0); }
         .auth-btn:disabled { opacity: 0.7; cursor: not-allowed; transform: none; box-shadow: none; }
 
         .auth-footer { margin-top: 24px; text-align: center; font-size: 14px; font-weight: 600; color: var(--text-muted); }
         .auth-footer a { color: var(--primary); text-decoration: none; transition: 0.2s; }
         .auth-footer a:hover { text-decoration: underline; }
 
-        /* Spinner Animasi Loading */
         .spinner { width: 18px; height: 18px; border: 3px solid rgba(255,255,255,0.3); border-radius: 50%; border-top-color: #fff; animation: spin 1s ease-in-out infinite; display: none; }
         .auth-btn.loading .spinner { display: block; }
         @keyframes spin { to { transform: rotate(360deg); } }
 
-        /* Mencegah browser HP melakukan auto-zoom paksa saat input difokuskan, tapi user tetap bebas zoom manual */
-        @media(max-width: 600px) { 
-            .auth-input { font-size: 16px; } 
+        /* Responsivitas Layar Kecil */
+        @media (max-width: 480px) {
+            .auth-container { padding: 32px 20px; border: none; border-radius: 0; background: transparent; box-shadow: none; }
+            body { padding: 0; align-items: flex-start; } /* Form naik ke atas saat di HP agar tidak tertutup keyboard */
+            .auth-header { margin-top: 20px; }
         }
-
     </style>
 </head>
 <body>
 
-    <div class="bg-glow one"></div>
-    <div class="bg-glow two"></div>
+    <!-- Container Khusus untuk Mencegah Kebocoran Scroll -->
+    <div class="bg-wrapper">
+        <div class="bg-glow one"></div>
+        <div class="bg-glow two"></div>
+    </div>
 
     <div class="auth-container">
         <div class="auth-header">
@@ -164,15 +195,16 @@
 
         <form id="loginForm" onsubmit="handleLogin(event)">
             <div class="input-group">
-                <label class="input-label">Email</label>
+                <label class="input-label" for="emailInput">Email</label>
                 <input type="email" id="emailInput" class="auth-input" placeholder="nama@email.com" required oninput="hideError()">
             </div>
             
             <div class="input-group">
-                <label class="input-label">Password</label>
-                <div class="password-container">
+                <label class="input-label" for="passwordInput">Password</label>
+                <!-- STRUKTUR PASSWORD YANG BENAR -->
+                <div class="password-wrapper">
                     <input type="password" id="passwordInput" class="auth-input" placeholder="Masukkan password Anda" required oninput="hideError()">
-                    <button type="button" class="toggle-password" onclick="togglePassword()" title="Tampilkan/Sembunyikan">👁️</button>
+                    <button type="button" class="toggle-password" onclick="togglePassword()" title="Tampilkan Password">👁️</button>
                 </div>
             </div>
 
@@ -199,7 +231,6 @@
         </div>
     </div>
 
-    <!-- Script PWA Pendaftaran Service Worker -->
     <script src="./js/pwa.js"></script>
     
     <script type="module">
@@ -208,7 +239,6 @@
         document.addEventListener('DOMContentLoaded', () => {
             if (localStorage.getItem("dashboard_theme") === "dark") document.body.classList.add("dark");
             
-            // REMEMBER ME: Isi otomatis email jika sebelumnya disimpan
             const savedEmail = localStorage.getItem("creative_remembered_email");
             if(savedEmail) {
                 document.getElementById('emailInput').value = savedEmail;
@@ -255,7 +285,6 @@
             const password = document.getElementById('passwordInput').value;
             const rememberMe = document.getElementById('rememberMe').checked;
 
-            // Handle Remember Me (Hanya simpan email, jangan simpan password)
             if (rememberMe) localStorage.setItem("creative_remembered_email", email);
             else localStorage.removeItem("creative_remembered_email");
 
@@ -264,11 +293,9 @@
                     const module = await import('./js/firebase.js');
                     const authLib = await import("https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js");
                     
-                    // SESSION PERSISTENCE FIX
                     const persistence = rememberMe ? authLib.browserLocalPersistence : authLib.browserSessionPersistence;
                     await authLib.setPersistence(module.auth, persistence);
 
-                    // Eksekusi Login
                     await authLib.signInWithEmailAndPassword(module.auth, email, password);
                     window.location.replace("./pages/dashboard.html");
                     
@@ -286,7 +313,6 @@
                     }
                 }
             } else {
-                // Fallback Mode Offline
                 setTimeout(() => {
                     if (email === "admin@creative.io" && password === "admin123") {
                         localStorage.setItem('dummy_logged_in', 'true');
@@ -299,7 +325,6 @@
             }
         }
 
-        // GUARD LOGIC
         if (USE_FIREBASE) {
             import('./js/firebase.js').then(module => {
                 import("https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js").then(authLib => {
