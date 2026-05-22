@@ -188,30 +188,32 @@
     <script src="../navbar/navbar.js"></script>
     <script src="../js/pwa.js"></script>
 
+    <!-- Script PWA & Navbar tetapkan sama ... -->
     <script type="module">
+        import { auth, db } from "../js/firebase.js";
+        import { onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
+        import { collection, query, where, getCountFromServer } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
+
         const USE_FIREBASE = true;
 
         if (localStorage.getItem("dashboard_theme") === "dark") {
             document.body.classList.add("dark");
         }
 
-        // FUNGSI UTAMA HITUNG STATISTIK ANALITIK
-        async function fetchDashboardStats(uid, db) {
+        async function fetchDashboardStats(uid) {
             try {
                 if (USE_FIREBASE) {
-                    const fsMod = await import("https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js");
-                    
-                    // Kita pakai query count (getCountFromServer) agar super cepat dan hemat kuota Firebase
-                    const qScript = fsMod.query(fsMod.collection(db, "creative_script"), fsMod.where("uid", "==", uid));
-                    const qIdeas = fsMod.query(fsMod.collection(db, "creative_planner_ideas"), fsMod.where("uid", "==", uid));
-                    const qNotes = fsMod.query(fsMod.collection(db, "creative_notes_v2"), fsMod.where("uid", "==", uid));
-                    const qTrash = fsMod.query(fsMod.collection(db, "creative_trash"), fsMod.where("uid", "==", uid));
+                    // Query untuk script (menghitung SEMUA: draft maupun done)
+                    const qScript = query(collection(db, "creative_script"), where("uid", "==", uid));
+                    const qIdeas = query(collection(db, "creative_ideas"), where("uid", "==", uid)); // Perbaikan nama collection
+                    const qNotes = query(collection(db, "creative_notes_v2"), where("uid", "==", uid));
+                    const qTrash = query(collection(db, "creative_trash"), where("uid", "==", uid));
 
                     const [snapScript, snapIdeas, snapNotes, snapTrash] = await Promise.all([
-                        fsMod.getCountFromServer(qScript),
-                        fsMod.getCountFromServer(qIdeas),
-                        fsMod.getCountFromServer(qNotes),
-                        fsMod.getCountFromServer(qTrash)
+                        getCountFromServer(qScript),
+                        getCountFromServer(qIdeas),
+                        getCountFromServer(qNotes),
+                        getCountFromServer(qTrash)
                     ]);
 
                     updateStatsUI(
@@ -221,19 +223,17 @@
                         snapTrash.data().count
                     );
                 } else {
-                    // Jika Mode Offline (Local Storage)
                     const countLocal = (key) => (JSON.parse(localStorage.getItem(key)) || []).length;
-                    
                     updateStatsUI(
                         countLocal('creative_script'),
-                        countLocal('creative_planner_ideas'),
+                        countLocal('creative_ideas'),
                         countLocal('creative_notes_v2'),
                         countLocal('creative_trash')
                     );
                 }
             } catch (error) {
                 console.error("Gagal menarik statistik:", error);
-                updateStatsUI("-", "-", "-", "-"); // Munculkan strip jika gagal
+                updateStatsUI("-", "-", "-", "-");
             }
         }
 
@@ -241,42 +241,23 @@
             const setStat = (id, val) => {
                 const el = document.getElementById(id);
                 el.innerText = val;
-                el.classList.remove("loading-pulse"); // Hapus animasi kedip
+                el.classList.remove("loading-pulse"); 
             };
-            
             setStat("totalScript", sCount);
             setStat("totalIdeas", iCount);
             setStat("totalNotes", nCount);
             setStat("totalTrash", tCount);
         }
 
-        // GUARD AUTENTIKASI 
         if (USE_FIREBASE) {
-            import("../js/firebase.js").then(module => {
-                const auth = module.auth;
-                const db = module.db;
-                
-                import("https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js").then(authLib => {
-                    authLib.onAuthStateChanged(auth, async (user) => {
-                        if (user) {
-                            // Sapa Nama Depan
-                            document.getElementById("welcomeText").innerText = `Halo, ${(user.displayName || "Kreator").split(' ')[0]} 👋`;
-                            
-                            // Hitung Statistik
-                            fetchDashboardStats(user.uid, db);
-                        } else {
-                            window.location.replace("../login.html");
-                        }
-                    });
-                });
-            }).catch(err => console.error("Firebase Auth Error:", err));
-        } else {
-            if (localStorage.getItem('dummy_logged_in') !== 'true') {
-                window.location.replace("../login.html");
-            } else {
-                document.getElementById("welcomeText").innerText = "Halo, Kreator 👋";
-                fetchDashboardStats('local_user', null);
-            }
+            onAuthStateChanged(auth, async (user) => {
+                if (user) {
+                    document.getElementById("welcomeText").innerText = `Halo, ${(user.displayName || "Kreator").split(' ')[0]} 👋`;
+                    fetchDashboardStats(user.uid);
+                } else {
+                    window.location.replace("../login.html");
+                }
+            });
         }
     </script>
 </body>
