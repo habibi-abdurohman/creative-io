@@ -18,7 +18,7 @@
         *::-webkit-scrollbar { display: none; }
         :root { 
             --bg-grad: linear-gradient(180deg, #f8fbff 0%, #eef4ff 100%); 
-            --sticky-bg: rgba(248, 251, 255, 0.85);
+            --sticky-bg: rgba(255, 255, 255, 0.75);
             --card-glass: rgba(255, 255, 255, 0.9);
             --card-solid: #ffffff;
             --card-tint: #f1f5f9;
@@ -38,7 +38,7 @@
         }
         body.dark { 
             --bg-grad: linear-gradient(180deg, #0f172a 0%, #1e293b 100%); 
-            --sticky-bg: rgba(15, 23, 42, 0.85);
+            --sticky-bg: rgba(30, 41, 59, 0.75);
             --card-glass: rgba(30, 41, 59, 0.9);
             --card-solid: #1e293b; 
             --card-tint: #0f172a; 
@@ -47,9 +47,10 @@
             --text-muted: #94a3b8; 
             --shadow-flat: 0 4px 20px rgba(0, 0, 0, 0.2); 
         }
-        body { font-family: 'Inter', system-ui, sans-serif; background: var(--bg-grad); color: var(--text-main); min-height: 100vh; padding: 76px 0 100px 0; }
+        body { font-family: 'Inter', system-ui, sans-serif; background: var(--bg-grad); color: var(--text-main); min-height: 100vh; padding: 76px 16px 100px 16px; }
         
-        .wrapper { position: relative; z-index: 2; max-width: 800px; margin: 0 auto; padding: 0 16px; }
+        /* MAX WIDTH DISEJAJARKAN DENGAN NOTES (1100px) */
+        .wrapper { position: relative; z-index: 2; max-width: 1100px; margin: 0 auto; }
         .bg-glow { position: fixed; border-radius: 50%; filter: blur(90px); z-index: 0; opacity: 0.5; pointer-events: none; }
         .bg-glow.one { width: 340px; height: 340px; background: rgba(59, 130, 246, 0.15); top: -50px; left: -100px; }
         .bg-glow.two { width: 320px; height: 320px; background: rgba(96, 165, 250, 0.15); bottom: 100px; right: -100px; }
@@ -58,32 +59,92 @@
         .hero-card::after { content: ""; position: absolute; width: 250px; height: 250px; background: rgba(255, 255, 255, 0.1); border-radius: 50%; top: -80px; right: -80px; pointer-events: none; }
         .hero-title { font-size: 28px; font-weight: 900; letter-spacing: -0.5px; margin-bottom: 8px; position: relative; z-index: 1; }
         .hero-desc { font-size: 14px; line-height: 1.6; opacity: 0.9; margin-bottom: 24px; max-width: 500px; position: relative; z-index: 1; }
-        .hero-stats { display: flex; gap: 12px; overflow-x: auto; position: relative; z-index: 1; padding-bottom: 4px; }
+        .hero-stats { display: flex; gap: 12px; overflow-x: auto; position: relative; z-index: 1; padding-bottom: 4px; scrollbar-width: none; }
         .hero-stats::-webkit-scrollbar { display: none; }
         .stat-pill { display: flex; align-items: center; gap: 8px; background: rgba(255, 255, 255, 0.2); backdrop-filter: blur(10px); border: 1px solid rgba(255, 255, 255, 0.3); padding: 8px 16px; border-radius: 20px; font-size: 12px; font-weight: 700; white-space: nowrap; }
         .stat-pill span { font-size: 16px; font-weight: 900; }
         
-        .sticky-tools { position: sticky; top: 52px; z-index: 50; padding: 12px 16px 16px 16px; background: var(--sticky-bg); backdrop-filter: blur(16px); -webkit-backdrop-filter: blur(16px); width: 100%; }
-        .sticky-tools-inner { max-width: 800px; margin: 0 auto; }
+        /* =========================================================
+           REVISI UI: FLOATING ISLAND & SEARCH OVERLAY
+        ========================================================= */
+        .sticky-tools { 
+            position: sticky; 
+            top: 76px; 
+            z-index: 50; 
+            padding: 10px 16px; 
+            margin: 16px 0 24px 0; 
+            background: var(--sticky-bg); 
+            backdrop-filter: blur(16px); 
+            -webkit-backdrop-filter: blur(16px); 
+            border: 1px solid var(--border);
+            border-radius: 20px; 
+            box-shadow: 0 12px 32px rgba(0, 0, 0, 0.05); 
+            transition: box-shadow 0.3s ease;
+        }
+        body.dark .sticky-tools { box-shadow: 0 12px 32px rgba(0, 0, 0, 0.4); }
+        
+        .sticky-tools-inner { 
+            position: relative; 
+            display: flex; 
+            align-items: center; 
+            height: 38px; 
+            gap: 8px; 
+            max-width: 100%; 
+            margin: 0 auto; 
+            overflow-x: auto; 
+            scrollbar-width: none; 
+        }
+        .sticky-tools-inner::-webkit-scrollbar { display: none; }
+        
+        .search-wrapper { position: relative; width: 38px; height: 38px; flex-shrink: 0; z-index: 20; }
+        
+        .search-expandable { 
+            position: absolute; top: 0; left: 0; display: flex; align-items: center; 
+            background: var(--card-solid); border: 1px solid var(--border); border-radius: 12px; 
+            height: 38px; width: 38px; overflow: hidden; 
+            transition: width 0.3s cubic-bezier(0.4, 0, 0.2, 1), border-color 0.3s, box-shadow 0.3s; 
+            box-shadow: var(--shadow-flat);
+        }
+        body.dark .search-expandable { background: var(--card-solid); border-color: var(--border); }
+        
+        .search-expandable.expanded { border-color: var(--primary); }
+        body.dark .search-expandable.expanded { box-shadow: 0 4px 16px rgba(0,0,0,0.5); }
+        
+        .search-icon-btn { 
+            min-width: 38px; height: 38px; background: transparent; border: none; font-size: 14px; 
+            cursor: pointer; color: var(--text-muted); display: flex; align-items: center; justify-content: center; transition: 0.2s;
+        }
+        .search-expandable.expanded .search-icon-btn { color: var(--primary); pointer-events: none; }
+        
+        .search-expandable input { 
+            flex: 1; border: none; outline: none; background: transparent; font-size: 13px; 
+            color: var(--text-main); padding: 0 4px; opacity: 0; pointer-events: none; transition: opacity 0.2s 0.1s; 
+        }
+        .search-expandable.expanded input { opacity: 1; pointer-events: auto; }
+        
+        .close-search-btn { 
+            min-width: 38px; height: 38px; background: transparent; border: none; font-size: 14px; 
+            cursor: pointer; color: var(--text-muted); opacity: 0; pointer-events: none; transition: 0.2s; 
+            display: flex; align-items: center; justify-content: center; 
+        }
+        .close-search-btn:hover { color: var(--danger); }
+        .search-expandable.expanded .close-search-btn { opacity: 1; pointer-events: auto; }
+        
+        .filter-btn { flex-shrink: 0; padding: 8px 14px; border-radius: 10px; background: var(--card-solid); border: 1px solid var(--border); font-size: 12px; font-weight: 700; color: var(--text-muted); cursor: pointer; transition: 0.2s; white-space: nowrap; }
+        .filter-btn.active { background: var(--primary-soft); border-color: var(--primary); color: var(--primary); }
+        .divider { flex-shrink: 0; width: 1px; height: 18px; background: var(--border); margin: 0 2px; }
 
-        .search-box { position: relative; margin-bottom: 12px; }
-        .search-box input { width: 100%; padding: 14px 16px 14px 42px; outline: none; background: var(--card-solid); border: 1px solid var(--border); border-radius: var(--radius-btn); font-size: 13px; color: var(--text-main); box-shadow: var(--shadow-flat); }
-        .search-box input:focus { border-color: var(--primary); }
-        .search-box::before { content: '🔍'; position: absolute; left: 14px; top: 13px; font-size: 14px; opacity: 0.6; }
+        /* =========================================================
+           REVISI UI: DAFTAR KARTU RESPONSIF (3 LAPTOP, 2 TABLET, 1 HP)
+        ========================================================= */
+        .list-container { column-count: 3; column-gap: 16px; margin-top: 10px; }
         
-        .filters-row { display: flex; align-items: center; gap: 8px; overflow-x: auto; padding-bottom: 6px; }
-        .filters-row::-webkit-scrollbar { display: none; }
-        .filters-row button { flex-shrink: 0; padding: 8px 16px; border-radius: 12px; background: var(--card-solid); border: 1px solid var(--border); font-size: 12px; font-weight: 700; color: var(--text-muted); cursor: pointer; transition: 0.2s; }
-        .filters-row button.active { background: var(--primary-soft); border-color: var(--primary); color: var(--primary); }
-        .divider { flex-shrink: 0; width: 1px; height: 20px; background: var(--border); margin: 0 4px; }
-        
-        .list-container { display: flex; flex-direction: column; gap: 14px; margin-top: 10px; }
-        .empty-state { text-align: center; padding: 60px 20px; background: var(--card-glass); border: 1px dashed var(--border); border-radius: var(--radius-card); cursor: pointer; transition: 0.2s; }
+        .empty-state { column-span: all; text-align: center; padding: 60px 20px; background: var(--card-glass); border: 1px dashed var(--border); border-radius: var(--radius-card); cursor: pointer; transition: 0.2s; }
         .empty-state:hover { background: var(--card-tint); }
         .empty-state-icon { font-size: 42px; margin-bottom: 12px; opacity: 0.8; }
         .empty-state-text { font-size: 13px; color: var(--text-muted); line-height: 1.6; }
         
-        .card { background: var(--card-glass); backdrop-filter: blur(12px); border: 1px solid var(--border); border-radius: 20px; padding: 20px; box-shadow: var(--shadow-flat); transition: transform 0.2s; }
+        .card { break-inside: avoid; margin-bottom: 16px; background: var(--card-glass); backdrop-filter: blur(12px); border: 1px solid var(--border); border-radius: 20px; padding: 20px; box-shadow: var(--shadow-flat); transition: transform 0.2s, border-color 0.2s; }
         .card:hover { transform: translateY(-2px); border-color: #cbd5e1; }
         .card.pinned { border-left: 4px solid var(--warning); }
         .card.completed { opacity: 0.6; }
@@ -115,7 +176,6 @@
         .input-title { width: 100%; border: none; outline: none; background: transparent; font-size: 28px; font-weight: 900; color: var(--text-main); margin-bottom: 8px; letter-spacing: -0.5px; transition: text-align 0.3s; }
         .input-title::placeholder { color: var(--text-muted); opacity: 0.5; }
         
-        /* CSS AUTO-SUGGEST KATEGORI */
         .category-wrapper { position: relative; width: 100%; margin-bottom: 32px; }
         .input-category { width: 100%; border: none; outline: none; background: transparent; font-size: 14px; font-weight: 700; color: var(--primary); margin-bottom: 0; }
         .input-category::placeholder { color: var(--text-muted); font-weight: 600; opacity: 0.6; }
@@ -163,7 +223,19 @@
         .btn-exit-read { display: none; position: fixed; top: 20px; right: 20px; z-index: 100001; width: 44px; height: 44px; border-radius: 50%; background: var(--card-solid); border: 1px solid var(--border); color: var(--text-main); font-size: 16px; cursor: pointer; box-shadow: var(--shadow-flat); }
         .reading-mode .btn-exit-read { display: flex; align-items: center; justify-content: center; }
         
-        @media(max-width: 600px) { .hero-card { padding: 28px 24px; border-radius: 20px; } .hero-title { font-size: 24px; } .editor-footer { flex-direction: column; gap: 16px; align-items: flex-start; } .footer-actions { width: 100%; } .btn-action { flex: 1; text-align: center; } .word-count { width: 100%; text-align: left; } }
+        /* BREAKPOINT RESPONSIF UNTUK KARTU SCRIPT */
+        @media(max-width: 1024px) { 
+            .list-container { column-count: 2; } 
+        }
+        @media(max-width: 600px) { 
+            .hero-card { padding: 28px 24px; border-radius: 20px; } 
+            .hero-title { font-size: 24px; } 
+            .editor-footer { flex-direction: column; gap: 16px; align-items: flex-start; } 
+            .footer-actions { width: 100%; } 
+            .btn-action { flex: 1; text-align: center; } 
+            .word-count { width: 100%; text-align: left; } 
+            .list-container { column-count: 1; }
+        }
     </style>
 </head>
 <body>
@@ -183,18 +255,27 @@
         </div>
     </div>
 
-    <div class="sticky-tools">
-        <div class="sticky-tools-inner">
-            <div class="search-box">
-                <input type="text" id="searchInput" placeholder="Cari script atau narasi..." oninput="renderList()">
+    <div class="wrapper" style="position: sticky; top: 76px; z-index: 50;">
+        <div class="sticky-tools">
+            <div class="sticky-tools-inner" id="filterWrap">
+                
+                <div class="search-wrapper">
+                    <div class="search-expandable" id="searchContainer">
+                        <button class="search-icon-btn" onclick="openSearch(event)" title="Cari Script">🔍</button>
+                        <input type="text" id="searchInput" placeholder="Cari script atau narasi..." autocomplete="off" oninput="renderList()">
+                        <button class="close-search-btn" onclick="closeSearch(event)" title="Tutup Pencarian">✕</button>
+                    </div>
+                </div>
+                
+                <div id="dynamicFilters" style="display: contents;"></div>
+                
             </div>
-            <div class="filters-row" id="dynamicFilters"></div>
         </div>
     </div>
 
     <div class="wrapper">
         <div class="list-container" id="listContainer">
-            <div style="text-align: center; padding: 40px; color: var(--text-muted);">Memuat data...</div>
+            <div style="text-align: center; padding: 40px; color: var(--text-muted); column-span: all;">Memuat data...</div>
         </div>
         
         <button class="fab" onclick="openPopup()">+</button>
@@ -262,7 +343,6 @@
     <script src="../js/pwa.js"></script>
 
     <script type="module">
-        // Import Static yang dijamin stabil 100%
         import { auth, db } from "../js/firebase.js";
         import { onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
         import { collection, query, where, getDocs, setDoc, doc, deleteDoc } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
@@ -278,13 +358,22 @@
         let autoSaveTimeout = null;
         let currentUserUid = null;
 
-        // Tutup dropdown/suggest jika klik di luar
+        // Tutup dropdown/suggest & Klik Di Luar Search
         document.addEventListener('click', function(e) {
+            // Tutup dropdown option editor
             if (!e.target.closest('.dropdown-wrap')) {
                 document.querySelectorAll('.dropdown-menu').forEach(m => m.classList.remove('active'));
             }
+            // Tutup auto-suggest kategori
             if (!e.target.closest('.category-wrapper')) {
                 document.getElementById('categorySuggestions')?.classList.remove('active');
+            }
+            // Tutup search overlay bila diklik diluar
+            const searchContainer = document.getElementById('searchContainer');
+            if (searchContainer && searchContainer.classList.contains('expanded')) {
+                if (!searchContainer.contains(e.target)) {
+                    window.closeSearch();
+                }
             }
         });
 
@@ -324,6 +413,56 @@
                 document.getElementById('listContainer').innerHTML = `<div class="empty-state">Gagal memuat data dari Cloud.<br><br>Pesan Error: ${error.message}</div>`;
             }
         }
+
+        // ==========================================
+        // HANDLER ANIMASI & LOGIKA EXPANDABLE SEARCH
+        // ==========================================
+        window.openSearch = function(event) {
+            if (event) event.stopPropagation();
+            
+            const wrap = document.getElementById('filterWrap');
+            const searchBox = document.getElementById('searchContainer');
+            
+            // Auto-scroll ke paling kiri agar tidak terpotong saat direntangkan
+            wrap.scrollTo({left: 0, behavior: 'smooth'}); 
+            
+            // Lebar pencarian akan mengambil 100% dari ruang container yang terlihat
+            searchBox.style.width = wrap.clientWidth + 'px';
+            searchBox.classList.add('expanded');
+            
+            // Kunci overflow agar user tidak bisa scroll filter selagi search terbuka
+            wrap.style.overflowX = 'hidden'; 
+            
+            setTimeout(() => { document.getElementById('searchInput').focus(); }, 300);
+        }
+
+        window.closeSearch = function(event) {
+            if (event) event.stopPropagation();
+            
+            const wrap = document.getElementById('filterWrap');
+            const searchBox = document.getElementById('searchContainer');
+            
+            searchBox.style.width = '38px';
+            searchBox.classList.remove('expanded');
+            
+            // Kembalikan kemampuan scroll untuk filter
+            wrap.style.overflowX = 'auto'; 
+            
+            const input = document.getElementById('searchInput');
+            if (input.value !== '') {
+                input.value = '';
+                window.renderList(); 
+            }
+        }
+
+        // Responsif: Sesuaikan lebar search box saat orientasi layar atau window berubah
+        window.addEventListener('resize', () => {
+            const searchBox = document.getElementById('searchContainer');
+            if(searchBox && searchBox.classList.contains('expanded')) {
+                const wrap = document.getElementById('filterWrap');
+                searchBox.style.width = wrap.clientWidth + 'px';
+            }
+        });
 
         // 2. AUTO-SUGGEST KATEGORI
         window.showCategorySuggestions = function() {
@@ -538,20 +677,21 @@
 
         window.closeInfoModal = function() { document.getElementById('infoModal').classList.remove('active'); }
 
+        // FUNGSI INJECT DYNAMIC FILTERS KATEGORI
         function generateDynamicChannels(data) {
             const channels = [...new Set(data.map(item => item.channel).filter(c => c && c.trim() !== "Umum" && c.trim() !== ""))];
             let html = `
-                <button class="${window.currentFilter === 'all' ? 'active' : ''}" onclick="setFilter('all')">Semua</button>
-                <button class="${window.currentFilter === 'draft' ? 'active' : ''}" onclick="setFilter('draft')">Draft</button>
-                <button class="${window.currentFilter === 'done' ? 'active' : ''}" onclick="setFilter('done')">Selesai</button>
+                <button class="filter-btn ${window.currentFilter === 'all' ? 'active' : ''}" onclick="setFilter('all')">Semua</button>
+                <button class="filter-btn ${window.currentFilter === 'draft' ? 'active' : ''}" onclick="setFilter('draft')">Draft</button>
+                <button class="filter-btn ${window.currentFilter === 'done' ? 'active' : ''}" onclick="setFilter('done')">Selesai</button>
                 <div class="divider"></div>
-                <button class="${window.currentSort === 'newest' ? 'active' : ''}" onclick="setSort('newest')">🆕 Terbaru</button>
-                <button class="${window.currentSort === 'oldest' ? 'active' : ''}" onclick="setSort('oldest')">⏳ Terlama</button>
+                <button class="filter-btn ${window.currentSort === 'newest' ? 'active' : ''}" onclick="setSort('newest')">🆕 Terbaru</button>
+                <button class="filter-btn ${window.currentSort === 'oldest' ? 'active' : ''}" onclick="setSort('oldest')">⏳ Terlama</button>
                 <div class="divider"></div>
             `;
             channels.forEach(ch => {
                 const isActive = window.currentFilter === ch ? 'active' : '';
-                html += `<button class="${isActive}" onclick="setFilter('${ch}')">📺 ${ch}</button>`;
+                html += `<button class="filter-btn ${isActive}" onclick="setFilter('${ch}')">📺 ${ch}</button>`;
             });
             document.getElementById('dynamicFilters').innerHTML = html;
         }
