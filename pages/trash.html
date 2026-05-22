@@ -13,46 +13,117 @@
         @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800;900&display=swap');
         * { margin: 0; padding: 0; box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
         *::-webkit-scrollbar { display: none; }
-        :root { --bg-grad: linear-gradient(180deg, #f8fbff 0%, #eef4ff 100%); --card-glass: rgba(255, 255, 255, 0.9); --card-solid: #ffffff; --card-tint: #f1f5f9; --border: #e2e8f0; --text-main: #0f172a; --text-muted: #64748b; --primary: #2563eb; --primary-soft: rgba(37, 99, 235, 0.1); --success: #16a34a; --danger: #ef4444; --danger-soft: rgba(239, 68, 68, 0.1); --warning: #f59e0b; --shadow-flat: 0 4px 20px rgba(0, 0, 0, 0.04); --radius-btn: 14px; --radius-card: 24px; }
-        body.dark { --bg-grad: linear-gradient(180deg, #0f172a 0%, #1e293b 100%); --card-glass: rgba(30, 41, 59, 0.9); --card-solid: #1e293b; --card-tint: #0f172a; --border: #334155; --text-main: #f8fafc; --text-muted: #94a3b8; --primary-soft: rgba(59, 130, 246, 0.2); --danger-soft: rgba(239, 68, 68, 0.15); --shadow-flat: 0 4px 20px rgba(0, 0, 0, 0.2); }
+        :root { 
+            --bg-grad: linear-gradient(180deg, #f8fbff 0%, #eef4ff 100%); 
+            --card-glass: rgba(255, 255, 255, 0.9); 
+            --card-solid: #ffffff; 
+            --card-tint: #f1f5f9; 
+            --border: #e2e8f0; 
+            --text-main: #0f172a; 
+            --text-muted: #64748b; 
+            --primary: #2563eb; 
+            --primary-soft: rgba(37, 99, 235, 0.1); 
+            --success: #16a34a; 
+            --danger: #ef4444; 
+            --danger-soft: rgba(239, 68, 68, 0.1); 
+            --warning: #f59e0b; 
+            --warning-soft: rgba(245, 158, 11, 0.1);
+            --purple: #8b5cf6;
+            --purple-soft: rgba(139, 92, 246, 0.1);
+            --shadow-flat: 0 4px 20px rgba(0, 0, 0, 0.04); 
+            --radius-btn: 14px; 
+            --radius-card: 20px; 
+        }
+        body.dark { 
+            --bg-grad: linear-gradient(180deg, #0f172a 0%, #1e293b 100%); 
+            --card-glass: rgba(30, 41, 59, 0.9); 
+            --card-solid: #1e293b; 
+            --card-tint: #0f172a; 
+            --border: #334155; 
+            --text-main: #f8fafc; 
+            --text-muted: #94a3b8; 
+            --primary-soft: rgba(59, 130, 246, 0.2); 
+            --danger-soft: rgba(239, 68, 68, 0.15); 
+            --warning-soft: rgba(245, 158, 11, 0.15);
+            --purple-soft: rgba(139, 92, 246, 0.15);
+            --shadow-flat: 0 4px 20px rgba(0, 0, 0, 0.2); 
+        }
         body { font-family: 'Inter', system-ui, sans-serif; background: var(--bg-grad); color: var(--text-main); min-height: 100vh; padding: 86px 16px 100px; transition: background 0.3s, color 0.3s; }
+        
         .bg-glow { position: fixed; border-radius: 50%; filter: blur(90px); z-index: 0; opacity: 0.5; pointer-events: none; }
         .bg-glow.one { width: 340px; height: 340px; background: rgba(59, 130, 246, 0.15); top: -50px; left: -100px; }
         .bg-glow.two { width: 320px; height: 320px; background: rgba(96, 165, 250, 0.15); bottom: 100px; right: -100px; }
+        
         .wrapper { position: relative; z-index: 2; max-width: 900px; margin: 0 auto; }
+        
         .page-header { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 20px; flex-wrap: wrap; gap: 16px; }
         .header-title h1 { font-size: 26px; font-weight: 900; letter-spacing: -0.5px; display: flex; align-items: center; gap: 10px; }
         .header-title p { font-size: 13px; color: var(--text-muted); margin-top: 6px; line-height: 1.6; max-width: 450px; }
+        
         .btn-empty-trash { background: var(--danger-soft); color: var(--danger); border: 1px solid rgba(239, 68, 68, 0.2); padding: 12px 20px; border-radius: var(--radius-btn); font-size: 13px; font-weight: 800; cursor: pointer; transition: 0.2s; display: flex; align-items: center; gap: 8px; }
         .btn-empty-trash:hover { background: var(--danger); color: white; }
+        
+        /* Filter Button & Analytics Badge */
         .filter-wrap { display: flex; gap: 8px; overflow-x: auto; margin-bottom: 20px; padding-bottom: 4px; }
         .filter-btn { flex-shrink: 0; padding: 10px 16px; border-radius: 14px; background: var(--card-solid); border: 1px solid var(--border); font-size: 13px; font-weight: 700; color: var(--text-muted); cursor: pointer; transition: 0.2s; display: flex; align-items: center; gap: 6px; }
         .filter-btn:hover { background: var(--card-tint); }
         .filter-btn.active { background: var(--primary-soft); border-color: var(--primary); color: var(--primary); }
+        
+        .badge-count { background: var(--card-tint); color: var(--text-muted); padding: 2px 8px; border-radius: 8px; font-size: 11px; font-weight: 800; margin-left: 4px; transition: 0.2s; }
+        body.dark .badge-count { background: rgba(255,255,255,0.1); }
+        .filter-btn.active .badge-count { background: var(--primary); color: white; }
+
         .trash-list { display: flex; flex-direction: column; gap: 14px; }
+        
+        /* Desain Card Berdasarkan Identitas Visual */
         .trash-card { background: var(--card-glass); backdrop-filter: blur(12px); border: 1px solid var(--border); border-radius: var(--radius-card); padding: 20px; box-shadow: var(--shadow-flat); display: flex; justify-content: space-between; align-items: center; gap: 20px; transition: 0.2s; }
-        .trash-card:hover { border-color: #cbd5e1; transform: translateY(-2px); }
+        
+        /* Varian Kategori */
+        .trash-card.type-script { border-left: 4px solid var(--primary); }
+        .trash-card.type-script:hover { border-color: var(--primary); background-color: rgba(37, 99, 235, 0.02); transform: translateY(-2px); }
+        body.dark .trash-card.type-script:hover { background-color: rgba(37, 99, 235, 0.05); }
+
+        .trash-card.type-notes { border-left: 4px solid var(--warning); }
+        .trash-card.type-notes:hover { border-color: var(--warning); background-color: rgba(245, 158, 11, 0.02); transform: translateY(-2px); }
+        body.dark .trash-card.type-notes:hover { background-color: rgba(245, 158, 11, 0.05); }
+
+        .trash-card.type-planner { border-left: 4px solid var(--purple); }
+        .trash-card.type-planner:hover { border-color: var(--purple); background-color: rgba(139, 92, 246, 0.02); transform: translateY(-2px); }
+        body.dark .trash-card.type-planner:hover { background-color: rgba(139, 92, 246, 0.05); }
+
         .card-left { display: flex; align-items: flex-start; gap: 16px; flex: 1; min-width: 0; }
+        
         .source-icon { width: 48px; height: 48px; border-radius: 16px; display: flex; align-items: center; justify-content: center; font-size: 24px; flex-shrink: 0; }
-        .icon-notepad { background: rgba(59, 130, 246, 0.1); color: #3b82f6; }
-        .icon-notes { background: rgba(245, 158, 11, 0.1); color: #f59e0b; }
-        .icon-planner { background: rgba(139, 92, 246, 0.1); color: #8b5cf6; }
+        .icon-notepad { background: var(--primary-soft); color: var(--primary); }
+        .icon-notes { background: var(--warning-soft); color: var(--warning); }
+        .icon-planner { background: var(--purple-soft); color: var(--purple); }
+        
         .card-info { flex: 1; min-width: 0; }
-        .card-title { font-size: 16px; font-weight: 800; color: var(--text-main); margin-bottom: 4px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+        .card-title { font-size: 16px; font-weight: 800; color: var(--text-main); margin-bottom: 4px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; display: flex; align-items: center; gap: 8px;}
         .card-desc { font-size: 13px; color: var(--text-muted); line-height: 1.5; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; }
+        
         .card-right { display: flex; flex-direction: column; align-items: flex-end; gap: 12px; flex-shrink: 0; }
         .badge-countdown { display: inline-flex; align-items: center; gap: 6px; background: var(--danger-soft); color: var(--danger); padding: 6px 12px; border-radius: 12px; font-size: 11px; font-weight: 800; }
-        .badge-countdown.warning { background: rgba(245, 158, 11, 0.1); color: var(--warning); }
+        .badge-countdown.warning { background: var(--warning-soft); color: var(--warning); }
+        
         .card-actions { display: flex; gap: 8px; }
         .btn-action { padding: 10px 16px; border-radius: 12px; font-size: 12px; font-weight: 800; cursor: pointer; transition: 0.2s; border: none; }
         .btn-restore { background: var(--card-tint); color: var(--primary); border: 1px solid var(--border); }
         .btn-restore:hover { background: var(--primary-soft); border-color: var(--primary); }
         .btn-delete { background: transparent; color: var(--text-muted); padding: 10px; font-size: 16px; }
         .btn-delete:hover { color: var(--danger); }
+        
         .empty-state { text-align: center; padding: 80px 20px; background: var(--card-glass); border: 1px dashed var(--border); border-radius: var(--radius-card); }
         .empty-icon { font-size: 56px; margin-bottom: 16px; opacity: 0.5; filter: grayscale(1); }
         .empty-text { font-size: 14px; color: var(--text-muted); font-weight: 600; line-height: 1.6; }
-        @media(max-width: 600px) { .page-header { flex-direction: column; align-items: stretch; } .btn-empty-trash { justify-content: center; } .trash-card { flex-direction: column; align-items: stretch; gap: 16px; } .card-right { flex-direction: row; justify-content: space-between; align-items: center; } .card-actions { flex: 1; justify-content: flex-end; } }
+        
+        @media(max-width: 600px) { 
+            .page-header { flex-direction: column; align-items: stretch; } 
+            .btn-empty-trash { justify-content: center; } 
+            .trash-card { flex-direction: column; align-items: stretch; gap: 16px; } 
+            .card-right { flex-direction: row; justify-content: space-between; align-items: center; } 
+            .card-actions { flex: 1; justify-content: flex-end; } 
+        }
     </style>
 </head>
 <body>
@@ -70,10 +141,18 @@
         </div>
 
         <div class="filter-wrap">
-            <button class="filter-btn active" onclick="setFilter('all', this)">Semua</button>
-            <button class="filter-btn" onclick="setFilter('script', this)">📝 Script</button>
-            <button class="filter-btn" onclick="setFilter('notes', this)">📌 Notes</button>
-            <button class="filter-btn" onclick="setFilter('planner', this)">📅 Ideas</button>
+            <button class="filter-btn active" onclick="setFilter('all', this)">
+                Semua <span class="badge-count" id="countAll">0</span>
+            </button>
+            <button class="filter-btn" onclick="setFilter('script', this)">
+                📝 Script <span class="badge-count" id="countScript">0</span>
+            </button>
+            <button class="filter-btn" onclick="setFilter('notes', this)">
+                📌 Notes <span class="badge-count" id="countNotes">0</span>
+            </button>
+            <button class="filter-btn" onclick="setFilter('planner', this)">
+                📅 Ideas <span class="badge-count" id="countIdeas">0</span>
+            </button>
         </div>
 
         <div class="trash-list" id="trashList"></div>
@@ -128,6 +207,7 @@
                     
                     for (let document of snap.docs) {
                         const data = { id: document.id, ...document.data() };
+                        // Validasi 30 Hari: Data yang sudah expired akan dihapus otomatis di sini
                         if (data.expireAt < now) {
                             await fsMod.deleteDoc(fsMod.doc(dbRef, "creative_trash", document.id));
                         } else {
@@ -217,11 +297,11 @@
                     restorePayload.pinned = false;
                     restorePayload.updatedAt = Date.now();
                 }
-                // JIKA NOTES (KODE INI YANG MENJADI PENYELAMAT BADGE)
+                // JIKA NOTES
                 else if(item.type === 'notes') {
                     restorePayload.content = item.content;
                     restorePayload.pinned = false;
-                    restorePayload.isRestored = true; // <---- INI DIA KUNCINYA
+                    restorePayload.isRestored = true; 
                     restorePayload.updatedAt = Date.now();
                 }
 
@@ -284,6 +364,13 @@
 
         window.renderTrash = function() {
             const container = document.getElementById("trashList");
+            
+            // --- LOGIKA UPDATE ANGKA ANALITIK ---
+            document.getElementById("countAll").innerText = window.trashData.length;
+            document.getElementById("countScript").innerText = window.trashData.filter(x => x.type === 'script').length;
+            document.getElementById("countNotes").innerText = window.trashData.filter(x => x.type === 'notes').length;
+            document.getElementById("countIdeas").innerText = window.trashData.filter(x => x.type === 'planner').length;
+
             let filteredData = window.currentFilter === 'all' 
                 ? window.trashData 
                 : window.trashData.filter(x => x.type === window.currentFilter);
@@ -293,21 +380,38 @@
                 return;
             }
 
-            filteredData.sort((a, b) => a.expireAt - b.expireAt);
+            // --- REVISI SORTING: Terbaru ke Terlama (Paling baru dihapus ada di atas) ---
+            filteredData.sort((a, b) => b.expireAt - a.expireAt);
+            
             let html = "";
             filteredData.forEach(item => {
-                let icon = "📝"; let iconClass = "icon-notepad"; let sourceName = "Script";
-                if (item.type === "notes") { icon = "📌"; iconClass = "icon-notes"; sourceName = "Notes"; }
-                if (item.type === "planner") { icon = "📅"; iconClass = "icon-planner"; sourceName = "Ideas"; }
+                let icon = "📝"; 
+                let iconClass = "icon-notepad"; 
+                let sourceName = "Script";
+                let typeClass = "type-script"; // Class visual utama
+
+                if (item.type === "notes") { 
+                    icon = "📌"; 
+                    iconClass = "icon-notes"; 
+                    sourceName = "Notes"; 
+                    typeClass = "type-notes";
+                }
+                if (item.type === "planner") { 
+                    icon = "📅"; 
+                    iconClass = "icon-planner"; 
+                    sourceName = "Ideas"; 
+                    typeClass = "type-planner";
+                }
 
                 const daysLeft = getDaysRemaining(item.expireAt);
                 const badgeClass = daysLeft > 10 ? "badge-countdown warning" : "badge-countdown";
 
-                html += `<div class="trash-card">
+                // Menambahkan kelas typeClass ke trash-card
+                html += `<div class="trash-card ${typeClass}">
                     <div class="card-left">
                         <div class="source-icon ${iconClass}" title="Berasal dari ${sourceName}">${icon}</div>
                         <div class="card-info">
-                            <div class="card-title">${item.title || 'Tanpa Judul'}</div>
+                            <div class="card-title">${item.title || 'Tanpa Judul'} </div>
                             <div class="card-desc">${item.content || '<em>Tidak ada isi...</em>'}</div>
                         </div>
                     </div>
