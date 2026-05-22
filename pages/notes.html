@@ -11,7 +11,7 @@
 
     <style>
         /* =========================================================
-           CSS LENGKAP (TIDAK ADA YANG DIHAPUS)
+           CSS LENGKAP - PEMBARUAN DESAIN "THE TAPED BACK"
         ========================================================= */
         @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800;900&display=swap');
         * { margin: 0; padding: 0; box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
@@ -48,15 +48,52 @@
         .empty-state-icon { font-size: 42px; margin-bottom: 12px; opacity: 0.8; }
         .empty-state-text { font-size: 13px; color: var(--text-muted); line-height: 1.6; }
         
-        .note-card { break-inside: avoid; margin-bottom: 16px; padding: 20px 16px 16px 20px; border-radius: var(--radius-card); background: var(--card-glass); border: 1px solid var(--border); cursor: pointer; position: relative; overflow: hidden; box-shadow: var(--shadow-flat); transition: transform 0.2s, border-color 0.2s; background-image: linear-gradient(var(--paper-line) 1px, transparent 1px); background-size: 100% 28px; background-position: 0 12px; }
+        /* OVERFLOW HIDDEN DIHAPUS agar selotip bisa melewati batas atas card */
+        .note-card { break-inside: avoid; margin-bottom: 16px; padding: 20px 16px 16px 20px; border-radius: var(--radius-card); background: var(--card-glass); border: 1px solid var(--border); cursor: pointer; position: relative; box-shadow: var(--shadow-flat); transition: transform 0.3s cubic-bezier(0.34, 1.56, 0.64, 1), border-color 0.2s; background-image: linear-gradient(var(--paper-line) 1px, transparent 1px); background-size: 100% 28px; background-position: 0 12px; }
+        
         .note-card:hover { transform: translateY(-2px); border-color: #cbd5e1; }
         .note-card::before { content: ''; position: absolute; left: 16px; top: 0; bottom: 0; width: 1px; background: rgba(239, 68, 68, 0.2); z-index: 1; }
         .note-card.pinned { border-color: var(--warning); border-width: 2px; }
         
-        /* DESAIN UNIK UNTUK NOTES YANG DIPULIHKAN */
-        .note-card.restored { border: 1px dashed var(--warning); background-color: rgba(245, 158, 11, 0.05); }
-        body.dark .note-card.restored { border: 1px dashed rgba(245, 158, 11, 0.5); background-color: rgba(245, 158, 11, 0.05); }
-        .note-card.restored::before { background: rgba(245, 158, 11, 0.4); }
+        /* =========================================================
+           DESAIN UNIK: THE TAPED BACK (Catatan Dipulihkan)
+           ========================================================= */
+        .note-card.restored { 
+            transform: rotate(1.5deg); /* Miring natural */
+            transform-origin: top center;
+        }
+        
+        /* Merapikan card saat di-hover */
+        .note-card.restored:hover { 
+            transform: rotate(0deg) translateY(-2px); 
+        }
+
+        /* Elemen Selotip Kertas (Masking Tape) */
+        .note-card.restored::after {
+            content: "";
+            position: absolute;
+            top: -10px; /* Sedikit keluar dari batas atas card */
+            left: 50%;
+            transform: translateX(-50%) rotate(-3deg); /* Selotip miring berlawanan arah */
+            width: 85px;
+            height: 26px;
+            background-color: rgba(245, 245, 220, 0.95); /* Warna krem khas selotip kertas */
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1), inset 0 0 4px rgba(0,0,0,0.05);
+            backdrop-filter: blur(2px);
+            z-index: 10;
+            /* Pinggiran kasar menyerupai robekan selotip */
+            border-left: 2px dashed rgba(0,0,0,0.1);
+            border-right: 2px dashed rgba(0,0,0,0.1);
+            pointer-events: none; /* Agar klik ke card tidak terganggu */
+        }
+        
+        /* Mode Gelap untuk Selotip */
+        body.dark .note-card.restored::after { 
+            background-color: rgba(255, 255, 255, 0.15); 
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.3);
+            border-left: 2px dashed rgba(255,255,255,0.15);
+            border-right: 2px dashed rgba(255,255,255,0.15);
+        }
         
         .note-top { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 10px; position: relative; z-index: 2; }
         .note-title { font-size: 15px; font-weight: 800; line-height: 1.4; color: var(--text-main); }
@@ -66,8 +103,6 @@
         
         .btn-quick-del { border: none; background: transparent; color: var(--text-muted); font-size: 14px; cursor: pointer; padding: 4px; border-radius: 6px; transition: 0.2s; }
         .btn-quick-del:hover { background: rgba(239, 68, 68, 0.1); color: var(--danger); }
-        
-        .badge-restored { font-size: 10px; font-weight: 800; background: rgba(245, 158, 11, 0.15); color: var(--warning); padding: 4px 8px; border-radius: 6px; border: 1px solid rgba(245, 158, 11, 0.3); margin-right: 8px; }
         
         .fab { position: fixed; right: 24px; bottom: 24px; width: 56px; height: 56px; border: none; border-radius: 20px; background: var(--primary); color: white; font-size: 28px; cursor: pointer; box-shadow: 0 10px 25px rgba(37, 99, 235, 0.3); z-index: 100; display: flex; align-items: center; justify-content: center; }
         
@@ -242,7 +277,6 @@
 
         async function loadDataFromCloud() {
             try {
-                // Menggunakan koleksi creative_notes_v2 agar sinkron dengan trash.html
                 const q = query(collection(db, "creative_notes_v2"), where("uid", "==", currentUserUid));
                 const snap = await getDocs(q);
                 
@@ -268,7 +302,7 @@
                 title: title || 'Tanpa Judul', 
                 content: content,
                 pinned: window.currentPinned, 
-                isRestored: window.isRestored, // Simpan status "restored"
+                isRestored: window.isRestored,
                 updatedAt: now
             };
 
@@ -292,7 +326,6 @@
             }
         }
 
-        // Fungsi menghapus lencana/badge "restored" jika catatan di edit
         window.markAsEdited = function() {
             if (window.isRestored) {
                 window.isRestored = false;
@@ -467,6 +500,7 @@
             data.forEach(item => {
                 const cardClass = `note-card ${item.pinned ? 'pinned' : ''} ${item.isRestored ? 'restored' : ''}`;
                 
+                // Badge tulisan "Dipulihkan" dihapus karena visual selotip (Konsep 1) sudah mewakilinya dengan sempurna
                 html += `
                 <div class="${cardClass}" onclick="openEditor('${item.id}')">
                     <div class="note-top">
@@ -476,7 +510,6 @@
                     <div class="note-content">${item.content || '<em>Kosong...</em>'}</div>
                     <div class="note-footer">
                         <div style="display:flex; align-items:center;">
-                            ${item.isRestored ? '<span class="badge-restored">♻️ Dipulihkan</span>' : ''}
                             <div class="note-date">${formatFullDate(item.updatedAt)}</div>
                         </div>
                         <button class="btn-quick-del" onclick="event.stopPropagation(); softDeleteNote('${item.id}')" title="Hapus">🗑️</button>
