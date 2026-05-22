@@ -31,36 +31,135 @@
         .total-badge { padding: 6px 14px; border-radius: 20px; background: var(--primary-soft); color: var(--primary); font-size: 12px; font-weight: 800; border: 1px solid var(--border); white-space: nowrap; }
         
         /* =========================================================
-           REVISI UI: FLOATING ISLAND (OPSI 2)
+           REVISI UI: FLOATING ISLAND + EXPANDABLE SEARCH
         ========================================================= */
         .sticky-tools { 
             position: sticky; 
-            top: 76px; /* Memberi jarak aman dari navbar agar terlihat mengambang */
+            top: 76px; 
             z-index: 50; 
-            padding: 16px; 
-            margin: 20px 0 24px 0; /* Spacer atas bawah */
+            padding: 10px 16px; /* Padding lebih tipis karena 1 baris */
+            margin: 16px 0 24px 0; 
             background: var(--sticky-bg); 
             backdrop-filter: blur(16px); 
             -webkit-backdrop-filter: blur(16px); 
             border: 1px solid var(--border);
-            border-radius: 24px; /* Sudut membulat seperti pil */
-            box-shadow: 0 12px 32px rgba(0, 0, 0, 0.05); /* Bayangan melayang */
+            border-radius: 20px; 
+            box-shadow: 0 12px 32px rgba(0, 0, 0, 0.05); 
             transition: box-shadow 0.3s ease;
         }
         body.dark .sticky-tools {
             box-shadow: 0 12px 32px rgba(0, 0, 0, 0.3);
         }
-        .sticky-tools-inner { max-width: 100%; margin: 0 auto; }
         
-        .search-box { position: relative; margin-bottom: 12px; }
-        .search-box input { width: 100%; padding: 14px 16px 14px 42px; outline: none; background: var(--card-solid); border: 1px solid var(--border); border-radius: var(--radius-btn); font-size: 13px; color: var(--text-main); box-shadow: var(--shadow-flat); }
-        .search-box input:focus { border-color: var(--primary); }
-        .search-box::before { content: '🔍'; position: absolute; left: 14px; top: 13px; font-size: 14px; opacity: 0.6; }
+        .sticky-tools-inner { 
+            position: relative; 
+            display: flex; 
+            align-items: center; 
+            height: 38px; /* Menjaga tinggi agar tidak melompat */
+            max-width: 100%; 
+            margin: 0 auto; 
+        }
         
-        .filter-wrap { display: flex; gap: 8px; overflow-x: auto; padding-bottom: 6px; }
-        .filter-btn { flex-shrink: 0; padding: 8px 16px; border-radius: 12px; background: var(--card-solid); border: 1px solid var(--border); font-size: 12px; font-weight: 700; color: var(--text-muted); cursor: pointer; transition: 0.2s; }
+        /* Komponen Expandable Search */
+        .search-expandable { 
+            display: flex; 
+            align-items: center; 
+            background: var(--card-solid); 
+            border: 1px solid var(--border); 
+            border-radius: 12px; 
+            height: 38px; 
+            width: 38px; /* Ukuran default kotak icon */
+            overflow: hidden; 
+            transition: width 0.3s cubic-bezier(0.4, 0, 0.2, 1), border-color 0.3s; 
+            position: relative; 
+            z-index: 10; 
+            box-shadow: var(--shadow-flat);
+        }
+        .search-expandable.expanded { 
+            width: 100%; 
+            border-color: var(--primary); 
+        }
+        
+        .search-icon-btn { 
+            min-width: 38px; 
+            height: 38px; 
+            background: transparent; 
+            border: none; 
+            font-size: 14px; 
+            cursor: pointer; 
+            color: var(--text-muted); 
+            display: flex; 
+            align-items: center; 
+            justify-content: center; 
+            transition: 0.2s;
+        }
+        .search-expandable.expanded .search-icon-btn { 
+            color: var(--primary); 
+            pointer-events: none; /* Matikan klik saat sudah panjang */
+        }
+        
+        .search-expandable input { 
+            flex: 1; 
+            border: none; 
+            outline: none; 
+            background: transparent; 
+            font-size: 13px; 
+            color: var(--text-main); 
+            padding: 0 4px; 
+            opacity: 0; 
+            pointer-events: none; 
+            transition: opacity 0.2s 0.1s; /* Delay halus saat muncul */
+        }
+        .search-expandable.expanded input { 
+            opacity: 1; 
+            pointer-events: auto; 
+        }
+        
+        .close-search-btn { 
+            min-width: 38px; 
+            height: 38px; 
+            background: transparent; 
+            border: none; 
+            font-size: 14px; 
+            cursor: pointer; 
+            color: var(--text-muted); 
+            opacity: 0; 
+            pointer-events: none; 
+            transition: 0.2s; 
+            display: flex; 
+            align-items: center; 
+            justify-content: center; 
+        }
+        .close-search-btn:hover { color: var(--danger); }
+        .search-expandable.expanded .close-search-btn { 
+            opacity: 1; 
+            pointer-events: auto; 
+        }
+        
+        /* Komponen Filter Wrap Absolute */
+        .filter-wrap { 
+            position: absolute; 
+            left: 48px; /* 38px width search + 10px gap */
+            right: 0; 
+            top: 0; 
+            bottom: 0; 
+            display: flex; 
+            gap: 8px; 
+            align-items: center; 
+            overflow-x: auto; 
+            transition: opacity 0.2s, visibility 0.2s; 
+            scrollbar-width: none; /* Firefox */
+        }
+        .filter-wrap::-webkit-scrollbar { display: none; } /* Chrome/Safari */
+        .filter-wrap.hidden { 
+            opacity: 0; 
+            visibility: hidden; 
+            pointer-events: none;
+        }
+        
+        .filter-btn { flex-shrink: 0; padding: 8px 14px; border-radius: 10px; background: var(--card-solid); border: 1px solid var(--border); font-size: 12px; font-weight: 700; color: var(--text-muted); cursor: pointer; transition: 0.2s; white-space: nowrap; }
         .filter-btn.active { background: var(--primary-soft); border-color: var(--primary); color: var(--primary); }
-        .divider { flex-shrink: 0; width: 1px; height: 20px; background: var(--border); margin: 0 4px; align-self: center; }
+        .divider { flex-shrink: 0; width: 1px; height: 18px; background: var(--border); margin: 0 2px; }
         
         .notes-list { column-count: 4; column-gap: 16px; margin-top: 10px; }
         .empty-state { column-span: all; text-align: center; padding: 60px 20px; background: var(--card-glass); border: 1px dashed var(--border); border-radius: var(--radius-card); cursor: pointer; transition: 0.2s; }
@@ -72,36 +171,26 @@
         .note-card:hover { transform: translateY(-2px); border-color: #cbd5e1; }
         .note-card.pinned { border-color: var(--warning); border-width: 2px; }
         
-        /* =========================================================
-           DESAIN BARU CATATAN DIPULIHKAN (Pita Kiri + Badge Kanan Atas)
-        ========================================================= */
         .note-card.restored { 
             border-left: 5px solid var(--warning); 
             background-color: rgba(245, 158, 11, 0.03); 
-            padding-top: 24px; /* Memberi ruang bernapas agar tidak tertabrak badge sudut */
+            padding-top: 24px; 
         }
         body.dark .note-card.restored { 
             background-color: rgba(245, 158, 11, 0.05); 
         }
         
         .badge-corner { 
-            position: absolute; 
-            top: 0; 
-            right: 0; 
+            position: absolute; top: 0; right: 0; 
             background: rgba(245, 158, 11, 0.15); 
-            color: var(--warning); 
-            font-size: 10px; 
-            font-weight: 800; 
+            color: var(--warning); font-size: 10px; font-weight: 800; 
             padding: 5px 12px; 
-            border-bottom-left-radius: 12px; 
-            border-top-right-radius: 19px; /* Pas dengan radius card */
+            border-bottom-left-radius: 12px; border-top-right-radius: 19px; 
             border-bottom: 1px solid rgba(245, 158, 11, 0.2); 
             border-left: 1px solid rgba(245, 158, 11, 0.2); 
             z-index: 10; 
         }
-        body.dark .badge-corner {
-            background: rgba(245, 158, 11, 0.25);
-        }
+        body.dark .badge-corner { background: rgba(245, 158, 11, 0.25); }
         
         .note-top { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 10px; position: relative; z-index: 2; }
         .note-title { font-size: 15px; font-weight: 800; line-height: 1.4; color: var(--text-main); }
@@ -157,7 +246,6 @@
             .note-content { font-size: 12px; line-height: 24px; } 
             .editor-container { padding: 0 16px; }
             .title-input { font-size: 26px; }
-            .sticky-tools { padding: 12px; margin: 16px 0; border-radius: 20px; }
         }
     </style>
 </head>
@@ -177,10 +265,13 @@
 
         <div class="sticky-tools">
             <div class="sticky-tools-inner">
-                <div class="search-box">
+                <div class="search-expandable" id="searchContainer">
+                    <button class="search-icon-btn" onclick="openSearch()" title="Cari Catatan">🔍</button>
                     <input type="text" id="searchInput" placeholder="Cari catatan..." oninput="window.renderNotes()">
+                    <button class="close-search-btn" onclick="closeSearch()" title="Tutup Pencarian">✕</button>
                 </div>
-                <div class="filter-wrap">
+                
+                <div class="filter-wrap" id="filterWrap">
                     <button class="filter-btn active" id="filterAll" onclick="setFilter('all', this)">Semua</button>
                     <button class="filter-btn" id="filterPinned" onclick="setFilter('pinned', this)">📌 Pinned</button>
                     <div class="divider"></div>
@@ -297,6 +388,25 @@
             }
         }
 
+        // ==========================================
+        // HANDLER ANIMASI EXPANDABLE SEARCH
+        // ==========================================
+        window.openSearch = function() {
+            document.getElementById('searchContainer').classList.add('expanded');
+            document.getElementById('filterWrap').classList.add('hidden');
+            setTimeout(() => { document.getElementById('searchInput').focus(); }, 300); // Focus input setelah animasi
+        }
+
+        window.closeSearch = function() {
+            document.getElementById('searchContainer').classList.remove('expanded');
+            document.getElementById('filterWrap').classList.remove('hidden');
+            const input = document.getElementById('searchInput');
+            if (input.value !== '') {
+                input.value = '';
+                window.renderNotes(); // Reset tampilan data jika ada sisa pencarian
+            }
+        }
+
         // 2. FUNGSI SIMPAN
         window.performSave = async function(isAuto = false) {
             const title = document.getElementById('titleInput').value.trim();
@@ -336,7 +446,6 @@
             }
         }
 
-        // Fungsi menghapus lencana/badge "restored" jika catatan di edit
         window.markAsEdited = function() {
             if (window.isRestored) {
                 window.isRestored = false;
@@ -511,7 +620,6 @@
             data.forEach(item => {
                 const cardClass = `note-card ${item.pinned ? 'pinned' : ''} ${item.isRestored ? 'restored' : ''}`;
                 
-                // Badge dipindahkan ke paling atas menggunakan class badge-corner
                 html += `
                 <div class="${cardClass}" onclick="openEditor('${item.id}')">
                     ${item.isRestored ? '<div class="badge-corner">♻️ Dipulihkan</div>' : ''}
