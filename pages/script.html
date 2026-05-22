@@ -65,7 +65,7 @@
         .stat-pill span { font-size: 16px; font-weight: 900; }
         
         /* =========================================================
-           REVISI UI: SEARCH BAR MENGGANTIKAN FILTER (REPLACE)
+           REVISI UI: SEARCH BAR MENGGANTIKAN FILTER (REPLACE) & SCROLL FIX
         ========================================================= */
         .sticky-tools { 
             position: sticky; top: 76px; z-index: 50; padding: 10px 16px; margin: 16px 0 24px 0; 
@@ -89,7 +89,7 @@
         }
 
         .search-expandable { 
-            flex-shrink: 0; /* Menjaga agar ukuran tidak gepeng saat di-scroll */
+            flex-shrink: 0; /* Menjaga ukuran saat scroll */
             display: flex; align-items: center; background: var(--card-solid); 
             border: 1px solid var(--border); border-radius: 12px; 
             height: 38px; width: 38px; overflow: hidden; 
@@ -99,7 +99,7 @@
         body.dark .search-expandable { background: var(--card-solid); border-color: var(--border); }
         
         .search-expandable.expanded { border-color: var(--primary); }
-        body.dark .search-expandable.expanded { box-shadow: 0 4px 16px rgba(37, 99, 235, 0.25); border-color: var(--primary); } /* Dark mode elegan */
+        body.dark .search-expandable.expanded { box-shadow: 0 4px 16px rgba(37, 99, 235, 0.25); border-color: var(--primary); } 
         
         .search-icon-btn, .close-search-btn { 
             flex-shrink: 0; min-width: 38px; height: 38px; background: transparent; border: none; font-size: 14px; 
@@ -117,11 +117,12 @@
         .close-search-btn:hover { color: var(--danger); }
         .search-expandable.expanded .close-search-btn { opacity: 1; pointer-events: auto; }
         
-        /* Container untuk Filter yang akan menyusut dan menghilang */
+        /* Container untuk Filter yang akan menyusut dan menghilang secara mulus */
         .filters-wrapper {
             display: flex; align-items: center; gap: 8px; 
             max-width: 2000px; /* Nilai besar agar cukup menampung semua tombol */
             opacity: 1; overflow: hidden;
+            flex-shrink: 0; /* FIX SCROLL: Mencegah area filter memipih */
             transition: max-width 0.3s cubic-bezier(0.4, 0, 0.2, 1), opacity 0.2s ease;
         }
         /* State saat Search aktif: Filter menyusut ke 0px dan menghilang */
