@@ -19,6 +19,11 @@ document.addEventListener("DOMContentLoaded", () => {
             navbarContainer.innerHTML = processedHtml;
             initNavbarUI(); 
             syncGlobalUserData(); // Panggil sinkronisasi Firebase otomatis
+            
+            // TAMBAHAN FIX PWA: Munculkan tombol install jika PWA event sudah ditangkap
+            if (typeof window.showPwaButton === 'function') {
+                window.showPwaButton();
+            }
         })
         .catch(error => console.error("Error memuat navbar:", error));
 });
