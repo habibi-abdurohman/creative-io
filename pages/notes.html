@@ -5,7 +5,6 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
     <title>Notes - Creative.io</title>
     
-    <!-- Path diperbaiki untuk GitHub Pages -->
     <link rel="stylesheet" href="../navbar/navbar.css">
     <link rel="manifest" href="../manifest.json">
     <meta name="theme-color" content="#3b82f6">
@@ -54,6 +53,11 @@
         .note-card::before { content: ''; position: absolute; left: 16px; top: 0; bottom: 0; width: 1px; background: rgba(239, 68, 68, 0.2); z-index: 1; }
         .note-card.pinned { border-color: var(--warning); border-width: 2px; }
         
+        /* DESAIN UNIK UNTUK NOTES YANG DIPULIHKAN */
+        .note-card.restored { border: 1px dashed var(--warning); background-color: rgba(245, 158, 11, 0.05); }
+        body.dark .note-card.restored { border: 1px dashed rgba(245, 158, 11, 0.5); background-color: rgba(245, 158, 11, 0.05); }
+        .note-card.restored::before { background: rgba(245, 158, 11, 0.4); }
+        
         .note-top { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 10px; position: relative; z-index: 2; }
         .note-title { font-size: 15px; font-weight: 800; line-height: 1.4; color: var(--text-main); }
         .note-content { font-size: 13px; line-height: 28px; color: var(--text-muted); position: relative; z-index: 2; white-space: pre-wrap; display: -webkit-box; -webkit-line-clamp: 6; -webkit-box-orient: vertical; overflow: hidden; }
@@ -62,6 +66,8 @@
         
         .btn-quick-del { border: none; background: transparent; color: var(--text-muted); font-size: 14px; cursor: pointer; padding: 4px; border-radius: 6px; transition: 0.2s; }
         .btn-quick-del:hover { background: rgba(239, 68, 68, 0.1); color: var(--danger); }
+        
+        .badge-restored { font-size: 10px; font-weight: 800; background: rgba(245, 158, 11, 0.15); color: var(--warning); padding: 4px 8px; border-radius: 6px; border: 1px solid rgba(245, 158, 11, 0.3); margin-right: 8px; }
         
         .fab { position: fixed; right: 24px; bottom: 24px; width: 56px; height: 56px; border: none; border-radius: 20px; background: var(--primary); color: white; font-size: 28px; cursor: pointer; box-shadow: 0 10px 25px rgba(37, 99, 235, 0.3); z-index: 100; display: flex; align-items: center; justify-content: center; }
         
@@ -163,8 +169,8 @@
 
         <div class="editor-body">
             <div class="editor-container">
-                <input type="text" id="titleInput" class="title-input" placeholder="Judul catatan..." oninput="triggerAutoSave()">
-                <textarea id="contentInput" class="content-input" placeholder="Mulai menulis secara leluasa..." oninput="updateCounter(); triggerAutoSave();"></textarea>
+                <input type="text" id="titleInput" class="title-input" placeholder="Judul catatan..." oninput="markAsEdited(); triggerAutoSave()">
+                <textarea id="contentInput" class="content-input" placeholder="Mulai menulis secara leluasa..." oninput="updateCounter(); markAsEdited(); triggerAutoSave();"></textarea>
             </div>
         </div>
 
@@ -182,26 +188,26 @@
         </div>
     </div>
 
-    <!-- PWA & Navbar Scripts dengan Path yang Diperbaiki -->
     <script src="../navbar/navbar.js"></script>
     <script src="../js/pwa.js"></script>
 
     <script type="module">
-        const USE_FIREBASE = true; // Sakelar Firebase Utama
+        import { auth, db } from "../js/firebase.js";
+        import { onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
+        import { collection, query, where, getDocs, setDoc, doc, deleteDoc } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
 
-        // Modul Global agar bisa diakses HTML Onclick
+        const USE_FIREBASE = true;
+
         window.notesData = [];
         window.currentId = null;
         window.currentFilter = 'all';
         window.currentSort = 'newest';
         window.currentPinned = false;
+        window.isRestored = false; 
         
         let autoSaveTimeout = null;
         let currentUserUid = null;
-        let dbRef = null;
-        let fsMod = null; // Modul Firestore
 
-        // Format Waktu Helper
         const formatFullDate = (ms) => {
             if(!ms) return '';
             const d = new Date(ms);
@@ -210,27 +216,19 @@
             return `${d.getDate()} ${months[d.getMonth()]} ${d.getFullYear()} • ${time}`;
         };
 
-        // =========================================================
-        // 1. SISTEM AUTENTIKASI DAN INISIALISASI DATA
-        // =========================================================
+        // 1. INIT AUTH & LOAD DATA
         document.addEventListener('DOMContentLoaded', () => {
             if (localStorage.getItem("dashboard_theme") === "dark") document.body.classList.add("dark");
 
             if (USE_FIREBASE) {
-                // Perbaikan Path untuk Firebase Module
-                import("../js/firebase.js").then(module => {
-                    dbRef = module.db;
-                    import("https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js").then(authLib => {
-                        authLib.onAuthStateChanged(module.auth, (user) => {
-                            if (user) {
-                                currentUserUid = user.uid;
-                                loadDataFromCloud();
-                            } else {
-                                window.location.replace("../login.html");
-                            }
-                        });
-                    });
-                }).catch(err => console.error("Firebase Error:", err));
+                onAuthStateChanged(auth, (user) => {
+                    if (user) {
+                        currentUserUid = user.uid;
+                        loadDataFromCloud();
+                    } else {
+                        window.location.replace("../login.html");
+                    }
+                });
             } else {
                 if (localStorage.getItem('dummy_logged_in') !== 'true') {
                     window.location.replace("../login.html");
@@ -244,21 +242,18 @@
 
         async function loadDataFromCloud() {
             try {
-                fsMod = await import("https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js");
-                const notesRef = fsMod.collection(dbRef, "creative_notes");
-                const q = fsMod.query(notesRef, fsMod.where("uid", "==", currentUserUid));
-                const snap = await fsMod.getDocs(q);
+                // Menggunakan koleksi creative_notes_v2 agar sinkron dengan trash.html
+                const q = query(collection(db, "creative_notes_v2"), where("uid", "==", currentUserUid));
+                const snap = await getDocs(q);
                 
                 window.notesData = snap.docs.map(doc => ({ id: doc.id, ...doc.data() }));
                 window.renderNotes();
             } catch (error) {
-                document.getElementById('notesList').innerHTML = `<div class="empty-state">Gagal memuat data dari server.</div>`;
+                document.getElementById('notesList').innerHTML = `<div class="empty-state">Gagal memuat data dari server.<br>${error.message}</div>`;
             }
         }
 
-        // =========================================================
-        // 2. FUNGSI PENYIMPANAN DATA (HYBRID)
-        // =========================================================
+        // 2. FUNGSI SIMPAN
         window.performSave = async function(isAuto = false) {
             const title = document.getElementById('titleInput').value.trim();
             const content = document.getElementById('contentInput').value;
@@ -268,16 +263,15 @@
             const docId = window.currentId || "qn_" + now;
             window.currentId = docId;
 
-            // Struktur Payload Proteksi UID
             const payload = {
                 uid: currentUserUid,
                 title: title || 'Tanpa Judul', 
                 content: content,
                 pinned: window.currentPinned, 
+                isRestored: window.isRestored, // Simpan status "restored"
                 updatedAt: now
             };
 
-            // UPDATE UI ARRAY LOKAL SECARA INSTAN (Optimistic UI)
             const existingIndex = window.notesData.findIndex(x => x.id === docId);
             if(existingIndex > -1) {
                 payload.createdAt = window.notesData[existingIndex].createdAt;
@@ -289,19 +283,23 @@
 
             if(!isAuto) window.renderNotes();
 
-            // KIRIM DATA KE STORAGE (CLOUD / LOCAL)
-            if (USE_FIREBASE && fsMod && dbRef) {
+            if (USE_FIREBASE) {
                 try {
-                    await fsMod.setDoc(fsMod.doc(dbRef, "creative_notes", docId), payload);
+                    await setDoc(doc(db, "creative_notes_v2", docId), payload);
                 } catch (e) { console.error("Gagal save cloud", e); }
             } else {
                 localStorage.setItem('creative_notes_v2', JSON.stringify(window.notesData));
             }
         }
 
-        // =========================================================
-        // 3. FUNGSI HAPUS (PINDAH KE TRASH HYBRID)
-        // =========================================================
+        // Fungsi menghapus lencana/badge "restored" jika catatan di edit
+        window.markAsEdited = function() {
+            if (window.isRestored) {
+                window.isRestored = false;
+            }
+        }
+
+        // 3. FUNGSI HAPUS KE TRASH
         window.softDeleteNote = async function(idOverride = null) {
             const idToDelete = idOverride || window.currentId;
             if (!idToDelete) return;
@@ -323,15 +321,13 @@
                 expireAt: now + (30 * 24 * 60 * 60 * 1000)
             };
 
-            // Hapus dari UI List seketika
             window.notesData.splice(itemIndex, 1);
             window.closeEditor(); 
             window.renderNotes();
 
-            // Eksekusi Hapus Storage
-            if (USE_FIREBASE && fsMod && dbRef) {
-                await fsMod.setDoc(fsMod.doc(dbRef, "creative_trash", trashId), trashPayload);
-                await fsMod.deleteDoc(fsMod.doc(dbRef, "creative_notes", item.id));
+            if (USE_FIREBASE) {
+                await setDoc(doc(db, "creative_trash", trashId), trashPayload);
+                await deleteDoc(doc(db, "creative_notes_v2", item.id));
             } else {
                 let trashData = JSON.parse(localStorage.getItem('creative_trash')) || [];
                 trashData.push({ id: trashId, ...trashPayload });
@@ -340,9 +336,7 @@
             }
         }
 
-        // =========================================================
-        // 4. KUMPULAN FUNGSI UI & JAVASCRIPT ASLI ANDA
-        // =========================================================
+        // 4. UI HANDLERS
         window.setFilter = function(type, el) { 
             window.currentFilter = type; 
             document.getElementById('filterAll').classList.remove('active');
@@ -364,12 +358,16 @@
             if (id) {
                 const item = window.notesData.find(x => x.id === id);
                 if(item) {
-                    window.currentId = item.id; window.currentPinned = item.pinned || false;
+                    window.currentId = item.id; 
+                    window.currentPinned = item.pinned || false;
+                    window.isRestored = item.isRestored || false; 
                     document.getElementById('titleInput').value = item.title;
                     document.getElementById('contentInput').value = item.content;
                 }
             } else {
-                window.currentId = null; window.currentPinned = false;
+                window.currentId = null; 
+                window.currentPinned = false;
+                window.isRestored = false;
                 document.getElementById('titleInput').value = '';
                 document.getElementById('contentInput').value = '';
             }
@@ -467,15 +465,20 @@
             
             let html = '';
             data.forEach(item => {
+                const cardClass = `note-card ${item.pinned ? 'pinned' : ''} ${item.isRestored ? 'restored' : ''}`;
+                
                 html += `
-                <div class="note-card ${item.pinned ? 'pinned' : ''}" onclick="openEditor('${item.id}')">
+                <div class="${cardClass}" onclick="openEditor('${item.id}')">
                     <div class="note-top">
                         <div class="note-title">${item.title}</div>
                         ${item.pinned ? '<span title="Disematkan" style="font-size:14px;">📌</span>' : ''}
                     </div>
                     <div class="note-content">${item.content || '<em>Kosong...</em>'}</div>
                     <div class="note-footer">
-                        <div class="note-date">${formatFullDate(item.updatedAt)}</div>
+                        <div style="display:flex; align-items:center;">
+                            ${item.isRestored ? '<span class="badge-restored">♻️ Dipulihkan</span>' : ''}
+                            <div class="note-date">${formatFullDate(item.updatedAt)}</div>
+                        </div>
                         <button class="btn-quick-del" onclick="event.stopPropagation(); softDeleteNote('${item.id}')" title="Hapus">🗑️</button>
                     </div>
                 </div>`;
