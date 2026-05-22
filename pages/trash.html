@@ -228,6 +228,7 @@
                 else if(item.type === 'notes') {
                     restorePayload.content = item.content;
                     restorePayload.pinned = false;
+                    restorePayload.isRestored = true; // <--- TAMBAHKAN BARIS INI
                     restorePayload.updatedAt = Date.now();
                 }
 
