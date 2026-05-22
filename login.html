@@ -2,7 +2,8 @@
 <html lang="id">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+    <!-- [DIPERBAIKI] Menambahkan maximum-scale=1.0 dan user-scalable=no untuk mencegah zoom pada form di HP -->
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
     <title>Masuk - Creative.io</title>
     
     <link rel="manifest" href="./manifest.json">
@@ -90,7 +91,10 @@
         .auth-input { width: 100%; border: 1px solid var(--border); background: var(--card-tint); color: var(--text-main); padding: 14px 16px; border-radius: var(--radius-btn); font-size: 14px; font-weight: 600; outline: none; transition: 0.2s; font-family: inherit; }
         .auth-input:focus { border-color: var(--primary); box-shadow: 0 0 0 3px var(--primary-soft); background: transparent; }
         
-        .toggle-password { position: absolute; right: 16px; top: 38px; color: var(--text-muted); background: transparent; border: none; font-size: 16px; cursor: pointer; padding: 4px; border-radius: 8px; }
+        /* [DIPERBAIKI] CSS Posisi Ikon Mata disamakan logikanya dengan register.html */
+        .password-container { position: relative; width: 100%; }
+        .password-container .auth-input { padding-right: 50px; } /* Mencegah teks menabrak ikon */
+        .toggle-password { position: absolute; right: 16px; top: 50%; transform: translateY(-50%); color: var(--text-muted); background: transparent; border: none; font-size: 16px; cursor: pointer; padding: 4px; border-radius: 8px; display: flex; align-items: center; justify-content: center; }
         .toggle-password:hover { color: var(--text-main); }
 
         .auth-options { display: flex; justify-content: space-between; align-items: center; margin-bottom: 24px; font-size: 13px; font-weight: 600; }
@@ -160,8 +164,11 @@
             
             <div class="input-group">
                 <label class="input-label">Password</label>
-                <input type="password" id="passwordInput" class="auth-input" placeholder="Masukkan password Anda" required oninput="hideError()">
-                <button type="button" class="toggle-password" onclick="togglePassword()" title="Tampilkan/Sembunyikan">👁️</button>
+                <!-- [DIPERBAIKI] Dibungkus div container agar posisi mata presisi di tengah -->
+                <div class="password-container">
+                    <input type="password" id="passwordInput" class="auth-input" placeholder="Masukkan password Anda" required oninput="hideError()">
+                    <button type="button" class="toggle-password" onclick="togglePassword()" title="Tampilkan/Sembunyikan">👁️</button>
+                </div>
             </div>
 
             <div class="auth-options">
@@ -189,8 +196,6 @@
 
     <!-- Script PWA Pendaftaran Service Worker -->
     <script src="./js/pwa.js"></script>
-
-    <!-- ... HTML Form Tetap Sama ... -->
     
     <script type="module">
         const USE_FIREBASE = true; 
