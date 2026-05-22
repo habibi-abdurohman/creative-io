@@ -10,9 +10,6 @@
     <meta name="theme-color" content="#2563eb">
 
     <style>
-        /* =========================================================
-           CSS TRASH (Sesuai Desain Anda)
-        ========================================================= */
         @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800;900&display=swap');
         * { margin: 0; padding: 0; box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
         *::-webkit-scrollbar { display: none; }
@@ -162,9 +159,6 @@
             return diff <= 0 ? 0 : Math.ceil(diff / (1000 * 60 * 60 * 24));
         }
 
-        // =========================================================
-        // PERBAIKAN LOGIKA RESTORE IDEAS (BENTROK KOLEKSI TERATASI)
-        // =========================================================
         window.restoreItem = async function(id) {
             const itemIndex = window.trashData.findIndex(x => x.id === id);
             if(itemIndex === -1) return;
@@ -175,7 +169,6 @@
             window.renderTrash();
 
             try {
-                // DI IDEAS.HTML, koleksi yang digunakan adalah "creative_ideas" (bukan "creative_planner_ideas")
                 let targetCol = 'creative_ideas'; 
                 if (item.type === 'notes') targetCol = 'creative_notes_v2';
                 if (item.type === 'script') targetCol = 'creative_script';
@@ -224,11 +217,11 @@
                     restorePayload.pinned = false;
                     restorePayload.updatedAt = Date.now();
                 }
-                // JIKA NOTES
+                // JIKA NOTES (KODE INI YANG MENJADI PENYELAMAT BADGE)
                 else if(item.type === 'notes') {
                     restorePayload.content = item.content;
                     restorePayload.pinned = false;
-                    restorePayload.isRestored = true; // <--- TAMBAHKAN BARIS INI
+                    restorePayload.isRestored = true; // <---- INI DIA KUNCINYA
                     restorePayload.updatedAt = Date.now();
                 }
 
@@ -236,7 +229,6 @@
                     await fsMod.setDoc(fsMod.doc(dbRef, targetCol, item.originalId || "restored_" + Date.now()), restorePayload);
                     await fsMod.deleteDoc(fsMod.doc(dbRef, "creative_trash", id));
                 } else {
-                    // Penyesuaian nama localStorage yang digunakan di ideas.html
                     let lsKey = targetCol === 'creative_ideas' ? 'creative_planner_ideas' : targetCol;
                     let col = JSON.parse(localStorage.getItem(lsKey)) || [];
                     col.push({ id: item.originalId || "restored_" + Date.now(), ...restorePayload });
