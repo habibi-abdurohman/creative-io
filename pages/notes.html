@@ -31,7 +31,7 @@
         .total-badge { padding: 6px 14px; border-radius: 20px; background: var(--primary-soft); color: var(--primary); font-size: 12px; font-weight: 800; border: 1px solid var(--border); white-space: nowrap; }
         
         /* =========================================================
-           REVISI UI: SEARCH BAR IKUT TER-SCROLL
+           REVISI UI: SEARCH BAR OVERLAY & SCROLLABLE
         ========================================================= */
         .sticky-tools { 
             position: sticky; 
@@ -49,23 +49,33 @@
         }
         body.dark .sticky-tools { box-shadow: 0 12px 32px rgba(0, 0, 0, 0.3); }
         
-        /* Inner Container diset ke Flexbox & Scrollable (Mencakup Search + Filter) */
         .sticky-tools-inner { 
             position: relative; 
             display: flex; 
             align-items: center; 
             height: 38px; 
-            gap: 8px; /* Jarak antara search dan filter */
+            gap: 8px; 
             max-width: 100%; 
             margin: 0 auto; 
             overflow-x: auto; 
-            scrollbar-width: none; /* Menyembunyikan scrollbar di Firefox */
+            scrollbar-width: none; /* Firefox */
         }
-        .sticky-tools-inner::-webkit-scrollbar { display: none; } /* Menyembunyikan scrollbar di Webkit */
+        .sticky-tools-inner::-webkit-scrollbar { display: none; } /* Safari/Chrome */
         
-        /* Komponen Expandable Search (Menjadi flex-item biasa agar ikut scroll) */
+        /* Container pelindung agar posisi search bar absolut tetap mengikuti scroll */
+        .search-wrapper {
+            position: relative;
+            width: 38px; 
+            height: 38px; 
+            flex-shrink: 0;
+            z-index: 20;
+        }
+
+        /* Search Bar kini memanjang secara overlay (menutupi filter) tanpa mendorongnya */
         .search-expandable { 
-            flex-shrink: 0; 
+            position: absolute;
+            top: 0;
+            left: 0;
             display: flex; 
             align-items: center; 
             background: var(--card-solid); 
@@ -75,17 +85,12 @@
             width: 38px; /* Ukuran default kotak icon */
             overflow: hidden; 
             transition: width 0.3s cubic-bezier(0.4, 0, 0.2, 1), border-color 0.3s; 
-            position: relative; 
-            z-index: 10; 
             box-shadow: var(--shadow-flat);
         }
-        /* Saat diekspansi, ia akan mendorong filter ke kanan secara otomatis */
         .search-expandable.expanded { 
-            width: 240px; 
             border-color: var(--primary); 
+            /* width diatur via JS agar presisi menutupi layar */
         }
-        @media(min-width: 480px) { .search-expandable.expanded { width: 300px; } }
-        @media(min-width: 768px) { .search-expandable.expanded { width: 400px; } }
         
         .search-icon-btn { 
             min-width: 38px; height: 38px; background: transparent; border: none; font-size: 14px; 
@@ -107,7 +112,6 @@
         .close-search-btn:hover { color: var(--danger); }
         .search-expandable.expanded .close-search-btn { opacity: 1; pointer-events: auto; }
         
-        /* Tombol Filter */
         .filter-btn { flex-shrink: 0; padding: 8px 14px; border-radius: 10px; background: var(--card-solid); border: 1px solid var(--border); font-size: 12px; font-weight: 700; color: var(--text-muted); cursor: pointer; transition: 0.2s; white-space: nowrap; }
         .filter-btn.active { background: var(--primary-soft); border-color: var(--primary); color: var(--primary); }
         .divider { flex-shrink: 0; width: 1px; height: 18px; background: var(--border); margin: 0 2px; }
@@ -202,10 +206,12 @@
         <div class="sticky-tools">
             <div class="sticky-tools-inner" id="filterWrap">
                 
-                <div class="search-expandable" id="searchContainer">
-                    <button class="search-icon-btn" onclick="openSearch(event)" title="Cari Catatan">🔍</button>
-                    <input type="text" id="searchInput" placeholder="Cari catatan..." oninput="window.renderNotes()">
-                    <button class="close-search-btn" onclick="closeSearch(event)" title="Tutup Pencarian">✕</button>
+                <div class="search-wrapper">
+                    <div class="search-expandable" id="searchContainer">
+                        <button class="search-icon-btn" onclick="openSearch(event)" title="Cari Catatan">🔍</button>
+                        <input type="text" id="searchInput" placeholder="Cari catatan..." oninput="window.renderNotes()">
+                        <button class="close-search-btn" onclick="closeSearch(event)" title="Tutup Pencarian">✕</button>
+                    </div>
                 </div>
                 
                 <button class="filter-btn active" id="filterAll" onclick="setFilter('all', this)">Semua</button>
@@ -286,7 +292,6 @@
             return `${d.getDate()} ${months[d.getMonth()]} ${d.getFullYear()} • ${time}`;
         };
 
-        // 1. INIT AUTH & LOAD DATA
         document.addEventListener('DOMContentLoaded', () => {
             if (localStorage.getItem("dashboard_theme") === "dark") document.body.classList.add("dark");
 
@@ -326,38 +331,65 @@
         // HANDLER ANIMASI & LOGIKA EXPANDABLE SEARCH
         // ==========================================
         window.openSearch = function(event) {
-            if (event) event.stopPropagation(); // Mencegah klik langsung tertangkap listener global
+            if (event) event.stopPropagation();
             
-            // Auto-scroll ke paling kiri agar saat terbuka tidak terpotong
             const wrap = document.getElementById('filterWrap');
+            const searchBox = document.getElementById('searchContainer');
+            
+            // Auto-scroll ke paling kiri agar tidak terpotong saat direntangkan
             wrap.scrollTo({left: 0, behavior: 'smooth'}); 
             
-            document.getElementById('searchContainer').classList.add('expanded');
+            // Lebar pencarian akan mengambil 100% dari ruang container yang terlihat (overlaying filter)
+            searchBox.style.width = wrap.clientWidth + 'px';
+            searchBox.classList.add('expanded');
+            
+            // Kunci overflow agar user tidak bisa iseng scroll selagi search terbuka
+            wrap.style.overflowX = 'hidden'; 
+            
             setTimeout(() => { document.getElementById('searchInput').focus(); }, 300);
         }
 
         window.closeSearch = function(event) {
             if (event) event.stopPropagation();
             
-            document.getElementById('searchContainer').classList.remove('expanded');
+            const wrap = document.getElementById('filterWrap');
+            const searchBox = document.getElementById('searchContainer');
+            
+            searchBox.style.width = '38px';
+            searchBox.classList.remove('expanded');
+            
+            // Kembalikan kemampuan scroll untuk filter
+            wrap.style.overflowX = 'auto'; 
+            
             const input = document.getElementById('searchInput');
             if (input.value !== '') {
                 input.value = '';
-                window.renderNotes(); // Reset tampilan data jika ada sisa pencarian
+                window.renderNotes(); 
             }
         }
 
-        // Listener global: Klik di luar untuk menutup
+        // Fitur: Klik Di Luar Search Bar untuk Menutup Otomatis
         document.addEventListener('click', function(e) {
             const searchContainer = document.getElementById('searchContainer');
-            // Jika search bar sedang terbuka DAN area yang diklik bukan bagian dari search bar
-            if (searchContainer && searchContainer.classList.contains('expanded') && !searchContainer.contains(e.target)) {
-                window.closeSearch();
+            if (searchContainer && searchContainer.classList.contains('expanded')) {
+                // Mengecek apakah area yang diklik bukan elemen anak dari searchContainer
+                if (!searchContainer.contains(e.target)) {
+                    window.closeSearch();
+                }
+            }
+        });
+
+        // Responsif: Sesuaikan lebar search box saat orientasi layar atau ukuran window berubah
+        window.addEventListener('resize', () => {
+            const searchBox = document.getElementById('searchContainer');
+            if(searchBox && searchBox.classList.contains('expanded')) {
+                const wrap = document.getElementById('filterWrap');
+                searchBox.style.width = wrap.clientWidth + 'px';
             }
         });
 
         // ==========================================
-        // FUNGSI SIMPAN & UI LAINNYA
+        // FUNGSI SIMPAN & UI APLIKASI
         // ==========================================
         window.performSave = async function(isAuto = false) {
             const title = document.getElementById('titleInput').value.trim();
