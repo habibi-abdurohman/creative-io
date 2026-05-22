@@ -55,13 +55,12 @@
         <a href="pages/calculator.html" id="nav-calculator">💰 Calculator</a>
         <a href="pages/trash.html" id="nav-trash">🗑 Trash</a>
         
-        <!-- Mulai: Tombol Install PWA -->
-<div id="pwa-install-box" style="display: none; padding: 15px; margin-top: 20px; text-align: center;">
-    <button id="btn-install-app" onclick="mulaiInstallPWA()">
-        ⬇️ Install Aplikasi
+        <!-- Letakkan ini di dalam <ul class="sidebar-menu"> bagian bawah -->
+<li id="pwaInstallContainer" style="display: none; padding: 10px 20px; margin-top: auto;">
+    <button id="pwaInstallBtn" onclick="triggerPWAInstall()" class="btn-pwa">
+        <span class="icon">📱</span> Install App
     </button>
-</div>
-<!-- Selesai: Tombol Install PWA -->
+</li>
     </div>
 </div>
 
