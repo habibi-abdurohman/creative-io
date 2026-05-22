@@ -55,9 +55,12 @@
         <a href="pages/calculator.html" id="nav-calculator">💰 Calculator</a>
         <a href="pages/trash.html" id="nav-trash">🗑 Trash</a>
         
-        <button id="pwaInstallBtn" onclick="window.triggerPWAInstall()" style="display: none; align-items: center; gap: 10px; background: linear-gradient(135deg, #3b82f6, #2563eb); color: white; border: none; padding: 10px 14px; border-radius: 12px; font-weight: 800; cursor: pointer; font-size: 13px; width: calc(100% - 24px); margin: 12px;">
-            📲 Install App Creative.io
-        </button>
+        <!-- Letakkan ini di dalam <ul class="sidebar-menu"> bagian bawah -->
+<li id="pwaInstallContainer" style="display: none; padding: 10px 20px; margin-top: auto;">
+    <button id="pwaInstallBtn" onclick="triggerPWAInstall()" class="btn-pwa">
+        <span class="icon">📱</span> Install App
+    </button>
+</li>
     </div>
 </div>
 
