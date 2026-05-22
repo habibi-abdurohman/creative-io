@@ -157,6 +157,18 @@
         .reading-mode .btn-exit-read { display: flex; align-items: center; justify-content: center; }
         
         @media(max-width: 600px) { .hero-card { padding: 28px 24px; border-radius: 20px; } .hero-title { font-size: 24px; } .editor-footer { flex-direction: column; gap: 16px; align-items: flex-start; } .footer-actions { width: 100%; } .btn-action { flex: 1; text-align: center; } .word-count { width: 100%; text-align: left; } }
+
+        /* =========================================================
+           CUSTOM AUTO-SUGGEST DROPDOWN UNTUK KATEGORI
+        ========================================================= */
+        .category-wrapper { position: relative; width: 100%; margin-bottom: 32px; }
+        .input-category { width: 100%; border: none; outline: none; background: transparent; font-size: 14px; font-weight: 700; color: var(--primary); margin-bottom: 0; }
+        .input-category::placeholder { color: var(--text-muted); font-weight: 600; opacity: 0.6; }
+        
+        .suggest-dropdown { position: absolute; top: 100%; left: 0; background: var(--card-solid); border: 1px solid var(--border); border-radius: 12px; padding: 6px; box-shadow: var(--shadow-flat); z-index: 100; min-width: 200px; max-height: 200px; overflow-y: auto; display: none; flex-direction: column; gap: 4px; margin-top: 8px; }
+        .suggest-dropdown.active { display: flex; }
+        .suggest-item { padding: 10px 14px; border-radius: 8px; font-size: 13px; font-weight: 700; color: var(--text-main); cursor: pointer; transition: 0.2s; text-align: left; background: transparent; border: none; }
+        .suggest-item:hover, .suggest-item.focused { background: var(--primary-soft); color: var(--primary); }
     </style>
 </head>
 <body>
@@ -220,8 +232,11 @@
         
         <div class="editor-body">
             <input type="text" id="inputTitle" class="input-title" placeholder="Judul Script..." autocomplete="off" spellcheck="false" oninput="triggerAutoSave()">
-            <input type="text" id="inputCategory" class="input-category" placeholder="Ketik Kategori (misal: YouTube, Tiktok)..." list="categoryDatalist" autocomplete="off" oninput="triggerAutoSave()">
-            <datalist id="categoryDatalist"></datalist>
+            
+            <div class="category-wrapper">
+                <input type="text" id="inputCategory" class="input-category" placeholder="Ketik Kategori (misal: YouTube, Tiktok)..." autocomplete="off" oninput="handleCategoryInput()" onfocus="showCategorySuggestions()">
+                <div class="suggest-dropdown" id="categorySuggestions"></div>
+            </div>
             
             <textarea id="inputContent" class="input-content" placeholder="Mulai menulis cerita Anda..." autocomplete="off" oninput="handleTyping()"></textarea>
         </div>
@@ -518,6 +533,47 @@
 
         window.closeInfoModal = function() { document.getElementById('infoModal').classList.remove('active'); }
 
+// =========================================================
+        // FITUR AUTO-SUGGESTION KATEGORI CHANNEL
+        // =========================================================
+        window.showCategorySuggestions = function() {
+            const inputVal = document.getElementById('inputCategory').value.toLowerCase();
+            const suggestBox = document.getElementById('categorySuggestions');
+            
+            // Ambil semua channel unik dari database yang sudah ada
+            const channels = [...new Set(window.scriptData.map(item => item.channel).filter(c => c && c.trim() !== "Umum" && c.trim() !== ""))];
+            
+            // Filter daftar berdasarkan apa yang diketik user
+            const filtered = channels.filter(ch => ch.toLowerCase().includes(inputVal));
+            
+            if (filtered.length > 0) {
+                suggestBox.innerHTML = filtered.map(ch => 
+                    `<button type="button" class="suggest-item" onclick="selectCategory('${ch}')">📺 ${ch}</button>`
+                ).join('');
+                suggestBox.classList.add('active');
+            } else {
+                suggestBox.classList.remove('active');
+            }
+        }
+
+        window.handleCategoryInput = function() {
+            triggerAutoSave();
+            showCategorySuggestions();
+        }
+
+        window.selectCategory = function(val) {
+            document.getElementById('inputCategory').value = val;
+            document.getElementById('categorySuggestions').classList.remove('active');
+            triggerAutoSave();
+        }
+
+        // Tutup kotak suggest jika klik di tempat lain
+        document.addEventListener('click', function(e) {
+            if (!e.target.closest('.category-wrapper')) {
+                document.getElementById('categorySuggestions')?.classList.remove('active');
+            }
+        });
+        
         function generateDynamicChannels(data) {
             const channels = [...new Set(data.map(item => item.channel).filter(c => c && c.trim() !== ""))];
             document.getElementById('categoryDatalist').innerHTML = channels.map(ch => `<option value="${ch}">`).join('');
