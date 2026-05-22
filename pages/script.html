@@ -65,42 +65,33 @@
         .stat-pill span { font-size: 16px; font-weight: 900; }
         
         /* =========================================================
-           REVISI UI: FLOATING ISLAND & SEARCH OVERLAY
+           REVISI UI: SEARCH BAR MENGGANTIKAN FILTER (REPLACE)
         ========================================================= */
         .sticky-tools { 
-            position: sticky; 
-            top: 76px; 
-            z-index: 50; 
-            padding: 10px 16px; 
-            margin: 16px 0 24px 0; 
-            background: var(--sticky-bg); 
-            backdrop-filter: blur(16px); 
-            -webkit-backdrop-filter: blur(16px); 
-            border: 1px solid var(--border);
-            border-radius: 20px; 
-            box-shadow: 0 12px 32px rgba(0, 0, 0, 0.05); 
-            transition: box-shadow 0.3s ease;
+            position: sticky; top: 76px; z-index: 50; padding: 10px 16px; margin: 16px 0 24px 0; 
+            background: var(--sticky-bg); backdrop-filter: blur(16px); -webkit-backdrop-filter: blur(16px); 
+            border: 1px solid var(--border); border-radius: 20px; 
+            box-shadow: 0 12px 32px rgba(0, 0, 0, 0.05); transition: box-shadow 0.3s ease;
         }
         body.dark .sticky-tools { box-shadow: 0 12px 32px rgba(0, 0, 0, 0.4); }
         
         .sticky-tools-inner { 
-            position: relative; 
-            display: flex; 
-            align-items: center; 
-            height: 38px; 
-            gap: 8px; 
-            max-width: 100%; 
-            margin: 0 auto; 
-            overflow-x: auto; 
-            scrollbar-width: none; 
+            position: relative; display: flex; align-items: center; 
+            height: 38px; gap: 8px; max-width: 100%; margin: 0 auto; 
+            overflow-x: auto; scrollbar-width: none; transition: gap 0.3s cubic-bezier(0.4, 0, 0.2, 1);
         }
         .sticky-tools-inner::-webkit-scrollbar { display: none; }
         
-        .search-wrapper { position: relative; width: 38px; height: 38px; flex-shrink: 0; z-index: 20; }
-        
+        /* Ketika Search Aktif, gap dihilangkan dan scroll dikunci */
+        .sticky-tools-inner.searching {
+            gap: 0;
+            overflow: hidden; 
+        }
+
         .search-expandable { 
-            position: absolute; top: 0; left: 0; display: flex; align-items: center; 
-            background: var(--card-solid); border: 1px solid var(--border); border-radius: 12px; 
+            flex-shrink: 0; /* Menjaga agar ukuran tidak gepeng saat di-scroll */
+            display: flex; align-items: center; background: var(--card-solid); 
+            border: 1px solid var(--border); border-radius: 12px; 
             height: 38px; width: 38px; overflow: hidden; 
             transition: width 0.3s cubic-bezier(0.4, 0, 0.2, 1), border-color 0.3s, box-shadow 0.3s; 
             box-shadow: var(--shadow-flat);
@@ -108,10 +99,10 @@
         body.dark .search-expandable { background: var(--card-solid); border-color: var(--border); }
         
         .search-expandable.expanded { border-color: var(--primary); }
-        body.dark .search-expandable.expanded { box-shadow: 0 4px 16px rgba(0,0,0,0.5); }
+        body.dark .search-expandable.expanded { box-shadow: 0 4px 16px rgba(37, 99, 235, 0.25); border-color: var(--primary); } /* Dark mode elegan */
         
-        .search-icon-btn { 
-            min-width: 38px; height: 38px; background: transparent; border: none; font-size: 14px; 
+        .search-icon-btn, .close-search-btn { 
+            flex-shrink: 0; min-width: 38px; height: 38px; background: transparent; border: none; font-size: 14px; 
             cursor: pointer; color: var(--text-muted); display: flex; align-items: center; justify-content: center; transition: 0.2s;
         }
         .search-expandable.expanded .search-icon-btn { color: var(--primary); pointer-events: none; }
@@ -122,14 +113,24 @@
         }
         .search-expandable.expanded input { opacity: 1; pointer-events: auto; }
         
-        .close-search-btn { 
-            min-width: 38px; height: 38px; background: transparent; border: none; font-size: 14px; 
-            cursor: pointer; color: var(--text-muted); opacity: 0; pointer-events: none; transition: 0.2s; 
-            display: flex; align-items: center; justify-content: center; 
-        }
+        .close-search-btn { opacity: 0; pointer-events: none; }
         .close-search-btn:hover { color: var(--danger); }
         .search-expandable.expanded .close-search-btn { opacity: 1; pointer-events: auto; }
         
+        /* Container untuk Filter yang akan menyusut dan menghilang */
+        .filters-wrapper {
+            display: flex; align-items: center; gap: 8px; 
+            max-width: 2000px; /* Nilai besar agar cukup menampung semua tombol */
+            opacity: 1; overflow: hidden;
+            transition: max-width 0.3s cubic-bezier(0.4, 0, 0.2, 1), opacity 0.2s ease;
+        }
+        /* State saat Search aktif: Filter menyusut ke 0px dan menghilang */
+        .sticky-tools-inner.searching .filters-wrapper {
+            max-width: 0;
+            opacity: 0;
+            transition: max-width 0.3s cubic-bezier(0.4, 0, 0.2, 1), opacity 0.1s ease;
+        }
+
         .filter-btn { flex-shrink: 0; padding: 8px 14px; border-radius: 10px; background: var(--card-solid); border: 1px solid var(--border); font-size: 12px; font-weight: 700; color: var(--text-muted); cursor: pointer; transition: 0.2s; white-space: nowrap; }
         .filter-btn.active { background: var(--primary-soft); border-color: var(--primary); color: var(--primary); }
         .divider { flex-shrink: 0; width: 1px; height: 18px; background: var(--border); margin: 0 2px; }
@@ -214,15 +215,6 @@
         .info-value { font-weight: 800; color: var(--text-main); text-align: right; max-width: 60%; word-break: break-word;}
         .btn-close-info { width: 100%; padding: 12px; margin-top: 20px; border: none; background: var(--card-tint); color: var(--text-main); font-weight: 800; border-radius: 12px; cursor: pointer; }
         
-        /* READING MODE STYLES */
-        .reading-mode .editor-header { display: none; }
-        .reading-mode .editor-footer { display: none; }
-        .reading-mode .category-wrapper { display: none; }
-        .reading-mode .editor-body { padding-top: 80px; max-width: 800px; }
-        .reading-mode .input-title { text-align: center; font-size: 32px; margin-bottom: 30px; }
-        .btn-exit-read { display: none; position: fixed; top: 20px; right: 20px; z-index: 100001; width: 44px; height: 44px; border-radius: 50%; background: var(--card-solid); border: 1px solid var(--border); color: var(--text-main); font-size: 16px; cursor: pointer; box-shadow: var(--shadow-flat); }
-        .reading-mode .btn-exit-read { display: flex; align-items: center; justify-content: center; }
-        
         /* BREAKPOINT RESPONSIF UNTUK KARTU SCRIPT */
         @media(max-width: 1024px) { 
             .list-container { column-count: 2; } 
@@ -259,15 +251,14 @@
         <div class="sticky-tools">
             <div class="sticky-tools-inner" id="filterWrap">
                 
-                <div class="search-wrapper">
-                    <div class="search-expandable" id="searchContainer">
-                        <button class="search-icon-btn" onclick="openSearch(event)" title="Cari Script">🔍</button>
-                        <input type="text" id="searchInput" placeholder="Cari script atau narasi..." autocomplete="off" oninput="renderList()">
-                        <button class="close-search-btn" onclick="closeSearch(event)" title="Tutup Pencarian">✕</button>
-                    </div>
+                <div class="search-expandable" id="searchContainer">
+                    <button class="search-icon-btn" onclick="openSearch(event)" title="Cari Script">🔍</button>
+                    <input type="text" id="searchInput" placeholder="Cari script atau narasi..." autocomplete="off" oninput="renderList()">
+                    <button class="close-search-btn" onclick="closeSearch(event)" title="Tutup Pencarian">✕</button>
                 </div>
                 
-                <div id="dynamicFilters" style="display: contents;"></div>
+                <div class="filters-wrapper" id="dynamicFilters">
+                    </div>
                 
             </div>
         </div>
@@ -360,15 +351,14 @@
 
         // Tutup dropdown/suggest & Klik Di Luar Search
         document.addEventListener('click', function(e) {
-            // Tutup dropdown option editor
             if (!e.target.closest('.dropdown-wrap')) {
                 document.querySelectorAll('.dropdown-menu').forEach(m => m.classList.remove('active'));
             }
-            // Tutup auto-suggest kategori
             if (!e.target.closest('.category-wrapper')) {
                 document.getElementById('categorySuggestions')?.classList.remove('active');
             }
-            // Tutup search overlay bila diklik diluar
+            
+            // Logika Klik Di Luar untuk Menutup Search
             const searchContainer = document.getElementById('searchContainer');
             if (searchContainer && searchContainer.classList.contains('expanded')) {
                 if (!searchContainer.contains(e.target)) {
@@ -377,7 +367,6 @@
             }
         });
 
-        // 1. INIT AUTH & LOAD DATA
         document.addEventListener('DOMContentLoaded', () => {
             if (localStorage.getItem("dashboard_theme") === "dark") document.body.classList.add("dark");
 
@@ -415,7 +404,7 @@
         }
 
         // ==========================================
-        // HANDLER ANIMASI & LOGIKA EXPANDABLE SEARCH
+        // HANDLER ANIMASI EXPANDABLE SEARCH (REPLACE)
         // ==========================================
         window.openSearch = function(event) {
             if (event) event.stopPropagation();
@@ -423,15 +412,15 @@
             const wrap = document.getElementById('filterWrap');
             const searchBox = document.getElementById('searchContainer');
             
-            // Auto-scroll ke paling kiri agar tidak terpotong saat direntangkan
+            // Scroll ke paling ujung kiri
             wrap.scrollTo({left: 0, behavior: 'smooth'}); 
             
-            // Lebar pencarian akan mengambil 100% dari ruang container yang terlihat
+            // Beri tahu CSS bahwa kita sedang searching (menghilangkan filter dan margin)
+            wrap.classList.add('searching');
+            
+            // Lebarkan searchBox memenuhi wadah (flex-grow via JS Width agar smooth)
             searchBox.style.width = wrap.clientWidth + 'px';
             searchBox.classList.add('expanded');
-            
-            // Kunci overflow agar user tidak bisa scroll filter selagi search terbuka
-            wrap.style.overflowX = 'hidden'; 
             
             setTimeout(() => { document.getElementById('searchInput').focus(); }, 300);
         }
@@ -442,11 +431,12 @@
             const wrap = document.getElementById('filterWrap');
             const searchBox = document.getElementById('searchContainer');
             
+            // Kembalikan ke ikon kecil
             searchBox.style.width = '38px';
             searchBox.classList.remove('expanded');
             
-            // Kembalikan kemampuan scroll untuk filter
-            wrap.style.overflowX = 'auto'; 
+            // Mengembalikan filter dan gap
+            wrap.classList.remove('searching');
             
             const input = document.getElementById('searchInput');
             if (input.value !== '') {
@@ -455,7 +445,7 @@
             }
         }
 
-        // Responsif: Sesuaikan lebar search box saat orientasi layar atau window berubah
+        // Responsif: Sesuaikan kembali lebar search jika pengguna memutar HP (Orientasi Berubah)
         window.addEventListener('resize', () => {
             const searchBox = document.getElementById('searchContainer');
             if(searchBox && searchBox.classList.contains('expanded')) {
@@ -677,7 +667,7 @@
 
         window.closeInfoModal = function() { document.getElementById('infoModal').classList.remove('active'); }
 
-        // FUNGSI INJECT DYNAMIC FILTERS KATEGORI
+        // FUNGSI INJECT DYNAMIC FILTERS KATEGORI LALU DIMASUKAN KE WADAH .filters-wrapper
         function generateDynamicChannels(data) {
             const channels = [...new Set(data.map(item => item.channel).filter(c => c && c.trim() !== "Umum" && c.trim() !== ""))];
             let html = `
@@ -693,6 +683,7 @@
                 const isActive = window.currentFilter === ch ? 'active' : '';
                 html += `<button class="filter-btn ${isActive}" onclick="setFilter('${ch}')">📺 ${ch}</button>`;
             });
+            // Masukan seluruh susunan filter ke dalam div yang bisa menyusut
             document.getElementById('dynamicFilters').innerHTML = html;
         }
 
