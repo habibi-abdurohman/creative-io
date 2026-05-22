@@ -1,47 +1,52 @@
-// Deteksi path (aman untuk GitHub Pages)
-const isInsidePagesFolder = window.location.pathname.includes('/pages/');
-const swPath = isInsidePagesFolder ? '../service-worker.js' : './service-worker.js';
+// =========================================================
+// PWA HANDLER - INSTALL PROMPT & SW REGISTRATION
+// =========================================================
 
+// Tentukan root path berdasarkan folder saat ini
+const isSubfolder = window.location.pathname.includes('/pages/');
+const rootPrefix = isSubfolder ? '../' : './';
+
+// 1. Registrasi Service Worker
 if ('serviceWorker' in navigator) {
     window.addEventListener('load', () => {
-        navigator.serviceWorker.register(swPath).catch(err => console.log('[PWA] SW Gagal:', err));
+        navigator.serviceWorker.register(rootPrefix + 'service-worker.js')
+            .then((registration) => {
+                console.log('SW Registered scope:', registration.scope);
+            })
+            .catch((error) => {
+                console.log('SW Registration failed:', error);
+            });
     });
 }
 
-// Menangkap Event Install PWA
+// 2. Handle Custom Install Prompt (PWA Installable)
 let deferredPrompt;
 window.addEventListener('beforeinstallprompt', (e) => {
-    e.preventDefault(); // Cegah browser memunculkan popup otomatis
-    deferredPrompt = e; // Simpan event ke memori
-    
-    // Fungsi untuk memunculkan tombol di Sidebar
-    const showInstallBtn = () => {
-        const installBtn = document.getElementById('pwaInstallBtn');
-        if (installBtn) {
-            installBtn.style.display = 'flex'; 
-        } else {
-            // Jika navbar belum selesai diload, coba lagi 0.5 detik kemudian
-            setTimeout(showInstallBtn, 500);
-        }
-    };
-    
-    showInstallBtn();
+    // Mencegah mini-infobar muncul otomatis di mobile
+    e.preventDefault();
+    deferredPrompt = e;
+
+    // Munculkan tombol di Sidebar (Terdapat di navbar.html)
+    const installBtn = document.getElementById('pwaInstallBtn');
+    if (installBtn) {
+        installBtn.style.display = 'flex';
+    }
 });
 
-// Fungsi ketika tombol Install ditekan
+// Dipanggil saat tombol ditekan
 window.triggerPWAInstall = async () => {
     if (deferredPrompt) {
         deferredPrompt.prompt();
         const { outcome } = await deferredPrompt.userChoice;
         if (outcome === 'accepted') {
-            console.log('[PWA] User menginstal aplikasi');
+            console.log('User accepted PWA install');
+            document.getElementById('pwaInstallBtn').style.display = 'none';
         }
         deferredPrompt = null;
-        
-        // Sembunyikan tombol setelah diinstal
-        const installBtn = document.getElementById('pwaInstallBtn');
-        if (installBtn) installBtn.style.display = 'none';
-    } else {
-        alert("Aplikasi sudah diinstal, atau browser Anda tidak mendukung fitur ini.");
     }
 };
+
+window.addEventListener('appinstalled', () => {
+    document.getElementById('pwaInstallBtn').style.display = 'none';
+    console.log('PWA was installed');
+});
