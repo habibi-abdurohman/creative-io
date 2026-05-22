@@ -1,5 +1,5 @@
 // =========================================================
-// PWA HANDLER - UPDATE TERBARU
+// PWA HANDLER - FIX RACE CONDITION
 // =========================================================
 
 const isSubfolder = window.location.pathname.includes('/pages/');
@@ -14,43 +14,52 @@ if ('serviceWorker' in navigator) {
     });
 }
 
-// 2. Tangkap Event Install PWA
-let deferredPrompt;
+// 2. Variabel Global untuk menyimpan Event
+window.deferredPrompt = null;
+
+// 3. Tangkap Event Install PWA
 window.addEventListener('beforeinstallprompt', (e) => {
     // Cegah Chrome memunculkan mini-infobar otomatis
     e.preventDefault();
-    // Simpan event untuk dipicu nanti
-    deferredPrompt = e;
+    // Simpan event ke variabel global
+    window.deferredPrompt = e;
+    console.log("PWA: Status Installable Terdeteksi!");
 
-    // Munculkan container tombol install di sidebar
-    const installContainer = document.getElementById('pwaInstallContainer');
-    if (installContainer) {
-        installContainer.style.display = 'block'; 
-    }
+    // Coba munculkan tombol (jika navbar sudah ada)
+    showPwaButton();
 });
 
-// 3. Eksekusi Saat Tombol Install Ditekan
-window.triggerPWAInstall = async () => {
-    if (deferredPrompt) {
-        // Munculkan prompt bawaan Chrome/Android
-        deferredPrompt.prompt();
-        
-        // Tunggu respon user (Accept / Dismiss)
-        const { outcome } = await deferredPrompt.userChoice;
-        if (outcome === 'accepted') {
-            console.log('User menginstal aplikasi');
-            // Sembunyikan tombol setelah diinstall
-            document.getElementById('pwaInstallContainer').style.display = 'none';
-        }
-        
-        // Kosongkan prompt
-        deferredPrompt = null;
+// 4. Fungsi untuk memunculkan tombol (Bisa dipanggil dari luar)
+window.showPwaButton = function() {
+    const installContainer = document.getElementById('pwaInstallContainer');
+    // Jika event PWA ada DAN navbar sudah selesai di-load
+    if (window.deferredPrompt && installContainer) {
+        installContainer.style.display = 'block';
+        console.log("PWA: Tombol Install Dimunculkan");
     }
 };
 
-// 4. Deteksi jika aplikasi sudah terinstall
+// 5. Eksekusi Saat Tombol Install Ditekan
+window.triggerPWAInstall = async () => {
+    if (window.deferredPrompt) {
+        // Munculkan prompt bawaan Chrome/Android
+        window.deferredPrompt.prompt();
+        
+        // Tunggu respon user (Accept / Dismiss)
+        const { outcome } = await window.deferredPrompt.userChoice;
+        if (outcome === 'accepted') {
+            console.log('PWA: User menginstal aplikasi');
+            document.getElementById('pwaInstallContainer').style.display = 'none';
+        }
+        
+        // Kosongkan prompt setelah dipakai
+        window.deferredPrompt = null;
+    }
+};
+
+// 6. Deteksi jika aplikasi sudah terinstall
 window.addEventListener('appinstalled', () => {
     const installContainer = document.getElementById('pwaInstallContainer');
     if (installContainer) installContainer.style.display = 'none';
-    console.log('PWA berhasil diinstal');
+    console.log('PWA: Berhasil diinstal / Sudah terinstal');
 });
