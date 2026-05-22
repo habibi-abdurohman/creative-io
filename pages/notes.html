@@ -31,7 +31,7 @@
         .total-badge { padding: 6px 14px; border-radius: 20px; background: var(--primary-soft); color: var(--primary); font-size: 12px; font-weight: 800; border: 1px solid var(--border); white-space: nowrap; }
         
         /* =========================================================
-           REVISI UI: SEARCH BAR MENGGANTIKAN FILTER (REPLACE)
+           REVISI UI: SEARCH BAR MENGGANTIKAN FILTER + SCROLL FIX
         ========================================================= */
         .sticky-tools { 
             position: sticky; top: 76px; z-index: 50; padding: 10px 16px; margin: 16px 0 24px 0; 
@@ -83,11 +83,13 @@
         .close-search-btn:hover { color: var(--danger); }
         .search-expandable.expanded .close-search-btn { opacity: 1; pointer-events: auto; }
         
-        /* Container untuk Filter yang akan menyusut dan menghilang secara mulus */
+        /* Container untuk Filter (FIX SCROLL DI SINI) */
         .filters-wrapper {
             display: flex; align-items: center; gap: 8px; 
-            max-width: 1000px; /* Nilai cukup besar untuk menampung tombol */
-            opacity: 1; overflow: hidden;
+            max-width: 1000px; 
+            opacity: 1; 
+            overflow: hidden;
+            flex-shrink: 0; /* INI KUNCINYA: Memaksa area filter agar tidak gepeng, sehingga memicu scroll */
             transition: max-width 0.3s cubic-bezier(0.4, 0, 0.2, 1), opacity 0.2s ease;
         }
         /* State saat Search aktif: Filter menyusut ke 0px dan memudar */
@@ -322,13 +324,13 @@
             const wrap = document.getElementById('filterWrap');
             const searchBox = document.getElementById('searchContainer');
             
-            // Auto-scroll ke paling kiri agar saat direntangkan tidak terpotong
+            // Auto-scroll ke paling kiri
             wrap.scrollTo({left: 0, behavior: 'smooth'}); 
             
-            // Beri tahu CSS bahwa kita sedang searching (menyembunyikan filter dan margin)
+            // CSS state searching
             wrap.classList.add('searching');
             
-            // Lebar pencarian mengikuti ruang container yang ada
+            // Update lebar pencarian
             searchBox.style.width = wrap.clientWidth + 'px';
             searchBox.classList.add('expanded');
             
@@ -341,11 +343,9 @@
             const wrap = document.getElementById('filterWrap');
             const searchBox = document.getElementById('searchContainer');
             
-            // Kembalikan kotak pencarian jadi icon kecil
             searchBox.style.width = '38px';
             searchBox.classList.remove('expanded');
             
-            // Mengembalikan filter dan fungsi scroll bawaan
             wrap.classList.remove('searching');
             
             const input = document.getElementById('searchInput');
@@ -365,7 +365,7 @@
             }
         });
 
-        // Responsif: Sesuaikan kembali lebar search jika ukuran layar berubah
+        // Responsif
         window.addEventListener('resize', () => {
             const searchBox = document.getElementById('searchContainer');
             if(searchBox && searchBox.classList.contains('expanded')) {
@@ -375,7 +375,7 @@
         });
 
         // ==========================================
-        // FUNGSI SIMPAN & UI APLIKASI LAINNYA
+        // FUNGSI SIMPAN & UI APLIKASI
         // ==========================================
         window.performSave = async function(isAuto = false) {
             const title = document.getElementById('titleInput').value.trim();
