@@ -420,7 +420,7 @@
             wrap.classList.add('searching');
             
             // Lebarkan searchBox memenuhi wadah (flex-grow via JS Width agar smooth)
-            searchBox.style.width = wrap.clientWidth + 'px';
+            searchBox.style.width = '100%';
             searchBox.classList.add('expanded');
             
             setTimeout(() => { document.getElementById('searchInput').focus(); }, 300);
@@ -445,15 +445,6 @@
                 window.renderList(); 
             }
         }
-
-        // Responsif: Sesuaikan kembali lebar search jika pengguna memutar HP (Orientasi Berubah)
-        window.addEventListener('resize', () => {
-            const searchBox = document.getElementById('searchContainer');
-            if(searchBox && searchBox.classList.contains('expanded')) {
-                const wrap = document.getElementById('filterWrap');
-                searchBox.style.width = wrap.clientWidth + 'px';
-            }
-        });
 
         // 2. AUTO-SUGGEST KATEGORI
         window.showCategorySuggestions = function() {
