@@ -36,6 +36,10 @@
         .input { width: 100%; height: 52px; background: #f8fafc; border: 1px solid #e2e8f0; border-radius: 16px; padding: 0 18px; font-size: 14px; color: #0f172a; outline: none; transition: all 0.2s ease; }
         .input:focus { border-color: #3b82f6; background: white; box-shadow: 0 0 0 4px rgba(59, 130, 246, 0.1); }
         .input::placeholder { color: #94a3b8; }
+        
+        /* State Error untuk Input */
+        .input.input-error { border-color: #ef4444 !important; box-shadow: 0 0 0 4px rgba(239, 68, 68, 0.1) !important; background: #fef2f2 !important; }
+
         .submit-btn { width: 100%; height: 52px; border: none; border-radius: 16px; background: linear-gradient(135deg, #3b82f6, #2563eb); color: white; font-size: 15px; font-weight: 700; cursor: pointer; transition: all 0.2s ease; margin-top: 10px; }
         .submit-btn:hover { transform: translateY(-2px); background: linear-gradient(135deg, #2563eb, #1d4ed8); }
         .submit-btn:disabled { opacity: 0.7; cursor: not-allowed; transform: none; }
@@ -87,7 +91,15 @@
                     <label class="label">Password</label>
                     <div class="password-container">
                         <input type="password" id="password" class="input" placeholder="Minimal 6 karakter" required autocomplete="new-password">
-                        <button type="button" class="toggle-password" id="eyeIcon" onclick="togglePasswordVisibility()">👁️</button>
+                        <button type="button" class="toggle-password" id="eyeIcon1" onclick="togglePasswordVisibility('password', 'eyeIcon1')">👁️</button>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label class="label">Konfirmasi Password</label>
+                    <div class="password-container">
+                        <input type="password" id="confirmPassword" class="input" placeholder="Masukkan ulang password" required autocomplete="new-password" oninput="clearErrorState()">
+                        <button type="button" class="toggle-password" id="eyeIcon2" onclick="togglePasswordVisibility('confirmPassword', 'eyeIcon2')">👁️</button>
                     </div>
                 </div>
 
@@ -100,7 +112,6 @@
         </div>
     </section>
 
-    <!-- Pendaftaran PWA / Service Worker -->
     <script src="./js/pwa.js"></script>
 
     <script type="module">
@@ -141,17 +152,35 @@
         function showAlert(type, message) {
             alertBox.className = "alert " + type;
             alertBox.innerText = message;
+            alertBox.style.display = "block";
+        }
+
+        // FUNGSI UNTUK MENGHILANGKAN ERROR SAAT USER MENGETIK ULANG
+        window.clearErrorState = function() {
+            document.getElementById("confirmPassword").classList.remove("input-error");
+            alertBox.style.display = "none";
         }
 
         form.addEventListener("submit", async (e) => {
             e.preventDefault();
             alertBox.style.display = "none";
-            registerBtn.disabled = true;
-            registerBtn.innerText = "Membuat akun...";
-
+            
             const nameVal = document.getElementById("name").value.trim();
             const emailVal = document.getElementById("email").value.trim();
             const passwordVal = document.getElementById("password").value;
+            const confirmPasswordVal = document.getElementById("confirmPassword").value;
+
+            // =========================================================
+            // LOGIKA VALIDASI KONFIRMASI PASSWORD
+            // =========================================================
+            if (passwordVal !== confirmPasswordVal) {
+                document.getElementById("confirmPassword").classList.add("input-error");
+                showAlert("error", "Konfirmasi password tidak cocok dengan password utama. Silakan periksa kembali.");
+                return; // Stop eksekusi script di sini
+            }
+
+            registerBtn.disabled = true;
+            registerBtn.innerText = "Membuat akun...";
 
             if (USE_FIREBASE) {
                 // =========================================================
@@ -202,18 +231,18 @@
         });
 
         // =========================================================
-        // TAMBAHAN INTERAKTIF UI: SHOW / HIDE PASSWORD
+        // TAMBAHAN INTERAKTIF UI: SHOW / HIDE PASSWORD DINAMIS
         // =========================================================
-        window.togglePasswordVisibility = function() {
-            const passwordInput = document.getElementById("password");
-            const eyeIcon = document.getElementById("eyeIcon");
+        window.togglePasswordVisibility = function(inputId, iconId) {
+            const pwdInput = document.getElementById(inputId);
+            const eyeIcon = document.getElementById(iconId);
             
-            if (passwordInput.type === "password") {
-                passwordInput.type = "text";
+            if (pwdInput.type === "password") {
+                pwdInput.type = "text";
                 eyeIcon.innerText = "🙈";
                 eyeIcon.setAttribute("title", "Sembunyikan Kata Sandi");
             } else {
-                passwordInput.type = "password";
+                pwdInput.type = "password";
                 eyeIcon.innerText = "👁️";
                 eyeIcon.setAttribute("title", "Tampilkan Kata Sandi");
             }
