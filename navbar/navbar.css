@@ -59,16 +59,15 @@ body.dark .navbar {
     transition: background 0.2s, border-color 0.2s;
 }
 
-/* PERBAIKAN: Tombol Profile dibedakan agar bulat sempurna mengikuti Foto */
 .profile-btn {
     width: 34px;
     height: 34px;
     border: 1px solid var(--border, #e2e8f0);
     background: var(--card, #ffffff);
     color: var(--text, #0f172a);
-    border-radius: 50%; /* Dibuat bulat sempurna */
+    border-radius: 50%;
     padding: 0;
-    overflow: hidden; /* Memotong background kotak yang bocor */
+    overflow: hidden;
     cursor: pointer;
     display: flex;
     align-items: center;
@@ -260,7 +259,6 @@ body.dark .logout-btn:hover {
     z-index: 99998;
     overflow-y: auto;
     
-    /* PERBAIKAN: Layout Flex untuk menaruh footer di bawah */
     display: flex;
     flex-direction: column;
     justify-content: space-between;
@@ -293,7 +291,18 @@ body.dark .sidebar {
     display: flex;
     align-items: center;
     gap: 10px;
-    transition: background 0.2s;
+    transition: background 0.2s, color 0.2s;
+}
+
+/* =========================================================
+   KUNCI ALIGNMENT: Lebar Ikon Tetap (Fixed Width)
+========================================================= */
+.nav-icon {
+    display: inline-block;
+    width: 22px; /* Memaksa semua ikon menempati ruang yang sama */
+    text-align: center; /* Ikon selalu di tengah ruangnya */
+    font-size: 16px;
+    flex-shrink: 0;
 }
 
 body.dark .sidebar-menu a {
@@ -334,7 +343,7 @@ body.dark .sidebar-menu a.active {
 }
 
 /* =========================================================
-   PERBAIKAN: DESAIN TOMBOL PWA (PREMIUM LOOK)
+   DESAIN TOMBOL PWA (PREMIUM LOOK)
 ========================================================= */
 .sidebar-footer {
     margin-top: auto;
@@ -343,9 +352,9 @@ body.dark .sidebar-menu a.active {
 
 .btn-pwa {
     width: 100%;
-    background: rgba(37, 99, 235, 0.05); /* Soft primary tint */
+    background: rgba(37, 99, 235, 0.05);
     color: #2563eb;
-    border: 1px dashed rgba(37, 99, 235, 0.3); /* Garis putus-putus modern */
+    border: 1px dashed rgba(37, 99, 235, 0.3);
     border-radius: 14px;
     padding: 12px;
     font-size: 13px;
@@ -367,7 +376,6 @@ body.dark .sidebar-menu a.active {
     box-shadow: 0 8px 20px rgba(37, 99, 235, 0.2);
 }
 
-/* Dark mode adjustments PWA */
 body.dark .btn-pwa {
     background: rgba(96, 165, 250, 0.1);
     color: #60a5fa;
