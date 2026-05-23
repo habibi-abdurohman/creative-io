@@ -83,14 +83,36 @@
         .form-group input:disabled { background: var(--card-tint); color: var(--text-muted); cursor: not-allowed; }
 
         .divider { height: 1px; background: var(--border); margin: 28px 0; }
-        .security-title { font-size: 14px; font-weight: 800; margin-bottom: 4px; }
-        .security-desc { font-size: 12px; color: var(--text-muted); margin-bottom: 14px; line-height: 1.5; }
+        .security-title { font-size: 14px; font-weight: 800; margin-bottom: 4px; text-align: left; }
+        .security-desc { font-size: 12px; color: var(--text-muted); margin-bottom: 14px; line-height: 1.5; text-align: left; }
 
         .btn-save { width: 100%; border: none; background: var(--primary-grad); color: white; padding: 16px; border-radius: 16px; font-size: 14px; font-weight: 900; cursor: pointer; }
-        .btn-reset-pw { width: 100%; border: 1px solid var(--border); background: var(--card-tint); color: var(--text-main); padding: 14px; border-radius: 14px; font-size: 13px; font-weight: 800; cursor: pointer; }
+        
+        .btn-reset-pw { width: 100%; border: 1px solid var(--border); background: var(--card-tint); color: var(--text-main); padding: 14px; border-radius: 14px; font-size: 13px; font-weight: 800; cursor: pointer; margin-bottom: 10px; transition: 0.2s; }
+        .btn-reset-pw:hover { background: #e2e8f0; }
+        
+        /* TOMBOL HAPUS AKUN - Desain Subtle/Aman */
+        .btn-delete-account { width: 100%; border: 1px solid rgba(239, 68, 68, 0.3); background: transparent; color: var(--danger); padding: 14px; border-radius: 14px; font-size: 13px; font-weight: 800; cursor: pointer; transition: 0.2s; }
+        .btn-delete-account:hover { background: rgba(239, 68, 68, 0.1); border-color: var(--danger); }
 
         .toast { position: fixed; bottom: -100px; left: 50%; transform: translateX(-50%); background: var(--success); color: white; padding: 12px 24px; border-radius: 999px; font-size: 13px; font-weight: 800; z-index: 10000; transition: bottom 0.4s; }
         .toast.show { bottom: 40px; }
+
+        /* MODAL KONFIRMASI HAPUS */
+        .modal-overlay { position: fixed; inset: 0; background: rgba(0,0,0,0.4); backdrop-filter: blur(4px); z-index: 100000; display: none; align-items: center; justify-content: center; padding: 20px; }
+        .modal-overlay.active { display: flex; }
+        .modal-card { background: var(--card-solid); width: 100%; max-width: 360px; border-radius: var(--radius-card); padding: 24px; box-shadow: var(--shadow-flat); border: 1px solid var(--border); text-align: center; }
+        .modal-icon { font-size: 40px; margin-bottom: 12px; }
+        .modal-card h3 { font-size: 18px; font-weight: 900; margin-bottom: 8px; color: var(--text-main); }
+        .modal-card p { font-size: 13px; color: var(--text-muted); margin-bottom: 24px; line-height: 1.5; }
+        .modal-actions { display: flex; gap: 12px; }
+        .btn-modal { flex: 1; padding: 12px; border-radius: 12px; font-size: 13px; font-weight: 800; cursor: pointer; border: none; transition: 0.2s; }
+        .btn-cancel { background: var(--card-tint); color: var(--text-main); border: 1px solid var(--border); }
+        .btn-cancel:hover { background: #e2e8f0; }
+        .btn-confirm-delete { background: var(--danger); color: white; }
+        .btn-confirm-delete:hover { background: #dc2626; }
+        
+        body.dark .btn-cancel:hover { background: #334155; }
     </style>
 </head>
 <body>
@@ -117,11 +139,27 @@
             </div>
 
             <button class="btn-save" onclick="saveProfile()">Simpan Perubahan</button>
+            
             <div class="divider"></div>
+            
             <div class="security-section">
                 <div class="security-title">Kata Sandi / Keamanan</div>
-                <div class="security-desc">Kami akan mengirimkan tautan khusus ke email Anda untuk reset kata sandi.</div>
+                <div class="security-desc">Kelola akses akun dan informasi kredensial Anda di sini.</div>
+                
                 <button class="btn-reset-pw" onclick="sendResetPasswordLink()">🔒 Kirim Link Ubah Password</button>
+                <button class="btn-delete-account" onclick="openDeleteModal()">⚠️ Hapus Akun Saya</button>
+            </div>
+        </div>
+    </div>
+
+    <div class="modal-overlay" id="deleteAccountModal">
+        <div class="modal-card">
+            <div class="modal-icon">⚠️</div>
+            <h3>Yakin Hapus Akun?</h3>
+            <p>Semua data profil Anda akan dihapus secara permanen. Tindakan ini tidak dapat dibatalkan, namun Anda dapat mendaftar kembali menggunakan email ini di masa mendatang.</p>
+            <div class="modal-actions">
+                <button class="btn-modal btn-cancel" onclick="closeDeleteModal()">Batal</button>
+                <button class="btn-modal btn-confirm-delete" id="confirmDeleteBtn" onclick="confirmDeleteAccount()">Ya, Hapus</button>
             </div>
         </div>
     </div>
@@ -133,7 +171,8 @@
 
     <script type="module">
         import { auth } from "./js/firebase.js";
-        import { onAuthStateChanged, updateProfile, sendPasswordResetEmail } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
+        // Tambahkan import 'deleteUser' dari Firebase Auth
+        import { onAuthStateChanged, updateProfile, sendPasswordResetEmail, deleteUser, signOut } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
 
         const USE_FIREBASE = true;
         const avatarPreview = document.getElementById('avatarPreview');
@@ -168,7 +207,7 @@
                     const savedPhoto = localStorage.getItem(`creative_photo_${user.uid}`);
                     if (savedPhoto) avatarPreview.src = savedPhoto;
 
-                    // PAKSA NAVBAR UPDATE SAAT HALAMAN DIBUKA (Delay 300ms agar HTML Navbar siap)
+                    // PAKSA NAVBAR UPDATE SAAT HALAMAN DIBUKA
                     setTimeout(() => {
                         if(window.updateNavbarUI) window.updateNavbarUI(user.displayName, user.email, savedPhoto);
                     }, 300);
@@ -207,7 +246,7 @@
             }
         }
 
-        // 3. RESET PASSWORD (Dengan Penanganan Error)
+        // 3. RESET PASSWORD
         window.sendResetPasswordLink = async function() {
             if (USE_FIREBASE && currentUser) {
                 const btn = document.querySelector('.btn-reset-pw');
@@ -225,6 +264,50 @@
                 } finally {
                     btn.innerHTML = originalText;
                     btn.disabled = false;
+                }
+            }
+        }
+
+        // 4. LOGIKA HAPUS AKUN DENGAN MODAL KONFIRMASI
+        window.openDeleteModal = function() {
+            document.getElementById('deleteAccountModal').classList.add('active');
+        }
+
+        window.closeDeleteModal = function() {
+            document.getElementById('deleteAccountModal').classList.remove('active');
+        }
+
+        window.confirmDeleteAccount = async function() {
+            if (!currentUser) return;
+
+            const btn = document.getElementById('confirmDeleteBtn');
+            btn.innerHTML = "Menghapus...";
+            btn.disabled = true;
+
+            try {
+                // Proses menghapus User Authentication dari sistem Firebase
+                await deleteUser(currentUser);
+                
+                // Menghapus foto profil lokal terkait user
+                localStorage.removeItem(`creative_photo_${currentUser.uid}`);
+                
+                alert("Akun Anda telah berhasil dihapus. Sampai jumpa kembali!");
+                
+                // Setelah dihapus, otomatis diarahkan ke halaman Register/Login
+                window.location.replace("./register.html");
+
+            } catch (error) {
+                // Penanganan Error Firebase (misalnya: "auth/requires-recent-login")
+                btn.innerHTML = "Ya, Hapus";
+                btn.disabled = false;
+                window.closeDeleteModal();
+                
+                if (error.code === 'auth/requires-recent-login') {
+                    alert("Demi keamanan, Anda harus Login ulang sebelum dapat menghapus akun ini. Anda akan diarahkan ke halaman Login.");
+                    await signOut(auth);
+                    window.location.replace("./login.html");
+                } else {
+                    alert("Terjadi kesalahan: " + error.message);
                 }
             }
         }
