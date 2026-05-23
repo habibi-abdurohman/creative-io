@@ -47,20 +47,18 @@
 
 <div class="sidebar" id="sidebar">
     <div class="sidebar-menu">
-        <!-- Path menggunakan variable root yang ditangani oleh navbar.js secara dinamis -->
         <a href="pages/dashboard.html" id="nav-dashboard">🏠 Dashboard</a>
         <a href="pages/ideas.html" id="nav-ideas">🎬 Idea Board</a>
         <a href="pages/script.html" id="nav-script">📝 Script Writer</a>
         <a href="pages/notes.html" id="nav-notes">📂 Notes</a>
         <a href="pages/calculator.html" id="nav-calculator">💰 Calculator</a>
         <a href="pages/trash.html" id="nav-trash">🗑 Trash</a>
-        
-        <!-- Letakkan ini di dalam <ul class="sidebar-menu"> bagian bawah -->
-<li id="pwaInstallContainer" style="display: none; padding: 10px 20px; margin-top: auto;">
-    <button id="pwaInstallBtn" onclick="triggerPWAInstall()" class="btn-pwa">
-        <span class="icon">📱</span> Install App
-    </button>
-</li>
+    </div>
+
+    <div class="sidebar-footer" id="pwaInstallContainer" style="display: none;">
+        <button id="pwaInstallBtn" onclick="triggerPWAInstall()" class="btn-pwa">
+            <span class="icon">📱</span> Install App
+        </button>
     </div>
 </div>
 
