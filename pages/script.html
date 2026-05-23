@@ -84,14 +84,10 @@
         .sticky-tools-inner::-webkit-scrollbar { display: none; }
         
         /* Ketika Search Aktif, gap dihilangkan dan scroll dikunci */
-        .sticky-tools-inner.searching {
-            gap: 0;
-            overflow: hidden; 
-        }
+        .sticky-tools-inner.searching { gap: 0; overflow: hidden; }
 
         .search-expandable { 
-            flex-shrink: 0; /* Menjaga ukuran saat scroll */
-            display: flex; align-items: center; background: var(--card-solid); 
+            flex-shrink: 0; display: flex; align-items: center; background: var(--card-solid); 
             border: 1px solid var(--border); border-radius: 12px; 
             height: 38px; width: 38px; overflow: hidden; 
             transition: width 0.3s cubic-bezier(0.4, 0, 0.2, 1), border-color 0.3s, box-shadow 0.3s; 
@@ -121,24 +117,18 @@
         /* Container untuk Filter yang akan menyusut dan menghilang secara mulus */
         .filters-wrapper {
             display: flex; align-items: center; gap: 8px; 
-            max-width: 2000px; /* Nilai besar agar cukup menampung semua tombol */
-            opacity: 1; overflow: hidden;
-            flex-shrink: 0; /* FIX SCROLL: Mencegah area filter memipih */
-            transition: max-width 0.3s cubic-bezier(0.4, 0, 0.2, 1), opacity 0.2s ease;
+            max-width: 2000px; opacity: 1; overflow: hidden;
+            flex-shrink: 0; transition: max-width 0.3s cubic-bezier(0.4, 0, 0.2, 1), opacity 0.2s ease;
         }
         /* State saat Search aktif: Filter menyusut ke 0px dan menghilang */
-        .sticky-tools-inner.searching .filters-wrapper {
-            max-width: 0;
-            opacity: 0;
-            transition: max-width 0.3s cubic-bezier(0.4, 0, 0.2, 1), opacity 0.1s ease;
-        }
+        .sticky-tools-inner.searching .filters-wrapper { max-width: 0; opacity: 0; transition: max-width 0.3s cubic-bezier(0.4, 0, 0.2, 1), opacity 0.1s ease; }
 
         .filter-btn { flex-shrink: 0; padding: 8px 14px; border-radius: 10px; background: var(--card-solid); border: 1px solid var(--border); font-size: 12px; font-weight: 700; color: var(--text-muted); cursor: pointer; transition: 0.2s; white-space: nowrap; }
         .filter-btn.active { background: var(--primary-soft); border-color: var(--primary); color: var(--primary); }
         .divider { flex-shrink: 0; width: 1px; height: 18px; background: var(--border); margin: 0 2px; }
 
         /* =========================================================
-           REVISI UI: DAFTAR KARTU RESPONSIF (3 LAPTOP, 2 TABLET, 1 HP)
+           REVISI UI: DAFTAR KARTU RESPONSIF
         ========================================================= */
         .list-container { column-count: 3; column-gap: 16px; margin-top: 10px; }
         
@@ -161,15 +151,21 @@
         .badge.ch { background: var(--primary-soft); color: var(--primary); border: none; }
         .badge.done { background: var(--success-soft); color: var(--success); border: none; }
         .card-actions { display: flex; gap: 8px; }
-        .btn-icon { width: 32px; height: 32px; border: 1px solid var(--border); border-radius: 10px; background: var(--card-solid); color: var(--text-main); display: flex; align-items: center; justify-content: center; font-size: 14px; cursor: pointer; transition: 0.2s; }
+        
+        /* TOMBOL HEADER/AKSI */
+        .btn-icon { width: 32px; height: 32px; border: 1px solid var(--border); border-radius: 10px; background: var(--card-solid); color: var(--text-main); display: flex; align-items: center; justify-content: center; font-size: 14px; cursor: pointer; transition: all 0.2s; }
         .btn-icon:hover { background: var(--card-tint); }
+        
+        /* CSS Khusus State Aktif Tombol Editor (Pin & Focus Mode) */
+        .btn-icon.active-pin { background: var(--warning); border-color: var(--warning); color: white; }
+        .btn-icon.active-read { background: var(--primary-soft); border-color: var(--primary); color: var(--primary); }
         
         .fab { position: fixed; right: 24px; bottom: 24px; width: 56px; height: 56px; border: none; border-radius: 20px; background: var(--primary-grad); color: white; font-size: 28px; cursor: pointer; box-shadow: 0 10px 25px rgba(37, 99, 235, 0.3); z-index: 100; display: flex; align-items: center; justify-content: center; }
         
-        /* POPUP EDITOR & READING MODE */
+        /* POPUP EDITOR */
         .popup-overlay { position: fixed; inset: 0; background: var(--bg-grad); z-index: 99999; display: none; flex-direction: column; }
         .popup-overlay.active { display: flex; }
-        .editor-header { display: flex; justify-content: space-between; align-items: center; padding: 12px 16px; background: rgba(255, 255, 255, 0.85); backdrop-filter: blur(12px); border-bottom: 1px solid var(--border); position: sticky; top: 0; z-index: 10; transition: transform 0.3s ease; }
+        .editor-header { display: flex; justify-content: space-between; align-items: center; padding: 12px 16px; background: rgba(255, 255, 255, 0.85); backdrop-filter: blur(12px); border-bottom: 1px solid var(--border); position: sticky; top: 0; z-index: 10; transition: all 0.3s ease; }
         body.dark .editor-header { background: rgba(15, 23, 42, 0.85); }
         .header-left, .header-right { display: flex; align-items: center; gap: 8px; }
         .save-indicator { font-size: 11px; font-weight: 700; color: var(--text-muted); background: var(--card-tint); padding: 4px 10px; border-radius: 8px; opacity: 0; transition: 0.2s; }
@@ -200,13 +196,38 @@
         .btn-draft:hover { background: var(--card-tint); }
         .btn-done { background: var(--primary-grad); color: white; }
         
-        /* DROPDOWN MENU */
+        /* DROPDOWN MENU - Z-Index diperbaiki */
         .dropdown-wrap { position: relative; }
-        .dropdown-menu { position: absolute; top: 40px; right: 0; background: var(--card-solid); border: 1px solid var(--border); border-radius: 16px; padding: 8px; display: none; flex-direction: column; gap: 4px; min-width: 180px; box-shadow: var(--shadow-flat); }
+        .dropdown-menu { position: absolute; top: 40px; right: 0; background: var(--card-solid); border: 1px solid var(--border); border-radius: 16px; padding: 8px; display: none; flex-direction: column; gap: 4px; min-width: 180px; box-shadow: var(--shadow-flat); z-index: 1000; }
         .dropdown-menu.active { display: flex; }
         .dropdown-menu button { background: transparent; border: none; padding: 10px 14px; border-radius: 10px; font-size: 13px; font-weight: 700; color: var(--text-main); text-align: left; cursor: pointer; transition: 0.2s; }
         .dropdown-menu button:hover { background: var(--bg-grad); }
         
+        /* =========================================================
+           TAMBAHAN CSS READING MODE (MODE FOKUS)
+        ========================================================= */
+        .popup-overlay.reading-mode .editor-header {
+            background: transparent;
+            border-bottom-color: transparent;
+        }
+        .popup-overlay.reading-mode .category-wrapper,
+        .popup-overlay.reading-mode .editor-footer {
+            display: none; /* Menyembunyikan kategori dan footer */
+        }
+        .popup-overlay.reading-mode .editor-body {
+            max-width: 700px;
+            padding-top: 40px;
+        }
+        .popup-overlay.reading-mode .input-title {
+            text-align: center;
+            font-size: 36px;
+            margin-bottom: 24px;
+        }
+        .popup-overlay.reading-mode .input-content {
+            font-size: 18px;
+            line-height: 2;
+        }
+
         /* MODAL INFO */
         .info-modal-overlay { position: fixed; inset: 0; background: rgba(0,0,0,0.4); backdrop-filter: blur(4px); z-index: 100000; display: none; align-items: center; justify-content: center; padding: 20px; }
         .info-modal-overlay.active { display: flex; }
@@ -217,7 +238,7 @@
         .info-value { font-weight: 800; color: var(--text-main); text-align: right; max-width: 60%; word-break: break-word;}
         .btn-close-info { width: 100%; padding: 12px; margin-top: 20px; border: none; background: var(--card-tint); color: var(--text-main); font-weight: 800; border-radius: 12px; cursor: pointer; }
         
-        /* BREAKPOINT RESPONSIF UNTUK KARTU SCRIPT */
+        /* BREAKPOINT RESPONSIF */
         @media(max-width: 1024px) { 
             .list-container { column-count: 2; } 
         }
@@ -275,8 +296,6 @@
     </div>
 
     <div class="popup-overlay" id="editorPopup">
-        <button class="btn-exit-read" onclick="toggleReadingMode()" title="Keluar Mode Fokus">✕</button>
-        
         <div class="editor-header">
             <div class="header-left">
                 <button class="btn-icon" onclick="closePopup()">✕</button>
@@ -284,9 +303,9 @@
             </div>
             <div class="header-right">
                 <button class="btn-icon" onclick="togglePin()" id="btnPin" title="Sematkan">📌</button>
-                <button class="btn-icon" onclick="toggleReadingMode()" title="Mode Fokus">👁️</button>
+                <button class="btn-icon" onclick="toggleReadingMode()" id="btnReadingMode" title="Mode Fokus">👁️</button>
                 <div class="dropdown-wrap">
-                    <button class="btn-icon" onclick="toggleDropdown('actionMenu')">⋮</button>
+                    <button class="btn-icon" onclick="toggleDropdown(event, 'actionMenu')">⋮</button>
                     <div class="dropdown-menu" id="actionMenu">
                         <button onclick="showInfo()">ℹ️ Detail Info</button>
                         <button onclick="copyContent()">📋 Salin Teks</button>
@@ -351,7 +370,7 @@
         let autoSaveTimeout = null;
         let currentUserUid = null;
 
-        // Tutup dropdown/suggest & Klik Di Luar Search
+        // Tutup dropdown/suggest & Klik Di Luar
         document.addEventListener('click', function(e) {
             if (!e.target.closest('.dropdown-wrap')) {
                 document.querySelectorAll('.dropdown-menu').forEach(m => m.classList.remove('active'));
@@ -360,7 +379,6 @@
                 document.getElementById('categorySuggestions')?.classList.remove('active');
             }
             
-            // Logika Klik Di Luar untuk Menutup Search
             const searchContainer = document.getElementById('searchContainer');
             if (searchContainer && searchContainer.classList.contains('expanded')) {
                 if (!searchContainer.contains(e.target)) {
@@ -406,7 +424,7 @@
         }
 
         // ==========================================
-        // HANDLER ANIMASI EXPANDABLE SEARCH (REPLACE)
+        // HANDLER ANIMASI EXPANDABLE SEARCH
         // ==========================================
         window.openSearch = function(event) {
             if (event) event.stopPropagation();
@@ -414,13 +432,9 @@
             const wrap = document.getElementById('filterWrap');
             const searchBox = document.getElementById('searchContainer');
             
-            // Scroll ke paling ujung kiri
             wrap.scrollTo({left: 0, behavior: 'smooth'}); 
-            
-            // Beri tahu CSS bahwa kita sedang searching (menghilangkan filter dan margin)
             wrap.classList.add('searching');
             
-            // Lebarkan searchBox memenuhi wadah (flex-grow via JS Width agar smooth)
             searchBox.style.width = '100%';
             searchBox.classList.add('expanded');
             
@@ -433,11 +447,8 @@
             const wrap = document.getElementById('filterWrap');
             const searchBox = document.getElementById('searchContainer');
             
-            // Kembalikan ke ikon kecil
             searchBox.style.width = '38px';
             searchBox.classList.remove('expanded');
-            
-            // Mengembalikan filter dan gap
             wrap.classList.remove('searching');
             
             const input = document.getElementById('searchInput');
@@ -447,7 +458,9 @@
             }
         }
 
-        // 2. AUTO-SUGGEST KATEGORI
+        // ==========================================
+        // FUNGSI AUTO-SUGGEST KATEGORI
+        // ==========================================
         window.showCategorySuggestions = function() {
             const inputVal = document.getElementById('inputCategory').value.toLowerCase();
             const suggestBox = document.getElementById('categorySuggestions');
@@ -476,7 +489,9 @@
             window.triggerAutoSave();
         }
 
-        // 3. FUNGSI SIMPAN & AUTO-SAVE
+        // ==========================================
+        // FUNGSI SIMPAN & AUTO-SAVE
+        // ==========================================
         window.performSave = async function(status, isAuto = false) {
             const title = document.getElementById('inputTitle').value.trim();
             const content = document.getElementById('inputContent').value;
@@ -530,7 +545,9 @@
             }, 1000); 
         }
 
-        // 4. SOFT DELETE (TRASH)
+        // ==========================================
+        // SOFT DELETE (TRASH)
+        // ==========================================
         window.softDeleteScript = async function(idOverride = null) {
             const idToDelete = idOverride || window.currentId;
             if (!idToDelete) return;
@@ -565,7 +582,9 @@
             }
         }
 
-        // 5. KENDALI UI (POPUP, PIN, WORD COUNT, DLL)
+        // ==========================================
+        // KENDALI UI (POPUP, TOMBOL HEADER, DLL)
+        // ==========================================
         window.setFilter = function(type) { window.currentFilter = type; window.renderList(); }
         window.setSort = function(type) { window.currentSort = type; window.renderList(); }
 
@@ -585,8 +604,14 @@
                 document.getElementById('inputContent').value = '';
                 document.getElementById('inputCategory').value = '';
             }
+            
+            // Matikan indikator dan mode fokus tiap kali membuka popup baru
             document.getElementById('saveIndicator').classList.remove('show');
-            updatePinButton(); window.updateWordCount();
+            document.getElementById('editorPopup').classList.remove('reading-mode');
+            document.getElementById('btnReadingMode').classList.remove('active-read');
+            
+            updatePinButton(); 
+            window.updateWordCount();
         }
 
         window.closePopup = function() {
@@ -600,11 +625,34 @@
             window.renderList(); 
         }
 
-        window.toggleReadingMode = function() { document.getElementById('editorPopup').classList.toggle('reading-mode'); }
+        // PERBAIKAN: Fungsi Pin dengan Feedback Visual Solid
+        window.togglePin = function() { 
+            window.currentPinned = !window.currentPinned; 
+            updatePinButton(); 
+            window.triggerAutoSave(); 
+        }
         
-        window.togglePin = function() { window.currentPinned = !window.currentPinned; updatePinButton(); window.triggerAutoSave(); }
-        
-        function updatePinButton() { document.getElementById('btnPin').style.opacity = window.currentPinned ? '1' : '0.4'; }
+        function updatePinButton() { 
+            const btn = document.getElementById('btnPin');
+            if (window.currentPinned) {
+                btn.classList.add('active-pin');
+            } else {
+                btn.classList.remove('active-pin');
+            }
+        }
+
+        // PERBAIKAN: Fungsi Mode Fokus / Reading Mode
+        window.toggleReadingMode = function() { 
+            const popup = document.getElementById('editorPopup');
+            const btn = document.getElementById('btnReadingMode');
+            popup.classList.toggle('reading-mode');
+            
+            if (popup.classList.contains('reading-mode')) {
+                btn.classList.add('active-read');
+            } else {
+                btn.classList.remove('active-read');
+            }
+        }
 
         window.updateWordCount = function() {
             const text = document.getElementById('inputContent').value;
@@ -613,13 +661,21 @@
         }
 
         window.handleTyping = function() { window.updateWordCount(); window.triggerAutoSave(); }
-
         window.saveScript = function(status) { window.performSave(status, false); window.closePopup(); }
 
-        window.toggleDropdown = function(id) {
+        // PERBAIKAN: Menambahkan Parameter 'event' dan 'stopPropagation'
+        window.toggleDropdown = function(event, id) {
+            event.stopPropagation();
             const target = document.getElementById(id);
-            if(!target.classList.contains('active')) target.classList.add('active');
-            else target.classList.remove('active');
+            const isCurrentlyActive = target.classList.contains('active');
+            
+            // Tutup semua menu yang mungkin terbuka
+            document.querySelectorAll('.dropdown-menu').forEach(m => m.classList.remove('active'));
+            
+            // Toggle menu yang diklik
+            if(!isCurrentlyActive) {
+                target.classList.add('active');
+            }
         }
 
         window.copyContent = function() {
@@ -660,7 +716,9 @@
 
         window.closeInfoModal = function() { document.getElementById('infoModal').classList.remove('active'); }
 
-        // FUNGSI INJECT DYNAMIC FILTERS KATEGORI LALU DIMASUKAN KE WADAH .filters-wrapper
+        // ==========================================
+        // RENDER UI & DATA LIST
+        // ==========================================
         function generateDynamicChannels(data) {
             const channels = [...new Set(data.map(item => item.channel).filter(c => c && c.trim() !== "Umum" && c.trim() !== ""))];
             let html = `
@@ -676,7 +734,6 @@
                 const isActive = window.currentFilter === ch ? 'active' : '';
                 html += `<button class="filter-btn ${isActive}" onclick="setFilter('${ch}')">📺 ${ch}</button>`;
             });
-            // Masukan seluruh susunan filter ke dalam div yang bisa menyusut
             document.getElementById('dynamicFilters').innerHTML = html;
         }
 
