@@ -167,7 +167,7 @@
         .popup-overlay.active { display: flex; }
         .editor-header { display: flex; justify-content: space-between; align-items: center; padding: 12px 16px; background: rgba(255, 255, 255, 0.85); backdrop-filter: blur(12px); border-bottom: 1px solid var(--border); position: sticky; top: 0; z-index: 10; transition: all 0.3s ease; }
         body.dark .editor-header { background: rgba(15, 23, 42, 0.85); }
-        .header-left, .header-right { display: flex; align-items: center; gap: 8px; }
+        .header-left, .header-right { display: flex; align-items: center; gap: 8px; transition: opacity 0.2s; }
         .save-indicator { font-size: 11px; font-weight: 700; color: var(--text-muted); background: var(--card-tint); padding: 4px 10px; border-radius: 8px; opacity: 0; transition: 0.2s; }
         .save-indicator.show { opacity: 1; }
         
@@ -196,7 +196,7 @@
         .btn-draft:hover { background: var(--card-tint); }
         .btn-done { background: var(--primary-grad); color: white; }
         
-        /* DROPDOWN MENU - Z-Index diperbaiki */
+        /* DROPDOWN MENU */
         .dropdown-wrap { position: relative; }
         .dropdown-menu { position: absolute; top: 40px; right: 0; background: var(--card-solid); border: 1px solid var(--border); border-radius: 16px; padding: 8px; display: none; flex-direction: column; gap: 4px; min-width: 180px; box-shadow: var(--shadow-flat); z-index: 1000; }
         .dropdown-menu.active { display: flex; }
@@ -206,14 +206,24 @@
         /* =========================================================
            TAMBAHAN CSS READING MODE (MODE FOKUS)
         ========================================================= */
+        #btnExitReadingMode { display: none; } /* Default sembunyikan panah */
+        
         .popup-overlay.reading-mode .editor-header {
             background: transparent;
             border-bottom-color: transparent;
         }
+        
+        /* TUKAR TOMBOL X DENGAN PANAH <- */
+        .popup-overlay.reading-mode #btnClosePopup { display: none; }
+        .popup-overlay.reading-mode #btnExitReadingMode { display: flex; font-size: 18px; font-weight: 800; }
+        
+        /* SEMBUNYIKAN ALAT EDITING (Header Kanan, Footer, dan Kategori) AGAR FOKUS */
+        .popup-overlay.reading-mode .header-right { display: none; }
         .popup-overlay.reading-mode .category-wrapper,
         .popup-overlay.reading-mode .editor-footer {
-            display: none; /* Menyembunyikan kategori dan footer */
+            display: none; 
         }
+        
         .popup-overlay.reading-mode .editor-body {
             max-width: 700px;
             padding-top: 40px;
@@ -296,9 +306,13 @@
     </div>
 
     <div class="popup-overlay" id="editorPopup">
+        
         <div class="editor-header">
             <div class="header-left">
-                <button class="btn-icon" onclick="closePopup()">✕</button>
+                <button class="btn-icon" id="btnClosePopup" onclick="closePopup()" title="Tutup">✕</button>
+                
+                <button class="btn-icon" id="btnExitReadingMode" onclick="toggleReadingMode()" title="Kembali ke Editor">←</button>
+                
                 <div class="save-indicator" id="saveIndicator">Menyimpan...</div>
             </div>
             <div class="header-right">
@@ -625,7 +639,6 @@
             window.renderList(); 
         }
 
-        // PERBAIKAN: Fungsi Pin dengan Feedback Visual Solid
         window.togglePin = function() { 
             window.currentPinned = !window.currentPinned; 
             updatePinButton(); 
@@ -641,7 +654,6 @@
             }
         }
 
-        // PERBAIKAN: Fungsi Mode Fokus / Reading Mode
         window.toggleReadingMode = function() { 
             const popup = document.getElementById('editorPopup');
             const btn = document.getElementById('btnReadingMode');
@@ -663,7 +675,6 @@
         window.handleTyping = function() { window.updateWordCount(); window.triggerAutoSave(); }
         window.saveScript = function(status) { window.performSave(status, false); window.closePopup(); }
 
-        // PERBAIKAN: Menambahkan Parameter 'event' dan 'stopPropagation'
         window.toggleDropdown = function(event, id) {
             event.stopPropagation();
             const target = document.getElementById(id);
