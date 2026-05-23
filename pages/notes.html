@@ -331,7 +331,7 @@
             wrap.classList.add('searching');
             
             // Update lebar pencarian
-            searchBox.style.width = wrap.clientWidth + 'px';
+            searchBox.style.width = '100%';
             searchBox.classList.add('expanded');
             
             setTimeout(() => { document.getElementById('searchInput').focus(); }, 300);
@@ -362,15 +362,6 @@
                 if (!searchContainer.contains(e.target)) {
                     window.closeSearch();
                 }
-            }
-        });
-
-        // Responsif
-        window.addEventListener('resize', () => {
-            const searchBox = document.getElementById('searchContainer');
-            if(searchBox && searchBox.classList.contains('expanded')) {
-                const wrap = document.getElementById('filterWrap');
-                searchBox.style.width = wrap.clientWidth + 'px';
             }
         });
 
