@@ -15,7 +15,7 @@
         * { margin: 0; padding: 0; box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
         *::-webkit-scrollbar { display: none; }
         :root { --bg-grad: linear-gradient(180deg, #f8fbff 0%, #eef4ff 100%); --card-glass: rgba(255, 255, 255, 0.9); --card-solid: #ffffff; --card-tint: #f1f5f9; --border: #e2e8f0; --text-main: #0f172a; --text-muted: #64748b; --primary: #2563eb; --primary-grad: linear-gradient(135deg, #3b82f6, #2563eb); --primary-soft: rgba(37, 99, 235, 0.1); --success: #16a34a; --danger: #ef4444; --warning: #f59e0b; --shadow-flat: 0 4px 20px rgba(0, 0, 0, 0.04); --radius-btn: 14px; --radius-card: 24px; }
-        body.dark { --bg-grad: linear-gradient(180deg, #0f172a 0%, #1e293b 100%); --card-glass: rgba(30, 41, 59, 0.9); --card-solid: #1e293b; --card-tint: #0f172a; --border: #334155; --text-main: #f8fafc; --text-muted: #94a3b8; --primary-soft: rgba(59, 130, 246, 0.2); --shadow-flat: 0 4px 20px rgba(0, 0, 0, 0.2); }
+        body.dark { --bg-grad: linear-gradient(180deg, #0f172a 0%, #1e293b 100%); --card-glass: rgba(30, 41, 59, 0.9); --card-solid: #1e293b; --card-tint: #0f172a; --border: #334155; --text-main: #f8fafc; --text-muted: #94a3b8; --primary-soft: rgba(59, 130, 246, 0.2); --shadow-flat: 0 4px 20px rgba(0, 0, 0, 0.2); --danger-soft: rgba(239, 68, 68, 0.15); }
         body { font-family: 'Inter', system-ui, sans-serif; background: var(--bg-grad); color: var(--text-main); min-height: 100vh; padding: 86px 16px 100px; transition: background 0.3s, color 0.3s; }
         
         .bg-glow { position: fixed; border-radius: 50%; filter: blur(90px); z-index: 0; opacity: 0.5; pointer-events: none; }
@@ -42,12 +42,22 @@
         .board-card.pulihan-trash .trash-notice { font-size: 12px; color: var(--text-muted); font-weight: 600; margin-bottom: 16px; line-height: 1.5; background: var(--card-tint); padding: 12px; border-radius: 12px; border: 1px solid var(--border); }
         
         .board-top { display: flex; justify-content: space-between; align-items: center; gap: 10px; margin-bottom: 20px; }
-        .board-title { font-size: 16px; font-weight: 800; color: var(--text-main); display: flex; align-items: center; gap: 8px; }
-        .board-actions { display: flex; align-items: center; gap: 8px; }
+        .board-title { font-size: 16px; font-weight: 800; color: var(--text-main); display: flex; align-items: center; gap: 8px; flex: 1; word-break: break-word; }
+        .board-actions { display: flex; align-items: center; gap: 6px; }
         
         .counter { background: var(--primary-soft); color: var(--primary); padding: 6px 12px; border-radius: 20px; font-size: 12px; font-weight: 800; white-space: nowrap; border: 1px solid var(--border); }
-        .btn-del-board { background: rgba(239, 68, 68, 0.1); color: var(--danger); border: none; width: 32px; height: 32px; border-radius: 10px; display: flex; align-items: center; justify-content: center; cursor: pointer; transition: 0.2s; }
-        .btn-del-board:hover { background: var(--danger); color: white; }
+        
+        /* Dropdown Tiga Titik */
+        .dropdown-wrap { position: relative; }
+        .btn-dots { background: transparent; border: none; font-size: 20px; font-weight: 900; color: var(--text-muted); cursor: pointer; display: flex; align-items: center; justify-content: center; padding: 4px 8px; transition: 0.2s; border-radius: 10px; }
+        .btn-dots:hover { background: var(--card-tint); color: var(--text-main); }
+        
+        .dropdown-menu { position: absolute; top: 100%; right: 0; margin-top: 8px; background: var(--card-solid); border: 1px solid var(--border); border-radius: 14px; padding: 8px; display: none; flex-direction: column; gap: 2px; min-width: 170px; box-shadow: var(--shadow-flat); z-index: 100; }
+        .dropdown-menu.active { display: flex; }
+        .dropdown-menu button { background: transparent; border: none; padding: 10px 12px; border-radius: 10px; font-size: 13px; font-weight: 700; color: var(--text-main); text-align: left; cursor: pointer; transition: 0.2s; display: flex; align-items: center; gap: 10px; }
+        .dropdown-menu button:hover { background: var(--card-tint); }
+        .dropdown-menu button.danger { color: var(--danger); }
+        .dropdown-menu button.danger:hover { background: rgba(239, 68, 68, 0.1); }
         
         .form { display: flex; flex-direction: column; gap: 10px; margin-bottom: 20px; padding-bottom: 20px; border-bottom: 1px dashed var(--border); }
         .input-wrap { position: relative; }
@@ -88,6 +98,7 @@
         .empty-board { text-align: center; padding: 20px; font-size: 12px; font-weight: 600; color: var(--text-muted); }
         .empty-state-global { grid-column: 1 / -1; text-align: center; padding: 60px 20px; background: var(--card-glass); border: 1px dashed var(--border); border-radius: var(--radius-card); color: var(--text-muted); font-size: 14px; font-weight: 600; }
         
+        /* Modal Styles */
         .modal-overlay { position: fixed; inset: 0; background: rgba(0,0,0,0.4); backdrop-filter: blur(4px); z-index: 100000; display: none; align-items: center; justify-content: center; padding: 20px; }
         .modal-overlay.active { display: flex; }
         .modal-card { background: var(--card-solid); width: 100%; max-width: 360px; border-radius: var(--radius-card); padding: 24px; box-shadow: var(--shadow-flat); border: 1px solid var(--border); }
@@ -96,7 +107,6 @@
         .modal-input { width: 100%; padding: 14px 16px; border-radius: 14px; border: 1px solid var(--border); background: var(--card-tint); color: var(--text-main); font-size: 14px; font-weight: 600; outline: none; margin-bottom: 12px; transition: 0.2s; }
         .modal-input:focus { border-color: var(--primary); box-shadow: 0 0 0 3px var(--primary-soft); }
         
-        /* Dropdown Papan di Modal Edit */
         .modal-select { width: 100%; padding: 14px 16px; border-radius: 14px; border: 1px solid var(--border); background: var(--card-tint); color: var(--text-main); font-size: 14px; font-weight: 600; outline: none; margin-bottom: 12px; transition: 0.2s; appearance: none; }
         .modal-select:focus { border-color: var(--primary); box-shadow: 0 0 0 3px var(--primary-soft); }
         
@@ -107,6 +117,11 @@
         body.dark .btn-cancel:hover { background: #334155; }
         .btn-confirm { background: var(--primary-grad); color: white; }
         .btn-confirm:hover { opacity: 0.9; }
+
+        /* Styles for Info Modal */
+        .info-row { display: flex; justify-content: space-between; margin-bottom: 12px; font-size: 13px; }
+        .info-label { color: var(--text-muted); font-weight: 600; }
+        .info-value { font-weight: 800; color: var(--text-main); text-align: right; max-width: 60%; word-break: break-word;}
         
         @media(max-width: 600px) { .page-header { flex-direction: column; align-items: flex-start; } .btn-add-board { width: 100%; justify-content: center; } .board-container { grid-template-columns: 1fr; } }
     </style>
@@ -142,6 +157,29 @@
         </div>
     </div>
 
+    <div class="modal-overlay" id="editBoardModal">
+        <div class="modal-card">
+            <h3>Edit Judul Papan</h3>
+            <p>Ubah nama channel atau kategori papan ini.</p>
+            <input type="text" class="modal-input" id="editBoardNameInput" placeholder="Nama papan baru...">
+            <div class="modal-actions">
+                <button class="btn-modal btn-cancel" onclick="closeEditBoardModal()">Batal</button>
+                <button class="btn-modal btn-confirm" onclick="saveEditBoard()">Simpan Perubahan</button>
+            </div>
+        </div>
+    </div>
+
+    <div class="modal-overlay" id="infoBoardModal">
+        <div class="modal-card">
+            <h3 style="text-align: center; margin-bottom: 20px;">Informasi Papan</h3>
+            <div class="info-row"><span class="info-label">Judul Papan</span> <span class="info-value" id="infoBoardTitle">-</span></div>
+            <div class="info-row"><span class="info-label">Total Ide</span> <span class="info-value" id="infoBoardTotal">-</span></div>
+            <div class="info-row"><span class="info-label">Dibuat</span> <span class="info-value" id="infoBoardCreated">-</span></div>
+            <div class="info-row"><span class="info-label">Diperbarui</span> <span class="info-value" id="infoBoardUpdated">-</span></div>
+            <button class="btn-modal btn-cancel" style="width: 100%; margin-top: 16px;" onclick="closeInfoBoardModal()">Tutup</button>
+        </div>
+    </div>
+
     <div class="modal-overlay" id="editIdeaModal">
         <div class="modal-card">
             <h3>Edit Ide Konten</h3>
@@ -160,7 +198,7 @@
             <div class="input-wrap" style="margin-bottom:16px;">
                 <span>Papan</span>
                 <select id="editBoardSelect" class="modal-select" style="padding-left:80px; margin-bottom:0;">
-                    </select>
+                </select>
             </div>
             <div class="modal-actions">
                 <button class="btn-modal btn-cancel" onclick="closeEditModal()">Batal</button>
@@ -177,10 +215,18 @@
         window.boards = [];
         window.ideas = [];
         window.editCurrentId = null;
+        window.editBoardCurrentId = null; // Menyimpan ID papan yang sedang diedit
 
         let currentUserUid = null;
         let dbRef = null;
         let fsMod = null;
+
+        // Klik di luar dropdown untuk menutup semua dropdown
+        document.addEventListener('click', function(e) {
+            if (!e.target.closest('.dropdown-wrap')) {
+                document.querySelectorAll('.dropdown-menu').forEach(m => m.classList.remove('active'));
+            }
+        });
 
         document.addEventListener("DOMContentLoaded", () => {
             if (localStorage.getItem("dashboard_theme") === "dark") { document.body.classList.add("dark"); }
@@ -205,7 +251,7 @@
                 } else {
                     currentUserUid = "local_user";
                     window.boards = JSON.parse(localStorage.getItem("creative_planner_boards")) || [];
-                    window.ideas = JSON.parse(localStorage.getItem("creative_ideas")) || []; // Perbaikan nama lokal
+                    window.ideas = JSON.parse(localStorage.getItem("creative_ideas")) || []; 
                     window.renderWorkspace();
                 }
             }
@@ -228,29 +274,99 @@
                 const hasPulihanBoard = window.boards.some(b => b.id === pulihanBoardId);
                 
                 if (hasPulihanIdeas && !hasPulihanBoard) {
-                    window.boards.push({ id: pulihanBoardId, uid: currentUserUid, name: "Pulihan Trash", createdAt: Date.now() });
+                    window.boards.push({ id: pulihanBoardId, uid: currentUserUid, name: "Pulihan Trash", createdAt: Date.now(), updatedAt: Date.now() });
                 }
                 
                 window.renderWorkspace();
             } catch (e) { console.error(e); }
         }
 
+        // =====================================
+        // MANAJEMEN MODAL & DROPDOWN PAPAN
+        // =====================================
         window.openAddBoardModal = () => document.getElementById('addBoardModal').classList.add('active');
         window.closeAddBoardModal = () => document.getElementById('addBoardModal').classList.remove('active');
+        
         window.closeEditModal = () => document.getElementById('editIdeaModal').classList.remove('active');
+        
+        window.closeEditBoardModal = () => document.getElementById('editBoardModal').classList.remove('active');
+        window.closeInfoBoardModal = () => document.getElementById('infoBoardModal').classList.remove('active');
+
+        window.toggleBoardMenu = (boardId) => {
+            const menu = document.getElementById('menu_' + boardId);
+            const isCurrentlyActive = menu.classList.contains('active');
+            
+            // Tutup semua menu lain terlebih dahulu
+            document.querySelectorAll('.dropdown-menu').forEach(m => m.classList.remove('active'));
+            
+            if (!isCurrentlyActive) {
+                menu.classList.add('active');
+            }
+        };
+
+        window.openEditBoardModal = (boardId) => {
+            const board = window.boards.find(b => b.id === boardId);
+            if (!board) return;
+            window.editBoardCurrentId = boardId;
+            document.getElementById('editBoardNameInput').value = board.name;
+            document.getElementById('editBoardModal').classList.add('active');
+        }
+
+        window.saveEditBoard = async () => {
+            if (!window.editBoardCurrentId) return;
+            const newName = document.getElementById('editBoardNameInput').value.trim();
+            if (!newName) return alert("Judul papan tidak boleh kosong!");
+
+            const boardIndex = window.boards.findIndex(b => b.id === window.editBoardCurrentId);
+            if (boardIndex > -1) {
+                window.boards[boardIndex].name = newName;
+                window.boards[boardIndex].updatedAt = Date.now();
+                
+                window.renderWorkspace();
+                window.closeEditBoardModal();
+
+                if (USE_FIREBASE && fsMod) {
+                    await fsMod.setDoc(fsMod.doc(dbRef, "creative_planner_boards", window.editBoardCurrentId), window.boards[boardIndex], { merge: true });
+                } else {
+                    localStorage.setItem("creative_planner_boards", JSON.stringify(window.boards));
+                }
+            }
+        }
+
+        window.showBoardInfo = (boardId) => {
+            const board = window.boards.find(b => b.id === boardId);
+            if (!board) return;
+
+            const ideasInBoard = window.ideas.filter(i => i.boardId === boardId);
+            const formatDate = (ms) => ms ? new Date(ms).toLocaleDateString('id-ID', { day: 'numeric', month: 'long', year: 'numeric', hour: '2-digit', minute:'2-digit' }) : '-';
+
+            document.getElementById('infoBoardTitle').innerText = board.name;
+            document.getElementById('infoBoardTotal').innerText = `${ideasInBoard.length} Ide`;
+            document.getElementById('infoBoardCreated').innerText = formatDate(board.createdAt);
+            document.getElementById('infoBoardUpdated').innerText = formatDate(board.updatedAt || board.createdAt);
+            
+            document.getElementById('infoBoardModal').classList.add('active');
+        }
 
         window.confirmAddBoard = async () => {
             const boardName = document.getElementById('boardNameInput').value.trim();
             if(!boardName) return alert("Nama papan tidak boleh kosong!");
             const boardId = "board_" + Date.now();
-            const payload = { uid: currentUserUid, name: boardName, createdAt: Date.now() };
+            
+            // Tambahkan track updatedAt juga saat create
+            const payload = { uid: currentUserUid, name: boardName, createdAt: Date.now(), updatedAt: Date.now() };
             window.boards.push({ id: boardId, ...payload });
+            
             window.renderWorkspace();
             window.closeAddBoardModal();
+            
             if(USE_FIREBASE && fsMod) await fsMod.setDoc(fsMod.doc(dbRef, "creative_planner_boards", boardId), payload);
             else localStorage.setItem("creative_planner_boards", JSON.stringify(window.boards));
         }
 
+        // =====================================
+        // MANAJEMEN IDE KONTEN
+        // =====================================
         window.addIdea = async (boardId) => {
             const title = document.getElementById('title_'+boardId).value.trim();
             const date = document.getElementById('date_'+boardId).value.trim();
@@ -259,12 +375,24 @@
             const ideaId = "idea_" + Date.now();
             const payload = { boardId, uid: currentUserUid, title, date, link, done: false, createdAt: Date.now() };
             window.ideas.unshift({ id: ideaId, ...payload });
+            
+            // Perbarui updatedAt papan
+            const boardIndex = window.boards.findIndex(b => b.id === boardId);
+            if(boardIndex > -1) {
+                window.boards[boardIndex].updatedAt = Date.now();
+                if(USE_FIREBASE && fsMod) await fsMod.setDoc(fsMod.doc(dbRef, "creative_planner_boards", boardId), window.boards[boardIndex], { merge: true });
+            }
+
             window.renderWorkspace();
             document.getElementById('title_'+boardId).value = "";
             document.getElementById('date_'+boardId).value = "";
             document.getElementById('link_'+boardId).value = "";
+            
             if(USE_FIREBASE && fsMod) await fsMod.setDoc(fsMod.doc(dbRef, "creative_ideas", ideaId), payload);
-            else localStorage.setItem("creative_ideas", JSON.stringify(window.ideas));
+            else {
+                localStorage.setItem("creative_ideas", JSON.stringify(window.ideas));
+                localStorage.setItem("creative_planner_boards", JSON.stringify(window.boards));
+            }
         }
 
         window.deleteBoard = async (boardId) => {
@@ -320,7 +448,7 @@
             document.getElementById('editDateInput').value = idea.date === "Dipulihkan" ? "" : idea.date;
             document.getElementById('editLinkInput').value = idea.link === "-" ? "" : idea.link;
             
-            // Isi Opsi Papan (Sembunyikan papan pulihan)
+            // Isi Opsi Papan (Sembunyikan papan pulihan agar user dipaksa memindahkannya ke papan aktif)
             const selectEl = document.getElementById('editBoardSelect');
             selectEl.innerHTML = window.boards
                 .filter(b => !b.id.includes("board_pulihan")) 
@@ -347,8 +475,6 @@
             idea.title = document.getElementById('editTitleInput').value.trim();
             idea.date = document.getElementById('editDateInput').value.trim() || "-";
             idea.link = document.getElementById('editLinkInput').value.trim() || "-";
-            
-            // Pindahkan ide ke papan yang dipilih
             idea.boardId = targetBoardId;
             
             window.renderWorkspace();
@@ -357,7 +483,7 @@
             if(USE_FIREBASE && fsMod) await fsMod.setDoc(fsMod.doc(dbRef, "creative_ideas", idea.id), idea);
             else localStorage.setItem("creative_ideas", JSON.stringify(window.ideas));
             
-            // Cek apakah Papan Pulihan sudah kosong, jika ya, hapus papannya
+            // Hapus Papan Pulihan otomatis jika sudah kosong
             const pulihanBoardId = "board_pulihan_" + currentUserUid;
             const remainingPulihanIdeas = window.ideas.filter(i => i.boardId === pulihanBoardId).length;
             if (remainingPulihanIdeas === 0 && window.boards.some(b => b.id === pulihanBoardId)) {
@@ -401,7 +527,6 @@
                 const boardIcon = isPulihan ? "♻️" : "📺";
                 const ideasInBoard = window.ideas.filter(i => i.boardId === b.id);
                 
-                // Form input disembunyikan jika ini papan pulihan
                 const formHTML = isPulihan 
                     ? `<div class="trash-notice">Papan khusus penampungan. Ketik tombol ✏️ (Edit) untuk memindahkan ide ke papan asli Anda.</div>` 
                     : `<div class="form">
@@ -411,11 +536,27 @@
                         <button class="add-btn" onclick="addIdea('${b.id}')">+ Tambah Ide</button>
                     </div>`;
 
+                // Render Menu Tiga Titik Khusus Papan Normal
+                const threeDotsHTML = isPulihan ? 
+                    `<button class="btn-dots danger" onclick="deleteBoard('${b.id}')" title="Hapus Permanen">🗑</button>` :
+                    `<div class="dropdown-wrap">
+                        <button class="btn-dots" onclick="toggleBoardMenu('${b.id}')">⋮</button>
+                        <div class="dropdown-menu" id="menu_${b.id}">
+                            <button onclick="openEditBoardModal('${b.id}')">✏️ Edit Judul Papan</button>
+                            <button onclick="showBoardInfo('${b.id}')">ℹ️ Show Info</button>
+                            <div style="height: 1px; background: var(--border); margin: 4px 0;"></div>
+                            <button class="danger" onclick="deleteBoard('${b.id}')">🗑️ Hapus Papan</button>
+                        </div>
+                    </div>`;
+
                 return `
                 <div class="${boardClass}">
                     <div class="board-top">
                         <div class="board-title">${boardIcon} ${b.name}</div>
-                        <div class="board-actions"><div class="counter">${ideasInBoard.length} Ide</div><button class="btn-del-board" onclick="deleteBoard('${b.id}')" title="Hapus Papan">🗑</button></div>
+                        <div class="board-actions">
+                            <div class="counter">${ideasInBoard.length} Ide</div>
+                            ${threeDotsHTML}
+                        </div>
                     </div>
                     ${formHTML}
                     <div class="list">
