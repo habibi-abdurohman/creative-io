@@ -83,7 +83,6 @@
         }
         .sticky-tools-inner::-webkit-scrollbar { display: none; }
         
-        /* Ketika Search Aktif, gap dihilangkan dan scroll dikunci */
         .sticky-tools-inner.searching { gap: 0; overflow: hidden; }
 
         .search-expandable { 
@@ -114,13 +113,11 @@
         .close-search-btn:hover { color: var(--danger); }
         .search-expandable.expanded .close-search-btn { opacity: 1; pointer-events: auto; }
         
-        /* Container untuk Filter yang akan menyusut dan menghilang secara mulus */
         .filters-wrapper {
             display: flex; align-items: center; gap: 8px; 
             max-width: 2000px; opacity: 1; overflow: hidden;
             flex-shrink: 0; transition: max-width 0.3s cubic-bezier(0.4, 0, 0.2, 1), opacity 0.2s ease;
         }
-        /* State saat Search aktif: Filter menyusut ke 0px dan menghilang */
         .sticky-tools-inner.searching .filters-wrapper { max-width: 0; opacity: 0; transition: max-width 0.3s cubic-bezier(0.4, 0, 0.2, 1), opacity 0.1s ease; }
 
         .filter-btn { flex-shrink: 0; padding: 8px 14px; border-radius: 10px; background: var(--card-solid); border: 1px solid var(--border); font-size: 12px; font-weight: 700; color: var(--text-muted); cursor: pointer; transition: 0.2s; white-space: nowrap; }
@@ -152,11 +149,8 @@
         .badge.done { background: var(--success-soft); color: var(--success); border: none; }
         .card-actions { display: flex; gap: 8px; }
         
-        /* TOMBOL HEADER/AKSI */
         .btn-icon { width: 32px; height: 32px; border: 1px solid var(--border); border-radius: 10px; background: var(--card-solid); color: var(--text-main); display: flex; align-items: center; justify-content: center; font-size: 14px; cursor: pointer; transition: all 0.2s; }
         .btn-icon:hover { background: var(--card-tint); }
-        
-        /* CSS Khusus State Aktif Tombol Editor (Pin & Focus Mode) */
         .btn-icon.active-pin { background: var(--warning); border-color: var(--warning); color: white; }
         .btn-icon.active-read { background: var(--primary-soft); border-color: var(--primary); color: var(--primary); }
         
@@ -173,10 +167,11 @@
         
         .editor-body { flex: 1; overflow-y: auto; padding: 32px 24px 140px; max-width: 800px; margin: 0 auto; width: 100%; transition: padding 0.3s; }
         
-        /* Font size input-title dikembalikan ke aslinya: 28px */
+        /* PERBAIKAN: font-family: inherit agar kembali menggunakan font 'Inter' yang cantik */
         .input-title { 
+            font-family: inherit;
             width: 100%; border: none; outline: none; background: transparent; 
-            font-size: 28px; 
+            font-size: 24px; 
             font-weight: 900; color: var(--text-main); margin-bottom: 8px; 
             letter-spacing: -0.5px; transition: text-align 0.3s; 
             resize: none; overflow: hidden; line-height: 1.4;
@@ -204,7 +199,6 @@
         .btn-draft:hover { background: var(--card-tint); }
         .btn-done { background: var(--primary-grad); color: white; }
         
-        /* DROPDOWN MENU */
         .dropdown-wrap { position: relative; }
         .dropdown-menu { position: absolute; top: 40px; right: 0; background: var(--card-solid); border: 1px solid var(--border); border-radius: 16px; padding: 8px; display: none; flex-direction: column; gap: 4px; min-width: 180px; box-shadow: var(--shadow-flat); z-index: 1000; }
         .dropdown-menu.active { display: flex; }
@@ -214,18 +208,33 @@
         /* =========================================================
            TAMBAHAN CSS READING MODE (MODE FOKUS)
         ========================================================= */
-        #btnExitReadingMode { display: none; } /* Default sembunyikan panah */
+        #btnExitReadingMode { display: none; } 
         
         .popup-overlay.reading-mode .editor-header {
             background: transparent;
             border-bottom-color: transparent;
         }
         
-        /* TUKAR TOMBOL X DENGAN PANAH <- */
         .popup-overlay.reading-mode #btnClosePopup { display: none; }
-        .popup-overlay.reading-mode #btnExitReadingMode { display: flex; font-size: 18px; font-weight: 800; }
         
-        /* SEMBUNYIKAN ALAT EDITING (Header Kanan, Footer, dan Kategori) AGAR FOKUS */
+        /* PERBAIKAN: Tombol Arrow menjadi Floating Murni */
+        .popup-overlay.reading-mode #btnExitReadingMode { 
+            display: flex; 
+            font-size: 24px; 
+            font-weight: 800;
+            background: transparent;
+            border: none;
+            box-shadow: none;
+            color: var(--text-muted);
+            width: auto;
+            height: auto;
+            padding: 4px 8px;
+            margin-left: -8px; /* Menyesuaikan posisi agar presisi di pojok */
+        }
+        .popup-overlay.reading-mode #btnExitReadingMode:hover {
+            color: var(--text-main);
+        }
+        
         .popup-overlay.reading-mode .header-right { display: none; }
         .popup-overlay.reading-mode .category-wrapper,
         .popup-overlay.reading-mode .editor-footer {
@@ -237,10 +246,9 @@
             padding-top: 40px;
         }
         
-        /* Font size input-title di reading mode dikembalikan ke aslinya: 36px */
         .popup-overlay.reading-mode .input-title {
             text-align: center;
-            font-size: 36px;
+            font-size: 28px;
             margin-bottom: 24px;
         }
         .popup-overlay.reading-mode .input-content {
