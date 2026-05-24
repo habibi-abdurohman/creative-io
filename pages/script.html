@@ -185,7 +185,21 @@
         .suggest-item { padding: 10px 14px; border-radius: 8px; font-size: 13px; font-weight: 700; color: var(--text-main); cursor: pointer; transition: 0.2s; text-align: left; background: transparent; border: none; }
         .suggest-item:hover, .suggest-item.focused { background: var(--primary-soft); color: var(--primary); }
 
-        .input-content { width: 100%; min-height: 70vh; border: none; outline: none; resize: none; background: transparent; font-size: 16px; line-height: 1.8; color: rgba(15, 23, 42, 0.85); letter-spacing: 0.2px; font-family: inherit; }
+        /* PERBAIKAN: overflow: hidden ditambahkan agar tidak ada scroll internal pada textarea */
+        .input-content { 
+            width: 100%; 
+            min-height: 50vh; /* disesuaikan sedikit agar lebih responsif */
+            border: none; 
+            outline: none; 
+            resize: none; 
+            overflow: hidden; /* MENCEGAH SCROLL INTERNAL */
+            background: transparent; 
+            font-size: 16px; 
+            line-height: 1.8; 
+            color: rgba(15, 23, 42, 0.85); 
+            letter-spacing: 0.2px; 
+            font-family: inherit; 
+        }
         body.dark .input-content { color: rgba(248, 250, 252, 0.85); }
         .input-content::placeholder { color: var(--text-muted); opacity: 0.5; }
         
@@ -222,7 +236,7 @@
             cursor: pointer;
             box-shadow: var(--shadow-flat);
             z-index: 100000;
-            display: none; /* Sembunyi secara default */
+            display: none; 
             align-items: center;
             justify-content: center;
             transition: transform 0.2s ease, box-shadow 0.2s ease;
@@ -236,15 +250,9 @@
             box-shadow: 0 12px 30px rgba(0, 0, 0, 0.1);
         }
         
-        /* MENAMPILKAN FAB SAAT READING MODE AKTIF */
-        .popup-overlay.reading-mode .fab-back {
-            display: flex;
-        }
+        .popup-overlay.reading-mode .fab-back { display: flex; }
 
-        /* PERBAIKAN: MENGHILANGKAN HEADER SEPENUHNYA SAAT READING MODE */
-        .popup-overlay.reading-mode .editor-header {
-            display: none; /* Header hilang, jadi judul tidak terhalang atau terasa menyempit */
-        }
+        .popup-overlay.reading-mode .editor-header { display: none; }
         
         .popup-overlay.reading-mode .category-wrapper,
         .popup-overlay.reading-mode .editor-footer {
@@ -253,7 +261,6 @@
         
         .popup-overlay.reading-mode .editor-body {
             max-width: 700px;
-            /* Tambah padding agar judul tetap di bawah tombol FAB saat awal dibuka */
             padding-top: 100px; 
         }
         
@@ -289,7 +296,7 @@
             .btn-action { flex: 1; text-align: center; } 
             .word-count { width: 100%; text-align: left; } 
             .list-container { column-count: 1; }
-            .fab-back { top: 16px; left: 16px; width: 48px; height: 48px; } /* Sesuaikan di HP */
+            .fab-back { top: 16px; left: 16px; width: 48px; height: 48px; }
             .popup-overlay.reading-mode .editor-body { padding-top: 80px; }
         }
     </style>
@@ -348,7 +355,6 @@
         <div class="editor-header">
             <div class="header-left">
                 <button class="btn-icon" id="btnClosePopup" onclick="closePopup()" title="Tutup">✕</button>
-                
                 <div class="save-indicator" id="saveIndicator">Menyimpan...</div>
             </div>
             <div class="header-right">
@@ -375,7 +381,7 @@
                 <div class="suggest-dropdown" id="categorySuggestions"></div>
             </div>
             
-            <textarea id="inputContent" class="input-content" placeholder="Mulai menulis cerita Anda..." autocomplete="off" oninput="handleTyping()"></textarea>
+            <textarea id="inputContent" class="input-content" placeholder="Mulai menulis cerita Anda..." autocomplete="off" oninput="handleTyping(); autoResizeContent()"></textarea>
         </div>
         
         <div class="editor-footer">
@@ -540,12 +546,18 @@
         }
 
         // ==========================================
-        // FUNGSI AUTO RESIZE JUDUL TEXTAREA
+        // FUNGSI AUTO RESIZE JUDUL & KONTEN (SEAMLESS SCROLL)
         // ==========================================
         window.autoResizeTitle = function() {
             const titleEl = document.getElementById('inputTitle');
-            titleEl.style.height = 'auto'; // Reset dulu untuk hitung ulang tinggi
-            titleEl.style.height = titleEl.scrollHeight + 'px'; // Setel ke tinggi konten
+            titleEl.style.height = 'auto'; 
+            titleEl.style.height = titleEl.scrollHeight + 'px'; 
+        }
+
+        window.autoResizeContent = function() {
+            const contentEl = document.getElementById('inputContent');
+            contentEl.style.height = 'auto'; 
+            contentEl.style.height = contentEl.scrollHeight + 'px'; 
         }
 
         // ==========================================
@@ -664,8 +676,11 @@
                 document.getElementById('inputCategory').value = '';
             }
             
-            // Panggil fungsi auto-resize agar tinggi judul menyesuaikan teks bawaan secara instan
-            setTimeout(() => window.autoResizeTitle(), 10);
+            // Panggil fungsi auto-resize untuk judul & konten secara instan
+            setTimeout(() => {
+                window.autoResizeTitle();
+                window.autoResizeContent();
+            }, 10);
             
             // Matikan indikator dan mode fokus tiap kali membuka popup baru
             document.getElementById('saveIndicator').classList.remove('show');
@@ -713,8 +728,11 @@
                 btn.classList.remove('active-read');
             }
             
-            // Re-kalkulasi tinggi auto-resize karena ukuran font pada judul berubah
-            setTimeout(() => window.autoResizeTitle(), 10);
+            // Re-kalkulasi tinggi auto-resize judul & konten 
+            setTimeout(() => {
+                window.autoResizeTitle();
+                window.autoResizeContent();
+            }, 10);
         }
 
         window.updateWordCount = function() {
