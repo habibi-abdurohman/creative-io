@@ -176,7 +176,8 @@
         /* PERBAIKAN BODY: Ini adalah satu-satunya area yang bisa di-scroll */
         .editor-body { 
             flex: 1; overflow-y: auto; 
-            padding: 32px 24px 60px; /* Padding bawah dikurangi agar pas dan lebih presisi */
+            padding: 32px 24px 150px; /* REVISI: Padding bawah diperbesar drastis agar ada ruang ekstra untuk scrolling melewati keyboard/footer */
+            scroll-padding-bottom: 120px; /* REVISI: Memaksa browser selalu menjaga jarak pandang kursor jauh di atas batas bawah layar */
             max-width: 800px; margin: 0 auto; width: 100%; transition: padding 0.3s; 
         }
         
@@ -282,6 +283,8 @@
         .popup-overlay.reading-mode .editor-body {
             max-width: 700px;
             padding-top: 100px; 
+            padding-bottom: 150px; /* REVISI: Tambahan ruang bawah untuk mode baca */
+            scroll-padding-bottom: 80px; /* REVISI: Safety scroll kursor */
         }
         
         .popup-overlay.reading-mode .input-title {
@@ -567,17 +570,28 @@
 
         // ==========================================
         // FUNGSI AUTO RESIZE JUDUL & KONTEN (SEAMLESS SCROLL)
+        // REVISI: Menyimpan status scroll agar tidak ada lompatan brutal layar ke atas/bawah
         // ==========================================
         window.autoResizeTitle = function() {
             const titleEl = document.getElementById('inputTitle');
+            const parent = document.querySelector('.editor-body');
+            const scrollPos = parent.scrollTop; // Simpan posisi
+            
             titleEl.style.height = 'auto'; 
             titleEl.style.height = titleEl.scrollHeight + 'px'; 
+            
+            parent.scrollTop = scrollPos; // Kembalikan posisi
         }
 
         window.autoResizeContent = function() {
             const contentEl = document.getElementById('inputContent');
+            const parent = document.querySelector('.editor-body');
+            const scrollPos = parent.scrollTop; // Simpan posisi
+            
             contentEl.style.height = 'auto'; 
             contentEl.style.height = contentEl.scrollHeight + 'px'; 
+            
+            parent.scrollTop = scrollPos; // Kembalikan posisi
         }
 
         // ==========================================
