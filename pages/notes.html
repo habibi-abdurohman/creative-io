@@ -56,7 +56,7 @@
         }
 
         .search-expandable { 
-            flex-shrink: 0; /* Mencegah elemen memipih */
+            flex-shrink: 0; 
             display: flex; align-items: center; background: var(--card-solid); 
             border: 1px solid var(--border); border-radius: 12px; 
             height: 38px; width: 38px; overflow: hidden; 
@@ -90,10 +90,9 @@
             max-width: 1000px; 
             opacity: 1; 
             overflow: hidden;
-            flex-shrink: 0; /* INI KUNCINYA: Memaksa area filter agar tidak gepeng, sehingga memicu scroll */
+            flex-shrink: 0; 
             transition: max-width 0.3s cubic-bezier(0.4, 0, 0.2, 1), opacity 0.2s ease;
         }
-        /* State saat Search aktif: Filter menyusut ke 0px dan memudar */
         .sticky-tools-inner.searching .filters-wrapper {
             max-width: 0;
             opacity: 0;
@@ -143,29 +142,35 @@
         .icon-btn { width: 36px; height: 36px; border: none; border-radius: 12px; background: var(--card-solid); border: 1px solid var(--border); color: var(--text-main); cursor: pointer; font-size: 15px; display: flex; align-items: center; justify-content: center; transition: 0.2s; }
         .icon-btn:hover { background: var(--card-tint); }
         
-        /* PERBAIKAN BODY: Padding bottom ditambah & scroll-padding-bottom diatur */
+        /* PERBAIKAN BODY */
         .editor-body { 
             flex: 1; overflow-y: auto; 
-            padding: 40px 0 200px; /* REVISI: Area scroll dipanjangkan agar kursor tidak terhalang keyboard/footer */
-            scroll-padding-bottom: 120px; /* REVISI: Keamanan jarak gulir kursor */
+            padding: 40px 0 200px; 
+            scroll-padding-bottom: 120px; 
             background-image: linear-gradient(var(--paper-line) 1px, transparent 1px); background-size: 100% 32px; background-position: 0 8px; background-attachment: local; 
         }
-        .editor-container { max-width: 1000px; width: 100%; margin: 0 auto; position: relative; padding: 0 24px; display: flex; flex-direction: column; }
         
-        /* PERBAIKAN: Title Input diubah sifatnya menjadi textarea (overflow hidden) */
+        /* PERBAIKAN CONTAINER: Diubah menjadi block murni agar elemen tidak berebut tinggi */
+        .editor-container { 
+            max-width: 1000px; width: 100%; margin: 0 auto; position: relative; padding: 0 24px; 
+            display: block; /* Menghilangkan flex-direction: column */
+        }
+        
+        /* PERBAIKAN TITLE */
         .title-input { 
             width: 100%; border: none; outline: none; background: transparent; 
             font-size: 32px; font-weight: 900; color: var(--text-main); 
             margin-bottom: 24px; line-height: 1.3; 
-            resize: none; overflow: hidden; font-family: inherit; /* Menghilangkan scroll internal */
+            resize: none; overflow: hidden; 
         }
         
-        /* PERBAIKAN: Content Input (overflow hidden) */
+        /* PERBAIKAN CONTENT */
         .content-input { 
-            width: 100%; flex: 1; min-height: 70vh; border: none; outline: none; 
+            width: 100%; min-height: 70vh; border: none; outline: none; 
             resize: none; background: transparent; font-size: 16px; 
-            line-height: 32px; color: var(--text-main); font-family: inherit; 
+            line-height: 32px; color: var(--text-main); 
             overflow: hidden; /* Menghilangkan scroll internal */
+            display: block; /* Menghilangkan flex: 1 */
         }
         
         .title-input::placeholder, .content-input::placeholder { color: var(--text-muted); opacity: 0.6; }
@@ -337,37 +342,25 @@
             }
         }
 
-        // ==========================================
-        // HANDLER ANIMASI EXPANDABLE SEARCH (REPLACE)
-        // ==========================================
         window.openSearch = function(event) {
             if (event) event.stopPropagation();
-            
             const wrap = document.getElementById('filterWrap');
             const searchBox = document.getElementById('searchContainer');
             
-            // Auto-scroll ke paling kiri
             wrap.scrollTo({left: 0, behavior: 'smooth'}); 
-            
-            // CSS state searching
             wrap.classList.add('searching');
-            
-            // Update lebar pencarian
             searchBox.style.width = '100%';
             searchBox.classList.add('expanded');
-            
             setTimeout(() => { document.getElementById('searchInput').focus(); }, 300);
         }
 
         window.closeSearch = function(event) {
             if (event) event.stopPropagation();
-            
             const wrap = document.getElementById('filterWrap');
             const searchBox = document.getElementById('searchContainer');
             
             searchBox.style.width = '38px';
             searchBox.classList.remove('expanded');
-            
             wrap.classList.remove('searching');
             
             const input = document.getElementById('searchInput');
@@ -377,7 +370,6 @@
             }
         }
 
-        // Fitur: Klik Di Luar Search Bar untuk Menutup Otomatis
         document.addEventListener('click', function(e) {
             const searchContainer = document.getElementById('searchContainer');
             if (searchContainer && searchContainer.classList.contains('expanded')) {
@@ -389,33 +381,36 @@
 
         // ==========================================
         // FUNGSI AUTO RESIZE JUDUL & KONTEN (SEAMLESS SCROLL)
-        // REVISI: Menyimpan state posisi scroll container agar judul tidak snap ke atas.
+        // REVISI: Paksa scrollTop ke 0 agar teks tidak naik bersembunyi
         // ==========================================
         window.autoResizeTitle = function() {
             const el = document.getElementById('titleInput');
             const parent = document.querySelector('.editor-body');
-            const scrollPos = parent.scrollTop; // Simpan posisi
+            const scrollPos = parent.scrollTop; 
             
             el.style.height = 'auto'; 
             el.style.height = el.scrollHeight + 'px'; 
             
-            parent.scrollTop = scrollPos; // Kembalikan posisi
+            // KUNCI PERBAIKAN: Tarik paksa scroll internal ke posisi atas
+            el.scrollTop = 0; 
+            
+            parent.scrollTop = scrollPos; 
         }
 
         window.autoResizeContent = function() {
             const el = document.getElementById('contentInput');
             const parent = document.querySelector('.editor-body');
-            const scrollPos = parent.scrollTop; // Simpan posisi
+            const scrollPos = parent.scrollTop; 
             
             el.style.height = 'auto'; 
             el.style.height = el.scrollHeight + 'px'; 
             
-            parent.scrollTop = scrollPos; // Kembalikan posisi
+            // KUNCI PERBAIKAN: Tarik paksa scroll internal ke posisi atas
+            el.scrollTop = 0; 
+            
+            parent.scrollTop = scrollPos; 
         }
 
-        // ==========================================
-        // FUNGSI SIMPAN & UI APLIKASI
-        // ==========================================
         window.performSave = async function(isAuto = false) {
             const title = document.getElementById('titleInput').value.trim();
             const content = document.getElementById('contentInput').value;
@@ -520,7 +515,6 @@
                 document.getElementById('titleInput').value = ''; document.getElementById('contentInput').value = '';
             }
             
-            // Panggil fungsi auto-resize untuk judul & konten secara instan
             setTimeout(() => {
                 window.autoResizeTitle();
                 window.autoResizeContent();
