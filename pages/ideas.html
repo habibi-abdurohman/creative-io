@@ -33,7 +33,7 @@
         /* DESAIN PAPAN UTAMA (DASHBOARD) */
         .board-container { display: grid; grid-template-columns: repeat(auto-fill, minmax(320px, 1fr)); gap: 16px; align-items: start; }
         
-        .board-card { background: var(--card-glass); backdrop-filter: blur(12px); border: 1px solid var(--border); border-radius: 20px; padding: 20px 24px; box-shadow: var(--shadow-flat); display: flex; justify-content: space-between; align-items: center; transition: all 0.2s ease; cursor: pointer; position: relative; }
+        .board-card { background: var(--card-glass); backdrop-filter: blur(12px); border: 1px solid var(--border); border-radius: 20px; padding: 20px 24px; box-shadow: var(--shadow-flat); display: flex; justify-content: space-between; align-items: center; transition: all 0.2s ease; cursor: pointer; position: relative; z-index: 1; }
         .board-card:hover { border-color: var(--primary); background: var(--card-tint); transform: translateY(-3px); box-shadow: 0 12px 30px rgba(0, 0, 0, 0.08); }
         body.dark .board-card:hover { box-shadow: 0 12px 30px rgba(0, 0, 0, 0.3); }
         
@@ -43,8 +43,6 @@
         .board-card.pulihan-trash .counter { background: rgba(245, 158, 11, 0.15); color: var(--warning); border-color: rgba(245, 158, 11, 0.2); }
         
         .board-title { font-size: 16px; font-weight: 800; color: var(--text-main); display: flex; align-items: center; gap: 10px; flex: 1; word-break: break-word; pointer-events: none; }
-        .board-icon-arrow { color: var(--text-muted); font-size: 12px; transition: 0.2s; opacity: 0.5; }
-        .board-card:hover .board-icon-arrow { color: var(--primary); transform: translateX(3px); opacity: 1; }
         
         .board-actions { display: flex; align-items: center; gap: 8px; z-index: 10; }
         .counter { background: var(--primary-soft); color: var(--primary); padding: 6px 14px; border-radius: 20px; font-size: 12px; font-weight: 800; white-space: nowrap; border: 1px solid rgba(37, 99, 235, 0.1); }
@@ -65,23 +63,39 @@
         .empty-state-global { grid-column: 1 / -1; text-align: center; padding: 60px 20px; background: var(--card-glass); border: 1px dashed var(--border); border-radius: var(--radius-card); color: var(--text-muted); font-size: 14px; font-weight: 600; }
         
         /* =========================================================
-           POPUP / MODAL TAMPILAN PAPAN (BOARD VIEW)
+           POPUP FULLSCREEN PAPAN (BOARD VIEW)
         ========================================================= */
-        .board-view-overlay { position: fixed; inset: 0; background: rgba(0,0,0,0.5); backdrop-filter: blur(6px); -webkit-backdrop-filter: blur(6px); z-index: 99990; display: none; align-items: center; justify-content: center; padding: 24px; opacity: 0; transition: opacity 0.3s ease; }
-        .board-view-overlay.active { display: flex; opacity: 1; }
+        .board-view-overlay { position: fixed; inset: 0; z-index: 100000; display: none; opacity: 0; transition: opacity 0.3s ease; }
+        .board-view-overlay.active { display: block; opacity: 1; }
         
-        .board-view-card { background: var(--card-solid); width: 100%; max-width: 900px; height: 90vh; max-height: 850px; border-radius: 28px; border: 1px solid var(--border); box-shadow: 0 20px 60px rgba(0,0,0,0.15); display: flex; flex-direction: column; overflow: hidden; transform: translateY(20px); transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1); }
-        .board-view-overlay.active .board-view-card { transform: translateY(0); }
-        body.dark .board-view-card { box-shadow: 0 20px 60px rgba(0,0,0,0.5); }
+        .board-view-card { width: 100%; height: 100%; background: var(--bg-grad); display: flex; flex-direction: column; overflow: hidden; }
         
-        .board-view-header { display: flex; justify-content: space-between; align-items: center; padding: 20px 24px; background: var(--card-tint); border-bottom: 1px solid var(--border); flex-shrink: 0; }
-        .board-view-title { font-size: 20px; font-weight: 900; color: var(--text-main); display: flex; align-items: center; gap: 10px; }
-        .btn-close-board { width: 36px; height: 36px; border-radius: 12px; background: var(--card-solid); border: 1px solid var(--border); color: var(--text-main); font-size: 16px; font-weight: 900; cursor: pointer; display: flex; align-items: center; justify-content: center; transition: 0.2s; }
+        /* Header Popup (Identik dengan Navbar) */
+        .board-view-header { 
+            height: 52px; display: flex; justify-content: space-between; align-items: center; 
+            padding: 0 16px; background: rgba(255, 255, 255, 0.85); 
+            backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px); 
+            border-bottom: 1px solid var(--border); flex-shrink: 0; z-index: 20; 
+        }
+        body.dark .board-view-header { background: rgba(15, 23, 42, 0.85); border-bottom: 1px solid var(--border, #334155); }
+        
+        .board-view-title { font-size: 16px; font-weight: 800; color: var(--text-main); display: flex; align-items: center; gap: 8px; }
+        
+        .btn-close-board { 
+            width: 34px; height: 34px; border: 1px solid var(--border); 
+            background: var(--card-solid); color: var(--text-main); 
+            border-radius: 10px; font-size: 14px; font-weight: 900; 
+            cursor: pointer; display: flex; align-items: center; justify-content: center; transition: 0.2s; 
+        }
         .btn-close-board:hover { background: var(--danger); color: white; border-color: var(--danger); }
+        body.dark .btn-close-board { background: var(--card-solid, #1e293b); }
+        body.dark .btn-close-board:hover { background: var(--danger); }
+
+        /* Area Scroll (Form & Daftar) */
+        .board-view-scroll-area { flex: 1; overflow-y: auto; display: flex; flex-direction: column; position: relative; }
         
-        /* Form di dalam Popup Papan */
-        .board-view-form-area { padding: 20px 24px; background: var(--card-solid); border-bottom: 1px solid var(--border); flex-shrink: 0; z-index: 5; box-shadow: 0 4px 20px rgba(0,0,0,0.02); }
-        .board-form-grid { display: grid; grid-template-columns: 1fr 1fr 1.5fr auto; gap: 12px; align-items: center; }
+        .board-view-form-area { padding: 20px 24px; background: var(--card-solid); border-bottom: 1px solid var(--border); flex-shrink: 0; position: relative; }
+        body.dark .board-view-form-area { background: var(--card-solid, #1e293b); }
         
         .input-wrap { position: relative; }
         .input-wrap span { position: absolute; left: 14px; top: 50%; transform: translateY(-50%); font-size: 12px; font-weight: 800; color: var(--text-muted); pointer-events: none; }
@@ -93,9 +107,9 @@
         
         .trash-notice { font-size: 13px; color: var(--warning); font-weight: 700; line-height: 1.5; background: rgba(245, 158, 11, 0.1); padding: 16px 24px; border-bottom: 1px solid rgba(245, 158, 11, 0.2); flex-shrink: 0; text-align: center; }
         
-        /* Area Daftar Ide (Scrollable) */
-        .board-view-body { flex: 1; overflow-y: auto; padding: 24px; background: var(--bg-grad); }
+        .board-view-body { flex: 1; padding: 24px; }
         
+        /* Area Daftar Ide Khusus Desktop */
         .idea-item { background: var(--card-solid); border: 1px solid var(--border); border-radius: 16px; padding: 16px 20px; display: flex; align-items: center; justify-content: space-between; gap: 16px; margin-bottom: 12px; box-shadow: var(--shadow-flat); transition: 0.3s ease; }
         .idea-item:hover { border-color: #cbd5e1; transform: translateY(-2px); }
         
@@ -105,10 +119,12 @@
         .badge.restored { background: rgba(245, 158, 11, 0.1); color: var(--warning); border-color: rgba(245, 158, 11, 0.2); }
         
         .idea-middle { flex: 1.5; min-width: 0; display: flex; justify-content: flex-start; }
-        .link-box { display: inline-flex; align-items: center; gap: 6px; padding: 8px 14px; background: var(--primary-soft); color: var(--primary); text-decoration: none; border-radius: 12px; font-size: 12px; font-weight: 700; max-width: 100%; border: 1px dashed rgba(37, 99, 235, 0.3); transition: 0.2s; }
+        
+        /* Modifikasi Interaksi Link Box */
+        .link-box { display: inline-flex; align-items: center; gap: 6px; padding: 8px 14px; background: var(--primary-soft); color: var(--primary); border-radius: 12px; font-size: 12px; font-weight: 700; max-width: 100%; border: 1px dashed rgba(37, 99, 235, 0.3); transition: 0.2s; cursor: text; user-select: text; }
         .link-box:hover { background: rgba(37, 99, 235, 0.15); border-color: var(--primary); }
-        .link-box .icon { font-size: 14px; flex-shrink: 0; }
-        .link-box span.text { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; max-width: 250px; }
+        .link-box .icon { font-size: 14px; flex-shrink: 0; pointer-events: none; }
+        .link-box span.text { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; max-width: 250px; pointer-events: none; }
         
         .idea-right { display: flex; gap: 8px; flex-shrink: 0; }
         .btn-icon { width: 36px; height: 36px; border-radius: 10px; cursor: pointer; border: 1px solid var(--border); display: flex; align-items: center; justify-content: center; transition: 0.2s; background: var(--card-solid); font-size: 14px; color: var(--text-main); }
@@ -119,7 +135,6 @@
         .btn-del { color: var(--danger); }
         .btn-del:hover { background: var(--danger); color: white; border-color: var(--danger); }
         
-        /* Desain Untuk Ide Yang Sudah Selesai (Completed) */
         .idea-item.completed { opacity: 0.55; background: var(--card-tint); border-style: dashed; }
         .idea-item.completed:hover { opacity: 0.8; transform: none; }
         .idea-item.completed .idea-title { text-decoration: line-through; color: var(--text-muted); }
@@ -130,14 +145,13 @@
         /* =========================================================
            MODAL UMUM (ADD/EDIT/INFO)
         ========================================================= */
-        .modal-overlay { position: fixed; inset: 0; background: rgba(0,0,0,0.4); backdrop-filter: blur(4px); z-index: 100000; display: none; align-items: center; justify-content: center; padding: 20px; }
+        .modal-overlay { position: fixed; inset: 0; background: rgba(0,0,0,0.4); backdrop-filter: blur(4px); z-index: 100001; display: none; align-items: center; justify-content: center; padding: 20px; }
         .modal-overlay.active { display: flex; }
         .modal-card { background: var(--card-solid); width: 100%; max-width: 360px; border-radius: var(--radius-card); padding: 24px; box-shadow: var(--shadow-flat); border: 1px solid var(--border); }
         .modal-card h3 { font-size: 18px; font-weight: 900; margin-bottom: 8px; color: var(--text-main); }
         .modal-card p { font-size: 13px; color: var(--text-muted); margin-bottom: 20px; line-height: 1.5; }
         .modal-input { width: 100%; padding: 14px 16px; border-radius: 14px; border: 1px solid var(--border); background: var(--card-tint); color: var(--text-main); font-size: 14px; font-weight: 600; outline: none; margin-bottom: 12px; transition: 0.2s; }
         .modal-input:focus { border-color: var(--primary); box-shadow: 0 0 0 3px var(--primary-soft); }
-        
         .modal-select { width: 100%; padding: 14px 16px; border-radius: 14px; border: 1px solid var(--border); background: var(--card-tint); color: var(--text-main); font-size: 14px; font-weight: 600; outline: none; margin-bottom: 12px; transition: 0.2s; appearance: none; }
         .modal-select:focus { border-color: var(--primary); box-shadow: 0 0 0 3px var(--primary-soft); }
         
@@ -154,30 +168,35 @@
         .info-value { font-weight: 800; color: var(--text-main); text-align: right; max-width: 60%; word-break: break-word;}
         
         /* =========================================================
-           RESPONSIVITAS MEDIA QUERY
+           RESPONSIVITAS GRID FORM & IDEAS
         ========================================================= */
-        @media(max-width: 1024px) {
-            .board-form-grid { grid-template-columns: 1fr 1fr; }
-            .board-form-grid .add-btn { grid-column: 1 / -1; }
+        /* LAPTOP: Form Sticky dan Horizontal */
+        @media(min-width: 1025px) {
+            .board-view-form-area { position: sticky; top: 0; z-index: 10; box-shadow: 0 4px 20px rgba(0,0,0,0.05); }
+            .board-form-grid { display: grid; grid-template-columns: 1fr 1fr 1.5fr auto; gap: 12px; align-items: center; }
         }
+        
+        /* TABLET: Form Scroll (Not Sticky) dengan Layout Proporsional (2x2 Grid) */
+        @media(max-width: 1024px) and (min-width: 769px) {
+            .board-form-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+        }
+        
+        /* MOBILE: Form Scroll & Layout Ide Vertikal Optimal */
         @media(max-width: 768px) {
-            .idea-item { flex-direction: column; align-items: stretch; padding: 16px; }
-            .idea-left { flex-direction: row; justify-content: space-between; align-items: center; margin-bottom: 4px; }
-            .idea-middle { margin-bottom: 12px; }
-            .link-box { width: 100%; justify-content: center; }
-            .link-box span.text { max-width: 80%; }
-            .idea-right { justify-content: flex-end; border-top: 1px dashed var(--border); padding-top: 12px; }
-        }
-        @media(max-width: 600px) { 
-            .page-header { flex-direction: column; align-items: flex-start; } 
-            .btn-add-board { width: 100%; justify-content: center; } 
-            .board-container { grid-template-columns: 1fr; } 
-            
-            /* Ubah Popup Board Menjadi Fullscreen / Bottom Sheet di HP */
-            .board-view-overlay { padding: 0; align-items: flex-end; }
-            .board-view-card { height: 95vh; max-height: none; border-radius: 28px 28px 0 0; border-bottom: none; }
-            .board-form-grid { grid-template-columns: 1fr; }
+            .board-form-grid { display: grid; grid-template-columns: 1fr; gap: 12px; }
             .board-view-body { padding: 16px; }
+            
+            /* Menata Kartu Ide Untuk Mobile */
+            .idea-item { display: block; position: relative; padding: 16px; }
+            .idea-left { display: block; padding-right: 110px; margin-bottom: 12px; }
+            .idea-title { margin-bottom: 8px; }
+            .badge { margin-bottom: 0; display: inline-flex; }
+            
+            .idea-right { position: absolute; top: 16px; right: 16px; display: flex; gap: 6px; }
+            
+            .idea-middle { display: block; width: 100%; }
+            .link-box { width: 100%; justify-content: flex-start; }
+            .link-box span.text { max-width: calc(100vw - 80px); }
         }
     </style>
 </head>
@@ -202,26 +221,31 @@
 
     <div class="board-view-overlay" id="boardViewModal">
         <div class="board-view-card">
+            
             <div class="board-view-header">
                 <div class="board-view-title" id="bvTitle">📺 Nama Papan</div>
                 <button class="btn-close-board" onclick="closeBoardView()" title="Tutup">✕</button>
             </div>
             
-            <div class="board-view-form-area" id="bvFormArea">
-                <div class="board-form-grid">
-                    <div class="input-wrap"><span>Konten</span><input type="text" id="addIdeaTitle" placeholder="Judul ide..."></div>
-                    <div class="input-wrap"><span>Tanggal</span><input type="text" id="addIdeaDate" placeholder="Misal: 17 Agustus"></div>
-                    <div class="input-wrap"><span>Link</span><input type="url" id="addIdeaLink" placeholder="Tempel tautan..."></div>
-                    <button class="add-btn" onclick="addIdea()">+ Tambah Ide</button>
+            <div class="board-view-scroll-area">
+                
+                <div class="board-view-form-area" id="bvFormArea">
+                    <div class="board-form-grid">
+                        <div class="input-wrap"><span>Konten</span><input type="text" id="addIdeaTitle" placeholder="Judul ide..."></div>
+                        <div class="input-wrap"><span>Tanggal</span><input type="text" id="addIdeaDate" placeholder="Misal: 17 Agustus"></div>
+                        <div class="input-wrap"><span>Link</span><input type="url" id="addIdeaLink" placeholder="Tempel tautan..."></div>
+                        <button class="add-btn" onclick="addIdea()">+ Tambah Ide</button>
+                    </div>
                 </div>
-            </div>
-            
-            <div class="trash-notice" id="bvTrashNotice" style="display: none;">
-                Papan khusus penampungan. Ketik tombol ✏️ (Edit) untuk memindahkan ide ke papan asli Anda.
-            </div>
+                
+                <div class="trash-notice" id="bvTrashNotice" style="display: none;">
+                    Papan khusus penampungan. Ketik tombol ✏️ (Edit) untuk memindahkan ide ke papan asli Anda.
+                </div>
 
-            <div class="board-view-body" id="bvListArea">
-                </div>
+                <div class="board-view-body" id="bvListArea">
+                    </div>
+
+            </div>
         </div>
     </div>
 
@@ -260,7 +284,7 @@
         </div>
     </div>
 
-    <div class="modal-overlay" id="editIdeaModal" style="z-index: 100001;">
+    <div class="modal-overlay" id="editIdeaModal">
         <div class="modal-card">
             <h3>Edit Ide Konten</h3>
             <div class="input-wrap" style="margin-bottom:12px;">
@@ -296,16 +320,17 @@
         window.ideas = [];
         window.editCurrentId = null;
         window.editBoardCurrentId = null; 
-        window.currentViewBoardId = null; // Menyimpan ID Papan yang sedang dibuka di popup
+        window.currentViewBoardId = null;
 
         let currentUserUid = null;
         let dbRef = null;
         let fsMod = null;
 
-        // Tutup dropdown menu saat klik di luar
+        // Tutup dropdown menu & kembalikan Z-index jika klik di luar elemen
         document.addEventListener('click', function(e) {
             if (!e.target.closest('.dropdown-wrap')) {
                 document.querySelectorAll('.dropdown-menu').forEach(m => m.classList.remove('active'));
+                document.querySelectorAll('.board-card').forEach(c => c.style.zIndex = '1');
             }
         });
 
@@ -362,7 +387,7 @@
         }
 
         // =====================================
-        // MANAJEMEN POPUP BOARD VIEW
+        // MANAJEMEN POPUP BOARD VIEW FULLSCREEN
         // =====================================
         window.openBoardView = function(boardId) {
             window.currentViewBoardId = boardId;
@@ -380,7 +405,6 @@
             } else {
                 document.getElementById('bvFormArea').style.display = 'block';
                 document.getElementById('bvTrashNotice').style.display = 'none';
-                // Reset form inputs
                 document.getElementById('addIdeaTitle').value = "";
                 document.getElementById('addIdeaDate').value = "";
                 document.getElementById('addIdeaLink').value = "";
@@ -395,27 +419,21 @@
             document.getElementById('boardViewModal').classList.remove('active');
         }
 
-        // Helper untuk memformat URL dengan benar agar tidak terjadi error saat buka tab baru
-        function getValidUrl(url) {
-            if (!url || url === '-' || url.trim() === '') return '#';
-            let formattedUrl = url.trim();
-            if (!/^https?:\/\//i.test(formattedUrl) && !formattedUrl.startsWith('#')) {
-                formattedUrl = 'http://' + formattedUrl;
-            }
-            return formattedUrl;
+        // Helper seleksi blok teks untuk Link (Alur Manual)
+        window.selectText = (el) => {
+            const range = document.createRange(); 
+            range.selectNodeContents(el);
+            const sel = window.getSelection(); 
+            sel.removeAllRanges(); 
+            sel.addRange(range);
         }
 
         window.renderBoardViewContent = function() {
             if(!window.currentViewBoardId) return;
             const listArea = document.getElementById('bvListArea');
-            const isPulihan = window.currentViewBoardId.includes("board_pulihan");
             
-            // Filter ide berdasarkan papan yang sedang dibuka
             const ideasInBoard = window.ideas.filter(i => i.boardId === window.currentViewBoardId);
             
-            // Logika Penyortiran Cerdas: 
-            // 1. Ide yang belum selesai di atas, yang sudah selesai di bawah.
-            // 2. Jika status sama, urutkan dari yang terbaru ke terlama.
             ideasInBoard.sort((a, b) => {
                 if (a.done === b.done) return b.createdAt - a.createdAt;
                 return a.done ? 1 : -1;
@@ -431,9 +449,7 @@
                     ? `<div class="badge restored">♻️ Dipulihkan</div>` 
                     : `<div class="badge">📅 ${i.date}</div>`;
                 
-                const safeUrl = getValidUrl(i.link);
-                // Jika tidak ada link, jangan buat bisa diklik (kembalikan ke '#')
-                const linkAttr = safeUrl !== '#' ? `href="${safeUrl}" target="_blank"` : `href="javascript:void(0)"`;
+                const linkDisplay = (i.link === '-' || !i.link) ? 'Tidak ada tautan' : i.link;
                     
                 return `
                 <div class="idea-item ${i.done ? "completed" : ""}">
@@ -442,17 +458,17 @@
                         ${badgeHTML}
                     </div>
                     
-                    <div class="idea-middle">
-                        <a ${linkAttr} class="link-box" onclick="event.stopPropagation()">
-                            <span class="icon">🔗</span>
-                            <span class="text">${i.link === '-' || !i.link ? 'Tidak ada tautan' : i.link}</span>
-                        </a>
-                    </div>
-                    
                     <div class="idea-right">
                         <button class="btn-icon btn-edit" onclick="openEditModal('${i.id}')" title="Edit / Pindahkan">✏️</button>
                         <button class="btn-icon btn-done ${i.done ? "active" : ""}" onclick="toggleDone('${i.id}')" title="Tandai Selesai">✓</button>
                         <button class="btn-icon btn-del" onclick="deleteIdea('${i.id}')" title="Hapus">🗑</button>
+                    </div>
+
+                    <div class="idea-middle">
+                        <div class="link-box" onclick="event.stopPropagation(); selectText(this)" title="Klik untuk memblok link">
+                            <span class="icon">🔗</span>
+                            <span class="text">${linkDisplay}</span>
+                        </div>
                     </div>
                 </div>
                 `;
@@ -469,12 +485,19 @@
         window.closeEditBoardModal = () => document.getElementById('editBoardModal').classList.remove('active');
         window.closeInfoBoardModal = () => document.getElementById('infoBoardModal').classList.remove('active');
 
+        // Menampilkan Menu Tiga Titik & Mengelola Layer (Z-Index)
         window.toggleBoardMenu = (boardId) => {
             const menu = document.getElementById('menu_' + boardId);
+            const card = document.getElementById('board_card_' + boardId);
             const isCurrentlyActive = menu.classList.contains('active');
             
             document.querySelectorAll('.dropdown-menu').forEach(m => m.classList.remove('active'));
-            if (!isCurrentlyActive) menu.classList.add('active');
+            document.querySelectorAll('.board-card').forEach(c => c.style.zIndex = '1');
+            
+            if (!isCurrentlyActive) {
+                menu.classList.add('active');
+                if (card) card.style.zIndex = '50';
+            }
         };
 
         window.openEditBoardModal = (boardId) => {
@@ -497,7 +520,6 @@
                 
                 window.renderWorkspace();
                 
-                // Jika papan yang diedit sedang dibuka, perbarui judulnya di popup
                 if (window.currentViewBoardId === window.editBoardCurrentId) {
                     const boardIcon = window.editBoardCurrentId.includes("board_pulihan") ? "♻️" : "📺";
                     document.getElementById('bvTitle').innerHTML = `${boardIcon} ${newName}`;
@@ -538,7 +560,7 @@
             
             window.renderWorkspace();
             window.closeAddBoardModal();
-            document.getElementById('boardNameInput').value = ""; // Reset form
+            document.getElementById('boardNameInput').value = ""; 
             
             if(USE_FIREBASE && fsMod) await fsMod.setDoc(fsMod.doc(dbRef, "creative_planner_boards", boardId), payload);
             else localStorage.setItem("creative_planner_boards", JSON.stringify(window.boards));
@@ -567,11 +589,9 @@
                 if(USE_FIREBASE && fsMod) await fsMod.setDoc(fsMod.doc(dbRef, "creative_planner_boards", boardId), window.boards[boardIndex], { merge: true });
             }
 
-            // Update UI
-            window.renderWorkspace(); // Update dashboard count
-            window.renderBoardViewContent(); // Update the popup list
+            window.renderWorkspace(); 
+            window.renderBoardViewContent(); 
             
-            // Kosongkan form
             document.getElementById('addIdeaTitle').value = "";
             document.getElementById('addIdeaDate').value = "";
             document.getElementById('addIdeaLink').value = "";
@@ -674,13 +694,10 @@
             if(USE_FIREBASE && fsMod) await fsMod.setDoc(fsMod.doc(dbRef, "creative_ideas", idea.id), idea);
             else localStorage.setItem("creative_ideas", JSON.stringify(window.ideas));
             
-            // Hapus otomatis papan pulihan jika sudah kosong dipindahkan
             const pulihanBoardId = "board_pulihan_" + currentUserUid;
             const remainingPulihanIdeas = window.ideas.filter(i => i.boardId === pulihanBoardId).length;
             if (remainingPulihanIdeas === 0 && window.boards.some(b => b.id === pulihanBoardId)) {
                  window.boards = window.boards.filter(b => b.id !== pulihanBoardId);
-                 
-                 // Jika papan yang terhapus sedang dibuka, tutup panelnya
                  if (window.currentViewBoardId === pulihanBoardId) window.closeBoardView();
 
                  window.renderWorkspace();
@@ -735,9 +752,9 @@
                     </div>`;
 
                 return `
-                <div class="${boardClass}" onclick="openBoardView('${b.id}')">
+                <div class="${boardClass}" id="board_card_${b.id}" onclick="openBoardView('${b.id}')">
                     <div class="board-title">
-                        ${boardIcon} ${b.name} <span class="board-icon-arrow">➔</span>
+                        ${boardIcon} ${b.name}
                     </div>
                     <div class="board-actions">
                         <div class="counter">${ideasInBoard.length} Ide</div>
