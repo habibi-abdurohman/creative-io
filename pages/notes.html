@@ -49,7 +49,6 @@
         }
         .sticky-tools-inner::-webkit-scrollbar { display: none; }
         
-        /* Ketika Search Aktif, gap dihilangkan dan scroll dikunci */
         .sticky-tools-inner.searching {
             gap: 0;
             overflow: hidden; 
@@ -84,7 +83,6 @@
         .close-search-btn:hover { color: var(--danger); }
         .search-expandable.expanded .close-search-btn { opacity: 1; pointer-events: auto; }
         
-        /* Container untuk Filter (FIX SCROLL DI SINI) */
         .filters-wrapper {
             display: flex; align-items: center; gap: 8px; 
             max-width: 1000px; 
@@ -134,7 +132,6 @@
         .editor { position: fixed; inset: 0; background: var(--bg-grad); z-index: 99999; display: none; flex-direction: column; }
         .editor.active { display: flex; }
         
-        /* PERBAIKAN HEADER: Penyesuaian tinggi dan padding agar sama persis dengan navbar */
         .editor-header { 
             display: flex; justify-content: space-between; align-items: center; 
             height: 52px; padding: 0 16px; 
@@ -146,13 +143,13 @@
         .editor-left, .editor-right { display: flex; align-items: center; gap: 8px; }
         .auto-save { font-size: 11px; font-weight: 700; color: var(--text-muted); background: var(--card-tint); padding: 4px 10px; border-radius: 8px; opacity: 0; transition: 0.2s; }
         
-        /* PERBAIKAN ICON: Ukuran dan radius disamakan dengan navbar menu-btn */
         .icon-btn { 
             width: 34px; height: 34px; border: 1px solid var(--border); border-radius: 10px; 
             background: var(--card-solid); color: var(--text-main); cursor: pointer; 
-            font-size: 14px; display: flex; align-items: center; justify-content: center; transition: 0.2s; 
+            font-size: 15px; display: flex; align-items: center; justify-content: center; transition: 0.2s; 
         }
         .icon-btn:hover { background: var(--card-tint); }
+        .icon-btn.disabled { opacity: 0.35; pointer-events: none; }
         body.dark .icon-btn { border-color: var(--border, #334155); background: var(--card-solid, #1e293b); color: var(--text-main, #f8fafc); }
         
         /* PERBAIKAN BODY */
@@ -168,16 +165,14 @@
             display: block; 
         }
         
-        /* PERBAIKAN TITLE */
         .title-input { 
             width: 100%; border: none; outline: none; background: transparent; 
             font-size: 32px; font-weight: 900; color: var(--text-main); 
             margin-bottom: 24px; line-height: 1.3; 
             resize: none; overflow: hidden; 
-            font-family: inherit; 
+            font-family: 'Inter', system-ui, sans-serif;
         }
         
-        /* PERBAIKAN CONTENT */
         .content-input { 
             width: 100%; min-height: 70vh; border: none; outline: none; 
             resize: none; background: transparent; font-size: 16px; 
@@ -261,6 +256,12 @@
         <div class="editor-header">
             <div class="editor-left">
                 <button class="icon-btn" onclick="closeEditor()">✕</button>
+                <button class="icon-btn disabled" id="btnUndo" onclick="handleUndo()" title="Undo (Ctrl+Z)">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M3 7v6h6"></path><path d="M21 17a9 9 0 0 0-9-9 9 9 0 0 0-6 2.3L3 13"></path></svg>
+                </button>
+                <button class="icon-btn disabled" id="btnRedo" onclick="handleRedo()" title="Redo (Ctrl+Y)">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M21 7v6h-6"></path><path d="M3 17a9 9 0 0 1 9-9 9 9 0 0 1 6 2.3l3 2.7"></path></svg>
+                </button>
                 <div class="auto-save" id="autoSaveStatus">Tersimpan ✓</div>
             </div>
             <div class="editor-right">
@@ -273,9 +274,9 @@
 
         <div class="editor-body">
             <div class="editor-container">
-                <textarea id="titleInput" class="title-input" placeholder="Judul catatan..." rows="1" spellcheck="false" oninput="autoResizeTitle(); markAsEdited(); triggerAutoSave()" onkeydown="if(event.key==='Enter'){event.preventDefault(); document.getElementById('contentInput').focus();}"></textarea>
+                <textarea id="titleInput" class="title-input" placeholder="Judul catatan..." rows="1" spellcheck="false" oninput="autoResizeTitle(); markAsEdited(); triggerAutoSave(); triggerHistorySave()" onkeydown="if(event.key==='Enter'){event.preventDefault(); document.getElementById('contentInput').focus();}"></textarea>
                 
-                <textarea id="contentInput" class="content-input" placeholder="Mulai menulis secara leluasa..." oninput="autoResizeContent(); updateCounter(); markAsEdited(); triggerAutoSave();"></textarea>
+                <textarea id="contentInput" class="content-input" placeholder="Mulai menulis secara leluasa..." oninput="autoResizeContent(); updateCounter(); markAsEdited(); triggerAutoSave(); triggerHistorySave()"></textarea>
             </div>
         </div>
 
@@ -312,6 +313,12 @@
         
         let autoSaveTimeout = null;
         let currentUserUid = null;
+        
+        // VARIABEL STATE UNDO/REDO
+        window.historyStack = [];
+        window.historyIndex = -1;
+        let historyDebounceTimeout = null;
+        let isUndoingRedoing = false;
 
         const formatFullDate = (ms) => {
             if(!ms) return '';
@@ -416,6 +423,108 @@
             el.scrollTop = 0; 
             parent.scrollTop = scrollPos; 
         }
+        
+        // ==========================================
+        // FUNGSI UNDO & REDO HISTORY LOGIC
+        // ==========================================
+        window.updateUndoRedoButtons = function() {
+            const btnUndo = document.getElementById('btnUndo');
+            const btnRedo = document.getElementById('btnRedo');
+            
+            if (window.historyIndex > 0) btnUndo.classList.remove('disabled');
+            else btnUndo.classList.add('disabled');
+            
+            if (window.historyIndex < window.historyStack.length - 1) btnRedo.classList.remove('disabled');
+            else btnRedo.classList.add('disabled');
+        }
+
+        window.saveHistoryState = function() {
+            if (isUndoingRedoing) return; 
+            
+            const title = document.getElementById('titleInput').value;
+            const content = document.getElementById('contentInput').value;
+            const currentState = { title, content };
+            
+            if (window.historyIndex >= 0) {
+                const lastState = window.historyStack[window.historyIndex];
+                if (lastState.title === title && lastState.content === content) return;
+            }
+            
+            if (window.historyIndex < window.historyStack.length - 1) {
+                window.historyStack = window.historyStack.slice(0, window.historyIndex + 1);
+            }
+            
+            window.historyStack.push(currentState);
+            
+            if (window.historyStack.length > 50) {
+                window.historyStack.shift();
+            } else {
+                window.historyIndex++;
+            }
+            
+            window.updateUndoRedoButtons();
+        }
+
+        window.triggerHistorySave = function() {
+            clearTimeout(historyDebounceTimeout);
+            historyDebounceTimeout = setTimeout(() => {
+                window.saveHistoryState();
+            }, 800); 
+        }
+
+        window.handleUndo = function() {
+            if (window.historyIndex > 0) {
+                isUndoingRedoing = true;
+                window.historyIndex--;
+                const state = window.historyStack[window.historyIndex];
+                
+                document.getElementById('titleInput').value = state.title;
+                document.getElementById('contentInput').value = state.content;
+                
+                window.autoResizeTitle(); 
+                window.autoResizeContent(); 
+                window.updateCounter();
+                window.markAsEdited();
+                window.triggerAutoSave(); 
+                window.updateUndoRedoButtons();
+                
+                setTimeout(() => { isUndoingRedoing = false; }, 50);
+            }
+        }
+
+        window.handleRedo = function() {
+            if (window.historyIndex < window.historyStack.length - 1) {
+                isUndoingRedoing = true;
+                window.historyIndex++;
+                const state = window.historyStack[window.historyIndex];
+                
+                document.getElementById('titleInput').value = state.title;
+                document.getElementById('contentInput').value = state.content;
+                
+                window.autoResizeTitle(); 
+                window.autoResizeContent(); 
+                window.updateCounter();
+                window.markAsEdited();
+                window.triggerAutoSave(); 
+                window.updateUndoRedoButtons();
+                
+                setTimeout(() => { isUndoingRedoing = false; }, 50);
+            }
+        }
+
+        document.addEventListener('keydown', function(e) {
+            if (!document.getElementById('editor').classList.contains('active')) return;
+            
+            if ((e.ctrlKey || e.metaKey) && e.key.toLowerCase() === 'z') {
+                e.preventDefault();
+                if (e.shiftKey) { window.handleRedo(); } 
+                else { window.handleUndo(); }
+            }
+            if ((e.ctrlKey || e.metaKey) && e.key.toLowerCase() === 'y') {
+                e.preventDefault();
+                window.handleRedo();
+            }
+        });
 
         window.performSave = async function(isAuto = false) {
             const title = document.getElementById('titleInput').value.trim();
@@ -525,6 +634,14 @@
                 window.autoResizeTitle();
                 window.autoResizeContent();
             }, 10);
+            
+            // RESET & REKAM HISTORY AWAL SETIAP MEMBUKA EDITOR
+            window.historyStack = [];
+            window.historyIndex = -1;
+            window.updateUndoRedoButtons();
+            setTimeout(() => {
+                window.saveHistoryState();
+            }, 50);
             
             updatePin(); updateCounter();
         }
