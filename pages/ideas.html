@@ -47,13 +47,13 @@
         .board-actions { display: flex; align-items: center; gap: 8px; z-index: 10; }
         .counter { background: var(--primary-soft); color: var(--primary); padding: 6px 14px; border-radius: 20px; font-size: 12px; font-weight: 800; white-space: nowrap; border: 1px solid rgba(37, 99, 235, 0.1); }
         
-        /* Dropdown Tiga Titik */
+        /* Dropdown Tiga Titik (Z-index Fix) */
         .dropdown-wrap { position: relative; }
         .btn-dots { background: transparent; border: none; font-size: 20px; font-weight: 900; color: var(--text-muted); cursor: pointer; display: flex; align-items: center; justify-content: center; padding: 4px 8px; transition: 0.2s; border-radius: 10px; }
         .btn-dots:hover { background: rgba(0,0,0,0.05); color: var(--text-main); }
         body.dark .btn-dots:hover { background: rgba(255,255,255,0.1); }
         
-        .dropdown-menu { position: absolute; top: 100%; right: 0; margin-top: 8px; background: var(--card-solid); border: 1px solid var(--border); border-radius: 14px; padding: 8px; display: none; flex-direction: column; gap: 2px; min-width: 170px; box-shadow: var(--shadow-flat); z-index: 100; }
+        .dropdown-menu { position: absolute; top: 100%; right: 0; margin-top: 8px; background: var(--card-solid); border: 1px solid var(--border); border-radius: 14px; padding: 8px; display: none; flex-direction: column; gap: 2px; min-width: 170px; box-shadow: 0 10px 40px rgba(0,0,0,0.1); z-index: 1000; }
         .dropdown-menu.active { display: flex; }
         .dropdown-menu button { background: transparent; border: none; padding: 10px 12px; border-radius: 10px; font-size: 13px; font-weight: 700; color: var(--text-main); text-align: left; cursor: pointer; transition: 0.2s; display: flex; align-items: center; gap: 10px; }
         .dropdown-menu button:hover { background: var(--card-tint); }
@@ -109,7 +109,7 @@
         
         .board-view-body { flex: 1; padding: 24px; }
         
-        /* Area Daftar Ide Khusus Desktop */
+        /* Area Daftar Ide (Struktur Dasar Desktop & Tablet) */
         .idea-item { background: var(--card-solid); border: 1px solid var(--border); border-radius: 16px; padding: 16px 20px; display: flex; align-items: center; justify-content: space-between; gap: 16px; margin-bottom: 12px; box-shadow: var(--shadow-flat); transition: 0.3s ease; }
         .idea-item:hover { border-color: #cbd5e1; transform: translateY(-2px); }
         
@@ -120,13 +120,13 @@
         
         .idea-middle { flex: 1.5; min-width: 0; display: flex; justify-content: flex-start; }
         
-        /* Modifikasi Interaksi Link Box */
         .link-box { display: inline-flex; align-items: center; gap: 6px; padding: 8px 14px; background: var(--primary-soft); color: var(--primary); border-radius: 12px; font-size: 12px; font-weight: 700; max-width: 100%; border: 1px dashed rgba(37, 99, 235, 0.3); transition: 0.2s; cursor: text; user-select: text; }
         .link-box:hover { background: rgba(37, 99, 235, 0.15); border-color: var(--primary); }
         .link-box .icon { font-size: 14px; flex-shrink: 0; pointer-events: none; }
-        .link-box span.text { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; max-width: 250px; pointer-events: none; }
+        .link-box span.text { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; max-width: 250px; }
         
-        .idea-right { display: flex; gap: 8px; flex-shrink: 0; }
+        .idea-right { display: flex; gap: 8px; flex-shrink: 0; justify-content: flex-end; }
+        
         .btn-icon { width: 36px; height: 36px; border-radius: 10px; cursor: pointer; border: 1px solid var(--border); display: flex; align-items: center; justify-content: center; transition: 0.2s; background: var(--card-solid); font-size: 14px; color: var(--text-main); }
         .btn-edit { color: var(--text-muted); }
         .btn-edit:hover { background: var(--card-tint); color: var(--primary); border-color: var(--primary); }
@@ -168,35 +168,50 @@
         .info-value { font-weight: 800; color: var(--text-main); text-align: right; max-width: 60%; word-break: break-word;}
         
         /* =========================================================
-           RESPONSIVITAS GRID FORM & IDEAS
+           RESPONSIVITAS
         ========================================================= */
-        /* LAPTOP: Form Sticky dan Horizontal */
+        /* LAPTOP: Form Sticky */
         @media(min-width: 1025px) {
             .board-view-form-area { position: sticky; top: 0; z-index: 10; box-shadow: 0 4px 20px rgba(0,0,0,0.05); }
             .board-form-grid { display: grid; grid-template-columns: 1fr 1fr 1.5fr auto; gap: 12px; align-items: center; }
         }
         
-        /* TABLET: Form Scroll (Not Sticky) dengan Layout Proporsional (2x2 Grid) */
+        /* TABLET: Form Scroll (Not Sticky) */
         @media(max-width: 1024px) and (min-width: 769px) {
             .board-form-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
         }
         
-        /* MOBILE: Form Scroll & Layout Ide Vertikal Optimal */
+        /* MOBILE: Tampilan Spesifik Ponsel */
         @media(max-width: 768px) {
             .board-form-grid { display: grid; grid-template-columns: 1fr; gap: 12px; }
             .board-view-body { padding: 16px; }
             
-            /* Menata Kartu Ide Untuk Mobile */
+            /* Anti-Tabrak Judul (Padding khusus untuk ruang tombol) */
             .idea-item { display: block; position: relative; padding: 16px; }
-            .idea-left { display: block; padding-right: 110px; margin-bottom: 12px; }
+            .idea-left { display: block; padding-right: 135px; margin-bottom: 12px; }
             .idea-title { margin-bottom: 8px; }
             .badge { margin-bottom: 0; display: inline-flex; }
             
+            /* Tombol Aksi di Kanan Atas Mutlak */
             .idea-right { position: absolute; top: 16px; right: 16px; display: flex; gap: 6px; }
             
+            /* Kotak Link Full-Width di Bawah */
             .idea-middle { display: block; width: 100%; }
             .link-box { width: 100%; justify-content: flex-start; }
-            .link-box span.text { max-width: calc(100vw - 80px); }
+            .link-box span.text { max-width: calc(100vw - 70px); }
+        }
+
+        /* Perbaikan Tombol "Buat Papan Channel" Mobile */
+        @media(max-width: 600px) { 
+            .page-header { flex-direction: column; align-items: flex-start; } 
+            
+            /* Tombol lebih besar dan nyaman ditekan */
+            .btn-add-board { 
+                width: 100%; justify-content: center; 
+                padding: 16px 20px; font-size: 15px; border-radius: 16px; 
+            } 
+            
+            .board-container { grid-template-columns: 1fr; } 
         }
     </style>
 </head>
@@ -212,7 +227,7 @@
                 <p>Kumpulkan ide konten sosmed, simpan referensi tautan, dan kelola workflow Anda.</p>
             </div>
             <button class="btn-add-board" onclick="openAddBoardModal()">
-                <span style="font-size:16px;">+</span> Buat Papan Channel
+                <span style="font-size:18px; margin-right: 4px;">+</span> Buat Papan Channel
             </button>
         </div>
 
@@ -326,11 +341,13 @@
         let dbRef = null;
         let fsMod = null;
 
-        // Tutup dropdown menu & kembalikan Z-index jika klik di luar elemen
+        // Manajemen Z-index Dropdown agar tidak tertimpa
         document.addEventListener('click', function(e) {
             if (!e.target.closest('.dropdown-wrap')) {
                 document.querySelectorAll('.dropdown-menu').forEach(m => m.classList.remove('active'));
-                document.querySelectorAll('.board-card').forEach(c => c.style.zIndex = '1');
+                document.querySelectorAll('.board-card').forEach(c => {
+                    c.style.zIndex = '1'; 
+                });
             }
         });
 
@@ -419,10 +436,11 @@
             document.getElementById('boardViewModal').classList.remove('active');
         }
 
-        // Helper seleksi blok teks untuk Link (Alur Manual)
-        window.selectText = (el) => {
+        // Tweak Pemilihan Teks Link (Menghindari Ikon)
+        window.selectText = (container) => {
+            const textEl = container.querySelector('.text') || container;
             const range = document.createRange(); 
-            range.selectNodeContents(el);
+            range.selectNodeContents(textEl);
             const sel = window.getSelection(); 
             sel.removeAllRanges(); 
             sel.addRange(range);
@@ -451,6 +469,9 @@
                 
                 const linkDisplay = (i.link === '-' || !i.link) ? 'Tidak ada tautan' : i.link;
                     
+                // Susunan Elemen (Sesuai dengan Grid CSS Flexbox)
+                // Desktop: [Left(Judul)] - [Middle(Link)] - [Right(Tombol)]
+                // Mobile CSS akan mengatur ulang tampilannya secara otomatis
                 return `
                 <div class="idea-item ${i.done ? "completed" : ""}">
                     <div class="idea-left">
@@ -458,17 +479,17 @@
                         ${badgeHTML}
                     </div>
                     
-                    <div class="idea-right">
-                        <button class="btn-icon btn-edit" onclick="openEditModal('${i.id}')" title="Edit / Pindahkan">✏️</button>
-                        <button class="btn-icon btn-done ${i.done ? "active" : ""}" onclick="toggleDone('${i.id}')" title="Tandai Selesai">✓</button>
-                        <button class="btn-icon btn-del" onclick="deleteIdea('${i.id}')" title="Hapus">🗑</button>
-                    </div>
-
                     <div class="idea-middle">
                         <div class="link-box" onclick="event.stopPropagation(); selectText(this)" title="Klik untuk memblok link">
                             <span class="icon">🔗</span>
                             <span class="text">${linkDisplay}</span>
                         </div>
+                    </div>
+
+                    <div class="idea-right">
+                        <button class="btn-icon btn-edit" onclick="openEditModal('${i.id}')" title="Edit / Pindahkan">✏️</button>
+                        <button class="btn-icon btn-done ${i.done ? "active" : ""}" onclick="toggleDone('${i.id}')" title="Tandai Selesai">✓</button>
+                        <button class="btn-icon btn-del" onclick="deleteIdea('${i.id}')" title="Hapus">🗑</button>
                     </div>
                 </div>
                 `;
@@ -485,18 +506,21 @@
         window.closeEditBoardModal = () => document.getElementById('editBoardModal').classList.remove('active');
         window.closeInfoBoardModal = () => document.getElementById('infoBoardModal').classList.remove('active');
 
-        // Menampilkan Menu Tiga Titik & Mengelola Layer (Z-Index)
         window.toggleBoardMenu = (boardId) => {
             const menu = document.getElementById('menu_' + boardId);
             const card = document.getElementById('board_card_' + boardId);
             const isCurrentlyActive = menu.classList.contains('active');
             
             document.querySelectorAll('.dropdown-menu').forEach(m => m.classList.remove('active'));
-            document.querySelectorAll('.board-card').forEach(c => c.style.zIndex = '1');
+            document.querySelectorAll('.board-card').forEach(c => {
+                c.style.zIndex = '1'; 
+            });
             
             if (!isCurrentlyActive) {
                 menu.classList.add('active');
-                if (card) card.style.zIndex = '50';
+                if (card) {
+                    card.style.zIndex = '100'; // Menaikkan papan ke atas agar dropdown tidak tertimpa papan di bawahnya
+                }
             }
         };
 
