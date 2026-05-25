@@ -12,7 +12,7 @@
 
     <style>
         /* =========================================================
-           CSS UTAMA DAN EDITOR IMMERSIVE (100% UTUH)
+           CSS UTAMA DAN EDITOR IMMERSIVE
         ========================================================= */
         @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800;900&display=swap');
         * { margin: 0; padding: 0; box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
@@ -75,10 +75,12 @@
         }
         body.dark .sticky-tools { box-shadow: 0 12px 32px rgba(0, 0, 0, 0.4); }
         
+        /* PERBAIKAN: Penambahan transisi halus saat scroll manual dengan mouse */
         .sticky-tools-inner { 
             position: relative; display: flex; align-items: center; 
             height: 38px; gap: 8px; max-width: 100%; margin: 0 auto; 
             overflow-x: auto; scrollbar-width: none; transition: gap 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            user-select: none; /* Cegah teks filter tersorot saat di-drag */
         }
         .sticky-tools-inner::-webkit-scrollbar { display: none; }
         .sticky-tools-inner.searching { gap: 0; overflow: hidden; }
@@ -117,12 +119,12 @@
         }
         .sticky-tools-inner.searching .filters-wrapper { max-width: 0; opacity: 0; transition: max-width 0.3s cubic-bezier(0.4, 0, 0.2, 1), opacity 0.1s ease; }
 
-        .filter-btn { flex-shrink: 0; padding: 8px 14px; border-radius: 10px; background: var(--card-solid); border: 1px solid var(--border); font-size: 12px; font-weight: 700; color: var(--text-muted); cursor: pointer; transition: 0.2s; white-space: nowrap; }
+        .filter-btn { flex-shrink: 0; padding: 8px 14px; border-radius: 10px; background: var(--card-solid); border: 1px solid var(--border); font-size: 12px; font-weight: 700; color: var(--text-muted); cursor: pointer; transition: 0.2s; white-space: nowrap; pointer-events: auto; }
         .filter-btn.active { background: var(--primary-soft); border-color: var(--primary); color: var(--primary); }
         .divider { flex-shrink: 0; width: 1px; height: 18px; background: var(--border); margin: 0 2px; }
 
         /* =========================================================
-           UI KARTU & PAGINATION BARU
+           UI KARTU & PAGINATION
         ========================================================= */
         .list-container { column-count: 3; column-gap: 16px; margin-top: 10px; }
         
@@ -282,7 +284,7 @@
         .info-value { font-weight: 800; color: var(--text-main); text-align: right; max-width: 60%; word-break: break-word;}
         .btn-close-info { width: 100%; padding: 12px; margin-top: 20px; border: none; background: var(--card-tint); color: var(--text-main); font-weight: 800; border-radius: 12px; cursor: pointer; font-family: 'Inter', system-ui, sans-serif; }
         
-        /* BREAKPOINT RESPONSIF */
+        /* BREAKPOINT RESPONSIF (DINAMIS UNTUK PAGINATION) */
         @media(max-width: 1024px) { .list-container { column-count: 2; } }
         @media(max-width: 600px) { 
             .hero-card { padding: 28px 24px; border-radius: 20px; } 
@@ -427,9 +429,9 @@
         window.currentSort = 'newest';
         window.currentPinned = false;
         
-        // VARIABEL PAGINATION (16 ITEM/HALAMAN)
+        // VARIABEL PAGINATION DINAMIS
         window.currentPage = 1;
-        window.itemsPerPage = 16;
+        window.itemsPerPage = 12; // Akan langsung tertimpa oleh updateItemsPerPage()
         
         let autoSaveTimeout = null;
         let currentUserUid = null;
@@ -457,6 +459,54 @@
         document.addEventListener('DOMContentLoaded', () => {
             if (localStorage.getItem("dashboard_theme") === "dark") document.body.classList.add("dark");
 
+            // Atur jumlah item berdasarkan ukuran layar saat pertama kali muat
+            window.updateItemsPerPage();
+
+            // ==========================================
+            // FIX SCROLL FILTER UNTUK LAPTOP (DRAG & WHEEL)
+            // ==========================================
+            const filterWrap = document.getElementById('filterWrap');
+            if (filterWrap) {
+                let isDown = false;
+                let startX;
+                let scrollLeft;
+
+                filterWrap.addEventListener('mousedown', (e) => {
+                    // Abaikan klik pada input pencarian agar tetap bisa diisi teks
+                    if(e.target.tagName.toLowerCase() === 'input') return;
+                    isDown = true;
+                    filterWrap.style.cursor = 'grabbing';
+                    startX = e.pageX - filterWrap.offsetLeft;
+                    scrollLeft = filterWrap.scrollLeft;
+                });
+
+                filterWrap.addEventListener('mouseleave', () => {
+                    isDown = false;
+                    filterWrap.style.cursor = '';
+                });
+
+                filterWrap.addEventListener('mouseup', () => {
+                    isDown = false;
+                    filterWrap.style.cursor = '';
+                });
+
+                filterWrap.addEventListener('mousemove', (e) => {
+                    if (!isDown) return;
+                    e.preventDefault(); // Mencegah teks terblok saat dragging
+                    const x = e.pageX - filterWrap.offsetLeft;
+                    const walk = (x - startX) * 1.5; // Kecepatan geser 1.5x
+                    filterWrap.scrollLeft = scrollLeft - walk;
+                });
+
+                // Memungkinkan gulir horizontal menggunakan roda mouse (scroll wheel)
+                filterWrap.addEventListener('wheel', (e) => {
+                    if (e.deltaY !== 0) {
+                        e.preventDefault();
+                        filterWrap.scrollLeft += e.deltaY;
+                    }
+                }, { passive: false });
+            }
+
             if (USE_FIREBASE) {
                 onAuthStateChanged(auth, (user) => {
                     if (user) {
@@ -475,6 +525,26 @@
                     window.renderList();
                 }
             }
+        });
+
+        // Event listener cerdas untuk mereset jumlah pagination saat layar di-resize (misal tablet diputar)
+        window.updateItemsPerPage = function() {
+            const width = window.innerWidth;
+            let newLimit = 18; // Desktop (3 kolom)
+            if (width <= 600) newLimit = 12; // Ponsel (1 kolom)
+            else if (width <= 1024) newLimit = 16; // Tablet (2 kolom)
+
+            if (window.itemsPerPage !== newLimit) {
+                window.itemsPerPage = newLimit;
+                if (window.scriptData && window.scriptData.length > 0) {
+                    window.currentPage = 1;
+                    window.renderList();
+                }
+            }
+        }
+        window.addEventListener('resize', () => {
+            clearTimeout(window.resizeTimeout);
+            window.resizeTimeout = setTimeout(window.updateItemsPerPage, 200);
         });
 
         async function loadDataCloud() {
@@ -510,7 +580,7 @@
             const input = document.getElementById('searchInput');
             if (input.value !== '') {
                 input.value = '';
-                window.currentPage = 1; // Reset saat pencarian ditutup
+                window.currentPage = 1; 
                 window.renderList(); 
             }
         }
@@ -701,7 +771,7 @@
 
             window.scriptData.splice(itemIndex, 1);
             window.closePopup(); 
-            window.renderList(); // Render akan otomatis menyesuaikan currentPage jika halaman saat ini kosong
+            window.renderList(); 
 
             if (USE_FIREBASE) {
                 await setDoc(doc(db, "creative_trash", trashId), trashPayload);
@@ -716,13 +786,13 @@
 
         window.setFilter = function(type) { 
             window.currentFilter = type; 
-            window.currentPage = 1; // Wajib reset pagination
+            window.currentPage = 1; 
             window.renderList(); 
         }
         
         window.setSort = function(type) { 
             window.currentSort = type; 
-            window.currentPage = 1; // Wajib reset pagination
+            window.currentPage = 1; 
             window.renderList(); 
         }
 
@@ -851,20 +921,12 @@
             document.getElementById('dynamicFilters').innerHTML = html;
         }
 
-        // ==========================================
-        // FUNGSI GANTI HALAMAN (SMOOTH SCROLL)
-        // ==========================================
         window.changePage = function(page) {
             window.currentPage = page;
             window.renderList();
-            
-            // Menggulir mulus ke bagian atas halaman agar tidak tertinggal di bawah
             window.scrollTo({ top: 0, behavior: 'smooth' });
         }
 
-        // ==========================================
-        // FUNGSI RENDER TOMBOL PAGINATION
-        // ==========================================
         window.renderPagination = function(totalPages) {
             const container = document.getElementById('paginationContainer');
             if (totalPages <= 1) {
@@ -886,9 +948,6 @@
             container.innerHTML = html;
         }
 
-        // ==========================================
-        // RENDER UI & DATA LIST (DENGAN PAGINATION)
-        // ==========================================
         window.renderList = function() {
             const listContainer = document.getElementById('listContainer');
             const keyword = document.getElementById('searchInput').value.toLowerCase();
@@ -907,7 +966,6 @@
                 return window.currentSort === 'oldest' ? timeA - timeB : timeB - timeA; 
             });
 
-            // TAHAP 1: FILTERING
             data = data.filter(item => {
                 const title = item.title ? item.title.toLowerCase() : "";
                 const content = item.content ? item.content.toLowerCase() : "";
@@ -918,7 +976,6 @@
                 return match && item.channel === window.currentFilter;
             });
 
-            // TAHAP 2: KALKULASI PAGINATION (Mencegah Layar Blank Saat Data Terhapus)
             const totalItems = data.length;
             const totalPages = Math.ceil(totalItems / window.itemsPerPage);
             
@@ -934,7 +991,6 @@
                 return;
             }
             
-            // TAHAP 3: PEMOTONGAN DATA (SLICE)
             const startIndex = (window.currentPage - 1) * window.itemsPerPage;
             const endIndex = startIndex + window.itemsPerPage;
             const paginatedData = data.slice(startIndex, endIndex);
@@ -962,7 +1018,6 @@
             });
             listContainer.innerHTML = html;
             
-            // RENDER TOMBOL ANGKA
             window.renderPagination(totalPages);
         }
     </script>
