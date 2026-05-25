@@ -6,7 +6,6 @@
     <title>Creative.io - Workspace Modern</title>
     <link rel="icon" type="image/png" sizes="192x192" href="./assets/favicon-192x192.png">
     
-    <!-- Path relatif untuk GitHub Pages -->
     <link rel="manifest" href="./manifest.json">
     <meta name="theme-color" content="#2563eb">
     
@@ -109,13 +108,8 @@
                     
                     onAuthStateChanged(auth, (user) => {
                         if (user) {
-                            const btnMasuk = document.getElementById('btn-masuk');
-                            const btnDaftar = document.getElementById('btn-daftar');
-                            if (btnMasuk) {
-                                btnMasuk.innerText = 'Pergi ke Dashboard 🚀';
-                                btnMasuk.href = './pages/dashboard.html';
-                            }
-                            if (btnDaftar) btnDaftar.style.display = 'none';
+                            // REVISI: Langsung lempar ke dashboard tanpa mengubah tombol
+                            window.location.replace('./pages/dashboard.html');
                         }
                     });
                 } catch (err) {
@@ -123,12 +117,8 @@
                 }
             } else {
                 if (localStorage.getItem('dummy_logged_in') === 'true') {
-                    const btnMasuk = document.getElementById('btn-masuk');
-                    if (btnMasuk) {
-                        btnMasuk.innerText = 'Pergi ke Dashboard 🚀';
-                        btnMasuk.href = './pages/dashboard.html';
-                    }
-                    document.getElementById('btn-daftar').style.display = 'none';
+                    // REVISI: Langsung lempar ke dashboard untuk versi lokal
+                    window.location.replace('./pages/dashboard.html');
                 }
             }
         }
@@ -136,7 +126,6 @@
         document.addEventListener('DOMContentLoaded', initAuth);
     </script>
 
-    <!-- Script PWA -->
     <script src="./js/pwa.js"></script>
 </body>
 </html>
