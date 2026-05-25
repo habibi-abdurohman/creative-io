@@ -49,56 +49,100 @@
 
         @media(max-width: 1024px) { .hero-card { grid-template-columns: 1fr; } }
         @media(max-width: 768px) { .hero-title { font-size: 42px; } .btn-main { width: 100%; } }
+
+        /* =========================================================
+           PRE-LOADER & ANTI-FLASH (REVISI BARU)
+        ========================================================= */
+        #landing-content {
+            opacity: 0;
+            visibility: hidden;
+            transition: opacity 0.6s ease, visibility 0.6s ease;
+        }
+        #landing-content.show {
+            opacity: 1;
+            visibility: visible;
+        }
+        #initial-loader {
+            position: fixed; inset: 0; z-index: 99999;
+            background: linear-gradient(180deg, #f8fbff 0%, #eef4ff 100%);
+            display: flex; align-items: center; justify-content: center;
+            transition: opacity 0.4s ease, visibility 0.4s ease;
+        }
+        .spinner {
+            width: 46px; height: 46px;
+            border: 4px solid rgba(37, 99, 235, 0.15);
+            border-top-color: #2563eb; border-radius: 50%;
+            animation: spin 1s cubic-bezier(0.4, 0, 0.2, 1) infinite;
+        }
+        @keyframes spin { to { transform: rotate(360deg); } }
     </style>
 </head>
 <body>
 
-    <div class="bg-glow one"></div>
-    <div class="bg-glow two"></div>
+    <div id="initial-loader">
+        <div class="spinner"></div>
+    </div>
 
-    <section class="hero">
-        <div class="hero-card">
-            <div class="hero-left">
-                <div class="logo">
-                    <div class="logo-box">
-                        <img src="./assets/logo.png" alt="Creative.io">
+    <div id="landing-content">
+        <div class="bg-glow one"></div>
+        <div class="bg-glow two"></div>
+
+        <section class="hero">
+            <div class="hero-card">
+                <div class="hero-left">
+                    <div class="logo">
+                        <div class="logo-box">
+                            <img src="./assets/logo.png" alt="Creative.io">
+                        </div>
+                        <div class="logo-text">Creative<span>.io</span></div>
                     </div>
-                    <div class="logo-text">Creative<span>.io</span></div>
+                    <h1 class="hero-title">Workspace kreatif modern untuk produktivitas harian.</h1>
+                    <p class="hero-subtitle">Menulis naskah, menyusun bank ide konten, membuat catatan, dan menghitung keperluan finansial dalam satu workspace modern.</p>
+                    <div class="actions">
+                        <a href="./login.html" class="btn-main btn-primary" id="btn-masuk">Masuk Workspace</a>
+                        <a href="./register.html" class="btn-main btn-secondary" id="btn-daftar">Buat Akun Gratis</a>
+                    </div>
                 </div>
-                <h1 class="hero-title">Workspace kreatif modern untuk produktivitas harian.</h1>
-                <p class="hero-subtitle">Menulis naskah, menyusun bank ide konten, membuat catatan, dan menghitung keperluan finansial dalam satu workspace modern.</p>
-                <div class="actions">
-                    <a href="./login.html" class="btn-main btn-primary" id="btn-masuk">Masuk Workspace</a>
-                    <a href="./register.html" class="btn-main btn-secondary" id="btn-daftar">Buat Akun Gratis</a>
+                <div class="hero-right">
+                    <div class="mockup">
+                        <div class="mockup-header">
+                            <div class="mockup-title">Creative Workspace</div>
+                            <div class="mockup-dot"></div>
+                        </div>
+                        <div class="tool-list">
+                            <div class="tool-card">
+                                <div class="tool-name">Script Writer & Notes</div>
+                                <div class="tool-desc">Menyusun narasi draft panjang dan mengamankan catatan secara realtime.</div>
+                            </div>
+                            <div class="tool-card">
+                                <div class="tool-name">Idea Board</div>
+                                <div class="tool-desc">Menampung koleksi referensi media sosial dan jadwal workflow.</div>
+                            </div>
+                            <div class="tool-card">
+                                <div class="tool-name">Calculator Tools</div>
+                                <div class="tool-desc">Simulasi finansial dan perhitungan dengan UI modern.</div>
+                            </div>
+                        </div>
+                    </div>
                 </div>
             </div>
-            <div class="hero-right">
-                <div class="mockup">
-                    <div class="mockup-header">
-                        <div class="mockup-title">Creative Workspace</div>
-                        <div class="mockup-dot"></div>
-                    </div>
-                    <div class="tool-list">
-                        <div class="tool-card">
-                            <div class="tool-name">Script Writer & Notes</div>
-                            <div class="tool-desc">Menyusun narasi draft panjang dan mengamankan catatan secara realtime.</div>
-                        </div>
-                        <div class="tool-card">
-                            <div class="tool-name">Idea Board</div>
-                            <div class="tool-desc">Menampung koleksi referensi media sosial dan jadwal workflow.</div>
-                        </div>
-                        <div class="tool-card">
-                            <div class="tool-name">Calculator Tools</div>
-                            <div class="tool-desc">Simulasi finansial dan perhitungan dengan UI modern.</div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </section>
+        </section>
+    </div>
 
     <script type="module">
         const USE_FIREBASE = true;
+
+        // Fungsi untuk menampilkan index jika belum login
+        function showLandingPage() {
+            const loader = document.getElementById('initial-loader');
+            const content = document.getElementById('landing-content');
+            
+            loader.style.opacity = '0';
+            setTimeout(() => {
+                loader.style.visibility = 'hidden';
+                content.classList.add('show');
+            }, 400); // Tunggu transisi layar loading selesai
+        }
 
         async function initAuth() {
             if (USE_FIREBASE) {
@@ -108,17 +152,22 @@
                     
                     onAuthStateChanged(auth, (user) => {
                         if (user) {
-                            // REVISI: Langsung lempar ke dashboard tanpa mengubah tombol
+                            // Sudah masuk -> Redirect di belakang layar loading (bebas kilatan/FOUC)
                             window.location.replace('./pages/dashboard.html');
+                        } else {
+                            // Belum masuk -> Munculkan landing page
+                            showLandingPage();
                         }
                     });
                 } catch (err) {
                     console.warn("Firebase tidak dimuat:", err);
+                    showLandingPage();
                 }
             } else {
                 if (localStorage.getItem('dummy_logged_in') === 'true') {
-                    // REVISI: Langsung lempar ke dashboard untuk versi lokal
                     window.location.replace('./pages/dashboard.html');
+                } else {
+                    showLandingPage();
                 }
             }
         }
