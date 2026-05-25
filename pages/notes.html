@@ -32,7 +32,7 @@
         .total-badge { padding: 6px 14px; border-radius: 20px; background: var(--primary-soft); color: var(--primary); font-size: 12px; font-weight: 800; border: 1px solid var(--border); white-space: nowrap; }
         
         /* =========================================================
-           REVISI UI: SEARCH BAR MENGGANTIKAN FILTER + SCROLL FIX
+           UI SEARCH BAR DAN FILTER
         ========================================================= */
         .sticky-tools { 
             position: sticky; top: 76px; z-index: 50; padding: 10px 16px; margin: 16px 0 24px 0; 
@@ -42,28 +42,24 @@
         }
         body.dark .sticky-tools { box-shadow: 0 12px 32px rgba(0, 0, 0, 0.4); }
         
+        /* FIX DRAG SCROLL */
         .sticky-tools-inner { 
             position: relative; display: flex; align-items: center; 
             height: 38px; gap: 8px; max-width: 100%; margin: 0 auto; 
             overflow-x: auto; scrollbar-width: none; transition: gap 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            user-select: none; 
         }
         .sticky-tools-inner::-webkit-scrollbar { display: none; }
-        
-        .sticky-tools-inner.searching {
-            gap: 0;
-            overflow: hidden; 
-        }
+        .sticky-tools-inner.searching { gap: 0; overflow: hidden; }
 
         .search-expandable { 
-            flex-shrink: 0; 
-            display: flex; align-items: center; background: var(--card-solid); 
+            flex-shrink: 0; display: flex; align-items: center; background: var(--card-solid); 
             border: 1px solid var(--border); border-radius: 12px; 
             height: 38px; width: 38px; overflow: hidden; 
             transition: width 0.3s cubic-bezier(0.4, 0, 0.2, 1), border-color 0.3s, box-shadow 0.3s; 
             box-shadow: var(--shadow-flat);
         }
         body.dark .search-expandable { background: var(--card-solid); border-color: var(--border); }
-        
         .search-expandable.expanded { border-color: var(--primary); }
         body.dark .search-expandable.expanded { box-shadow: 0 4px 16px rgba(37, 99, 235, 0.25); border-color: var(--primary); }
         
@@ -85,22 +81,18 @@
         
         .filters-wrapper {
             display: flex; align-items: center; gap: 8px; 
-            max-width: 1000px; 
-            opacity: 1; 
-            overflow: hidden;
-            flex-shrink: 0; 
-            transition: max-width 0.3s cubic-bezier(0.4, 0, 0.2, 1), opacity 0.2s ease;
+            max-width: 1000px; opacity: 1; overflow: hidden;
+            flex-shrink: 0; transition: max-width 0.3s cubic-bezier(0.4, 0, 0.2, 1), opacity 0.2s ease;
         }
-        .sticky-tools-inner.searching .filters-wrapper {
-            max-width: 0;
-            opacity: 0;
-            transition: max-width 0.3s cubic-bezier(0.4, 0, 0.2, 1), opacity 0.1s ease;
-        }
+        .sticky-tools-inner.searching .filters-wrapper { max-width: 0; opacity: 0; transition: max-width 0.3s cubic-bezier(0.4, 0, 0.2, 1), opacity 0.1s ease; }
         
-        .filter-btn { flex-shrink: 0; padding: 8px 14px; border-radius: 10px; background: var(--card-solid); border: 1px solid var(--border); font-size: 12px; font-weight: 700; color: var(--text-muted); cursor: pointer; transition: 0.2s; white-space: nowrap; }
+        .filter-btn { flex-shrink: 0; padding: 8px 14px; border-radius: 10px; background: var(--card-solid); border: 1px solid var(--border); font-size: 12px; font-weight: 700; color: var(--text-muted); cursor: pointer; transition: 0.2s; white-space: nowrap; pointer-events: auto; }
         .filter-btn.active { background: var(--primary-soft); border-color: var(--primary); color: var(--primary); }
         .divider { flex-shrink: 0; width: 1px; height: 18px; background: var(--border); margin: 0 2px; }
         
+        /* =========================================================
+           UI KARTU NOTES & PAGINATION
+        ========================================================= */
         .notes-list { column-count: 4; column-gap: 16px; margin-top: 10px; }
         .empty-state { column-span: all; text-align: center; padding: 60px 20px; background: var(--card-glass); border: 1px dashed var(--border); border-radius: var(--radius-card); cursor: pointer; transition: 0.2s; }
         .empty-state:hover { background: var(--card-tint); }
@@ -126,6 +118,26 @@
         .btn-quick-del { border: none; background: transparent; color: var(--text-muted); font-size: 14px; cursor: pointer; padding: 4px; border-radius: 6px; transition: 0.2s; }
         .btn-quick-del:hover { background: rgba(239, 68, 68, 0.1); color: var(--danger); }
         
+        /* DESAIN PAGINATION */
+        .pagination-container {
+            display: flex; justify-content: center; align-items: center; gap: 8px;
+            margin-top: 32px; padding-bottom: 24px; flex-wrap: wrap; column-span: all;
+        }
+        .page-btn {
+            min-width: 38px; height: 38px; padding: 0 12px;
+            border-radius: 12px; border: 1px solid var(--border); background: var(--card-solid);
+            color: var(--text-main); font-size: 14px; font-weight: 700; cursor: pointer;
+            display: flex; justify-content: center; align-items: center; transition: all 0.2s;
+            font-family: 'Inter', system-ui, sans-serif;
+        }
+        .page-btn:hover:not(.disabled):not(.active) { background: var(--card-tint); }
+        .page-btn.active { background: var(--primary); color: white; border-color: var(--primary); box-shadow: 0 4px 12px rgba(37, 99, 235, 0.2); }
+        .page-btn.disabled { opacity: 0.4; pointer-events: none; }
+        .page-dots { color: var(--text-muted); font-weight: 700; padding: 0 4px; }
+        
+        body.dark .page-btn { background: var(--card-solid, #1e293b); border-color: var(--border, #334155); color: var(--text-main, #f8fafc); }
+        body.dark .page-btn.active { background: var(--primary); color: white; border-color: var(--primary); }
+
         .fab { position: fixed; right: 24px; bottom: 24px; width: 56px; height: 56px; border: none; border-radius: 20px; background: var(--primary); color: white; font-size: 28px; cursor: pointer; box-shadow: 0 10px 25px rgba(37, 99, 235, 0.3); z-index: 100; display: flex; align-items: center; justify-content: center; }
         
         /* EDITOR IMMERSIVE */
@@ -152,7 +164,6 @@
         .icon-btn.disabled { opacity: 0.35; pointer-events: none; }
         body.dark .icon-btn { border-color: var(--border, #334155); background: var(--card-solid, #1e293b); color: var(--text-main, #f8fafc); }
         
-        /* PERBAIKAN BODY */
         .editor-body { 
             flex: 1; overflow-y: auto; 
             padding: 40px 0 200px; 
@@ -199,6 +210,7 @@
         .info-value { font-weight: 800; text-align: right; }
         .close-info { width: 100%; height: 46px; border: none; margin-top: 20px; border-radius: 14px; background: var(--card-tint); color: var(--text-main); font-weight: 800; cursor: pointer; }
         
+        /* BREAKPOINT RESPONSIF */
         @media(max-width: 1024px) { .notes-list { column-count: 3; } }
         @media(max-width: 768px) { .notes-list { column-count: 2; } }
         @media(max-width: 480px) { 
@@ -230,7 +242,7 @@
                 
                 <div class="search-expandable" id="searchContainer">
                     <button class="search-icon-btn" onclick="openSearch(event)" title="Cari Catatan">🔍</button>
-                    <input type="text" id="searchInput" placeholder="Cari catatan..." oninput="window.renderNotes()">
+                    <input type="text" id="searchInput" placeholder="Cari catatan..." oninput="window.currentPage=1; window.renderNotes()">
                     <button class="close-search-btn" onclick="closeSearch(event)" title="Tutup Pencarian">✕</button>
                 </div>
                 
@@ -248,6 +260,8 @@
         <div class="notes-list" id="notesList">
             <div style="text-align: center; padding: 40px; color: var(--text-muted); column-span: all;">Memuat data...</div>
         </div>
+
+        <div id="paginationContainer" class="pagination-container"></div>
 
         <button class="fab" onclick="openEditor()">+</button>
     </div>
@@ -311,10 +325,13 @@
         window.currentPinned = false;
         window.isRestored = false; 
         
+        // VARIABEL PAGINATION DINAMIS
+        window.currentPage = 1;
+        window.itemsPerPage = 12;
+        
         let autoSaveTimeout = null;
         let currentUserUid = null;
         
-        // VARIABEL STATE UNDO/REDO
         window.historyStack = [];
         window.historyIndex = -1;
         let historyDebounceTimeout = null;
@@ -330,6 +347,53 @@
 
         document.addEventListener('DOMContentLoaded', () => {
             if (localStorage.getItem("dashboard_theme") === "dark") document.body.classList.add("dark");
+
+            // Atur Pagination Sesuai Layar Pertama Kali Muat
+            window.updateItemsPerPage();
+
+            // ==========================================
+            // FIX SCROLL FILTER UNTUK LAPTOP (DRAG & WHEEL)
+            // ==========================================
+            const filterWrap = document.getElementById('filterWrap');
+            if (filterWrap) {
+                let isDown = false;
+                let startX;
+                let scrollLeft;
+
+                filterWrap.addEventListener('mousedown', (e) => {
+                    if(e.target.tagName.toLowerCase() === 'input') return; // Abaikan klik di dalam input
+                    isDown = true;
+                    filterWrap.style.cursor = 'grabbing';
+                    startX = e.pageX - filterWrap.offsetLeft;
+                    scrollLeft = filterWrap.scrollLeft;
+                });
+
+                filterWrap.addEventListener('mouseleave', () => {
+                    isDown = false;
+                    filterWrap.style.cursor = '';
+                });
+
+                filterWrap.addEventListener('mouseup', () => {
+                    isDown = false;
+                    filterWrap.style.cursor = '';
+                });
+
+                filterWrap.addEventListener('mousemove', (e) => {
+                    if (!isDown) return;
+                    e.preventDefault(); 
+                    const x = e.pageX - filterWrap.offsetLeft;
+                    const walk = (x - startX) * 1.5; 
+                    filterWrap.scrollLeft = scrollLeft - walk;
+                });
+
+                // Dukungan Mouse Wheel Horizontal
+                filterWrap.addEventListener('wheel', (e) => {
+                    if (e.deltaY !== 0) {
+                        e.preventDefault();
+                        filterWrap.scrollLeft += e.deltaY;
+                    }
+                }, { passive: false });
+            }
 
             if (USE_FIREBASE) {
                 onAuthStateChanged(auth, (user) => {
@@ -349,6 +413,28 @@
                     window.renderNotes();
                 }
             }
+        });
+
+        // ==========================================
+        // PENENTUAN ITEMS PER PAGE OTOMATIS
+        // ==========================================
+        window.updateItemsPerPage = function() {
+            const width = window.innerWidth;
+            let newLimit = 18; // Desktop (3-4 kolom)
+            if (width <= 600) newLimit = 12; // Ponsel
+            else if (width <= 1024) newLimit = 16; // Tablet
+
+            if (window.itemsPerPage !== newLimit) {
+                window.itemsPerPage = newLimit;
+                if (window.notesData && window.notesData.length > 0) {
+                    window.currentPage = 1;
+                    window.renderNotes();
+                }
+            }
+        }
+        window.addEventListener('resize', () => {
+            clearTimeout(window.resizeTimeout);
+            window.resizeTimeout = setTimeout(window.updateItemsPerPage, 200);
         });
 
         async function loadDataFromCloud() {
@@ -387,6 +473,7 @@
             const input = document.getElementById('searchInput');
             if (input.value !== '') {
                 input.value = '';
+                window.currentPage = 1; // Wajib reset page
                 window.renderNotes(); 
             }
         }
@@ -404,10 +491,8 @@
             const el = document.getElementById('titleInput');
             const parent = document.querySelector('.editor-body');
             const scrollPos = parent.scrollTop; 
-            
             el.style.height = 'auto'; 
             el.style.height = el.scrollHeight + 'px'; 
-            
             el.scrollTop = 0; 
             parent.scrollTop = scrollPos; 
         }
@@ -416,21 +501,15 @@
             const el = document.getElementById('contentInput');
             const parent = document.querySelector('.editor-body');
             const scrollPos = parent.scrollTop; 
-            
             el.style.height = 'auto'; 
             el.style.height = el.scrollHeight + 'px'; 
-            
             el.scrollTop = 0; 
             parent.scrollTop = scrollPos; 
         }
         
-        // ==========================================
-        // FUNGSI UNDO & REDO HISTORY LOGIC
-        // ==========================================
         window.updateUndoRedoButtons = function() {
             const btnUndo = document.getElementById('btnUndo');
             const btnRedo = document.getElementById('btnRedo');
-            
             if (window.historyIndex > 0) btnUndo.classList.remove('disabled');
             else btnUndo.classList.add('disabled');
             
@@ -440,7 +519,6 @@
 
         window.saveHistoryState = function() {
             if (isUndoingRedoing) return; 
-            
             const title = document.getElementById('titleInput').value;
             const content = document.getElementById('contentInput').value;
             const currentState = { title, content };
@@ -449,27 +527,22 @@
                 const lastState = window.historyStack[window.historyIndex];
                 if (lastState.title === title && lastState.content === content) return;
             }
-            
             if (window.historyIndex < window.historyStack.length - 1) {
                 window.historyStack = window.historyStack.slice(0, window.historyIndex + 1);
             }
             
             window.historyStack.push(currentState);
-            
             if (window.historyStack.length > 50) {
                 window.historyStack.shift();
             } else {
                 window.historyIndex++;
             }
-            
             window.updateUndoRedoButtons();
         }
 
         window.triggerHistorySave = function() {
             clearTimeout(historyDebounceTimeout);
-            historyDebounceTimeout = setTimeout(() => {
-                window.saveHistoryState();
-            }, 800); 
+            historyDebounceTimeout = setTimeout(() => { window.saveHistoryState(); }, 800); 
         }
 
         window.handleUndo = function() {
@@ -477,17 +550,11 @@
                 isUndoingRedoing = true;
                 window.historyIndex--;
                 const state = window.historyStack[window.historyIndex];
-                
                 document.getElementById('titleInput').value = state.title;
                 document.getElementById('contentInput').value = state.content;
-                
-                window.autoResizeTitle(); 
-                window.autoResizeContent(); 
-                window.updateCounter();
-                window.markAsEdited();
-                window.triggerAutoSave(); 
-                window.updateUndoRedoButtons();
-                
+                window.autoResizeTitle(); window.autoResizeContent(); 
+                window.updateCounter(); window.markAsEdited();
+                window.triggerAutoSave(); window.updateUndoRedoButtons();
                 setTimeout(() => { isUndoingRedoing = false; }, 50);
             }
         }
@@ -497,51 +564,37 @@
                 isUndoingRedoing = true;
                 window.historyIndex++;
                 const state = window.historyStack[window.historyIndex];
-                
                 document.getElementById('titleInput').value = state.title;
                 document.getElementById('contentInput').value = state.content;
-                
-                window.autoResizeTitle(); 
-                window.autoResizeContent(); 
-                window.updateCounter();
-                window.markAsEdited();
-                window.triggerAutoSave(); 
-                window.updateUndoRedoButtons();
-                
+                window.autoResizeTitle(); window.autoResizeContent(); 
+                window.updateCounter(); window.markAsEdited();
+                window.triggerAutoSave(); window.updateUndoRedoButtons();
                 setTimeout(() => { isUndoingRedoing = false; }, 50);
             }
         }
 
         document.addEventListener('keydown', function(e) {
             if (!document.getElementById('editor').classList.contains('active')) return;
-            
             if ((e.ctrlKey || e.metaKey) && e.key.toLowerCase() === 'z') {
                 e.preventDefault();
-                if (e.shiftKey) { window.handleRedo(); } 
-                else { window.handleUndo(); }
+                if (e.shiftKey) { window.handleRedo(); } else { window.handleUndo(); }
             }
             if ((e.ctrlKey || e.metaKey) && e.key.toLowerCase() === 'y') {
-                e.preventDefault();
-                window.handleRedo();
+                e.preventDefault(); window.handleRedo();
             }
         });
 
         window.performSave = async function(isAuto = false) {
             const title = document.getElementById('titleInput').value.trim();
             const content = document.getElementById('contentInput').value;
-            
             if (title === '' && content.trim() === '') return;
             const now = Date.now();
             const docId = window.currentId || "qn_" + now;
             window.currentId = docId;
 
             const payload = {
-                uid: currentUserUid,
-                title: title || 'Tanpa Judul', 
-                content: content,
-                pinned: window.currentPinned, 
-                isRestored: window.isRestored,
-                updatedAt: now
+                uid: currentUserUid, title: title || 'Tanpa Judul', content: content,
+                pinned: window.currentPinned, isRestored: window.isRestored, updatedAt: now
             };
 
             const existingIndex = window.notesData.findIndex(x => x.id === docId);
@@ -556,8 +609,7 @@
             if(!isAuto) window.renderNotes();
 
             if (USE_FIREBASE) {
-                try { await setDoc(doc(db, "creative_notes_v2", docId), payload); } 
-                catch (e) { console.error("Gagal save cloud", e); }
+                try { await setDoc(doc(db, "creative_notes_v2", docId), payload); } catch (e) {}
             } else {
                 localStorage.setItem('creative_notes_v2', JSON.stringify(window.notesData));
             }
@@ -585,7 +637,7 @@
 
             window.notesData.splice(itemIndex, 1);
             window.closeEditor(); 
-            window.renderNotes();
+            window.renderNotes(); // Render otomatis menyesuaikan currentPage yang kosong
 
             if (USE_FIREBASE) {
                 await setDoc(doc(db, "creative_trash", trashId), trashPayload);
@@ -603,6 +655,7 @@
             document.getElementById('filterAll').classList.remove('active');
             document.getElementById('filterPinned').classList.remove('active');
             el.classList.add('active');
+            window.currentPage = 1; // Wajib reset page
             window.renderNotes(); 
         }
         
@@ -611,6 +664,7 @@
             document.getElementById('sortNewest').classList.remove('active');
             document.getElementById('sortOldest').classList.remove('active');
             document.getElementById(type === 'newest' ? 'sortNewest' : 'sortOldest').classList.add('active');
+            window.currentPage = 1; // Wajib reset page
             window.renderNotes(); 
         }
 
@@ -630,18 +684,10 @@
                 document.getElementById('titleInput').value = ''; document.getElementById('contentInput').value = '';
             }
             
-            setTimeout(() => {
-                window.autoResizeTitle();
-                window.autoResizeContent();
-            }, 10);
+            setTimeout(() => { window.autoResizeTitle(); window.autoResizeContent(); }, 10);
             
-            // RESET & REKAM HISTORY AWAL SETIAP MEMBUKA EDITOR
-            window.historyStack = [];
-            window.historyIndex = -1;
-            window.updateUndoRedoButtons();
-            setTimeout(() => {
-                window.saveHistoryState();
-            }, 50);
+            window.historyStack = []; window.historyIndex = -1; window.updateUndoRedoButtons();
+            setTimeout(() => { window.saveHistoryState(); }, 50);
             
             updatePin(); updateCounter();
         }
@@ -708,11 +754,48 @@
             document.getElementById('infoModal').style.display = 'flex';
         }
 
+        // ==========================================
+        // FUNGSI GANTI HALAMAN (SMOOTH SCROLL)
+        // ==========================================
+        window.changePage = function(page) {
+            window.currentPage = page;
+            window.renderNotes();
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        }
+
+        // ==========================================
+        // FUNGSI RENDER TOMBOL PAGINATION
+        // ==========================================
+        window.renderPagination = function(totalPages) {
+            const container = document.getElementById('paginationContainer');
+            if (totalPages <= 1) {
+                container.innerHTML = '';
+                return;
+            }
+
+            let html = `<button class="page-btn ${window.currentPage === 1 ? 'disabled' : ''}" onclick="changePage(${window.currentPage - 1})">❮</button>`;
+            
+            for (let i = 1; i <= totalPages; i++) {
+                if (i === 1 || i === totalPages || (i >= window.currentPage - 1 && i <= window.currentPage + 1)) {
+                    html += `<button class="page-btn ${i === window.currentPage ? 'active' : ''}" onclick="changePage(${i})">${i}</button>`;
+                } else if (i === window.currentPage - 2 || i === window.currentPage + 2) {
+                    html += `<span class="page-dots">...</span>`;
+                }
+            }
+            
+            html += `<button class="page-btn ${window.currentPage === totalPages ? 'disabled' : ''}" onclick="changePage(${window.currentPage + 1})">❯</button>`;
+            container.innerHTML = html;
+        }
+
+        // ==========================================
+        // RENDER UI & DATA LIST (DENGAN PAGINATION)
+        // ==========================================
         window.renderNotes = function() {
             const listContainer = document.getElementById('notesList');
             const keyword = document.getElementById('searchInput').value.toLowerCase();
             let data = [...window.notesData]; 
 
+            // TAHAP 1: FILTERING & SORTING
             if(window.currentFilter === 'pinned') data = data.filter(x => x.pinned);
 
             data.sort((a, b) => {
@@ -728,15 +811,32 @@
                 return title.includes(keyword) || content.includes(keyword);
             });
 
+            // Update Total Badge (Tampilkan Total Seluruh Data Hasil Filter)
             document.getElementById('totalBadge').innerText = `${data.length} Catatan`;
 
-            if (data.length === 0) {
+            // TAHAP 2: KALKULASI PAGINATION (Mencegah Layar Blank)
+            const totalItems = data.length;
+            const totalPages = Math.ceil(totalItems / window.itemsPerPage);
+            
+            if (totalPages > 0 && window.currentPage > totalPages) {
+                window.currentPage = totalPages;
+            } else if (totalPages === 0) {
+                window.currentPage = 1;
+            }
+
+            if (totalItems === 0) {
                 listContainer.innerHTML = `<div class="empty-state" onclick="openEditor()"><div class="empty-state-icon">📄</div><div class="empty-state-text">Belum ada catatan.<br>Ketuk di sini untuk menulis.</div></div>`;
+                document.getElementById('paginationContainer').innerHTML = '';
                 return;
             }
             
+            // TAHAP 3: PEMOTONGAN DATA (SLICE)
+            const startIndex = (window.currentPage - 1) * window.itemsPerPage;
+            const endIndex = startIndex + window.itemsPerPage;
+            const paginatedData = data.slice(startIndex, endIndex);
+
             let html = '';
-            data.forEach(item => {
+            paginatedData.forEach(item => {
                 const cardClass = `note-card ${item.pinned ? 'pinned' : ''} ${item.isRestored ? 'restored' : ''}`;
                 
                 html += `
@@ -756,6 +856,9 @@
                 </div>`;
             });
             listContainer.innerHTML = html;
+
+            // RENDER TOMBOL ANGKA
+            window.renderPagination(totalPages);
         }
     </script>
 </body>
