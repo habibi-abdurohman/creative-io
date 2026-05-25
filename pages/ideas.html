@@ -31,10 +31,13 @@
         .btn-add-board:hover { transform: translateY(-2px); box-shadow: 0 12px 30px rgba(37, 99, 235, 0.4); }
         
         .board-container { display: grid; grid-template-columns: repeat(auto-fill, minmax(320px, 1fr)); gap: 20px; align-items: start; }
+        
+        /* Modifikasi Board Card & Efek Collapse */
         .board-card { background: var(--card-glass); backdrop-filter: blur(12px); border: 1px solid var(--border); border-radius: var(--radius-card); padding: 20px; box-shadow: var(--shadow-flat); display: flex; flex-direction: column; transition: 0.2s; min-width: 0; }
         .board-card:hover { border-color: #cbd5e1; }
+        .board-content { transition: all 0.3s ease; }
+        .board-card.collapsed .board-content { display: none; }
         
-        /* DESAIN KHUSUS PAPAN PULIHAN TRASH */
         .board-card.pulihan-trash { background: rgba(245, 158, 11, 0.05); border: 1px dashed var(--warning); box-shadow: none; }
         body.dark .board-card.pulihan-trash { background: rgba(245, 158, 11, 0.05); border: 1px dashed rgba(245, 158, 11, 0.5); }
         .board-card.pulihan-trash .board-title { color: var(--warning); }
@@ -42,9 +45,14 @@
         .board-card.pulihan-trash .trash-notice { font-size: 12px; color: var(--text-muted); font-weight: 600; margin-bottom: 16px; line-height: 1.5; background: var(--card-tint); padding: 12px; border-radius: 12px; border: 1px solid var(--border); }
         
         .board-top { display: flex; justify-content: space-between; align-items: center; gap: 10px; margin-bottom: 20px; }
-        .board-title { font-size: 16px; font-weight: 800; color: var(--text-main); display: flex; align-items: center; gap: 8px; flex: 1; word-break: break-word; }
-        .board-actions { display: flex; align-items: center; gap: 6px; }
         
+        /* Modifikasi Area Judul Menjadi Tombol Klik (Fitts's Law) */
+        .board-title { font-size: 16px; font-weight: 800; color: var(--text-main); display: flex; align-items: center; gap: 8px; flex: 1; word-break: break-word; cursor: pointer; user-select: none; padding: 4px 0; transition: opacity 0.2s; }
+        .board-title:active { opacity: 0.6; }
+        .chevron-icon { font-size: 12px; color: var(--text-muted); transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1); display: flex; align-items: center; justify-content: center; }
+        .board-card.collapsed .chevron-icon { transform: rotate(-90deg); }
+        
+        .board-actions { display: flex; align-items: center; gap: 6px; }
         .counter { background: var(--primary-soft); color: var(--primary); padding: 6px 12px; border-radius: 20px; font-size: 12px; font-weight: 800; white-space: nowrap; border: 1px solid var(--border); }
         
         /* Dropdown Tiga Titik */
@@ -215,7 +223,7 @@
         window.boards = [];
         window.ideas = [];
         window.editCurrentId = null;
-        window.editBoardCurrentId = null; // Menyimpan ID papan yang sedang diedit
+        window.editBoardCurrentId = null; 
 
         let currentUserUid = null;
         let dbRef = null;
@@ -268,7 +276,6 @@
                 const snapI = await fsMod.getDocs(qI);
                 window.ideas = snapI.docs.map(doc => ({ id: doc.id, ...doc.data() }));
                 
-                // Pastikan papan "Pulihan Trash" ada JIKA ada ide yang terdampar di sana
                 const pulihanBoardId = "board_pulihan_" + currentUserUid;
                 const hasPulihanIdeas = window.ideas.some(i => i.boardId === pulihanBoardId);
                 const hasPulihanBoard = window.boards.some(b => b.id === pulihanBoardId);
@@ -279,6 +286,23 @@
                 
                 window.renderWorkspace();
             } catch (e) { console.error(e); }
+        }
+
+        // =====================================
+        // FUNGSI TOGGLE EXPAND / COLLAPSE PAPAN
+        // =====================================
+        window.toggleBoardState = function(boardId) {
+            const cardElement = document.getElementById('board_card_' + boardId);
+            if (!cardElement) return;
+
+            // Toggle CSS class
+            cardElement.classList.toggle('collapsed');
+            const isCollapsedNow = cardElement.classList.contains('collapsed');
+
+            // Simpan status terbaru ke LocalStorage memori (sangat ringan)
+            let memoryStates = JSON.parse(localStorage.getItem('creative_board_states')) || {};
+            memoryStates[boardId] = isCollapsedNow;
+            localStorage.setItem('creative_board_states', JSON.stringify(memoryStates));
         }
 
         // =====================================
@@ -296,12 +320,8 @@
             const menu = document.getElementById('menu_' + boardId);
             const isCurrentlyActive = menu.classList.contains('active');
             
-            // Tutup semua menu lain terlebih dahulu
             document.querySelectorAll('.dropdown-menu').forEach(m => m.classList.remove('active'));
-            
-            if (!isCurrentlyActive) {
-                menu.classList.add('active');
-            }
+            if (!isCurrentlyActive) menu.classList.add('active');
         };
 
         window.openEditBoardModal = (boardId) => {
@@ -353,7 +373,6 @@
             if(!boardName) return alert("Nama papan tidak boleh kosong!");
             const boardId = "board_" + Date.now();
             
-            // Tambahkan track updatedAt juga saat create
             const payload = { uid: currentUserUid, name: boardName, createdAt: Date.now(), updatedAt: Date.now() };
             window.boards.push({ id: boardId, ...payload });
             
@@ -376,17 +395,20 @@
             const payload = { boardId, uid: currentUserUid, title, date, link, done: false, createdAt: Date.now() };
             window.ideas.unshift({ id: ideaId, ...payload });
             
-            // Perbarui updatedAt papan
             const boardIndex = window.boards.findIndex(b => b.id === boardId);
             if(boardIndex > -1) {
                 window.boards[boardIndex].updatedAt = Date.now();
                 if(USE_FIREBASE && fsMod) await fsMod.setDoc(fsMod.doc(dbRef, "creative_planner_boards", boardId), window.boards[boardIndex], { merge: true });
             }
 
+            // Jika papan dalam keadaan tertutup (collapsed), otomatis buka papan tersebut saat ide baru ditambahkan
+            let memoryStates = JSON.parse(localStorage.getItem('creative_board_states')) || {};
+            if (memoryStates[boardId] === true) {
+                memoryStates[boardId] = false;
+                localStorage.setItem('creative_board_states', JSON.stringify(memoryStates));
+            }
+
             window.renderWorkspace();
-            document.getElementById('title_'+boardId).value = "";
-            document.getElementById('date_'+boardId).value = "";
-            document.getElementById('link_'+boardId).value = "";
             
             if(USE_FIREBASE && fsMod) await fsMod.setDoc(fsMod.doc(dbRef, "creative_ideas", ideaId), payload);
             else {
@@ -402,10 +424,15 @@
                 : "Hapus papan permanen beserta isinya?";
             if(!confirm(msg)) return;
             
-            // Hapus papan & ide dari UI
             window.boards = window.boards.filter(b => b.id !== boardId);
             const ideasToDelete = window.ideas.filter(i => i.boardId === boardId);
             window.ideas = window.ideas.filter(i => i.boardId !== boardId);
+            
+            // Hapus juga memori statenya agar cache tetap bersih
+            let memoryStates = JSON.parse(localStorage.getItem('creative_board_states')) || {};
+            delete memoryStates[boardId];
+            localStorage.setItem('creative_board_states', JSON.stringify(memoryStates));
+
             window.renderWorkspace();
             
             if(USE_FIREBASE && fsMod) {
@@ -428,6 +455,7 @@
             
             window.ideas = window.ideas.filter(i => i.id !== ideaId);
             window.renderWorkspace();
+            
             if(USE_FIREBASE && fsMod) {
                 await fsMod.setDoc(fsMod.doc(dbRef, "creative_trash", trashId), trashPayload);
                 await fsMod.deleteDoc(fsMod.doc(dbRef, "creative_ideas", ideaId));
@@ -448,7 +476,6 @@
             document.getElementById('editDateInput').value = idea.date === "Dipulihkan" ? "" : idea.date;
             document.getElementById('editLinkInput').value = idea.link === "-" ? "" : idea.link;
             
-            // Isi Opsi Papan (Sembunyikan papan pulihan agar user dipaksa memindahkannya ke papan aktif)
             const selectEl = document.getElementById('editBoardSelect');
             selectEl.innerHTML = window.boards
                 .filter(b => !b.id.includes("board_pulihan")) 
@@ -477,17 +504,27 @@
             idea.link = document.getElementById('editLinkInput').value.trim() || "-";
             idea.boardId = targetBoardId;
             
+            // Otomatis buka papan tujuan jika dalam keadaan tertutup, agar pengguna bisa melihat hasil perpindahannya
+            let memoryStates = JSON.parse(localStorage.getItem('creative_board_states')) || {};
+            if (memoryStates[targetBoardId] === true) {
+                memoryStates[targetBoardId] = false;
+                localStorage.setItem('creative_board_states', JSON.stringify(memoryStates));
+            }
+
             window.renderWorkspace();
             window.closeEditModal();
             
             if(USE_FIREBASE && fsMod) await fsMod.setDoc(fsMod.doc(dbRef, "creative_ideas", idea.id), idea);
             else localStorage.setItem("creative_ideas", JSON.stringify(window.ideas));
             
-            // Hapus Papan Pulihan otomatis jika sudah kosong
             const pulihanBoardId = "board_pulihan_" + currentUserUid;
             const remainingPulihanIdeas = window.ideas.filter(i => i.boardId === pulihanBoardId).length;
             if (remainingPulihanIdeas === 0 && window.boards.some(b => b.id === pulihanBoardId)) {
                  window.boards = window.boards.filter(b => b.id !== pulihanBoardId);
+                 
+                 delete memoryStates[pulihanBoardId];
+                 localStorage.setItem('creative_board_states', JSON.stringify(memoryStates));
+
                  window.renderWorkspace();
                  if(USE_FIREBASE && fsMod) await fsMod.deleteDoc(fsMod.doc(dbRef, "creative_planner_boards", pulihanBoardId));
                  else localStorage.setItem("creative_planner_boards", JSON.stringify(window.boards));
@@ -514,16 +551,23 @@
                 return;
             }
             
-            // Sortir papan: Papan pulihan selalu di atas, sisanya sesuai tanggal dibuat
             const sortedBoards = [...window.boards].sort((a, b) => {
                 if(a.id.includes("board_pulihan")) return -1;
                 if(b.id.includes("board_pulihan")) return 1;
                 return b.createdAt - a.createdAt;
             });
             
+            // Baca seluruh memory state dari localStorage
+            const memoryStates = JSON.parse(localStorage.getItem('creative_board_states')) || {};
+
             container.innerHTML = sortedBoards.map(b => {
                 const isPulihan = b.id.includes("board_pulihan");
-                const boardClass = isPulihan ? "board-card pulihan-trash" : "board-card";
+                
+                // Set class berdasarkan memory state (Jika True, tambahkan class "collapsed")
+                const isCollapsed = memoryStates[b.id] === true;
+                const baseClass = isPulihan ? "board-card pulihan-trash" : "board-card";
+                const boardClass = isCollapsed ? `${baseClass} collapsed` : baseClass;
+                
                 const boardIcon = isPulihan ? "♻️" : "📺";
                 const ideasInBoard = window.ideas.filter(i => i.boardId === b.id);
                 
@@ -536,7 +580,6 @@
                         <button class="add-btn" onclick="addIdea('${b.id}')">+ Tambah Ide</button>
                     </div>`;
 
-                // Render Menu Tiga Titik Khusus Papan Normal
                 const threeDotsHTML = isPulihan ? 
                     `<button class="btn-dots danger" onclick="deleteBoard('${b.id}')" title="Hapus Permanen">🗑</button>` :
                     `<div class="dropdown-wrap">
@@ -550,37 +593,42 @@
                     </div>`;
 
                 return `
-                <div class="${boardClass}">
+                <div class="${boardClass}" id="board_card_${b.id}">
                     <div class="board-top">
-                        <div class="board-title">${boardIcon} ${b.name}</div>
+                        <div class="board-title" onclick="toggleBoardState('${b.id}')" title="Klik untuk melipat / membuka papan">
+                            <span class="chevron-icon">▼</span> ${boardIcon} ${b.name}
+                        </div>
                         <div class="board-actions">
                             <div class="counter">${ideasInBoard.length} Ide</div>
                             ${threeDotsHTML}
                         </div>
                     </div>
-                    ${formHTML}
-                    <div class="list">
-                        ${ideasInBoard.length === 0 && isPulihan ? '<div class="empty-board">Papan kosong.</div>' : ''}
-                        ${ideasInBoard.map(i => {
-                            const badgeHTML = i.date === "Dipulihkan" 
-                                ? `<div class="badge restored">♻️ Dipulihkan</div>` 
-                                : `<div class="badge">📅 ${i.date}</div>`;
-                                
-                            return `
-                            <div class="item ${i.done ? "completed" : ""}">
-                                <div class="item-header">
-                                    <div class="item-title">${i.title}</div>
-                                    <div class="right-actions">
-                                        <button class="btn-icon btn-edit" onclick="openEditModal('${i.id}')" title="Edit / Pindahkan">✏️</button>
-                                        <button class="btn-icon btn-done ${i.done ? "active" : ""}" onclick="toggleDone('${i.id}')" title="Tandai Selesai">✓</button>
-                                        <button class="btn-icon btn-del" onclick="deleteIdea('${i.id}')" title="Hapus">🗑</button>
+                    
+                    <div class="board-content">
+                        ${formHTML}
+                        <div class="list">
+                            ${ideasInBoard.length === 0 && isPulihan ? '<div class="empty-board">Papan kosong.</div>' : ''}
+                            ${ideasInBoard.map(i => {
+                                const badgeHTML = i.date === "Dipulihkan" 
+                                    ? `<div class="badge restored">♻️ Dipulihkan</div>` 
+                                    : `<div class="badge">📅 ${i.date}</div>`;
+                                    
+                                return `
+                                <div class="item ${i.done ? "completed" : ""}">
+                                    <div class="item-header">
+                                        <div class="item-title">${i.title}</div>
+                                        <div class="right-actions">
+                                            <button class="btn-icon btn-edit" onclick="openEditModal('${i.id}')" title="Edit / Pindahkan">✏️</button>
+                                            <button class="btn-icon btn-done ${i.done ? "active" : ""}" onclick="toggleDone('${i.id}')" title="Tandai Selesai">✓</button>
+                                            <button class="btn-icon btn-del" onclick="deleteIdea('${i.id}')" title="Hapus">🗑</button>
+                                        </div>
                                     </div>
+                                    <div class="item-badges">${badgeHTML}</div>
+                                    <div class="link-box" onclick="selectText(this)">${i.link}</div>
                                 </div>
-                                <div class="item-badges">${badgeHTML}</div>
-                                <div class="link-box" onclick="selectText(this)">${i.link}</div>
-                            </div>
-                            `;
-                        }).join('')}
+                                `;
+                            }).join('')}
+                        </div>
                     </div>
                 </div>
                 `;
