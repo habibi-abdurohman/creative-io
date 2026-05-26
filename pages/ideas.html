@@ -2,7 +2,7 @@
 <html lang="id">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
     <title>Idea Board - Creative.io</title>
     <link rel="icon" type="image/png" sizes="192x192" href="./assets/favicon-192x192.png">
 
@@ -16,7 +16,7 @@
         *::-webkit-scrollbar { display: none; }
         :root { --bg-grad: linear-gradient(180deg, #f8fbff 0%, #eef4ff 100%); --card-glass: rgba(255, 255, 255, 0.9); --card-solid: #ffffff; --card-tint: #f1f5f9; --border: #e2e8f0; --text-main: #0f172a; --text-muted: #64748b; --primary: #2563eb; --primary-grad: linear-gradient(135deg, #3b82f6, #2563eb); --primary-soft: rgba(37, 99, 235, 0.1); --success: #16a34a; --danger: #ef4444; --warning: #f59e0b; --shadow-flat: 0 4px 20px rgba(0, 0, 0, 0.04); --radius-btn: 14px; --radius-card: 24px; }
         body.dark { --bg-grad: linear-gradient(180deg, #0f172a 0%, #1e293b 100%); --card-glass: rgba(30, 41, 59, 0.9); --card-solid: #1e293b; --card-tint: #0f172a; --border: #334155; --text-main: #f8fafc; --text-muted: #94a3b8; --primary-soft: rgba(59, 130, 246, 0.2); --shadow-flat: 0 4px 20px rgba(0, 0, 0, 0.2); --danger-soft: rgba(239, 68, 68, 0.15); }
-        body { font-family: 'Inter', system-ui, sans-serif; background: var(--bg-grad); color: var(--text-main); min-height: 100vh; padding: 86px 16px 100px; transition: background 0.3s, color 0.3s; overflow-x: hidden; }
+        body { font-family: 'Inter', system-ui, sans-serif; background: var(--bg-grad); color: var(--text-main); min-height: 100vh; padding: 86px 16px 100px; transition: background 0.3s, color 0.3s; overflow-x: hidden; width: 100vw; max-width: 100%; }
         
         .bg-glow { position: fixed; border-radius: 50%; filter: blur(90px); z-index: 0; opacity: 0.5; pointer-events: none; }
         .bg-glow.one { width: 340px; height: 340px; background: rgba(59, 130, 246, 0.15); top: -50px; left: -100px; }
@@ -24,21 +24,22 @@
         
         .wrapper { position: relative; z-index: 2; max-width: 1200px; margin: 0 auto; width: 100%; }
         .page-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 24px; flex-wrap: wrap; gap: 16px; width: 100%; }
+        .header-title { flex: 1; min-width: 250px; }
         .header-title h1 { font-size: 26px; font-weight: 900; letter-spacing: -0.5px; }
         .header-title p { font-size: 13px; color: var(--text-muted); margin-top: 4px; line-height: 1.6; }
         
-        .btn-add-board { background: var(--primary-grad); color: white; border: none; padding: 12px 20px; border-radius: var(--radius-btn); font-size: 13px; font-weight: 800; cursor: pointer; box-shadow: 0 10px 25px rgba(37, 99, 235, 0.3); transition: 0.2s; display: flex; align-items: center; gap: 8px; }
+        .btn-add-board { background: var(--primary-grad); color: white; border: none; padding: 12px 20px; border-radius: var(--radius-btn); font-size: 13px; font-weight: 800; cursor: pointer; box-shadow: 0 10px 25px rgba(37, 99, 235, 0.3); transition: 0.2s; display: flex; align-items: center; gap: 8px; flex-shrink: 0; outline: none; }
         .btn-add-board:hover { transform: translateY(-2px); box-shadow: 0 12px 30px rgba(37, 99, 235, 0.4); }
         
         /* DESAIN PAPAN UTAMA (DASHBOARD) */
-        .board-container { display: grid; grid-template-columns: repeat(auto-fill, minmax(320px, 1fr)); gap: 16px; align-items: start; width: 100%; }
+        .board-container { display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap: 16px; align-items: start; width: 100%; max-width: 100%; }
         
-        /* Efek Hover Lembut Papan Utama (Tanpa Outline/Transform) */
-        .board-card { background: var(--card-glass); backdrop-filter: blur(12px); border: 1px solid var(--border); border-radius: 20px; padding: 20px 24px; box-shadow: var(--shadow-flat); display: flex; justify-content: space-between; align-items: center; cursor: pointer; position: relative; z-index: 1; transition: background 0.2s ease; outline: none; }
+        /* Efek Hover/Klik Papan Utama - DIperbarui sesuai permintaan */
+        .board-card { background: var(--card-glass); backdrop-filter: blur(12px); border: 1px solid var(--border); border-radius: 20px; padding: 20px 24px; box-shadow: var(--shadow-flat); display: flex; justify-content: space-between; align-items: center; cursor: pointer; position: relative; z-index: 1; transition: background 0.2s ease; outline: none !important; transform: none !important; min-width: 0; }
+        .board-card:focus, .board-card:active { outline: none !important; } /* Menghilangkan border biru bawaan browser */
         .board-card:hover, .board-card:active { background: #e2e8f0; }
         body.dark .board-card:hover, body.dark .board-card:active { background: #334155; }
         
-        /* Styling Khusus Papan yang Selesai */
         .board-card.completed { opacity: 0.5; background: var(--card-tint); border-style: dashed; }
         .board-card.completed .board-title { text-decoration: line-through; color: var(--text-muted); }
         .board-card.completed:hover, .board-card.completed:active { background: #e2e8f0; opacity: 0.8; }
@@ -49,11 +50,11 @@
         .board-card.pulihan-trash .counter { background: rgba(245, 158, 11, 0.15); color: var(--warning); border-color: rgba(245, 158, 11, 0.2); }
         
         /* Fix Ellipsis Judul Papan */
-        .board-title-wrap { display: flex; align-items: center; gap: 12px; flex: 1; min-width: 0; padding-right: 12px; overflow: hidden; }
+        .board-title-wrap { display: flex; align-items: center; gap: 12px; flex: 1; min-width: 0; padding-right: 12px; }
         .board-checkbox { width: 22px; height: 22px; border-radius: 8px; border: 2px solid var(--border); background: var(--card-solid); color: transparent; display: flex; align-items: center; justify-content: center; font-size: 13px; font-weight: 900; cursor: pointer; flex-shrink: 0; transition: 0.2s; outline: none; }
         .board-checkbox.active { background: var(--success); border-color: var(--success); color: white; }
         
-        .board-title { font-size: 16px; font-weight: 800; color: var(--text-main); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; flex: 1; min-width: 0; pointer-events: none; }
+        .board-title { font-size: 16px; font-weight: 800; color: var(--text-main); display: block; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; width: 100%; pointer-events: none; line-height: 1.2; }
         
         .board-actions { display: flex; align-items: center; gap: 8px; z-index: 10; flex-shrink: 0; }
         .counter { background: var(--primary-soft); color: var(--primary); padding: 6px 14px; border-radius: 20px; font-size: 12px; font-weight: 800; white-space: nowrap; border: 1px solid rgba(37, 99, 235, 0.1); }
@@ -66,12 +67,12 @@
         
         .dropdown-menu { position: absolute; top: 100%; right: 0; margin-top: 8px; background: var(--card-solid); border: 1px solid var(--border); border-radius: 14px; padding: 8px; display: none; flex-direction: column; gap: 2px; min-width: 170px; box-shadow: 0 10px 40px rgba(0,0,0,0.1); z-index: 1000; }
         .dropdown-menu.active { display: flex; }
-        .dropdown-menu button { background: transparent; border: none; padding: 10px 12px; border-radius: 10px; font-size: 13px; font-weight: 700; color: var(--text-main); text-align: left; cursor: pointer; display: flex; align-items: center; gap: 10px; }
+        .dropdown-menu button { background: transparent; border: none; padding: 10px 12px; border-radius: 10px; font-size: 13px; font-weight: 700; color: var(--text-main); text-align: left; cursor: pointer; display: flex; align-items: center; gap: 10px; width: 100%; }
         .dropdown-menu button:hover { background: var(--card-tint); }
         .dropdown-menu button.danger { color: var(--danger); }
         .dropdown-menu button.danger:hover { background: rgba(239, 68, 68, 0.1); }
         
-        .empty-state-global { grid-column: 1 / -1; text-align: center; padding: 60px 20px; background: var(--card-glass); border: 1px dashed var(--border); border-radius: var(--radius-card); color: var(--text-muted); font-size: 14px; font-weight: 600; }
+        .empty-state-global { grid-column: 1 / -1; text-align: center; padding: 60px 20px; background: var(--card-glass); border: 1px dashed var(--border); border-radius: var(--radius-card); color: var(--text-muted); font-size: 14px; font-weight: 600; width: 100%; }
         
         /* =========================================================
            POPUP PAPAN (BOARD VIEW) - RESPONSIVE & CONSTRAINED
@@ -80,18 +81,16 @@
             position: fixed; inset: 0; background: rgba(0,0,0,0.6); 
             backdrop-filter: blur(8px); -webkit-backdrop-filter: blur(8px); 
             z-index: 100000; display: none; align-items: center; justify-content: center; 
-            opacity: 0; transition: opacity 0.3s ease; 
-            padding: 0; 
+            opacity: 0; transition: opacity 0.3s ease; padding: 0; width: 100vw; height: 100vh;
         }
         .board-view-overlay.active { display: flex; opacity: 1; }
         
         .board-view-card { 
             width: 100%; height: 100%; background: var(--bg-grad); 
-            display: flex; flex-direction: column; position: relative; overflow: hidden; 
+            display: flex; flex-direction: column; position: relative; overflow-x: hidden; 
             max-width: 100vw;
         }
         
-        /* Tombol Close Mengambang */
         .btn-close-floating { 
             position: absolute; top: 20px; right: 20px; width: 40px; height: 40px; border-radius: 50%; 
             background: var(--card-glass); backdrop-filter: blur(8px); border: 1px solid var(--border); 
@@ -102,52 +101,51 @@
         body.dark .btn-close-floating { background: rgba(30, 41, 59, 0.8); }
         body.dark .btn-close-floating:hover { background: var(--danger); }
 
-        /* Area Scroll Terkunci */
         .board-view-scroll-area { 
             flex: 1; overflow-y: auto; overflow-x: hidden; display: flex; flex-direction: column; 
-            padding: 40px; padding-top: 80px; position: relative; width: 100%; box-sizing: border-box;
+            padding: 32px 40px; padding-top: 80px; position: relative; width: 100%; box-sizing: border-box; max-width: 100%;
         }
         
         /* Judul Papan Utama */
-        .board-detail-title { font-size: 28px; font-weight: 900; line-height: 1.3; color: var(--text-main); margin-bottom: 24px; padding-right: 50px; word-break: break-word; overflow-wrap: break-word; width: 100%; box-sizing: border-box; }
+        .board-detail-title { font-size: 28px; font-weight: 900; line-height: 1.3; color: var(--text-main); margin-bottom: 24px; padding-right: 50px; word-break: break-word; width: 100%; box-sizing: border-box; }
         
         /* Area Form Terkunci */
-        .board-view-form-area { background: var(--card-solid); border: 1px solid var(--border); border-radius: 20px; padding: 24px; box-shadow: var(--shadow-flat); margin-bottom: 32px; flex-shrink: 0; width: 100%; min-width: 0; box-sizing: border-box; overflow: hidden; }
+        .board-view-form-area { background: var(--card-solid); border: 1px solid var(--border); border-radius: 20px; padding: 24px; box-shadow: var(--shadow-flat); margin-bottom: 32px; flex-shrink: 0; width: 100%; box-sizing: border-box; overflow: hidden; }
         
-        .board-form-grid { display: grid; grid-template-columns: 1fr 1fr 1.5fr auto; gap: 16px; align-items: center; width: 100%; min-width: 0; box-sizing: border-box; }
+        .board-form-grid { display: grid; grid-template-columns: 1fr 1fr 1.5fr auto; gap: 16px; align-items: center; width: 100%; box-sizing: border-box; }
         
-        .input-wrap { position: relative; width: 100%; min-width: 0; }
-        .input-wrap span { position: absolute; left: 16px; top: 50%; transform: translateY(-50%); font-size: 12px; font-weight: 800; color: var(--text-muted); pointer-events: none; }
+        .input-wrap { position: relative; width: 100%; min-width: 0; display: flex; flex-direction: column; }
+        .input-wrap span { position: absolute; left: 16px; top: 50%; transform: translateY(-50%); font-size: 12px; font-weight: 800; color: var(--text-muted); pointer-events: none; z-index: 2; }
         .input-wrap input { width: 100%; border: 1px solid var(--border); background: var(--card-tint); border-radius: 14px; color: var(--text-main); padding: 14px 16px 14px 80px; font-size: 14px; font-weight: 600; outline: none; transition: 0.2s; min-width: 0; box-sizing: border-box; }
         .input-wrap input:focus { border-color: var(--primary); box-shadow: 0 0 0 3px var(--primary-soft); background: var(--card-solid); }
         
-        .add-btn { border: none; background: var(--primary-grad); color: white; padding: 14px 20px; border-radius: 14px; font-size: 14px; font-weight: 800; cursor: pointer; height: 100%; white-space: nowrap; outline: none; }
+        .add-btn { border: none; background: var(--primary-grad); color: white; padding: 14px 20px; border-radius: 14px; font-size: 14px; font-weight: 800; cursor: pointer; height: 100%; white-space: nowrap; outline: none; width: 100%; }
         
         .trash-notice { font-size: 14px; color: var(--warning); font-weight: 700; line-height: 1.5; background: rgba(245, 158, 11, 0.1); padding: 16px 24px; border-radius: 16px; border: 1px dashed rgba(245, 158, 11, 0.3); margin-bottom: 32px; text-align: center; width: 100%; box-sizing: border-box; }
         
         /* Sub-Header (Jumlah Ide) */
         .idea-list-header { font-size: 14px; font-weight: 800; color: var(--text-muted); margin-bottom: 16px; padding-bottom: 12px; border-bottom: 1px dashed var(--border); display: flex; justify-content: space-between; align-items: center; width: 100%; box-sizing: border-box; }
 
-        .board-view-body { flex: 1; width: 100%; min-width: 0; box-sizing: border-box; display: flex; flex-direction: column; }
+        .board-view-body { flex: 1; width: 100%; box-sizing: border-box; display: flex; flex-direction: column; }
         
         /* Area Daftar Ide (Terkunci) */
-        .idea-item { background: var(--card-solid); border: 1px solid var(--border); border-radius: 16px; padding: 16px 20px; display: flex; align-items: center; justify-content: space-between; gap: 16px; margin-bottom: 12px; box-shadow: var(--shadow-flat); width: 100%; box-sizing: border-box; min-width: 0; }
+        .idea-item { background: var(--card-solid); border: 1px solid var(--border); border-radius: 16px; padding: 16px 20px; display: flex; align-items: center; gap: 16px; margin-bottom: 12px; box-shadow: var(--shadow-flat); width: 100%; box-sizing: border-box; overflow: hidden; }
         
-        .idea-left { display: flex; flex-direction: column; gap: 8px; flex: 1; min-width: 0; overflow: hidden; }
-        .idea-title { font-size: 15px; font-weight: 800; line-height: 1.4; color: var(--text-main); word-break: break-word; overflow-wrap: break-word; }
+        .idea-left { display: flex; flex-direction: column; gap: 8px; flex: 1; min-width: 0; }
+        .idea-title { font-size: 15px; font-weight: 800; line-height: 1.4; color: var(--text-main); word-break: break-word; overflow-wrap: break-word; display: block; }
         .badge { display: inline-flex; align-items: center; gap: 4px; background: var(--card-tint); color: var(--text-muted); border: 1px solid var(--border); padding: 4px 10px; border-radius: 8px; font-size: 11px; font-weight: 800; white-space: nowrap; width: fit-content; }
         .badge.restored { background: rgba(245, 158, 11, 0.1); color: var(--warning); border-color: rgba(245, 158, 11, 0.2); }
         
-        .idea-middle { flex: 1.5; min-width: 0; display: flex; justify-content: flex-start; overflow: hidden; }
+        .idea-middle { flex: 1.5; min-width: 0; display: flex; align-items: center; }
         
         /* Kotak Tautan Anti-Bocor */
-        .link-box { display: inline-flex; align-items: center; gap: 6px; padding: 8px 14px; background: var(--primary-soft); color: var(--primary); border-radius: 12px; font-size: 12px; font-weight: 700; max-width: 100%; border: 1px dashed rgba(37, 99, 235, 0.3); cursor: text; user-select: text; box-sizing: border-box; overflow: hidden; }
+        .link-box { display: inline-flex; align-items: center; gap: 6px; padding: 8px 14px; background: var(--primary-soft); color: var(--primary); border-radius: 12px; font-size: 12px; font-weight: 700; width: 100%; max-width: 100%; border: 1px dashed rgba(37, 99, 235, 0.3); cursor: text; user-select: text; box-sizing: border-box; overflow: hidden; }
         .link-box .icon { font-size: 14px; flex-shrink: 0; pointer-events: none; }
         .link-box span.text { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; flex: 1; min-width: 0; display: block; }
         
         .idea-right { display: flex; gap: 8px; flex-shrink: 0; justify-content: flex-end; }
         
-        .btn-icon { width: 36px; height: 36px; border-radius: 10px; cursor: pointer; border: 1px solid var(--border); display: flex; align-items: center; justify-content: center; background: var(--card-solid); font-size: 14px; color: var(--text-main); outline: none; }
+        .btn-icon { width: 36px; height: 36px; border-radius: 10px; cursor: pointer; border: 1px solid var(--border); display: flex; align-items: center; justify-content: center; background: var(--card-solid); font-size: 14px; color: var(--text-main); outline: none; flex-shrink: 0; }
         .btn-edit { color: var(--text-muted); }
         .btn-done { color: var(--border); font-size: 16px; font-weight: 900; }
         .btn-done.active { background: var(--success); border-color: var(--success); color: white; }
@@ -162,7 +160,7 @@
         /* =========================================================
            MODAL UMUM (ADD/EDIT/INFO)
         ========================================================= */
-        .modal-overlay { position: fixed; inset: 0; background: rgba(0,0,0,0.4); backdrop-filter: blur(4px); z-index: 100001; display: none; align-items: center; justify-content: center; padding: 20px; }
+        .modal-overlay { position: fixed; inset: 0; background: rgba(0,0,0,0.4); backdrop-filter: blur(4px); z-index: 100001; display: none; align-items: center; justify-content: center; padding: 20px; width: 100vw; height: 100vh; box-sizing: border-box; }
         .modal-overlay.active { display: flex; }
         .modal-card { background: var(--card-solid); width: 100%; max-width: 360px; border-radius: var(--radius-card); padding: 24px; box-shadow: var(--shadow-flat); border: 1px solid var(--border); box-sizing: border-box; }
         .modal-card h3 { font-size: 18px; font-weight: 900; margin-bottom: 8px; color: var(--text-main); }
@@ -179,55 +177,51 @@
         body.dark .btn-cancel:hover { background: #334155; }
         .btn-confirm { background: var(--primary-grad); color: white; }
 
-        .info-row { display: flex; justify-content: space-between; margin-bottom: 12px; font-size: 13px; }
-        .info-label { color: var(--text-muted); font-weight: 600; }
-        .info-value { font-weight: 800; color: var(--text-main); text-align: right; max-width: 60%; word-break: break-word;}
+        .info-row { display: flex; justify-content: space-between; margin-bottom: 12px; font-size: 13px; gap: 12px; }
+        .info-label { color: var(--text-muted); font-weight: 600; flex-shrink: 0; }
+        .info-value { font-weight: 800; color: var(--text-main); text-align: right; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
         
         /* =========================================================
            RESPONSIVITAS KETAT
         ========================================================= */
-        /* LAPTOP: Popup 85% lebar, 100% tinggi */
         @media(min-width: 1025px) {
-            .board-view-card { width: 85%; height: 100%; border-left: 1px solid var(--border); border-right: 1px solid var(--border); box-shadow: 0 0 60px rgba(0,0,0,0.3); }
-            .btn-close-floating { top: 30px; right: 40px; width: 44px; height: 44px; }
+            .board-view-card { width: 85%; height: 100%; border-left: 1px solid var(--border); border-right: 1px solid var(--border); margin: 0 auto; box-shadow: 0 0 60px rgba(0,0,0,0.3); }
+            .btn-close-floating { top: 30px; right: calc(7.5% + 40px); width: 44px; height: 44px; }
         }
         
-        /* TABLET: Fullscreen Terkunci */
         @media(max-width: 1024px) {
             .board-view-overlay { padding: 0; }
-            .board-view-card { width: 100%; height: 100%; border-radius: 0; border: none; overflow-x: hidden; }
-            .board-form-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+            .board-view-card { width: 100%; height: 100%; border-radius: 0; border: none; }
+            .board-form-grid { grid-template-columns: 1fr 1fr; }
         }
         
-        /* MOBILE: Responsivitas Total */
         @media(max-width: 768px) {
-            .board-view-scroll-area { padding: 20px; padding-top: 70px; width: 100%; overflow-x: hidden; box-sizing: border-box; }
-            .board-detail-title { font-size: 24px; padding-right: 40px; margin-bottom: 20px; width: 100%; box-sizing: border-box; }
+            .board-view-scroll-area { padding: 20px; padding-top: 70px; }
+            .board-detail-title { font-size: 24px; padding-right: 40px; margin-bottom: 20px; }
             .btn-close-floating { top: 16px; right: 16px; width: 36px; height: 36px; }
             
-            .board-form-grid { display: grid; grid-template-columns: 1fr; gap: 12px; width: 100%; box-sizing: border-box; }
-            .board-view-form-area { padding: 20px; width: 100%; box-sizing: border-box; }
+            .board-form-grid { grid-template-columns: 1fr; gap: 12px; }
+            .board-view-form-area { padding: 20px; }
             
-            /* Kartu Ide Seluler Proporsional */
-            .idea-item { display: block; position: relative; padding: 16px; width: 100%; box-sizing: border-box; overflow: hidden; }
-            .idea-left { display: block; padding-right: 110px; margin-bottom: 12px; width: 100%; box-sizing: border-box; }
-            .idea-title { margin-bottom: 8px; word-wrap: break-word; white-space: normal; }
-            .badge { margin-bottom: 0; display: inline-flex; }
+            /* Penyesuaian Flex Card Ide untuk Layar Kecil */
+            .idea-item { flex-direction: column; align-items: flex-start; gap: 12px; padding: 16px; position: relative; }
+            .idea-left { width: 100%; padding-right: 100px; /* Space for absolute buttons if needed, or clear */ }
+            .idea-middle { width: 100%; }
+            .idea-right { width: 100%; justify-content: flex-end; position: absolute; top: 16px; right: 16px; width: auto; }
             
-            /* Tombol Aksi Kanan Atas Mutlak */
-            .idea-right { position: absolute; top: 16px; right: 16px; display: flex; gap: 6px; }
-            
-            /* Link Full Width Aman */
-            .idea-middle { display: block; width: 100%; box-sizing: border-box; overflow: hidden; }
-            .link-box { width: 100%; display: flex; justify-content: flex-start; overflow: hidden; box-sizing: border-box; }
-            .link-box span.text { flex: 1; min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; max-width: none; display: block; }
+            .link-box { max-width: 100%; }
         }
 
-        /* Ukuran Terkecil */
         @media(max-width: 600px) { 
+            body { padding-top: 70px; }
             .page-header { flex-direction: column; align-items: flex-start; } 
             .btn-add-board { width: 100%; justify-content: center; padding: 16px 20px; font-size: 15px; border-radius: 16px; } 
             .board-container { grid-template-columns: 1fr; } 
+            
+            /* Jika layar sangat kecil, turunkan tombol ke bawah card */
+            .idea-item { padding-bottom: 60px; }
+            .idea-left { padding-right: 0; }
+            .idea-right { top: auto; bottom: 16px; right: 16px; }
         }
     </style>
 </head>
@@ -361,7 +355,7 @@
         let dbRef = null;
         let fsMod = null;
 
-        // Manajemen Z-index Dropdown agar tidak tertimpa
+        // Manajemen Z-index Dropdown
         document.addEventListener('click', function(e) {
             if (!e.target.closest('.dropdown-wrap')) {
                 document.querySelectorAll('.dropdown-menu').forEach(m => m.classList.remove('active'));
@@ -423,9 +417,6 @@
             } catch (e) { console.error(e); }
         }
 
-        // =====================================
-        // MANAJEMEN POPUP BOARD VIEW 
-        // =====================================
         window.openBoardView = function(boardId) {
             window.currentViewBoardId = boardId;
             const board = window.boards.find(b => b.id === boardId);
@@ -433,7 +424,6 @@
 
             const isPulihan = board.id.includes("board_pulihan");
             
-            // Render Judul Besar di Popup
             document.getElementById('bvTitle').innerHTML = board.name;
             
             if (isPulihan) {
@@ -456,7 +446,6 @@
             document.getElementById('boardViewModal').classList.remove('active');
         }
 
-        // Tweak Pemilihan Teks Link (Menghindari Ikon)
         window.selectText = (container) => {
             const textEl = container.querySelector('.text') || container;
             const range = document.createRange(); 
@@ -472,7 +461,6 @@
             
             const ideasInBoard = window.ideas.filter(i => i.boardId === window.currentViewBoardId);
             
-            // Perbarui Sub-Header Counter Ide
             document.getElementById('bvCounter').innerText = `${ideasInBoard.length} Ide`;
             
             ideasInBoard.sort((a, b) => {
@@ -516,9 +504,6 @@
             }).join('');
         }
 
-        // =====================================
-        // MANAJEMEN MODAL KECIL (ADD, EDIT, INFO)
-        // =====================================
         window.openAddBoardModal = () => document.getElementById('addBoardModal').classList.add('active');
         window.closeAddBoardModal = () => document.getElementById('addBoardModal').classList.remove('active');
         
@@ -598,7 +583,6 @@
             if(!boardName) return alert("Nama papan tidak boleh kosong!");
             const boardId = "board_" + Date.now();
             
-            // Tambahkan properti done: false secara default
             const payload = { uid: currentUserUid, name: boardName, done: false, createdAt: Date.now(), updatedAt: Date.now() };
             window.boards.push({ id: boardId, ...payload });
             
@@ -610,9 +594,6 @@
             else localStorage.setItem("creative_planner_boards", JSON.stringify(window.boards));
         }
 
-        // =====================================
-        // MANAJEMEN IDE KONTEN & PAPAN SELESAI
-        // =====================================
         window.toggleBoardDone = async (boardId) => {
             const board = window.boards.find(b => b.id === boardId);
             if (!board) return;
@@ -774,9 +755,6 @@
             else localStorage.setItem("creative_ideas", JSON.stringify(window.ideas));
         }
 
-        // =====================================
-        // RENDER HALAMAN UTAMA (DASHBOARD PAPAN)
-        // =====================================
         window.renderWorkspace = function() {
             const container = document.getElementById("boardContainer");
             if (window.boards.length === 0) {
@@ -784,7 +762,6 @@
                 return;
             }
             
-            // Pengurutan Papan: Pulihan teratas -> Belum Selesai (baru ke lama) -> Selesai (baru ke lama)
             const sortedBoards = [...window.boards].sort((a, b) => {
                 if(a.id.includes("board_pulihan")) return -1;
                 if(b.id.includes("board_pulihan")) return 1;
@@ -818,13 +795,12 @@
                         </div>
                     </div>`;
                 
-                // Menyiapkan Checkbox atau Ikon Pulihan
                 const checkboxHTML = isPulihan 
                     ? `<div class="board-checkbox" style="border:none; background:transparent; font-size:16px;">♻️</div>` 
                     : `<button class="board-checkbox ${isDone ? 'active' : ''}" onclick="event.stopPropagation(); toggleBoardDone('${b.id}')" title="Tandai Papan Selesai">✓</button>`;
 
                 return `
-                <div class="${boardClass}" id="board_card_${b.id}" onclick="openBoardView('${b.id}')">
+                <div class="${boardClass}" id="board_card_${b.id}" onclick="openBoardView('${b.id}')" tabindex="0">
                     <div class="board-title-wrap">
                         ${checkboxHTML}
                         <div class="board-title" title="${b.name}">${b.name}</div>
