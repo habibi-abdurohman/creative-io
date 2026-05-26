@@ -110,24 +110,42 @@
         .board-view-body { flex: 1; width: 100%; box-sizing: border-box; display: flex; flex-direction: column; }
         
         /* =========================================================
-           KARTU IDE KONTEN - LAPTOP / TABLET (Tengah Terpusat)
+           KARTU IDE KONTEN - TATA LETAK GRID ANTI-TABRAK
         ========================================================= */
-        .idea-item { background: var(--card-solid); border: 1px solid var(--border); border-radius: 16px; padding: 16px 20px; display: flex; align-items: center; justify-content: space-between; gap: 16px; margin-bottom: 12px; box-shadow: var(--shadow-flat); width: 100%; box-sizing: border-box; min-width: 0; overflow: hidden; }
+        /* DEFAULT (LAPTOP & TABLET) - PROPORSI 10:10:10 (3 Kolom Seimbang) */
+        .idea-item { 
+            background: var(--card-solid); border: 1px solid var(--border); border-radius: 16px; 
+            padding: 16px 20px; margin-bottom: 12px; box-shadow: var(--shadow-flat); 
+            width: 100%; box-sizing: border-box; min-width: 0; overflow: hidden;
+            
+            /* Menggunakan Grid agar dibagi rata 3 bagian dan saling responsif */
+            display: grid;
+            grid-template-columns: 1fr 1fr 1fr;
+            gap: 16px;
+            align-items: center; /* Posisi elemen di tengah secara vertikal */
+        }
         
-        /* Area Kiri (Batas maksimal 35% agar tidak mendesak link) */
-        .idea-left { display: flex; flex-direction: column; gap: 8px; flex: 0 0 35%; max-width: 35%; min-width: 0; padding-right: 16px; box-sizing: border-box; }
-        .idea-title { font-size: 15px; font-weight: 800; line-height: 1.4; color: var(--text-main); word-break: break-word; overflow-wrap: break-word; display: block; }
-        .badge { display: inline-flex; align-items: center; gap: 4px; background: var(--card-tint); color: var(--text-muted); border: 1px solid var(--border); padding: 4px 10px; border-radius: 8px; font-size: 11px; font-weight: 800; white-space: nowrap; width: fit-content; }
+        /* Kolom Kiri: Judul dan Tanggal */
+        .idea-left { display: flex; flex-direction: column; gap: 8px; min-width: 0; width: 100%; justify-self: start; }
+        
+        /* Judul: Dibiarkan wrap/turun baris natural */
+        .idea-title { font-size: 15px; font-weight: 800; line-height: 1.4; color: var(--text-main); word-break: break-word; overflow-wrap: break-word; white-space: normal; }
+        
+        /* Badge Tanggal: Bisa turun baris jika sangat panjang */
+        .badge { display: inline-flex; align-items: flex-start; gap: 4px; background: var(--card-tint); color: var(--text-muted); border: 1px solid var(--border); padding: 6px 10px; border-radius: 8px; font-size: 11px; font-weight: 800; white-space: normal; word-break: break-word; text-align: left; line-height: 1.4; width: fit-content; max-width: 100%; }
         .badge.restored { background: rgba(245, 158, 11, 0.1); color: var(--warning); border-color: rgba(245, 158, 11, 0.2); }
         
-        /* Area Tengah (Link benar-benar di-center) */
-        .idea-middle { flex: 1; min-width: 0; display: flex; justify-content: center; align-items: center; padding: 0 16px; box-sizing: border-box; }
-        .link-box { display: inline-flex; align-items: center; gap: 6px; padding: 8px 14px; background: var(--primary-soft); color: var(--primary); border-radius: 12px; font-size: 12px; font-weight: 700; width: 100%; max-width: 400px; /* Batas lebar link agar rapi */ border: 1px dashed rgba(37, 99, 235, 0.3); cursor: text; user-select: text; box-sizing: border-box; overflow: hidden; justify-content: flex-start; }
-        .link-box .icon { font-size: 14px; flex-shrink: 0; pointer-events: none; }
-        .link-box span.text { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; flex: 1; min-width: 0; display: block; }
+        /* Kolom Tengah: Area Link Tepat Di Tengah */
+        .idea-middle { min-width: 0; display: flex; justify-content: center; width: 100%; justify-self: center; }
         
-        /* Area Kanan (Tombol) */
-        .idea-right { display: flex; gap: 8px; flex-shrink: 0; justify-content: flex-end; }
+        /* Form Tautan Interaktif Cepat Salin */
+        .link-box { display: inline-flex; align-items: center; gap: 6px; padding: 8px 14px; background: var(--primary-soft); color: var(--primary); border-radius: 12px; width: 100%; border: 1px dashed rgba(37, 99, 235, 0.3); cursor: pointer; box-sizing: border-box; overflow: hidden; }
+        .link-box .icon { font-size: 14px; flex-shrink: 0; pointer-events: none; }
+        .link-input { flex: 1; min-width: 0; background: transparent; border: none; color: inherit; font-family: inherit; font-size: 12px; font-weight: 700; outline: none; cursor: pointer; text-overflow: ellipsis; white-space: nowrap; overflow: hidden; padding: 0; pointer-events: none; }
+        .link-input::selection { background: rgba(37, 99, 235, 0.2); color: var(--text-main); }
+        
+        /* Kolom Kanan: Tombol Aksi */
+        .idea-right { display: flex; gap: 8px; flex-shrink: 0; justify-self: end; }
         .btn-icon { width: 36px; height: 36px; border-radius: 10px; cursor: pointer; border: 1px solid var(--border); display: flex; align-items: center; justify-content: center; background: var(--card-solid); font-size: 14px; color: var(--text-main); outline: none; flex-shrink: 0; }
         .btn-edit { color: var(--text-muted); }
         .btn-done { color: var(--border); font-size: 16px; font-weight: 900; }
@@ -165,8 +183,7 @@
         ========================================================= */
         @media(min-width: 1025px) {
             .board-view-card { width: 85%; height: 100%; border-left: 1px solid var(--border); border-right: 1px solid var(--border); margin: 0 auto; box-shadow: 0 0 60px rgba(0,0,0,0.3); }
-            /* Tombol Close Digeser Sedikit Ke Kanan (Dari 40px ke 16px) */
-            .btn-close-floating { top: 30px; right: calc(7.5% + 16px); width: 44px; height: 44px; }
+            .btn-close-floating { top: 30px; right: calc(7.5% + 20px); width: 44px; height: 44px; }
         }
         
         @media(max-width: 1024px) {
@@ -184,31 +201,26 @@
             .board-form-grid { grid-template-columns: 1fr; gap: 12px; }
             .board-view-form-area { padding: 20px; }
             
-            /* KARTU IDE SELULER - VERTIKAL DAN AMAN DARI TUMPUKAN */
+            /* KARTU IDE SELULER - GRID ANTI-TABRAK */
             .idea-item { 
-                flex-direction: column; 
-                align-items: flex-start; 
-                gap: 12px; 
-                padding: 16px; 
-                position: relative; 
+                grid-template-columns: 1fr auto; /* Kolom 1 (Teks), Kolom 2 (Tombol fixed) */
+                align-items: start;
+                gap: 12px;
+                padding: 16px;
             }
             .idea-left { 
+                grid-column: 1 / 2; /* Mengunci teks murni di kolom 1, tak mungkin tabrak tombol */
                 width: 100%; 
-                max-width: 100%;
-                /* Dinding Anti Tabrak: Mencegah judul/tanggal menyenggol tombol kanan atas */
-                padding-right: 110px; 
+            }
+            .idea-right { 
+                grid-column: 2 / 3;
+                grid-row: 1 / 2;
+                justify-self: end;
             }
             .idea-middle { 
-                width: 100%; 
-                padding: 0;
-            }
-            .link-box { max-width: 100%; }
-            .idea-right { 
-                position: absolute; 
-                top: 12px; /* Posisi diangkat sedikit ke atas agar aman dari tanggal yang panjang */
-                right: 16px; 
-                width: auto; 
-                justify-content: flex-end; 
+                grid-column: 1 / -1; /* Link baris baru full width */
+                width: 100%;
+                margin-top: 4px;
             }
         }
 
@@ -445,15 +457,6 @@
             document.getElementById('boardViewModal').classList.remove('active');
         }
 
-        window.selectText = (container) => {
-            const textEl = container.querySelector('.text') || container;
-            const range = document.createRange(); 
-            range.selectNodeContents(textEl);
-            const sel = window.getSelection(); 
-            sel.removeAllRanges(); 
-            sel.addRange(range);
-        }
-
         window.renderBoardViewContent = function() {
             if(!window.currentViewBoardId) return;
             const listArea = document.getElementById('bvListArea');
@@ -478,7 +481,8 @@
                     : `<div class="badge">📅 ${i.date}</div>`;
                 
                 const linkDisplay = (i.link === '-' || !i.link) ? 'Tidak ada tautan referensi' : i.link;
-                    
+                
+                // Interaksi Link: Gunakan input readonly. Klik -> auto select/blok semua teks.
                 return `
                 <div class="idea-item ${i.done ? "completed" : ""}">
                     <div class="idea-left">
@@ -487,9 +491,9 @@
                     </div>
                     
                     <div class="idea-middle">
-                        <div class="link-box" onclick="event.stopPropagation(); selectText(this)" title="Klik teks untuk memblok/seleksi">
+                        <div class="link-box" onclick="event.stopPropagation(); const i = this.querySelector('input'); i.select(); i.setSelectionRange(0, 99999);" title="Klik teks untuk blok otomatis">
                             <span class="icon">🔗</span>
-                            <span class="text">${linkDisplay}</span>
+                            <input type="text" class="link-input" readonly value="${linkDisplay}">
                         </div>
                     </div>
 
