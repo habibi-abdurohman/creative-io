@@ -697,29 +697,29 @@
             }
         }
 
-        window.deleteIdea = async (ideaId) => {
-    if(!confirm("Hapus ide ke Trash?")) return;
-    const item = window.ideas.find(i => i.id === ideaId);
-    const now = Date.now();
-    const trashId = 'trash_' + now;
+    window.deleteIdea = async (ideaId) => {
+            if(!confirm("Hapus ide ke Trash?")) return;
+            const item = window.ideas.find(i => i.id === ideaId);
+            const now = Date.now();
+            const trashId = 'trash_' + now;
     
-    // Simpan ke riwayat trash global (jika Anda memiliki fitur ini di masa depan)
-    const trashPayload = { uid: currentUserUid, originalId: item.id, type: 'planner', title: item.title, content: `Tgl: ${item.date} | Link: ${item.link}`, deletedAt: now, expireAt: now + (30*24*60*60*1000) };
+            // Simpan ke riwayat trash global (jika Anda memiliki fitur ini di masa depan)
+            const trashPayload = { uid: currentUserUid, originalId: item.id, type: 'planner', title: item.title, content: `Tgl: ${item.date} | Link: ${item.link}`, deletedAt: now, expireAt: now + (30*24*60*60*1000) };
     
-    // Hapus ide dari array
-    window.ideas = window.ideas.filter(i => i.id !== ideaId);
+            // Hapus ide dari array
+            window.ideas = window.ideas.filter(i => i.id !== ideaId);
     
-    // LOGIKA BARU: Cek apakah Papan Pulihan sudah kosong setelah ide dihapus
-    const pulihanBoardId = "board_pulihan_" + currentUserUid;
-    const remainingPulihanIdeas = window.ideas.filter(i => i.boardId === pulihanBoardId).length;
+            // LOGIKA BARU: Cek apakah Papan Pulihan sudah kosong setelah ide dihapus
+            const pulihanBoardId = "board_pulihan_" + currentUserUid;
+            const remainingPulihanIdeas = window.ideas.filter(i => i.boardId === pulihanBoardId).length;
     
-    // Jika Papan Pulihan kosong DAN papannya masih eksis, hapus papannya!
-    if (remainingPulihanIdeas === 0 && window.boards.some(b => b.id === pulihanBoardId)) {
-        window.boards = window.boards.filter(b => b.id !== pulihanBoardId);
-        if (window.currentViewBoardId === pulihanBoardId) window.closeBoardView();
+            // Jika Papan Pulihan kosong DAN papannya masih eksis, hapus papannya!
+            if (remainingPulihanIdeas === 0 && window.boards.some(b => b.id === pulihanBoardId)) {
+                window.boards = window.boards.filter(b => b.id !== pulihanBoardId);
+                if (window.currentViewBoardId === pulihanBoardId) window.closeBoardView();
         
-        // Hapus papan pulihan dari database/lokal
-        if(USE_FIREBASE && fsMod) await fsMod.deleteDoc(fsMod.doc(dbRef, "creative_planner_boards", pulihanBoardId));
+                // Hapus papan pulihan dari database/lokal
+            if(USE_FIREBASE && fsMod) await fsMod.deleteDoc(fsMod.doc(dbRef, "creative_planner_boards", pulihanBoardId));
     }
     
     window.renderWorkspace();
