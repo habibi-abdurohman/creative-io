@@ -86,7 +86,6 @@
         .board-view-overlay { position: fixed; inset: 0; background: rgba(0,0,0,0.6); backdrop-filter: blur(8px); -webkit-backdrop-filter: blur(8px); z-index: 100000; display: none; align-items: center; justify-content: center; opacity: 0; transition: opacity 0.3s ease; padding: 0; width: 100vw; height: 100vh; }
         .board-view-overlay.active { display: flex; opacity: 1; }
         
-        /* Kartu popup utama diberikan posisi relative agar tombol close patuh pada batas kartu */
         .board-view-card { width: 100%; height: 100%; background: var(--bg-grad); display: flex; flex-direction: column; position: relative; overflow-x: hidden; max-width: 100vw; }
         
         .btn-close-floating { position: absolute; top: 20px; right: 20px; width: 40px; height: 40px; border-radius: 50%; background: var(--card-glass); backdrop-filter: blur(8px); border: 1px solid var(--border); color: var(--text-main); font-size: 16px; font-weight: 900; display: flex; align-items: center; justify-content: center; cursor: pointer; z-index: 100; box-shadow: 0 4px 12px rgba(0,0,0,0.05); transition: 0.2s; outline: none; }
@@ -137,10 +136,20 @@
         /* Kolom Tengah: Area Link Tepat Di Tengah */
         .idea-middle { min-width: 0; display: flex; justify-content: center; width: 100%; justify-self: center; }
         
-        .link-box { display: inline-flex; align-items: center; gap: 6px; padding: 8px 14px; background: var(--primary-soft); color: var(--primary); border-radius: 12px; width: 100%; border: 1px dashed rgba(37, 99, 235, 0.3); cursor: pointer; box-sizing: border-box; overflow: hidden; }
+        /* Hyperlink Interaktif (Menghilangkan Potong, Memunculkan Buka & Salin) */
+        .link-box { 
+            display: inline-flex; align-items: center; gap: 6px; padding: 8px 14px; 
+            background: var(--primary-soft); color: var(--primary); border-radius: 12px; 
+            width: 100%; border: 1px dashed rgba(37, 99, 235, 0.3); cursor: pointer; 
+            box-sizing: border-box; overflow: hidden; text-decoration: none; 
+            transition: background 0.2s;
+        }
+        .link-box:hover { background: rgba(37, 99, 235, 0.15); }
         .link-box .icon { font-size: 14px; flex-shrink: 0; pointer-events: none; }
-        .link-input { flex: 1; min-width: 0; background: transparent; border: none; color: inherit; font-family: inherit; font-size: 12px; font-weight: 700; outline: none; cursor: pointer; text-overflow: ellipsis; white-space: nowrap; overflow: hidden; padding: 0; pointer-events: none; }
-        .link-input::selection { background: rgba(37, 99, 235, 0.2); color: var(--text-main); }
+        .link-text { 
+            flex: 1; min-width: 0; display: block; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; 
+            font-size: 12px; font-weight: 700; color: inherit; user-select: all; -webkit-user-select: all;
+        }
         
         /* Kolom Kanan: Tombol Aksi */
         .idea-right { display: flex; gap: 8px; flex-shrink: 0; justify-self: end; }
@@ -152,7 +161,7 @@
         
         .idea-item.completed { opacity: 0.55; background: var(--card-tint); border-style: dashed; }
         .idea-item.completed .idea-title { text-decoration: line-through; color: var(--text-muted); }
-        .idea-item.completed .link-box { filter: grayscale(100%); opacity: 0.8; }
+        .idea-item.completed .link-box { filter: grayscale(100%); opacity: 0.8; pointer-events: none; }
         .empty-board { text-align: center; padding: 40px 20px; font-size: 13px; font-weight: 600; color: var(--text-muted); border: 1px dashed var(--border); border-radius: 20px; width: 100%; box-sizing: border-box; }
 
         /* =========================================================
@@ -181,7 +190,6 @@
         ========================================================= */
         @media(min-width: 1025px) {
             .board-view-card { width: 85%; height: 100%; border-left: 1px solid var(--border); border-right: 1px solid var(--border); margin: 0 auto; box-shadow: 0 0 60px rgba(0,0,0,0.3); position: relative; }
-            /* Kunci Tombol Close tepat 24px dari sudut kanan atas kartu putih */
             .btn-close-floating { top: 24px; right: 24px; width: 44px; height: 44px; }
         }
         
@@ -204,35 +212,28 @@
             .idea-item { 
                 grid-template-columns: 1fr auto; 
                 grid-template-rows: auto auto auto;
-                align-items: start; /* Mengunci elemen di sisi atas baris grid */
+                align-items: start; 
                 gap: 12px;
                 padding: 16px;
             }
             
-            /* Mengizinkan Judul & Tanggal dikendalikan langsung oleh Grid Utama */
             .idea-left { display: contents; }
             
             .idea-title {
                 grid-column: 1 / 2;
                 grid-row: 1;
-                padding-right: 8px; /* Ruang aman dari tombol */
-                
-                /* KUNCI PROPORSIONALITAS 1 BARIS: 
-                   Menurunkan posisi teks sedikit agar baseline-nya persis sejajar
-                   dengan bagian tengah tombol aksi yang tingginya 36px */
-                margin-top: 7px; 
+                padding-right: 8px; 
+                margin-top: 7px; /* Menurunkan sedikit agar sejajar tengah dengan tombol aksi */
             }
             
             .idea-right { 
                 grid-column: 2 / 3;
                 grid-row: 1;
                 justify-self: end;
-                /* Mengunci mutlak tombol aksi di posisi kanan atas, tidak akan pernah turun */
-                align-self: start; 
+                align-self: start; /* Mengunci tombol aksi agar tidak ikut merosot ke bawah */
             }
             
             .badge {
-                /* Kebebasan membentang dari paling ujung kiri hingga batas kanan layar */
                 grid-column: 1 / -1; 
                 grid-row: 2;
                 width: fit-content;
@@ -505,6 +506,17 @@
                 
                 const linkDisplay = (i.link === '-' || !i.link) ? 'Tidak ada tautan referensi' : i.link;
                 
+                // Cek apakah link tersebut valid untuk dibuka
+                const isValidLink = i.link && i.link !== '-' && i.link.trim() !== '';
+                // Pastikan format link menyertakan protokol (http/https)
+                let realHref = 'javascript:void(0)';
+                let targetAttr = '';
+                
+                if (isValidLink) {
+                    realHref = i.link.startsWith('http') ? i.link : 'https://' + i.link;
+                    targetAttr = 'target="_blank" rel="noopener noreferrer"';
+                }
+                
                 return `
                 <div class="idea-item ${i.done ? "completed" : ""}">
                     <div class="idea-left">
@@ -513,10 +525,10 @@
                     </div>
                     
                     <div class="idea-middle">
-                        <div class="link-box" onclick="event.stopPropagation(); const i = this.querySelector('input'); i.select(); i.setSelectionRange(0, 99999);" title="Klik teks untuk salin">
+                        <a href="${realHref}" ${targetAttr} class="link-box" onclick="event.stopPropagation();" title="${isValidLink ? 'Klik untuk Buka, Tahan untuk Salin' : ''}">
                             <span class="icon">🔗</span>
-                            <input type="text" class="link-input" readonly value="${linkDisplay}">
-                        </div>
+                            <span class="link-text">${linkDisplay}</span>
+                        </a>
                     </div>
 
                     <div class="idea-right">
