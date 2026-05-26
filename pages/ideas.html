@@ -182,8 +182,9 @@
            RESPONSIVITAS KETAT
         ========================================================= */
         @media(min-width: 1025px) {
-            .board-view-card { width: 85%; height: 100%; border-left: 1px solid var(--border); border-right: 1px solid var(--border); margin: 0 auto; box-shadow: 0 0 60px rgba(0,0,0,0.3); }
-            .btn-close-floating { top: 30px; right: calc(7.5% + 20px); width: 44px; height: 44px; }
+            .board-view-card { width: 85%; height: 100%; border-left: 1px solid var(--border); border-right: 1px solid var(--border); margin: 0 auto; box-shadow: 0 0 60px rgba(0,0,0,0.3); position: relative; }
+            /* Tombol Close dikunci persis di sudut kanan atas popup putih */
+            .btn-close-floating { top: 24px; right: 24px; width: 44px; height: 44px; }
         }
         
         @media(max-width: 1024px) {
@@ -201,26 +202,46 @@
             .board-form-grid { grid-template-columns: 1fr; gap: 12px; }
             .board-view-form-area { padding: 20px; }
             
-            /* KARTU IDE SELULER - GRID ANTI-TABRAK */
+            /* KARTU IDE SELULER - GRID FLEKSIBEL KHUSUS */
             .idea-item { 
-                grid-template-columns: 1fr auto; /* Kolom 1 (Teks), Kolom 2 (Tombol fixed) */
+                grid-template-columns: 1fr auto; 
+                grid-template-rows: auto auto auto;
                 align-items: start;
                 gap: 12px;
                 padding: 16px;
             }
-            .idea-left { 
-                grid-column: 1 / 2; /* Mengunci teks murni di kolom 1, tak mungkin tabrak tombol */
-                width: 100%; 
+            
+            /* Melepas ikatan parent agar anak-anaknya masuk langsung ke grid utama */
+            .idea-left { display: contents; }
+            
+            /* Judul terkunci di kiri (tidak nabrak tombol) */
+            .idea-title {
+                grid-column: 1 / 2;
+                grid-row: 1;
+                padding-right: 8px; /* Jarak aman dari tombol */
             }
+            
+            /* Tombol aksi diam di pojok kanan atas */
             .idea-right { 
                 grid-column: 2 / 3;
-                grid-row: 1 / 2;
+                grid-row: 1;
                 justify-self: end;
             }
+            
+            /* Tanggal (Badge) ditaruh di baris ke-2, Membentang penuh kiri ke kanan! */
+            .badge {
+                grid-column: 1 / -1; 
+                grid-row: 2;
+                width: auto;
+                max-width: 100%;
+                justify-self: start;
+            }
+            
+            /* Link ditaruh di baris ke-3, Membentang penuh */
             .idea-middle { 
-                grid-column: 1 / -1; /* Link baris baru full width */
+                grid-column: 1 / -1; 
+                grid-row: 3;
                 width: 100%;
-                margin-top: 4px;
             }
         }
 
@@ -482,7 +503,8 @@
                 
                 const linkDisplay = (i.link === '-' || !i.link) ? 'Tidak ada tautan referensi' : i.link;
                 
-                // Interaksi Link: Gunakan input readonly. Klik -> auto select/blok semua teks.
+                // Input interaktif: Cukup diklik, maka seluruh teks akan terseleksi. 
+                // Di ponsel akan otomatis memancing popup "Copy / Open Link".
                 return `
                 <div class="idea-item ${i.done ? "completed" : ""}">
                     <div class="idea-left">
@@ -491,7 +513,7 @@
                     </div>
                     
                     <div class="idea-middle">
-                        <div class="link-box" onclick="event.stopPropagation(); const i = this.querySelector('input'); i.select(); i.setSelectionRange(0, 99999);" title="Klik teks untuk blok otomatis">
+                        <div class="link-box" onclick="event.stopPropagation(); const i = this.querySelector('input'); i.select(); i.setSelectionRange(0, 99999);" title="Klik teks untuk salin">
                             <span class="icon">🔗</span>
                             <input type="text" class="link-input" readonly value="${linkDisplay}">
                         </div>
