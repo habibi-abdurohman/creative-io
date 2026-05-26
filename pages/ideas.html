@@ -698,27 +698,44 @@
         }
 
         window.deleteIdea = async (ideaId) => {
-            if(!confirm("Hapus ide ke Trash?")) return;
-            const item = window.ideas.find(i => i.id === ideaId);
-            const now = Date.now();
-            const trashId = 'trash_' + now;
-            const trashPayload = { uid: currentUserUid, originalId: item.id, type: 'planner', title: item.title, content: `Tgl: ${item.date} | Link: ${item.link}`, deletedAt: now, expireAt: now + (30*24*60*60*1000) };
-            
-            window.ideas = window.ideas.filter(i => i.id !== ideaId);
-            
-            window.renderWorkspace();
-            if (window.currentViewBoardId) window.renderBoardViewContent();
-            
-            if(USE_FIREBASE && fsMod) {
-                await fsMod.setDoc(fsMod.doc(dbRef, "creative_trash", trashId), trashPayload);
-                await fsMod.deleteDoc(fsMod.doc(dbRef, "creative_ideas", ideaId));
-            } else {
-                let trash = JSON.parse(localStorage.getItem('creative_trash')) || [];
-                trash.push({ id: trashId, ...trashPayload });
-                localStorage.setItem('creative_trash', JSON.stringify(trash));
-                localStorage.setItem("creative_ideas", JSON.stringify(window.ideas));
-            }
-        }
+    if(!confirm("Hapus ide ke Trash?")) return;
+    const item = window.ideas.find(i => i.id === ideaId);
+    const now = Date.now();
+    const trashId = 'trash_' + now;
+    
+    // Simpan ke riwayat trash global (jika Anda memiliki fitur ini di masa depan)
+    const trashPayload = { uid: currentUserUid, originalId: item.id, type: 'planner', title: item.title, content: `Tgl: ${item.date} | Link: ${item.link}`, deletedAt: now, expireAt: now + (30*24*60*60*1000) };
+    
+    // Hapus ide dari array
+    window.ideas = window.ideas.filter(i => i.id !== ideaId);
+    
+    // LOGIKA BARU: Cek apakah Papan Pulihan sudah kosong setelah ide dihapus
+    const pulihanBoardId = "board_pulihan_" + currentUserUid;
+    const remainingPulihanIdeas = window.ideas.filter(i => i.boardId === pulihanBoardId).length;
+    
+    // Jika Papan Pulihan kosong DAN papannya masih eksis, hapus papannya!
+    if (remainingPulihanIdeas === 0 && window.boards.some(b => b.id === pulihanBoardId)) {
+        window.boards = window.boards.filter(b => b.id !== pulihanBoardId);
+        if (window.currentViewBoardId === pulihanBoardId) window.closeBoardView();
+        
+        // Hapus papan pulihan dari database/lokal
+        if(USE_FIREBASE && fsMod) await fsMod.deleteDoc(fsMod.doc(dbRef, "creative_planner_boards", pulihanBoardId));
+    }
+    
+    window.renderWorkspace();
+    if (window.currentViewBoardId) window.renderBoardViewContent();
+    
+    if(USE_FIREBASE && fsMod) {
+        await fsMod.setDoc(fsMod.doc(dbRef, "creative_trash", trashId), trashPayload);
+        await fsMod.deleteDoc(fsMod.doc(dbRef, "creative_ideas", ideaId));
+    } else {
+        let trash = JSON.parse(localStorage.getItem('creative_trash')) || [];
+        trash.push({ id: trashId, ...trashPayload });
+        localStorage.setItem('creative_trash', JSON.stringify(trash));
+        localStorage.setItem("creative_ideas", JSON.stringify(window.ideas));
+        localStorage.setItem("creative_planner_boards", JSON.stringify(window.boards)); // Pastikan perubahan papan tersimpan
+    }
+}
 
         window.openEditModal = (ideaId) => {
             const idea = window.ideas.find(i => i.id === ideaId);
