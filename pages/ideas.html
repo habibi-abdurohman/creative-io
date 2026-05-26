@@ -113,36 +113,30 @@
         /* =========================================================
            KARTU IDE KONTEN - TATA LETAK GRID ANTI-TABRAK
         ========================================================= */
-        /* DEFAULT (LAPTOP & TABLET) - PROPORSI 10:10:10 (3 Kolom Seimbang) */
         .idea-item { 
             background: var(--card-solid); border: 1px solid var(--border); border-radius: 16px; 
             padding: 16px 20px; margin-bottom: 12px; box-shadow: var(--shadow-flat); 
             width: 100%; box-sizing: border-box; min-width: 0; overflow: hidden;
-            
             display: grid;
             grid-template-columns: 1fr 1fr 1fr;
             gap: 16px;
             align-items: center; 
         }
         
-        /* Kolom Kiri: Judul dan Tanggal */
         .idea-left { display: flex; flex-direction: column; gap: 8px; min-width: 0; width: 100%; justify-self: start; }
-        
         .idea-title { font-size: 15px; font-weight: 800; line-height: 1.4; color: var(--text-main); word-break: break-word; overflow-wrap: break-word; white-space: normal; }
         
         .badge { display: inline-flex; align-items: flex-start; gap: 4px; background: var(--card-tint); color: var(--text-muted); border: 1px solid var(--border); padding: 6px 10px; border-radius: 8px; font-size: 11px; font-weight: 800; white-space: normal; word-break: break-word; text-align: left; line-height: 1.4; width: fit-content; max-width: 100%; }
         .badge.restored { background: rgba(245, 158, 11, 0.1); color: var(--warning); border-color: rgba(245, 158, 11, 0.2); }
         
-        /* Kolom Tengah: Area Link Tepat Di Tengah */
         .idea-middle { min-width: 0; display: flex; justify-content: center; width: 100%; justify-self: center; }
         
-        /* Hyperlink Interaktif (Menghilangkan Potong, Memunculkan Buka & Salin) */
+        /* Teks murni untuk memancing Smart Text Selection Android */
         .link-box { 
             display: inline-flex; align-items: center; gap: 6px; padding: 8px 14px; 
             background: var(--primary-soft); color: var(--primary); border-radius: 12px; 
             width: 100%; border: 1px dashed rgba(37, 99, 235, 0.3); cursor: pointer; 
-            box-sizing: border-box; overflow: hidden; text-decoration: none; 
-            transition: background 0.2s;
+            box-sizing: border-box; overflow: hidden; transition: background 0.2s;
         }
         .link-box:hover { background: rgba(37, 99, 235, 0.15); }
         .link-box .icon { font-size: 14px; flex-shrink: 0; pointer-events: none; }
@@ -151,7 +145,6 @@
             font-size: 12px; font-weight: 700; color: inherit; user-select: all; -webkit-user-select: all;
         }
         
-        /* Kolom Kanan: Tombol Aksi */
         .idea-right { display: flex; gap: 8px; flex-shrink: 0; justify-self: end; }
         .btn-icon { width: 36px; height: 36px; border-radius: 10px; cursor: pointer; border: 1px solid var(--border); display: flex; align-items: center; justify-content: center; background: var(--card-solid); font-size: 14px; color: var(--text-main); outline: none; flex-shrink: 0; }
         .btn-edit { color: var(--text-muted); }
@@ -161,7 +154,7 @@
         
         .idea-item.completed { opacity: 0.55; background: var(--card-tint); border-style: dashed; }
         .idea-item.completed .idea-title { text-decoration: line-through; color: var(--text-muted); }
-        .idea-item.completed .link-box { filter: grayscale(100%); opacity: 0.8; pointer-events: none; }
+        .idea-item.completed .link-box { filter: grayscale(100%); opacity: 0.8; }
         .empty-board { text-align: center; padding: 40px 20px; font-size: 13px; font-weight: 600; color: var(--text-muted); border: 1px dashed var(--border); border-radius: 20px; width: 100%; box-sizing: border-box; }
 
         /* =========================================================
@@ -208,7 +201,6 @@
             .board-form-grid { grid-template-columns: 1fr; gap: 12px; }
             .board-view-form-area { padding: 20px; }
             
-            /* KARTU IDE SELULER - TATA LETAK GRID ANTI-TABRAK & PROPORSIONAL */
             .idea-item { 
                 grid-template-columns: 1fr auto; 
                 grid-template-rows: auto auto auto;
@@ -223,14 +215,14 @@
                 grid-column: 1 / 2;
                 grid-row: 1;
                 padding-right: 8px; 
-                margin-top: 7px; /* Menurunkan sedikit agar sejajar tengah dengan tombol aksi */
+                margin-top: 7px;
             }
             
             .idea-right { 
                 grid-column: 2 / 3;
                 grid-row: 1;
                 justify-self: end;
-                align-self: start; /* Mengunci tombol aksi agar tidak ikut merosot ke bawah */
+                align-self: start; 
             }
             
             .badge {
@@ -390,6 +382,17 @@
         let dbRef = null;
         let fsMod = null;
 
+        // Script ajaib untuk menyeleksi elemen teks dan memancing menu Android/iOS
+        window.selectLinkText = function(container) {
+            const textEl = container.querySelector('.link-text');
+            if (!textEl) return;
+            const range = document.createRange();
+            range.selectNodeContents(textEl);
+            const sel = window.getSelection();
+            sel.removeAllRanges();
+            sel.addRange(range);
+        };
+
         // Manajemen Z-index Dropdown
         document.addEventListener('click', function(e) {
             if (!e.target.closest('.dropdown-wrap')) {
@@ -506,17 +509,8 @@
                 
                 const linkDisplay = (i.link === '-' || !i.link) ? 'Tidak ada tautan referensi' : i.link;
                 
-                // Cek apakah link tersebut valid untuk dibuka
-                const isValidLink = i.link && i.link !== '-' && i.link.trim() !== '';
-                // Pastikan format link menyertakan protokol (http/https)
-                let realHref = 'javascript:void(0)';
-                let targetAttr = '';
-                
-                if (isValidLink) {
-                    realHref = i.link.startsWith('http') ? i.link : 'https://' + i.link;
-                    targetAttr = 'target="_blank" rel="noopener noreferrer"';
-                }
-                
+                // Pembungkus link kini kembali menjadi div/span murni.
+                // Ketika diklik, JS memblok teks URL dan Android otomatis memunculkan "Salin" & "Buka".
                 return `
                 <div class="idea-item ${i.done ? "completed" : ""}">
                     <div class="idea-left">
@@ -525,10 +519,10 @@
                     </div>
                     
                     <div class="idea-middle">
-                        <a href="${realHref}" ${targetAttr} class="link-box" onclick="event.stopPropagation();" title="${isValidLink ? 'Klik untuk Buka, Tahan untuk Salin' : ''}">
+                        <div class="link-box" onclick="event.stopPropagation(); window.selectLinkText(this);" title="Klik untuk Salin/Buka Tautan">
                             <span class="icon">🔗</span>
                             <span class="link-text">${linkDisplay}</span>
-                        </a>
+                        </div>
                     </div>
 
                     <div class="idea-right">
