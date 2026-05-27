@@ -1,0 +1,449 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+    <title>Collab Hub - Creative.io</title>
+    <link rel="icon" type="image/png" sizes="192x192" href="../assets/favicon-192x192.png">
+
+    <link rel="stylesheet" href="../navbar/navbar.css">
+    <link rel="manifest" href="../manifest.json">
+    <meta name="theme-color" content="#2563eb">
+
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800;900&display=swap');
+        * { margin: 0; padding: 0; box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+        *::-webkit-scrollbar { display: none; }
+        :root { --bg-grad: linear-gradient(180deg, #f8fbff 0%, #eef4ff 100%); --card-glass: rgba(255, 255, 255, 0.9); --card-solid: #ffffff; --card-tint: #f1f5f9; --border: #e2e8f0; --text-main: #0f172a; --text-muted: #64748b; --primary: #2563eb; --primary-grad: linear-gradient(135deg, #3b82f6, #2563eb); --primary-soft: rgba(37, 99, 235, 0.1); --success: #16a34a; --danger: #ef4444; --warning: #f59e0b; --shadow-flat: 0 4px 20px rgba(0, 0, 0, 0.04); --radius-btn: 14px; --radius-card: 24px; }
+        body.dark { --bg-grad: linear-gradient(180deg, #0f172a 0%, #1e293b 100%); --card-glass: rgba(30, 41, 59, 0.9); --card-solid: #1e293b; --card-tint: #0f172a; --border: #334155; --text-main: #f8fafc; --text-muted: #94a3b8; --primary-soft: rgba(59, 130, 246, 0.2); --shadow-flat: 0 4px 20px rgba(0, 0, 0, 0.2); --danger-soft: rgba(239, 68, 68, 0.15); }
+        body { font-family: 'Inter', system-ui, sans-serif; background: var(--bg-grad); color: var(--text-main); min-height: 100vh; padding: 86px 16px 100px; transition: background 0.3s, color 0.3s; overflow-x: hidden; width: 100vw; max-width: 100%; }
+        
+        .bg-glow { position: fixed; border-radius: 50%; filter: blur(90px); z-index: 0; opacity: 0.5; pointer-events: none; }
+        .bg-glow.one { width: 340px; height: 340px; background: rgba(59, 130, 246, 0.15); top: -50px; left: -100px; }
+        .bg-glow.two { width: 320px; height: 320px; background: rgba(16, 185, 129, 0.15); bottom: 100px; right: -100px; }
+        
+        .wrapper { position: relative; z-index: 2; max-width: 1200px; margin: 0 auto; width: 100%; display: flex; flex-direction: column; min-height: calc(100vh - 186px); }
+        .page-header { margin-bottom: 32px; width: 100%; }
+        .page-header h1 { font-size: 28px; font-weight: 900; letter-spacing: -0.5px; margin-bottom: 6px; }
+        .page-header p { font-size: 14px; color: var(--text-muted); line-height: 1.6; }
+        
+        /* MENU LOBI (BUAT / GABUNG) */
+        .action-cards-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin-bottom: 40px; }
+        .action-card { background: var(--card-glass); backdrop-filter: blur(12px); border: 1px dashed var(--border); border-radius: 20px; padding: 24px; display: flex; align-items: center; gap: 16px; cursor: pointer; transition: 0.2s; box-shadow: var(--shadow-flat); outline: none; }
+        .action-card:hover { transform: translateY(-4px); border-color: var(--primary); background: var(--card-solid); }
+        .action-icon { width: 50px; height: 50px; border-radius: 14px; background: var(--primary-soft); color: var(--primary); font-size: 24px; display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
+        .action-icon.join { background: rgba(16, 185, 129, 0.1); color: #10b981; }
+        .action-text h3 { font-size: 16px; font-weight: 800; margin-bottom: 4px; }
+        .action-text p { font-size: 12px; color: var(--text-muted); line-height: 1.4; }
+
+        .section-title { font-size: 18px; font-weight: 800; margin-bottom: 16px; color: var(--text-main); display: flex; align-items: center; gap: 8px; }
+        
+        /* KARTU RUANG KOLABORASI */
+        .board-container { display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap: 16px; align-items: start; width: 100%; }
+        .board-card { background: var(--card-glass); backdrop-filter: blur(12px); border: 1px solid var(--border); border-radius: 20px; padding: 20px 24px; box-shadow: var(--shadow-flat); display: flex; justify-content: space-between; align-items: center; cursor: pointer; position: relative; z-index: 1; transition: background 0.2s ease; text-decoration: none; color: inherit; }
+        .board-card:hover { background: #e2e8f0; }
+        body.dark .board-card:hover { background: #334155; }
+        
+        .board-info-wrap { display: flex; flex-direction: column; gap: 6px; flex: 1; min-width: 0; padding-right: 12px; }
+        .board-badge { font-size: 10px; font-weight: 800; text-transform: uppercase; letter-spacing: 0.5px; padding: 4px 8px; border-radius: 6px; width: fit-content; }
+        .badge-idea { background: rgba(37, 99, 235, 0.1); color: var(--primary); }
+        .badge-script { background: rgba(245, 158, 11, 0.1); color: var(--warning); }
+        .badge-notes { background: rgba(16, 185, 129, 0.1); color: #10b981; }
+        
+        .board-title { font-size: 16px; font-weight: 800; color: var(--text-main); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; width: 100%; pointer-events: none; }
+        
+        .board-actions { display: flex; align-items: center; gap: 8px; z-index: 10; flex-shrink: 0; }
+        .member-count { background: var(--card-tint); color: var(--text-muted); padding: 6px 12px; border-radius: 20px; font-size: 12px; font-weight: 800; border: 1px solid var(--border); display: flex; align-items: center; gap: 4px; }
+        
+        .dropdown-wrap { position: relative; }
+        .btn-dots { background: transparent; border: none; font-size: 20px; font-weight: 900; color: var(--text-muted); cursor: pointer; display: flex; align-items: center; justify-content: center; padding: 4px 8px; transition: 0.2s; border-radius: 10px; outline: none; }
+        .btn-dots:hover { background: rgba(0,0,0,0.05); color: var(--text-main); }
+        body.dark .btn-dots:hover { background: rgba(255,255,255,0.1); }
+        
+        .dropdown-menu { position: absolute; top: 100%; right: 0; margin-top: 8px; background: var(--card-solid); border: 1px solid var(--border); border-radius: 14px; padding: 8px; display: none; flex-direction: column; gap: 2px; min-width: 170px; box-shadow: 0 10px 40px rgba(0,0,0,0.1); z-index: 1000; }
+        .dropdown-menu.active { display: flex; }
+        .dropdown-menu button { background: transparent; border: none; padding: 10px 12px; border-radius: 10px; font-size: 13px; font-weight: 700; color: var(--text-main); text-align: left; cursor: pointer; display: flex; align-items: center; gap: 10px; width: 100%; }
+        .dropdown-menu button:hover { background: var(--card-tint); }
+        .dropdown-menu button.danger { color: var(--danger); }
+        .dropdown-menu button.danger:hover { background: rgba(239, 68, 68, 0.1); }
+
+        .empty-state-global { grid-column: 1 / -1; text-align: center; padding: 60px 20px; background: var(--card-glass); border: 1px dashed var(--border); border-radius: var(--radius-card); color: var(--text-muted); font-size: 14px; font-weight: 600; width: 100%; }
+        
+        /* MODAL STYLE */
+        .modal-overlay { position: fixed; inset: 0; background: rgba(0,0,0,0.4); backdrop-filter: blur(4px); z-index: 100001; display: none; align-items: center; justify-content: center; padding: 20px; width: 100vw; height: 100vh; box-sizing: border-box; }
+        .modal-overlay.active { display: flex; }
+        .modal-card { background: var(--card-solid); width: 100%; max-width: 380px; border-radius: var(--radius-card); padding: 24px; box-shadow: var(--shadow-flat); border: 1px solid var(--border); box-sizing: border-box; text-align: center; }
+        .modal-card h3 { font-size: 20px; font-weight: 900; margin-bottom: 8px; color: var(--text-main); }
+        .modal-card p { font-size: 13px; color: var(--text-muted); margin-bottom: 20px; line-height: 1.5; }
+        
+        .input-group { text-align: left; margin-bottom: 16px; }
+        .input-group label { display: block; font-size: 12px; font-weight: 800; color: var(--text-muted); margin-bottom: 8px; }
+        .modal-input, .modal-select { width: 100%; padding: 14px 16px; border-radius: 14px; border: 1px solid var(--border); background: var(--card-tint); color: var(--text-main); font-size: 14px; font-weight: 600; outline: none; transition: 0.2s; box-sizing: border-box; }
+        .modal-input:focus, .modal-select:focus { border-color: var(--primary); box-shadow: 0 0 0 3px var(--primary-soft); }
+        .modal-select { appearance: none; cursor: pointer; }
+        
+        .modal-actions { display: flex; gap: 12px; margin-top: 24px; }
+        .btn-modal { flex: 1; padding: 14px; border-radius: 14px; font-size: 14px; font-weight: 800; cursor: pointer; border: none; transition: 0.2s; outline: none; }
+        .btn-cancel { background: var(--card-tint); color: var(--text-main); border: 1px solid var(--border); }
+        .btn-cancel:hover { background: #e2e8f0; }
+        body.dark .btn-cancel:hover { background: #334155; }
+        .btn-confirm { background: var(--primary-grad); color: white; }
+        
+        /* TAMPILAN INVITE CODE */
+        .code-box { background: var(--card-tint); border: 2px dashed var(--border); padding: 20px; border-radius: 16px; font-size: 32px; font-weight: 900; letter-spacing: 4px; color: var(--primary); margin: 20px 0; user-select: all; }
+        
+        .info-row { display: flex; justify-content: space-between; margin-bottom: 12px; font-size: 13px; gap: 12px; text-align: left;}
+        .info-label { color: var(--text-muted); font-weight: 600; flex-shrink: 0; }
+        .info-value { font-weight: 800; color: var(--text-main); text-align: right; word-break: break-all; }
+
+        @media(max-width: 768px) {
+            .action-cards-grid { grid-template-columns: 1fr; }
+        }
+    </style>
+</head>
+<body>
+
+    <div id="navbar-container"></div>
+    <div class="bg-glow one"></div><div class="bg-glow two"></div>
+
+    <div class="wrapper">
+        <div class="page-header">
+            <h1>Lobi Kolaborasi</h1>
+            <p>Pintu masuk untuk mengelola proyek tim. Buat ruang baru, bagikan kode invite, dan mulai bekerja bersama teman atau kolega Anda secara real-time.</p>
+        </div>
+
+        <div class="action-cards-grid">
+            <div class="action-card" onclick="openCreateModal()">
+                <div class="action-icon">➕</div>
+                <div class="action-text">
+                    <h3>Buat Ruang Baru</h3>
+                    <p>Mulai proyek baru & dapatkan kode invite untuk tim Anda.</p>
+                </div>
+            </div>
+            
+            <div class="action-card" onclick="openJoinModal()">
+                <div class="action-icon join">🔑</div>
+                <div class="action-text">
+                    <h3>Gabung via Kode</h3>
+                    <p>Masukkan kode invite dari teman untuk mengakses ruang mereka.</p>
+                </div>
+            </div>
+        </div>
+
+        <div class="section-title">📂 Ruang Kolaborasi Saya</div>
+        <div class="board-container" id="collabContainer">
+            </div>
+    </div>
+
+    <div class="modal-overlay" id="createModal">
+        <div class="modal-card">
+            <h3>Buat Ruang Tim</h3>
+            <p>Pilih tipe kolaborasi dan berikan nama proyeknya.</p>
+            
+            <div class="input-group">
+                <label>Jenis Ruang</label>
+                <select class="modal-select" id="roomTypeInput">
+                    <option value="Idea Board">💡 Idea Board (Konten)</option>
+                    <option value="Script" disabled>📝 Script (Segera)</option>
+                    <option value="Notes" disabled>📒 Notes (Segera)</option>
+                </select>
+            </div>
+            
+            <div class="input-group">
+                <label>Nama Proyek</label>
+                <input type="text" class="modal-input" id="roomNameInput" placeholder="Misal: Campaign TikTok 2026">
+            </div>
+
+            <div class="modal-actions">
+                <button class="btn-modal btn-cancel" onclick="closeCreateModal()">Batal</button>
+                <button class="btn-modal btn-confirm" onclick="confirmCreateRoom()">Buat Ruang</button>
+            </div>
+        </div>
+    </div>
+
+    <div class="modal-overlay" id="successModal">
+        <div class="modal-card">
+            <h3>Ruang Berhasil Dibuat!</h3>
+            <p>Bagikan kode ini kepada teman agar mereka bisa masuk ke ruang Anda.</p>
+            
+            <div class="code-box" id="generatedCodeDisplay">------</div>
+            
+            <button class="btn-modal btn-confirm" style="width: 100%; margin-top: 8px;" onclick="closeSuccessModal()">Tutup</button>
+        </div>
+    </div>
+
+    <div class="modal-overlay" id="joinModal">
+        <div class="modal-card">
+            <h3>Gabung ke Ruang</h3>
+            <p>Masukkan 6 digit kode invite yang Anda terima dari teman.</p>
+            
+            <div class="input-group">
+                <input type="text" class="modal-input" id="joinCodeInput" placeholder="Ketik kode di sini..." style="text-align: center; font-size: 20px; font-weight: 900; letter-spacing: 2px; text-transform: uppercase;" maxlength="6">
+            </div>
+
+            <div class="modal-actions">
+                <button class="btn-modal btn-cancel" onclick="closeJoinModal()">Batal</button>
+                <button class="btn-modal btn-confirm" onclick="confirmJoinRoom()">Gabung Sekarang</button>
+            </div>
+        </div>
+    </div>
+
+    <div class="modal-overlay" id="infoRoomModal">
+        <div class="modal-card">
+            <h3 style="margin-bottom: 24px;">Informasi Ruang</h3>
+            
+            <div class="info-row"><span class="info-label">Nama Proyek</span> <span class="info-value" id="infoRoomName">-</span></div>
+            <div class="info-row"><span class="info-label">Status Anda</span> <span class="info-value" id="infoRoomRole">-</span></div>
+            <div class="info-row"><span class="info-label">Kode Invite</span> <span class="info-value" id="infoRoomCode" style="color: var(--primary); letter-spacing: 1px;">-</span></div>
+            
+            <button class="btn-modal btn-cancel" style="width: 100%; margin-top: 24px;" onclick="closeInfoRoomModal()">Tutup</button>
+        </div>
+    </div>
+
+    <script src="../navbar/navbar.js"></script>
+    <script src="../js/pwa.js"></script>
+
+    <script type="module">
+        import { onSnapshot, collection, query, where, doc, setDoc, getDocs, updateDoc, deleteDoc, arrayUnion, arrayRemove } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
+        
+        let currentUserUid = null;
+        let dbRef = null;
+        window.collabRooms = [];
+
+        // Penanganan klik di luar menu dropdown
+        document.addEventListener('click', function(e) {
+            if (!e.target.closest('.dropdown-wrap')) {
+                document.querySelectorAll('.dropdown-menu').forEach(m => m.classList.remove('active'));
+                document.querySelectorAll('.board-card').forEach(c => { c.style.zIndex = '1'; });
+            }
+        });
+
+        document.addEventListener("DOMContentLoaded", () => {
+            if (localStorage.getItem("dashboard_theme") === "dark") { document.body.classList.add("dark"); }
+
+            import("../js/firebase.js").then(module => {
+                dbRef = module.db;
+                import("https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js").then(authLib => {
+                    authLib.onAuthStateChanged(module.auth, (user) => {
+                        if (user) {
+                            currentUserUid = user.uid;
+                            listenToMyRooms();
+                        } else {
+                            window.location.replace("../login.html");
+                        }
+                    });
+                });
+            }).catch(err => console.error("Firebase Gagal Dimuat:", err));
+        });
+
+        // MESIN REAL-TIME LISTENER
+        function listenToMyRooms() {
+            const q = query(collection(dbRef, "collab_boards"), where("members", "array-contains", currentUserUid));
+            
+            onSnapshot(q, (snapshot) => {
+                window.collabRooms = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
+                
+                // Urutkan berdasarkan waktu pembuatan terbaru
+                window.collabRooms.sort((a, b) => b.createdAt - a.createdAt);
+                renderLobby();
+            }, (error) => {
+                console.error("Gagal menarik data real-time: ", error);
+            });
+        }
+
+        // FUNGSI RENDER TAMPILAN LOBI
+        function renderLobby() {
+            const container = document.getElementById("collabContainer");
+            
+            if (window.collabRooms.length === 0) {
+                container.innerHTML = `<div class="empty-state-global">Belum ada ruang kolaborasi.<br>Buat ruang baru atau minta kode invite dari teman Anda.</div>`;
+                return;
+            }
+
+            container.innerHTML = window.collabRooms.map(room => {
+                const isOwner = room.ownerId === currentUserUid;
+                const badgeClass = room.type === "Idea Board" ? "badge-idea" : (room.type === "Script" ? "badge-script" : "badge-notes");
+                
+                // Logika Menu Dropdown (Leave vs Delete)
+                const leaveOrDeleteHTML = isOwner 
+                    ? `<button class="danger" onclick="event.preventDefault(); window.deleteRoom('${room.id}', '${room.name}')">🗑️ Hapus Permanen Ruang</button>`
+                    : `<button class="danger" onclick="event.preventDefault(); window.leaveRoom('${room.id}', '${room.name}')">🚪 Keluar dari Ruang</button>`;
+
+                // Dinamis mengarahkan link berdasarkan tipe ruang
+                // Karena kita baru punya collab-ideas.html, kita arahkan ke sana
+                let targetUrl = "javascript:void(0)";
+                if (room.type === "Idea Board") targetUrl = `collab-ideas.html?id=${room.id}`;
+
+                return `
+                <a href="${targetUrl}" class="board-card" id="room_card_${room.id}">
+                    <div class="board-info-wrap">
+                        <div class="board-badge ${badgeClass}">${room.type}</div>
+                        <div class="board-title" title="${room.name}">${room.name}</div>
+                    </div>
+                    
+                    <div class="board-actions">
+                        <div class="member-count" title="${room.members.length} Anggota">👥 ${room.members.length}</div>
+                        
+                        <div class="dropdown-wrap">
+                            <button class="btn-dots" onclick="event.preventDefault(); window.toggleRoomMenu('${room.id}')">⋮</button>
+                            <div class="dropdown-menu" id="menu_${room.id}">
+                                <button onclick="event.preventDefault(); window.showRoomInfo('${room.id}')">ℹ️ Info Kode Invite</button>
+                                <div style="height: 1px; background: var(--border); margin: 4px 0;"></div>
+                                ${leaveOrDeleteHTML}
+                            </div>
+                        </div>
+                    </div>
+                </a>
+                `;
+            }).join('');
+        }
+
+        // =========================================================
+        // AKSI JAVASCRIPT GLOBAL (DIIKAT KE WINDOW)
+        // =========================================================
+        
+        window.toggleRoomMenu = (roomId) => {
+            const menu = document.getElementById('menu_' + roomId);
+            const card = document.getElementById('room_card_' + roomId);
+            const isCurrentlyActive = menu.classList.contains('active');
+            
+            document.querySelectorAll('.dropdown-menu').forEach(m => m.classList.remove('active'));
+            document.querySelectorAll('.board-card').forEach(c => { c.style.zIndex = '1'; });
+            
+            if (!isCurrentlyActive) {
+                menu.classList.add('active');
+                if (card) card.style.zIndex = '100'; 
+            }
+        };
+
+        // --- BUAT RUANG (CREATE) ---
+        window.openCreateModal = () => { document.getElementById('roomNameInput').value = ""; document.getElementById('createModal').classList.add('active'); };
+        window.closeCreateModal = () => document.getElementById('createModal').classList.remove('active');
+        
+        window.confirmCreateRoom = async () => {
+            const roomType = document.getElementById('roomTypeInput').value;
+            const roomName = document.getElementById('roomNameInput').value.trim();
+            
+            if(!roomName) return alert("Nama proyek tidak boleh kosong!");
+            
+            // Generate Invite Code (6 Karakter Unik)
+            const inviteCode = Math.random().toString(36).substring(2, 8).toUpperCase();
+            const roomId = "collab_board_" + Date.now();
+            
+            const payload = {
+                id: roomId,
+                name: roomName,
+                type: roomType,
+                ownerId: currentUserUid,
+                members: [currentUserUid], // Owner otomatis masuk jadi anggota pertama
+                inviteCode: inviteCode,
+                createdAt: Date.now()
+            };
+
+            try {
+                await setDoc(doc(dbRef, "collab_boards", roomId), payload);
+                window.closeCreateModal();
+                
+                // Tampilkan Kode Invite ke Layar
+                document.getElementById('generatedCodeDisplay').innerText = inviteCode;
+                document.getElementById('successModal').classList.add('active');
+                
+            } catch (err) {
+                console.error("Gagal membuat ruang:", err);
+                alert("Terjadi kesalahan sistem saat membuat ruang.");
+            }
+        };
+
+        window.closeSuccessModal = () => document.getElementById('successModal').classList.remove('active');
+
+        // --- GABUNG RUANG (JOIN) ---
+        window.openJoinModal = () => { document.getElementById('joinCodeInput').value = ""; document.getElementById('joinModal').classList.add('active'); };
+        window.closeJoinModal = () => document.getElementById('joinModal').classList.remove('active');
+
+        window.confirmJoinRoom = async () => {
+            const inputCode = document.getElementById('joinCodeInput').value.trim().toUpperCase();
+            if(inputCode.length !== 6) return alert("Kode invite harus 6 karakter!");
+            
+            try {
+                // Cari database yang punya kode tersebut
+                const q = query(collection(dbRef, "collab_boards"), where("inviteCode", "==", inputCode));
+                const snap = await getDocs(q);
+                
+                if (snap.empty) {
+                    alert("Kode invite tidak ditemukan atau salah.");
+                    return;
+                }
+
+                // Jika ketemu, ambil data dokumen pertama (seharusnya cuma ada 1 yang kodenya cocok)
+                const roomDoc = snap.docs[0];
+                const roomData = roomDoc.data();
+
+                // Pengecekan apakah user sudah ada di dalam ruang tersebut
+                if (roomData.members.includes(currentUserUid)) {
+                    alert("Anda sudah menjadi anggota di ruang ini.");
+                    window.closeJoinModal();
+                    return;
+                }
+
+                // Masukkan UID ke dalam array menggunakan arrayUnion agar aman
+                await updateDoc(doc(dbRef, "collab_boards", roomDoc.id), {
+                    members: arrayUnion(currentUserUid)
+                });
+
+                alert("Berhasil bergabung ke ruang " + roomData.name + "!");
+                window.closeJoinModal();
+                
+                // Tidak perlu render ulang manual karena onSnapshot akan mendeteksi perubahan members dan auto-render
+
+            } catch (err) {
+                console.error("Gagal bergabung:", err);
+                alert("Terjadi kesalahan sistem.");
+            }
+        };
+
+        // --- INFO RUANG ---
+        window.showRoomInfo = (roomId) => {
+            const room = window.collabRooms.find(r => r.id === roomId);
+            if(!room) return;
+
+            document.getElementById('infoRoomName').innerText = room.name;
+            document.getElementById('infoRoomRole').innerText = room.ownerId === currentUserUid ? "Pembuat Ruang (Admin)" : "Anggota Tim";
+            document.getElementById('infoRoomCode').innerText = room.inviteCode;
+            
+            document.getElementById('infoRoomModal').classList.add('active');
+        };
+        window.closeInfoRoomModal = () => document.getElementById('infoRoomModal').classList.remove('active');
+
+        // --- KELUAR / HAPUS RUANG ---
+        window.leaveRoom = async (roomId, roomName) => {
+            if(!confirm(`Anda yakin ingin KELUAR dari ruang "${roomName}"? Anda harus minta kode invite lagi untuk masuk.`)) return;
+            
+            try {
+                await updateDoc(doc(dbRef, "collab_boards", roomId), {
+                    members: arrayRemove(currentUserUid)
+                });
+                // onSnapshot akan otomatis menghilangkan ruang ini dari layar
+            } catch (e) { console.error(e); }
+        };
+
+        window.deleteRoom = async (roomId, roomName) => {
+            if(!confirm(`PERINGATAN! Hapus Permanen ruang "${roomName}"? Semua ide kolaborasi di dalamnya akan lenyap bagi semua orang.`)) return;
+            
+            try {
+                // Menghapus Dokumen Papan
+                await deleteDoc(doc(dbRef, "collab_boards", roomId));
+                
+                // (Bonus Ekstra) Menghapus semua Ide yang nyangkut di Papan ini agar database bersih
+                const qIdeas = query(collection(dbRef, "collab_ideas"), where("boardId", "==", roomId));
+                const snapIdeas = await getDocs(qIdeas);
+                snapIdeas.forEach(async (ideaDoc) => {
+                    await deleteDoc(doc(dbRef, "collab_ideas", ideaDoc.id));
+                });
+                
+                // onSnapshot akan otomatis menghilangkan ruang ini dari layar
+            } catch (e) { console.error(e); }
+        };
+
+    </script>
+</body>
+</html>
