@@ -82,6 +82,7 @@ function setActiveMenu() {
         "ideas.html": "nav-ideas", 
         "script.html": "nav-script", 
         "notes.html": "nav-notes",
+        "collab-hub.html": "nav-collab-hub",
         "calculator.html": "nav-calculator", 
         "trash.html": "nav-trash"
     };
