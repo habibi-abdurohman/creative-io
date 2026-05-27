@@ -1,8 +1,10 @@
 // =========================================================
 // NAVBAR.JS - PUSAT ROUTING & SINKRONISASI USER GLOBAL
 // =========================================================
-const isInsidePagesFolder = window.location.pathname.includes('/pages/');
-const rootPath = isInsidePagesFolder ? '../' : './';
+
+// FIX: Pengecekan folder kini mendukung '/pages/' dan '/collab/' agar rootPath tidak patah
+const isInsideSubfolder = window.location.pathname.includes('/pages/') || window.location.pathname.includes('/collab/');
+const rootPath = isInsideSubfolder ? '../' : './';
 
 document.addEventListener("DOMContentLoaded", () => {
     const navbarContainer = document.getElementById("navbar-container");
@@ -14,6 +16,7 @@ document.addEventListener("DOMContentLoaded", () => {
         .then(html => {
             const processedHtml = html
                 .replace(/href="pages\//g, `href="${rootPath}pages/`)
+                .replace(/href="collab\//g, `href="${rootPath}collab/`) // FIX: Auto-routing folder collab
                 .replace(/href="profil.html"/g, `href="${rootPath}profil.html"`);
                 
             navbarContainer.innerHTML = processedHtml;
@@ -74,7 +77,7 @@ window.toggleProfileMenu = function() {
     document.getElementById("profileDropdown").classList.toggle("active");
 };
 
-// FIX: Penyesuaian Active State Halaman
+// FIX: Penyesuaian Active State Halaman ditambahkan collab-hub
 function setActiveMenu() {
     const page = window.location.pathname.split("/").pop() || "dashboard.html";
     const menus = {
@@ -82,8 +85,8 @@ function setActiveMenu() {
         "ideas.html": "nav-ideas", 
         "script.html": "nav-script", 
         "notes.html": "nav-notes",
-        "collab-hub.html": "nav-collab-hub",
         "calculator.html": "nav-calculator", 
+        "collab-hub.html": "nav-collab", // PENDAFTARAN MENU KOLABORASI
         "trash.html": "nav-trash"
     };
     if (menus[page]) {
