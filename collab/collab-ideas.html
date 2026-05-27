@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-    <title>Ruang Kerja Kolaborasi - Creative.io</title>
+    <title>Collab Workspace - Creative.io</title>
     <link rel="icon" type="image/png" sizes="192x192" href="../assets/favicon-192x192.png">
 
     <link rel="stylesheet" href="../navbar/navbar.css">
@@ -20,147 +20,202 @@
         
         .bg-glow { position: fixed; border-radius: 50%; filter: blur(90px); z-index: 0; opacity: 0.5; pointer-events: none; }
         .bg-glow.one { width: 340px; height: 340px; background: rgba(59, 130, 246, 0.15); top: -50px; left: -100px; }
-        .bg-glow.two { width: 320px; height: 320px; background: rgba(16, 185, 129, 0.15); bottom: 100px; right: -100px; }
+        .bg-glow.two { width: 320px; height: 320px; background: rgba(96, 165, 250, 0.15); bottom: 100px; right: -100px; }
         
         .wrapper { position: relative; z-index: 2; max-width: 1200px; margin: 0 auto; width: 100%; display: flex; flex-direction: column; min-height: calc(100vh - 186px); }
         
-        /* HEADER RUANG KOLABORASI */
+        /* HEADER COLLAB */
         .page-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 24px; flex-wrap: wrap; gap: 16px; width: 100%; }
         .header-left { display: flex; align-items: center; gap: 16px; flex: 1; min-width: 250px; }
-        .btn-back { width: 44px; height: 44px; border-radius: 14px; background: var(--card-glass); border: 1px solid var(--border); display: flex; align-items: center; justify-content: center; font-size: 20px; color: var(--text-main); text-decoration: none; box-shadow: var(--shadow-flat); transition: 0.2s; flex-shrink: 0; }
+        .btn-back { width: 44px; height: 44px; border-radius: 14px; background: var(--card-glass); border: 1px solid var(--border); display: flex; align-items: center; justify-content: center; font-size: 20px; color: var(--text-main); text-decoration: none; box-shadow: var(--shadow-flat); transition: 0.2s; flex-shrink: 0; outline: none; }
         .btn-back:hover { background: var(--primary); color: white; border-color: var(--primary); }
         
-        .header-title h1 { font-size: 24px; font-weight: 900; letter-spacing: -0.5px; }
+        .header-title h1 { font-size: 26px; font-weight: 900; letter-spacing: -0.5px; }
         .header-title p { font-size: 13px; color: var(--text-muted); margin-top: 4px; display: flex; align-items: center; gap: 6px; }
         .live-indicator { width: 8px; height: 8px; background: #10b981; border-radius: 50%; display: inline-block; animation: pulse 2s infinite; }
         @keyframes pulse { 0% { transform: scale(0.95); box-shadow: 0 0 0 0 rgba(16, 185, 129, 0.7); } 70% { transform: scale(1); box-shadow: 0 0 0 6px rgba(16, 185, 129, 0); } 100% { transform: scale(0.95); box-shadow: 0 0 0 0 rgba(16, 185, 129, 0); } }
         
         .btn-add-board { background: var(--primary-grad); color: white; border: none; padding: 12px 20px; border-radius: var(--radius-btn); font-size: 13px; font-weight: 800; cursor: pointer; box-shadow: 0 10px 25px rgba(37, 99, 235, 0.3); transition: 0.2s; display: flex; align-items: center; gap: 8px; flex-shrink: 0; outline: none; }
         .btn-add-board:hover { transform: translateY(-2px); box-shadow: 0 12px 30px rgba(37, 99, 235, 0.4); }
-
-        /* DAFTAR PAPAN (KATEGORI) */
-        .board-container { display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap: 16px; align-items: start; width: 100%; flex: 1; align-content: flex-start; }
-        .board-card { background: var(--card-glass); backdrop-filter: blur(12px); border: 1px solid var(--border); border-radius: 20px; padding: 20px 24px; box-shadow: var(--shadow-flat); display: flex; justify-content: space-between; align-items: center; cursor: pointer; position: relative; z-index: 1; transition: 0.2s; outline: none; }
-        .board-card:hover { background: #e2e8f0; }
-        body.dark .board-card:hover { background: #334155; }
+        
+        /* DESAIN PAPAN UTAMA */
+        .board-container { display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap: 16px; align-items: start; width: 100%; max-width: 100%; flex: 1; align-content: flex-start; }
+        
+        .board-card { background: var(--card-glass); backdrop-filter: blur(12px); border: 1px solid var(--border); border-radius: 20px; padding: 20px 24px; box-shadow: var(--shadow-flat); display: flex; justify-content: space-between; align-items: center; cursor: pointer; position: relative; z-index: 1; transition: background 0.2s ease; outline: none !important; transform: none !important; min-width: 0; }
+        .board-card:focus, .board-card:active { outline: none !important; } 
+        .board-card:hover, .board-card:active { background: #e2e8f0; }
+        body.dark .board-card:hover, body.dark .board-card:active { background: #334155; }
+        
+        .board-card.completed { opacity: 0.5; background: var(--card-tint); border-style: dashed; }
+        .board-card.completed .board-title { text-decoration: line-through; color: var(--text-muted); }
+        .board-card.completed:hover, .board-card.completed:active { background: #e2e8f0; opacity: 0.8; }
+        body.dark .board-card.completed:hover, body.dark .board-card.completed:active { background: #334155; }
         
         .board-title-wrap { display: flex; align-items: center; gap: 12px; flex: 1; min-width: 0; padding-right: 12px; }
-        .board-title { font-size: 16px; font-weight: 800; color: var(--text-main); display: block; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+        .board-checkbox { width: 22px; height: 22px; border-radius: 8px; border: 2px solid var(--border); background: var(--card-solid); color: transparent; display: flex; align-items: center; justify-content: center; font-size: 13px; font-weight: 900; cursor: pointer; flex-shrink: 0; transition: 0.2s; outline: none; }
+        .board-checkbox.active { background: var(--success); border-color: var(--success); color: white; }
+        
+        .board-title { font-size: 16px; font-weight: 800; color: var(--text-main); display: block; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; width: 100%; pointer-events: none; line-height: 1.2; }
+        
+        .board-actions { display: flex; align-items: center; gap: 8px; z-index: 10; flex-shrink: 0; }
         .counter { background: var(--primary-soft); color: var(--primary); padding: 6px 14px; border-radius: 20px; font-size: 12px; font-weight: 800; white-space: nowrap; border: 1px solid rgba(37, 99, 235, 0.1); }
-
-        /* TRASH BANNER (MUNCUL JIKA ADA SAMPAH) */
+        
+        /* BANNER PAPAN TRASH / PULIHAN */
         #trashContainer { margin-top: 40px; border-top: 1px solid var(--border); padding-top: 24px; display: none; }
-        .trash-banner { background: rgba(245, 158, 11, 0.05); border: 1px dashed rgba(245, 158, 11, 0.4); border-radius: 16px; padding: 16px 24px; display: flex; justify-content: space-between; align-items: center; cursor: pointer; transition: 0.2s; width: 100%; }
+        .trash-banner { background: rgba(245, 158, 11, 0.05); border: 1px dashed rgba(245, 158, 11, 0.4); border-radius: 16px; padding: 16px 24px; display: flex; justify-content: space-between; align-items: center; cursor: pointer; transition: 0.2s; width: 100%; outline: none; }
         .trash-banner:hover { background: rgba(245, 158, 11, 0.1); border-color: rgba(245, 158, 11, 0.6); }
         body.dark .trash-banner { background: rgba(245, 158, 11, 0.05); border-color: rgba(245, 158, 11, 0.3); }
+        body.dark .trash-banner:hover { background: rgba(245, 158, 11, 0.15); }
+        
         .trash-banner-left { display: flex; align-items: center; gap: 12px; }
         .trash-banner-icon { font-size: 20px; filter: grayscale(50%); }
         .trash-banner-title { font-size: 15px; font-weight: 800; color: var(--warning); letter-spacing: -0.2px; }
-        .trash-counter { background: rgba(245, 158, 11, 0.15); color: var(--warning); border: 1px solid rgba(245, 158, 11, 0.2); padding: 6px 14px; border-radius: 20px; font-size: 12px; font-weight: 800; }
+        .trash-banner-actions { display: flex; align-items: center; gap: 12px; }
+        .trash-counter { background: rgba(245, 158, 11, 0.15); color: var(--warning); border: 1px solid rgba(245, 158, 11, 0.2); padding: 6px 14px; border-radius: 20px; font-size: 12px; font-weight: 800; white-space: nowrap; }
 
-        /* POPUP BOARD VIEW (TAMPILAN KARTU IDE) */
-        .board-view-overlay { position: fixed; inset: 0; background: rgba(0,0,0,0.6); backdrop-filter: blur(8px); z-index: 100000; display: none; align-items: center; justify-content: center; opacity: 0; transition: 0.3s; padding: 0; width: 100vw; height: 100vh; }
+        .dropdown-wrap { position: relative; }
+        .btn-dots { background: transparent; border: none; font-size: 20px; font-weight: 900; color: var(--text-muted); cursor: pointer; display: flex; align-items: center; justify-content: center; padding: 4px 8px; transition: 0.2s; border-radius: 10px; outline: none; }
+        .btn-dots:hover { background: rgba(0,0,0,0.05); color: var(--text-main); }
+        body.dark .btn-dots:hover { background: rgba(255,255,255,0.1); }
+        
+        .dropdown-menu { position: absolute; top: 100%; right: 0; margin-top: 8px; background: var(--card-solid); border: 1px solid var(--border); border-radius: 14px; padding: 8px; display: none; flex-direction: column; gap: 2px; min-width: 170px; box-shadow: 0 10px 40px rgba(0,0,0,0.1); z-index: 1000; }
+        .dropdown-menu.active { display: flex; }
+        .dropdown-menu button { background: transparent; border: none; padding: 10px 12px; border-radius: 10px; font-size: 13px; font-weight: 700; color: var(--text-main); text-align: left; cursor: pointer; display: flex; align-items: center; gap: 10px; width: 100%; }
+        .dropdown-menu button:hover { background: var(--card-tint); }
+        .dropdown-menu button.danger { color: var(--danger); }
+        .dropdown-menu button.danger:hover { background: rgba(239, 68, 68, 0.1); }
+        
+        .empty-state-global { grid-column: 1 / -1; text-align: center; padding: 60px 20px; background: var(--card-glass); border: 1px dashed var(--border); border-radius: var(--radius-card); color: var(--text-muted); font-size: 14px; font-weight: 600; width: 100%; }
+        
+        /* POPUP PAPAN (BOARD VIEW) */
+        .board-view-overlay { position: fixed; inset: 0; background: rgba(0,0,0,0.6); backdrop-filter: blur(8px); -webkit-backdrop-filter: blur(8px); z-index: 100000; display: none; align-items: center; justify-content: center; opacity: 0; transition: opacity 0.3s ease; padding: 0; width: 100vw; height: 100vh; }
         .board-view-overlay.active { display: flex; opacity: 1; }
-        .board-view-card { width: 100%; height: 100%; background: var(--bg-grad); display: flex; flex-direction: column; position: relative; overflow-x: hidden; }
-        .btn-close-floating { position: absolute; top: 20px; right: 20px; width: 40px; height: 40px; border-radius: 50%; background: var(--card-glass); backdrop-filter: blur(8px); border: 1px solid var(--border); color: var(--text-main); font-size: 16px; font-weight: 900; display: flex; align-items: center; justify-content: center; cursor: pointer; z-index: 100; box-shadow: 0 4px 12px rgba(0,0,0,0.05); }
+        
+        .board-view-card { width: 100%; height: 100%; background: var(--bg-grad); display: flex; flex-direction: column; position: relative; overflow-x: hidden; max-width: 100vw; }
+        
+        .btn-close-floating { position: absolute; top: 20px; right: 20px; width: 40px; height: 40px; border-radius: 50%; background: var(--card-glass); backdrop-filter: blur(8px); border: 1px solid var(--border); color: var(--text-main); font-size: 16px; font-weight: 900; display: flex; align-items: center; justify-content: center; cursor: pointer; z-index: 100; box-shadow: 0 4px 12px rgba(0,0,0,0.05); transition: 0.2s; outline: none; }
         .btn-close-floating:hover { background: var(--danger); color: white; border-color: var(--danger); }
+        body.dark .btn-close-floating { background: rgba(30, 41, 59, 0.8); }
+        body.dark .btn-close-floating:hover { background: var(--danger); }
+
+        .board-view-scroll-area { flex: 1; overflow-y: auto; overflow-x: hidden; display: flex; flex-direction: column; padding: 32px 40px; padding-top: 80px; position: relative; width: 100%; box-sizing: border-box; max-width: 100%; }
         
-        .board-view-scroll-area { flex: 1; overflow-y: auto; overflow-x: hidden; display: flex; flex-direction: column; padding: 32px 40px; padding-top: 80px; position: relative; }
-        .board-detail-title { font-size: 28px; font-weight: 900; line-height: 1.3; color: var(--text-main); margin-bottom: 24px; }
+        .board-detail-title { font-size: 28px; font-weight: 900; line-height: 1.3; color: var(--text-main); margin-bottom: 24px; padding-right: 50px; word-break: break-word; width: 100%; box-sizing: border-box; }
+        .board-view-form-area { background: var(--card-solid); border: 1px solid var(--border); border-radius: 20px; padding: 24px; box-shadow: var(--shadow-flat); margin-bottom: 32px; flex-shrink: 0; width: 100%; box-sizing: border-box; overflow: hidden; }
+        .board-form-grid { display: grid; grid-template-columns: 1fr 1fr 1.5fr auto; gap: 16px; align-items: center; width: 100%; box-sizing: border-box; }
         
-        .board-view-form-area { background: var(--card-solid); border: 1px solid var(--border); border-radius: 20px; padding: 24px; box-shadow: var(--shadow-flat); margin-bottom: 32px; width: 100%; }
-        .board-form-grid { display: grid; grid-template-columns: 1fr 1fr 1.5fr auto; gap: 16px; align-items: center; width: 100%; }
-        .input-wrap { position: relative; width: 100%; display: flex; flex-direction: column; }
+        .input-wrap { position: relative; width: 100%; min-width: 0; display: flex; flex-direction: column; }
         .input-wrap span { position: absolute; left: 16px; top: 50%; transform: translateY(-50%); font-size: 12px; font-weight: 800; color: var(--text-muted); pointer-events: none; z-index: 2; }
-        .input-wrap input { width: 100%; border: 1px solid var(--border); background: var(--card-tint); border-radius: 14px; color: var(--text-main); padding: 14px 16px 14px 80px; font-size: 14px; font-weight: 600; outline: none; }
+        .input-wrap input { width: 100%; border: 1px solid var(--border); background: var(--card-tint); border-radius: 14px; color: var(--text-main); padding: 14px 16px 14px 80px; font-size: 14px; font-weight: 600; outline: none; transition: 0.2s; min-width: 0; box-sizing: border-box; }
         .input-wrap input:focus { border-color: var(--primary); box-shadow: 0 0 0 3px var(--primary-soft); background: var(--card-solid); }
-        .add-btn { border: none; background: var(--primary-grad); color: white; padding: 14px 20px; border-radius: 14px; font-size: 14px; font-weight: 800; cursor: pointer; height: 100%; white-space: nowrap; width: 100%; }
-
-        .idea-list-header { font-size: 14px; font-weight: 800; color: var(--text-muted); margin-bottom: 16px; padding-bottom: 12px; border-bottom: 1px dashed var(--border); display: flex; justify-content: space-between; align-items: center; }
-        .board-view-body { flex: 1; width: 100%; display: flex; flex-direction: column; }
-
-        /* KARTU IDE KONTEN & BADGE KREATOR */
-        .idea-item { background: var(--card-solid); border: 1px solid var(--border); border-radius: 16px; padding: 16px 20px; margin-bottom: 12px; box-shadow: var(--shadow-flat); width: 100%; display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 16px; align-items: center; }
+        
+        .add-btn { border: none; background: var(--primary-grad); color: white; padding: 14px 20px; border-radius: 14px; font-size: 14px; font-weight: 800; cursor: pointer; height: 100%; white-space: nowrap; outline: none; width: 100%; }
+        
+        .trash-notice { font-size: 14px; color: var(--warning); font-weight: 700; line-height: 1.5; background: rgba(245, 158, 11, 0.1); padding: 16px 24px; border-radius: 16px; border: 1px dashed rgba(245, 158, 11, 0.3); margin-bottom: 32px; text-align: center; width: 100%; box-sizing: border-box; }
+        .idea-list-header { font-size: 14px; font-weight: 800; color: var(--text-muted); margin-bottom: 16px; padding-bottom: 12px; border-bottom: 1px dashed var(--border); display: flex; justify-content: space-between; align-items: center; width: 100%; box-sizing: border-box; }
+        .board-view-body { flex: 1; width: 100%; box-sizing: border-box; display: flex; flex-direction: column; }
+        
+        /* KARTU IDE KONTEN GRID */
+        .idea-item { 
+            background: var(--card-solid); border: 1px solid var(--border); border-radius: 16px; 
+            padding: 16px 20px; margin-bottom: 12px; box-shadow: var(--shadow-flat); 
+            width: 100%; box-sizing: border-box; min-width: 0; overflow: hidden;
+            display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 16px; align-items: center; 
+        }
+        
         .idea-left { display: flex; flex-direction: column; gap: 8px; min-width: 0; width: 100%; justify-self: start; }
         .idea-title { font-size: 15px; font-weight: 800; line-height: 1.4; color: var(--text-main); word-break: break-word; overflow-wrap: break-word; white-space: normal; }
         
         .badge-group { display: flex; flex-wrap: wrap; gap: 6px; }
-        .badge { display: inline-flex; align-items: center; gap: 4px; background: var(--card-tint); color: var(--text-muted); border: 1px solid var(--border); padding: 4px 8px; border-radius: 8px; font-size: 11px; font-weight: 800; }
+        .badge { display: inline-flex; align-items: center; gap: 4px; background: var(--card-tint); color: var(--text-muted); border: 1px solid var(--border); padding: 6px 10px; border-radius: 8px; font-size: 11px; font-weight: 800; white-space: normal; word-break: break-word; text-align: left; line-height: 1.4; width: fit-content; max-width: 100%; }
+        .badge.restored { background: rgba(245, 158, 11, 0.1); color: var(--warning); border-color: rgba(245, 158, 11, 0.2); }
         .badge.creator { background: var(--primary-soft); color: var(--primary); border-color: rgba(37,99,235,0.2); }
         
         .idea-middle { min-width: 0; display: flex; justify-content: center; width: 100%; justify-self: center; }
-        .link-box { display: inline-flex; align-items: center; gap: 6px; padding: 8px 14px; background: rgba(16, 185, 129, 0.1); color: #10b981; border-radius: 12px; width: 100%; border: 1px dashed rgba(16, 185, 129, 0.3); cursor: pointer; overflow: hidden; transition: 0.2s; }
-        .link-box:hover { background: rgba(16, 185, 129, 0.15); }
+        
+        .link-box { 
+            display: inline-flex; align-items: center; gap: 6px; padding: 8px 14px; 
+            background: var(--primary-soft); color: var(--primary); border-radius: 12px; 
+            width: 100%; border: 1px dashed rgba(37, 99, 235, 0.3); cursor: pointer; 
+            box-sizing: border-box; overflow: hidden; transition: background 0.2s;
+        }
+        .link-box:hover { background: rgba(37, 99, 235, 0.15); }
+        .link-box .icon { font-size: 14px; flex-shrink: 0; pointer-events: none; }
         .link-text { flex: 1; min-width: 0; display: block; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; font-size: 12px; font-weight: 700; color: inherit; user-select: all; -webkit-user-select: all; }
         
         .idea-right { display: flex; gap: 8px; flex-shrink: 0; justify-self: end; }
-        .btn-icon-action { width: 36px; height: 36px; border-radius: 10px; cursor: pointer; border: 1px solid var(--border); display: flex; align-items: center; justify-content: center; background: var(--card-solid); font-size: 14px; color: var(--text-main); }
+        .btn-icon { width: 36px; height: 36px; border-radius: 10px; cursor: pointer; border: 1px solid var(--border); display: flex; align-items: center; justify-content: center; background: var(--card-solid); font-size: 14px; color: var(--text-main); outline: none; flex-shrink: 0; transition: 0.2s;}
+        .btn-icon:hover { background: var(--card-tint); }
         .btn-edit { color: var(--text-muted); }
         .btn-done { color: var(--border); font-size: 16px; font-weight: 900; }
         .btn-done.active { background: var(--success); border-color: var(--success); color: white; }
         .btn-del { color: var(--danger); }
+        .btn-del:hover { background: rgba(239, 68, 68, 0.1); border-color: rgba(239, 68, 68, 0.3); }
         
-        .idea-item.completed { opacity: 0.6; background: var(--card-tint); border-style: dashed; }
+        .idea-item.completed { opacity: 0.55; background: var(--card-tint); border-style: dashed; }
         .idea-item.completed .idea-title { text-decoration: line-through; color: var(--text-muted); }
         .idea-item.completed .link-box { filter: grayscale(100%); opacity: 0.8; }
-        .empty-board { text-align: center; padding: 60px 20px; font-size: 14px; font-weight: 600; color: var(--text-muted); border: 1px dashed var(--border); border-radius: 20px; width: 100%; background: var(--card-glass); }
-
-        /* KARTU TRASH (30 HARI LOGIC) */
-        .trash-list-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 16px; align-items: stretch; }
-        .trash-card { background: var(--card-glass); border: 1px solid var(--border); border-radius: 16px; padding: 14px 16px; box-shadow: var(--shadow-flat); display: flex; flex-direction: column; justify-content: space-between; height: 100%; }
-        .trash-card:hover { border-color: var(--danger); background-color: rgba(239, 68, 68, 0.02); }
-        .card-top { margin-bottom: 16px; }
-        .card-title { font-size: 14px; font-weight: 800; color: var(--text-main); margin-bottom: 4px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; display: block; line-height: 20px; height: 20px; }
-        .card-desc { font-size: 12px; color: var(--text-muted); line-height: 1.5; height: 36px; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; }
-        .card-bottom { display: flex; justify-content: space-between; align-items: flex-end; margin-top: auto; }
-        
-        .badge-countdown { display: inline-flex; align-items: center; justify-content: center; height: 30px; padding: 0 10px; border-radius: 8px; font-size: 11px; font-weight: 800; background: var(--danger-soft); color: var(--danger); }
-        .badge-countdown.warning { background: rgba(245, 158, 11, 0.15); color: var(--warning); }
-        
-        .card-actions { display: flex; gap: 6px; }
-        .btn-action { display: inline-flex; align-items: center; justify-content: center; height: 30px; padding: 0 12px; border-radius: 8px; font-size: 11px; font-weight: 800; cursor: pointer; border: none; }
-        .btn-restore { background: var(--card-tint); color: var(--primary); border: 1px solid var(--border); }
-        .btn-restore:hover { background: var(--primary-soft); border-color: var(--primary); }
-        .btn-delete { width: 30px; padding: 0; background: transparent; color: var(--text-muted); font-size: 15px; }
-        .btn-delete:hover { color: var(--danger); background: var(--danger-soft); }
+        .empty-board { text-align: center; padding: 40px 20px; font-size: 13px; font-weight: 600; color: var(--text-muted); border: 1px dashed var(--border); border-radius: 20px; width: 100%; box-sizing: border-box; }
 
         /* MODAL UMUM */
         .modal-overlay { position: fixed; inset: 0; background: rgba(0,0,0,0.4); backdrop-filter: blur(4px); z-index: 100001; display: none; align-items: center; justify-content: center; padding: 20px; width: 100vw; height: 100vh; box-sizing: border-box; }
         .modal-overlay.active { display: flex; }
-        .modal-card { background: var(--card-solid); width: 100%; max-width: 360px; border-radius: var(--radius-card); padding: 24px; box-shadow: var(--shadow-flat); border: 1px solid var(--border); text-align: center; }
-        .modal-card.wide { max-width: 500px; text-align: left; }
+        .modal-card { background: var(--card-solid); width: 100%; max-width: 360px; border-radius: var(--radius-card); padding: 24px; box-shadow: var(--shadow-flat); border: 1px solid var(--border); box-sizing: border-box; }
         .modal-card h3 { font-size: 18px; font-weight: 900; margin-bottom: 8px; color: var(--text-main); }
         .modal-card p { font-size: 13px; color: var(--text-muted); margin-bottom: 20px; line-height: 1.5; }
-        
-        .modal-input { width: 100%; padding: 14px 16px; border-radius: 14px; border: 1px solid var(--border); background: var(--card-tint); color: var(--text-main); font-size: 14px; font-weight: 600; outline: none; margin-bottom: 12px; text-align: left; }
-        .modal-input:focus { border-color: var(--primary); box-shadow: 0 0 0 3px var(--primary-soft); }
-        .modal-actions { display: flex; gap: 12px; margin-top: 16px; }
-        .btn-modal { flex: 1; padding: 12px; border-radius: 12px; font-size: 13px; font-weight: 800; cursor: pointer; border: none; }
+        .modal-input, .modal-select { width: 100%; padding: 14px 16px; border-radius: 14px; border: 1px solid var(--border); background: var(--card-tint); color: var(--text-main); font-size: 14px; font-weight: 600; outline: none; margin-bottom: 12px; transition: 0.2s; box-sizing: border-box; }
+        .modal-input:focus, .modal-select:focus { border-color: var(--primary); box-shadow: 0 0 0 3px var(--primary-soft); }
+        .modal-select { appearance: none; }
+        .modal-actions { display: flex; gap: 12px; margin-top: 8px; }
+        .btn-modal { flex: 1; padding: 12px; border-radius: 12px; font-size: 13px; font-weight: 800; cursor: pointer; border: none; transition: 0.2s; outline: none; }
         .btn-cancel { background: var(--card-tint); color: var(--text-main); border: 1px solid var(--border); }
+        .btn-cancel:hover { background: #e2e8f0; }
+        body.dark .btn-cancel:hover { background: #334155; }
         .btn-confirm { background: var(--primary-grad); color: white; }
-
+        .info-row { display: flex; justify-content: space-between; margin-bottom: 12px; font-size: 13px; gap: 12px; }
+        .info-label { color: var(--text-muted); font-weight: 600; flex-shrink: 0; }
+        .info-value { font-weight: 800; color: var(--text-main); text-align: right; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+        
         /* RESPONSIVITAS */
         @media(min-width: 1025px) {
-            .board-view-card { width: 85%; height: 100%; border-left: 1px solid var(--border); border-right: 1px solid var(--border); margin: 0 auto; box-shadow: 0 0 60px rgba(0,0,0,0.3); }
+            .board-view-card { width: 85%; height: 100%; border-left: 1px solid var(--border); border-right: 1px solid var(--border); margin: 0 auto; box-shadow: 0 0 60px rgba(0,0,0,0.3); position: relative; }
+            .btn-close-floating { top: 24px; right: 24px; width: 44px; height: 44px; }
         }
+        
         @media(max-width: 1024px) {
+            .board-view-overlay { padding: 0; }
+            .board-view-card { width: 100%; height: 100%; border-radius: 0; border: none; }
             .board-form-grid { grid-template-columns: 1fr 1fr; }
+            .btn-close-floating { top: 20px; right: 20px; }
         }
+        
         @media(max-width: 768px) {
+            .board-view-scroll-area { padding: 20px; padding-top: 70px; }
+            .board-detail-title { font-size: 24px; padding-right: 40px; margin-bottom: 20px; }
+            .btn-close-floating { top: 16px; right: 16px; width: 36px; height: 36px; }
+            
             .board-form-grid { grid-template-columns: 1fr; gap: 12px; }
             .board-view-form-area { padding: 20px; }
-            .idea-item { grid-template-columns: 1fr auto; grid-template-rows: auto auto auto; align-items: start; gap: 12px; padding: 16px; }
+            
+            .idea-item { 
+                grid-template-columns: 1fr auto; 
+                grid-template-rows: auto auto auto;
+                align-items: start; gap: 12px; padding: 16px;
+            }
             .idea-left { display: contents; }
             .idea-title { grid-column: 1 / 2; grid-row: 1; padding-right: 8px; margin-top: 7px; }
             .idea-right { grid-column: 2 / 3; grid-row: 1; justify-self: end; align-self: start; }
-            .badge-group { grid-column: 1 / -1; grid-row: 2; justify-self: start; }
+            .badge-group { grid-column: 1 / -1; grid-row: 2; width: fit-content; max-width: 100%; justify-self: start; }
             .idea-middle { grid-column: 1 / -1; grid-row: 3; width: 100%; }
         }
+
         @media(max-width: 600px) { 
             body { padding-top: 70px; }
             .page-header { flex-direction: column; align-items: flex-start; } 
             .btn-add-board { width: 100%; justify-content: center; padding: 16px 20px; font-size: 15px; border-radius: 16px; } 
             .board-container { grid-template-columns: 1fr; } 
+            .trash-banner { flex-direction: column; align-items: flex-start; gap: 16px; }
+            .trash-banner-actions { width: 100%; justify-content: space-between; }
         }
     </style>
 </head>
@@ -175,7 +230,7 @@
                 <a href="collab-hub.html" class="btn-back" title="Kembali ke Lobi">🔙</a>
                 <div class="header-title">
                     <h1 id="uiRoomName">Memuat Ruang...</h1>
-                    <p id="uiRoomInfo"><span class="live-indicator"></span> Menghubungkan...</p>
+                    <p id="uiRoomInfo"><span class="live-indicator"></span> Menghubungkan ke server...</p>
                 </div>
             </div>
             <button class="btn-add-board" onclick="openAddBoardModal()">
@@ -183,46 +238,29 @@
             </button>
         </div>
 
-        <div class="board-container" id="boardContainer">
-            </div>
-
-        <div id="trashContainer">
-            <div class="trash-banner" onclick="openTrashView()">
-                <div class="trash-banner-left">
-                    <span class="trash-banner-icon">♻️</span>
-                    <div class="trash-banner-title">Papan Pulihan (Trash) Tim</div>
-                </div>
-                <div class="trash-counter" id="trashCounterUI">0 Ide</div>
-            </div>
-        </div>
-    </div>
-
-    <div class="modal-overlay" id="addBoardModal">
-        <div class="modal-card">
-            <h3>Buat Kategori Baru</h3>
-            <p>Misal: Konten TikTok, YouTube Shorts, atau Ide Campaign.</p>
-            <input type="text" class="modal-input" id="boardNameInput" placeholder="Nama papan..." style="text-align: center;">
-            <div class="modal-actions">
-                <button class="btn-modal btn-cancel" onclick="closeAddBoardModal()">Batal</button>
-                <button class="btn-modal btn-confirm" onclick="confirmAddBoard()">Buat</button>
-            </div>
-        </div>
+        <div class="board-container" id="boardContainer"></div>
+        <div id="trashContainer"></div>
     </div>
 
     <div class="board-view-overlay" id="boardViewModal">
         <div class="board-view-card">
+            
             <button class="btn-close-floating" onclick="closeBoardView()" title="Tutup Papan">✕</button>
             
             <div class="board-view-scroll-area">
                 <h2 class="board-detail-title" id="bvTitle">Nama Papan</h2>
                 
-                <div class="board-view-form-area">
+                <div class="board-view-form-area" id="bvFormArea">
                     <div class="board-form-grid">
-                        <div class="input-wrap"><span>Konten</span><input type="text" id="addIdeaTitle" placeholder="Judul ide..."></div>
+                        <div class="input-wrap"><span>Konten</span><input type="text" id="addIdeaTitle" placeholder="Judul ide konten..."></div>
                         <div class="input-wrap"><span>Tanggal</span><input type="text" id="addIdeaDate" placeholder="Misal: 17 Agustus"></div>
                         <div class="input-wrap"><span>Link</span><input type="url" id="addIdeaLink" placeholder="Tempel tautan referensi..."></div>
                         <button class="add-btn" onclick="addIdea()">+ Tambah Ide</button>
                     </div>
+                </div>
+                
+                <div class="trash-notice" id="bvTrashNotice" style="display: none;">
+                    Papan khusus penampungan tim. Item di sini akan terhapus permanen otomatis setelah 30 hari. Ketik tombol ✏️ (Edit) untuk memulihkan ke papan asal.
                 </div>
 
                 <div class="idea-list-header">
@@ -236,9 +274,44 @@
         </div>
     </div>
 
+    <div class="modal-overlay" id="addBoardModal">
+        <div class="modal-card">
+            <h3>Buat Papan Kategori</h3>
+            <p>Masukkan nama channel atau kategori konten yang ingin dikelola bersama tim.</p>
+            <input type="text" class="modal-input" id="boardNameInput" placeholder="Misal: YouTube Gaming, Ide Campaign...">
+            <div class="modal-actions">
+                <button class="btn-modal btn-cancel" onclick="closeAddBoardModal()">Batal</button>
+                <button class="btn-modal btn-confirm" onclick="confirmAddBoard()">Buat Papan</button>
+            </div>
+        </div>
+    </div>
+
+    <div class="modal-overlay" id="editBoardModal">
+        <div class="modal-card">
+            <h3>Edit Judul Papan</h3>
+            <p>Ubah nama channel atau kategori papan ini.</p>
+            <input type="text" class="modal-input" id="editBoardNameInput" placeholder="Nama papan baru...">
+            <div class="modal-actions">
+                <button class="btn-modal btn-cancel" onclick="closeEditBoardModal()">Batal</button>
+                <button class="btn-modal btn-confirm" onclick="saveEditBoard()">Simpan Perubahan</button>
+            </div>
+        </div>
+    </div>
+
+    <div class="modal-overlay" id="infoBoardModal">
+        <div class="modal-card">
+            <h3 style="text-align: center; margin-bottom: 20px;">Informasi Papan</h3>
+            <div class="info-row"><span class="info-label">Judul Papan</span> <span class="info-value" id="infoBoardTitle">-</span></div>
+            <div class="info-row"><span class="info-label">Total Ide</span> <span class="info-value" id="infoBoardTotal">-</span></div>
+            <div class="info-row"><span class="info-label">Dibuat</span> <span class="info-value" id="infoBoardCreated">-</span></div>
+            <div class="info-row"><span class="info-label">Diperbarui</span> <span class="info-value" id="infoBoardUpdated">-</span></div>
+            <button class="btn-modal btn-cancel" style="width: 100%; margin-top: 16px;" onclick="closeInfoBoardModal()">Tutup</button>
+        </div>
+    </div>
+
     <div class="modal-overlay" id="editIdeaModal">
         <div class="modal-card">
-            <h3 style="text-align: center;">Edit Ide Konten</h3>
+            <h3>Edit Ide Konten</h3>
             <div class="input-wrap" style="margin-bottom:12px;">
                 <span>Konten</span>
                 <input type="text" id="editTitleInput" class="modal-input" style="padding-left:80px; margin-bottom:0;" placeholder="Judul ide...">
@@ -247,30 +320,17 @@
                 <span>Tanggal</span>
                 <input type="text" id="editDateInput" class="modal-input" style="padding-left:80px; margin-bottom:0;" placeholder="Misal: 17 Agustus 2026">
             </div>
-            <div class="input-wrap" style="margin-bottom:16px;">
+            <div class="input-wrap" style="margin-bottom:12px;">
                 <span>Link</span>
                 <input type="text" id="editLinkInput" class="modal-input" style="padding-left:80px; margin-bottom:0;" placeholder="Tautan referensi...">
             </div>
+            <div class="input-wrap" style="margin-bottom:16px;">
+                <span>Papan</span>
+                <select id="editBoardSelect" class="modal-select" style="padding-left:80px; margin-bottom:0;"></select>
+            </div>
             <div class="modal-actions">
                 <button class="btn-modal btn-cancel" onclick="closeEditModal()">Batal</button>
-                <button class="btn-modal btn-confirm" onclick="saveEdit()">Simpan</button>
-            </div>
-        </div>
-    </div>
-
-    <div class="board-view-overlay" id="trashViewModal">
-        <div class="board-view-card">
-            <button class="btn-close-floating" onclick="closeTrashView()" title="Tutup Trash">✕</button>
-            <div class="board-view-scroll-area">
-                <div class="board-detail-title" style="display: flex; align-items: center; gap: 12px; margin-bottom: 8px;">
-                    ♻️ Tempat Sampah Tim
-                </div>
-                <p style="color: var(--text-muted); font-size: 14px; margin-bottom: 32px; font-weight: 600;">
-                    Item yang dihapus oleh anggota tim akan otomatis lenyap selamanya setelah 30 hari.
-                </p>
-
-                <div class="trash-list-grid" id="trashListArea">
-                    </div>
+                <button class="btn-modal btn-confirm" onclick="saveEdit()">Simpan Pindahan</button>
             </div>
         </div>
     </div>
@@ -279,25 +339,30 @@
     <script src="../js/pwa.js"></script>
 
     <script type="module">
-        import { onSnapshot, collection, query, where, doc, updateDoc, deleteDoc, arrayUnion } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
-        // Kita import setDoc dan doc dari firestore untuk generate ID manual yang aman
-        import { setDoc } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
+        import { onSnapshot, collection, query, where, doc, setDoc, updateDoc, deleteDoc } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
         
         let currentUserUid = null;
         let currentUserData = { name: "Anonim" };
         let dbRef = null;
         
-        // Ambil ID Ruang dari URL
+        // Ambil ID Ruang Kolaborasi dari URL
         const urlParams = new URLSearchParams(window.location.search);
         const currentRoomId = urlParams.get('id');
         
-        window.roomData = null; // Menyimpan info ruang dan daftar papan
-        window.allIdeas = []; // Menyimpan semua ide (aktif + sampah)
+        // Variabel Data Global
+        window.roomData = null;
+        window.boards = [];
+        window.ideas = [];
         
-        window.currentBoardId = null; // ID Papan Kategori yang sedang dibuka
+        // State UI
         window.editCurrentId = null;
+        window.editBoardCurrentId = null; 
+        window.currentViewBoardId = null;
+        
+        // Konvensi ID Papan Pulihan (Khusus Collab Room ini)
+        const COLLAB_TRASH_BOARD_ID = "board_pulihan_collab";
 
-        // Script Text Selection untuk Link Android
+        // Script Text Selection
         window.selectLinkText = function(container) {
             const textEl = container.querySelector('.link-text');
             if (!textEl) return;
@@ -307,6 +372,14 @@
             sel.removeAllRanges();
             sel.addRange(range);
         };
+
+        // Manajemen Z-index Dropdown
+        document.addEventListener('click', function(e) {
+            if (!e.target.closest('.dropdown-wrap')) {
+                document.querySelectorAll('.dropdown-menu').forEach(m => m.classList.remove('active'));
+                document.querySelectorAll('.board-card').forEach(c => { c.style.zIndex = '1'; });
+            }
+        });
 
         document.addEventListener("DOMContentLoaded", () => {
             if (!currentRoomId) {
@@ -324,7 +397,7 @@
                         if (user) {
                             currentUserUid = user.uid;
                             currentUserData.name = user.displayName || user.email.split('@')[0];
-                            initRealtimeListeners();
+                            initRealtimeCollab();
                         } else {
                             window.location.replace("../login.html");
                         }
@@ -333,149 +406,203 @@
             });
         });
 
-        function initRealtimeListeners() {
-            // 1. Dengar Data Ruang (collab_boards)
+        function initRealtimeCollab() {
+            // 1. Dengar Data Ruang (Untuk Validasi Akses & Info Header)
             onSnapshot(doc(dbRef, "collab_boards", currentRoomId), (docSnap) => {
                 if (!docSnap.exists() || !docSnap.data().members.includes(currentUserUid)) {
-                    alert("Akses Ditolak atau Ruang telah dihapus.");
+                    alert("Akses Ditolak: Anda bukan anggota, atau ruang telah dihapus oleh pemilik.");
                     window.location.replace("collab-hub.html");
                     return;
                 }
                 window.roomData = docSnap.data();
-                
-                // Jika properti innerBoards belum ada, inisialisasi sebagai array kosong
-                if (!window.roomData.innerBoards) window.roomData.innerBoards = [];
-
                 document.getElementById('uiRoomName').innerText = window.roomData.name;
                 document.getElementById('uiRoomInfo').innerHTML = `<span class="live-indicator"></span> Live • ${window.roomData.members.length} Anggota`;
-                
-                renderCategoryBoards();
             });
 
-            // 2. Dengar Semua Ide di Ruang Ini (collab_ideas)
+            // 2. Dengar Papan Kategori (collab_room_boards)
+            const qBoards = query(collection(dbRef, "collab_room_boards"), where("roomId", "==", currentRoomId));
+            onSnapshot(qBoards, (snapshot) => {
+                window.boards = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
+                // Trigger render setiap papan berubah
+                if (window.ideas.length > 0) window.renderWorkspace();
+            });
+
+            // 3. Dengar Ide Konten (collab_ideas) + GARBAGE COLLECTION 30 HARI
             const qIdeas = query(collection(dbRef, "collab_ideas"), where("roomId", "==", currentRoomId));
             onSnapshot(qIdeas, (snapshot) => {
                 const now = Date.now();
-                let rawIdeas = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
-                
-                // =======================================================
-                // MESIN AUTO-DESTROY 30 HARI
-                // =======================================================
                 let validIdeas = [];
-                rawIdeas.forEach(async (idea) => {
-                    if (idea.isTrashed && idea.expireAt && idea.expireAt < now) {
-                        // Jika sudah kadaluarsa, tembak Firebase untuk hapus permanen
-                        try { await deleteDoc(doc(dbRef, "collab_ideas", idea.id)); } catch (e) {}
+                
+                snapshot.docs.forEach(async (docSnap) => {
+                    let ideaData = { id: docSnap.id, ...docSnap.data() };
+                    
+                    // CEK 30 HARI AUTO DESTROY
+                    if (ideaData.boardId === COLLAB_TRASH_BOARD_ID && ideaData.expireAt && ideaData.expireAt < now) {
+                        try { await deleteDoc(doc(dbRef, "collab_ideas", ideaData.id)); } catch(e) {}
                     } else {
-                        validIdeas.push(idea);
+                        validIdeas.push(ideaData);
                     }
                 });
                 
-                window.allIdeas = validIdeas;
-                
-                renderCategoryBoards(); // Update counter di papan depan
-                
-                if (window.currentBoardId) renderBoardIdeas(); // Update UI jika sedang buka papan
-                renderTrashUI(); // Update UI Trash (Banner + Modal)
+                window.ideas = validIdeas;
+                window.renderWorkspace();
+                if (window.currentViewBoardId) window.renderBoardViewContent();
             });
         }
 
         // ==========================================
-        // FUNGSI LAPIS 2: PAPAN KATEGORI (BERANDA)
+        // MANAJEMEN UI & RENDER PAPAN
         // ==========================================
-        function renderCategoryBoards() {
+        window.renderWorkspace = function() {
             const container = document.getElementById("boardContainer");
-            const boards = window.roomData?.innerBoards || [];
+            const trashContainer = document.getElementById("trashContainer");
             
-            if (boards.length === 0) {
-                container.innerHTML = `<div class="empty-state-global">Belum ada Papan Kategori di ruang ini.<br>Klik tombol di atas untuk membuat papan (misal: "TikTok", "YouTube").</div>`;
-                return;
-            }
+            const regularBoards = window.boards.filter(b => b.id !== COLLAB_TRASH_BOARD_ID);
+            
+            regularBoards.sort((a, b) => {
+                const aDone = a.done || false;
+                const bDone = b.done || false;
+                if (aDone === bDone) return b.createdAt - a.createdAt;
+                return aDone ? 1 : -1;
+            });
+            
+            if (regularBoards.length === 0) {
+                container.innerHTML = `<div class="empty-state-global">Belum ada papan kategori. Klik "Buat Papan Kategori" di atas untuk memulai kolaborasi.</div>`;
+            } else {
+                container.innerHTML = regularBoards.map(b => {
+                    const isDone = b.done || false;
+                    let boardClass = "board-card";
+                    if (isDone) boardClass += " completed";
+                    
+                    const ideasInBoard = window.ideas.filter(i => i.boardId === b.id);
 
-            container.innerHTML = boards.map(b => {
-                // Hitung ide aktif (bukan sampah) untuk papan ini
-                const activeIdeas = window.allIdeas.filter(i => i.innerBoardId === b.id && !i.isTrashed);
-                return `
-                <div class="board-card" onclick="openBoardView('${b.id}', '${b.name}')">
-                    <div class="board-title-wrap">
-                        <div class="board-title" title="${b.name}">${b.name}</div>
+                    const threeDotsHTML = `
+                        <div class="dropdown-wrap">
+                            <button class="btn-dots" onclick="event.stopPropagation(); toggleBoardMenu('${b.id}')">⋮</button>
+                            <div class="dropdown-menu" id="menu_${b.id}">
+                                <button onclick="event.stopPropagation(); openEditBoardModal('${b.id}')">✏️ Edit Judul Papan</button>
+                                <button onclick="event.stopPropagation(); showBoardInfo('${b.id}')">ℹ️ Show Info</button>
+                                <div style="height: 1px; background: var(--border); margin: 4px 0;"></div>
+                                <button class="danger" onclick="event.stopPropagation(); deleteBoard('${b.id}')">🗑️ Hapus Papan</button>
+                            </div>
+                        </div>`;
+                    
+                    const checkboxHTML = `<button class="board-checkbox ${isDone ? 'active' : ''}" onclick="event.stopPropagation(); toggleBoardDone('${b.id}')" title="Tandai Papan Selesai">✓</button>`;
+
+                    return `
+                    <div class="${boardClass}" id="board_card_${b.id}" onclick="openBoardView('${b.id}')" tabindex="0">
+                        <div class="board-title-wrap">
+                            ${checkboxHTML}
+                            <div class="board-title" title="${b.name}">${b.name}</div>
+                        </div>
+                        <div class="board-actions">
+                            <div class="counter">${ideasInBoard.length} Ide</div>
+                            ${threeDotsHTML}
+                        </div>
                     </div>
-                    <div class="counter">${activeIdeas.length} Ide</div>
-                </div>
+                    `;
+                }).join('');
+            }
+            
+            // Render Papan Pulihan (Hanya muncul jika ada isinya)
+            const trashIdeas = window.ideas.filter(i => i.boardId === COLLAB_TRASH_BOARD_ID);
+            if (trashIdeas.length > 0) {
+                trashContainer.style.display = "block";
+                trashContainer.innerHTML = `
+                    <div class="trash-banner" onclick="openBoardView('${COLLAB_TRASH_BOARD_ID}')" tabindex="0">
+                        <div class="trash-banner-left">
+                            <span class="trash-banner-icon">♻️</span>
+                            <div class="trash-banner-title">Papan Pulihan (Trash) Tim</div>
+                        </div>
+                        <div class="trash-banner-actions">
+                            <div class="trash-counter">${trashIdeas.length} Ide</div>
+                            <button class="btn-dots danger" onclick="event.stopPropagation(); deleteBoard('${COLLAB_TRASH_BOARD_ID}')" title="Hapus Permanen Trash Ini">🗑</button>
+                        </div>
+                    </div>
                 `;
-            }).join('');
+            } else {
+                trashContainer.style.display = "none";
+                trashContainer.innerHTML = "";
+            }
         }
 
-        window.openAddBoardModal = () => { document.getElementById('boardNameInput').value = ""; document.getElementById('addBoardModal').classList.add('active'); };
-        window.closeAddBoardModal = () => document.getElementById('addBoardModal').classList.remove('active');
-        
-        window.confirmAddBoard = async () => {
-            const name = document.getElementById('boardNameInput').value.trim();
-            if(!name) return alert("Nama kategori papan tidak boleh kosong!");
+        window.openBoardView = function(boardId) {
+            window.currentViewBoardId = boardId;
+            let boardName = "Papan Kategori";
             
-            const newBoard = { id: "cat_" + Date.now(), name: name, createdAt: Date.now() };
+            const isPulihan = (boardId === COLLAB_TRASH_BOARD_ID);
             
-            try {
-                // Menambahkan kategori baru ke dalam dokumen Ruang menggunakan arrayUnion
-                await updateDoc(doc(dbRef, "collab_boards", currentRoomId), {
-                    innerBoards: arrayUnion(newBoard)
-                });
-                window.closeAddBoardModal();
-            } catch (err) {
-                console.error(err); alert("Gagal membuat papan kategori.");
+            if (isPulihan) {
+                boardName = "♻️ Papan Pulihan Tim";
+                document.getElementById('bvFormArea').style.display = 'none';
+                document.getElementById('bvTrashNotice').style.display = 'block';
+            } else {
+                const board = window.boards.find(b => b.id === boardId);
+                if(board) boardName = board.name;
+                
+                document.getElementById('bvFormArea').style.display = 'block';
+                document.getElementById('bvTrashNotice').style.display = 'none';
+                document.getElementById('addIdeaTitle').value = "";
+                document.getElementById('addIdeaDate').value = "";
+                document.getElementById('addIdeaLink').value = "";
             }
-        };
 
-        // ==========================================
-        // FUNGSI LAPIS 3: ISI PAPAN KATEGORI (IDEAS)
-        // ==========================================
-        window.openBoardView = (boardId, boardName) => {
-            window.currentBoardId = boardId;
-            document.getElementById('bvTitle').innerText = boardName;
-            
-            document.getElementById('addIdeaTitle').value = "";
-            document.getElementById('addIdeaDate').value = "";
-            document.getElementById('addIdeaLink').value = "";
-            
-            renderBoardIdeas();
+            document.getElementById('bvTitle').innerHTML = boardName;
+            window.renderBoardViewContent();
             document.getElementById('boardViewModal').classList.add('active');
-        };
+        }
 
-        window.closeBoardView = () => {
-            window.currentBoardId = null;
+        window.closeBoardView = function() {
+            window.currentViewBoardId = null;
             document.getElementById('boardViewModal').classList.remove('active');
-        };
+        }
 
-        function renderBoardIdeas() {
-            if(!window.currentBoardId) return;
+        window.renderBoardViewContent = function() {
+            if(!window.currentViewBoardId) return;
             const listArea = document.getElementById('bvListArea');
+            const isPulihan = (window.currentViewBoardId === COLLAB_TRASH_BOARD_ID);
             
-            // Filter ide yang sesuai papan & BUKAN sampah
-            let activeIdeas = window.allIdeas.filter(i => i.innerBoardId === window.currentBoardId && !i.isTrashed);
-            document.getElementById('bvCounter').innerText = `${activeIdeas.length} Ide`;
-
-            activeIdeas.sort((a, b) => {
+            const ideasInBoard = window.ideas.filter(i => i.boardId === window.currentViewBoardId);
+            document.getElementById('bvCounter').innerText = `${ideasInBoard.length} Ide`;
+            
+            ideasInBoard.sort((a, b) => {
                 if (a.done === b.done) return b.createdAt - a.createdAt;
                 return a.done ? 1 : -1;
             });
 
-            if (activeIdeas.length === 0) {
-                listArea.innerHTML = `<div class="empty-board">Papan ini masih kosong.<br>Jadilah yang pertama menambahkan ide untuk tim Anda!</div>`;
+            if (ideasInBoard.length === 0) {
+                listArea.innerHTML = isPulihan 
+                    ? `<div class="empty-board">Papan pulihan kosong.</div>`
+                    : `<div class="empty-board">Papan masih kosong.<br>Tambahkan ide baru di form atas.</div>`;
                 return;
             }
 
-            listArea.innerHTML = activeIdeas.map(i => {
-                const linkDisplay = (i.link === '-' || !i.link) ? 'Tidak ada tautan referensi' : i.link;
-                const creatorName = i.creatorName || "Anggota Tim";
+            listArea.innerHTML = ideasInBoard.map(i => {
+                let badgeGroupHTML = `<div class="badge-group">`;
                 
+                if (isPulihan) {
+                    // Logic Hitung Mundur 30 Hari
+                    const daysLeft = Math.max(0, Math.ceil((i.expireAt - Date.now()) / (1000*60*60*24)));
+                    badgeGroupHTML += `<div class="badge" style="color:var(--danger); background:var(--danger-soft); border-color:var(--danger-soft);">⏳ Lenyap dalam ${daysLeft} Hari</div>`;
+                    badgeGroupHTML += `<div class="badge creator" title="Dihapus oleh ${i.deletedBy}">🗑️ ${i.deletedBy}</div>`;
+                } else {
+                    badgeGroupHTML += i.date === "Dipulihkan" 
+                        ? `<div class="badge restored">♻️ Dipulihkan</div>` 
+                        : `<div class="badge">📅 ${i.date}</div>`;
+                    badgeGroupHTML += `<div class="badge creator" title="Oleh ${i.creatorName}">👤 ${i.creatorName}</div>`;
+                }
+                badgeGroupHTML += `</div>`;
+                
+                const linkDisplay = (i.link === '-' || !i.link) ? 'Tidak ada tautan referensi' : i.link;
+                
+                // Di Papan Pulihan, tombol Hapus berubah fungsi jadi Hard Delete
+                const delTitle = isPulihan ? "Hapus Permanen" : "Hapus ke Trash";
+
                 return `
                 <div class="idea-item ${i.done ? "completed" : ""}">
                     <div class="idea-left">
                         <div class="idea-title">${i.title}</div>
-                        <div class="badge-group">
-                            <div class="badge">📅 ${i.date}</div>
-                            <div class="badge creator" title="Ditambahkan oleh ${creatorName}">👤 ${creatorName}</div>
-                        </div>
+                        ${badgeGroupHTML}
                     </div>
                     
                     <div class="idea-middle">
@@ -486,16 +613,117 @@
                     </div>
 
                     <div class="idea-right">
-                        <button class="btn-icon-action btn-edit" onclick="openEditModal('${i.id}')" title="Edit Konten">✏️</button>
-                        <button class="btn-icon-action btn-done ${i.done ? "active" : ""}" onclick="toggleDone('${i.id}')" title="Tandai Selesai">✓</button>
-                        <button class="btn-icon-action btn-del" onclick="softDeleteIdea('${i.id}')" title="Hapus ke Trash">🗑</button>
+                        <button class="btn-icon btn-edit" onclick="openEditModal('${i.id}')" title="Edit / Pindahkan">✏️</button>
+                        <button class="btn-icon btn-done ${i.done ? "active" : ""}" onclick="toggleDone('${i.id}')" title="Tandai Selesai">✓</button>
+                        <button class="btn-icon btn-del" onclick="deleteIdea('${i.id}', ${isPulihan})" title="${delTitle}">🗑</button>
                     </div>
                 </div>
                 `;
             }).join('');
         }
 
+        // ==========================================
+        // KONTROL PAPAN (KATEGORI)
+        // ==========================================
+        window.openAddBoardModal = () => document.getElementById('addBoardModal').classList.add('active');
+        window.closeAddBoardModal = () => document.getElementById('addBoardModal').classList.remove('active');
+        window.closeEditModal = () => document.getElementById('editIdeaModal').classList.remove('active');
+        window.closeEditBoardModal = () => document.getElementById('editBoardModal').classList.remove('active');
+        window.closeInfoBoardModal = () => document.getElementById('infoBoardModal').classList.remove('active');
+
+        window.toggleBoardMenu = (boardId) => {
+            const menu = document.getElementById('menu_' + boardId);
+            const card = document.getElementById('board_card_' + boardId);
+            const isCurrentlyActive = menu.classList.contains('active');
+            
+            document.querySelectorAll('.dropdown-menu').forEach(m => m.classList.remove('active'));
+            document.querySelectorAll('.board-card').forEach(c => { c.style.zIndex = '1'; });
+            
+            if (!isCurrentlyActive) {
+                menu.classList.add('active');
+                if (card) card.style.zIndex = '100'; 
+            }
+        };
+
+        window.confirmAddBoard = async () => {
+            const boardName = document.getElementById('boardNameInput').value.trim();
+            if(!boardName) return alert("Nama papan tidak boleh kosong!");
+            const boardId = "board_" + Date.now();
+            
+            const payload = { roomId: currentRoomId, name: boardName, done: false, createdAt: Date.now(), updatedAt: Date.now() };
+            
+            document.getElementById('boardNameInput').value = ""; 
+            window.closeAddBoardModal();
+            
+            try { await setDoc(doc(dbRef, "collab_room_boards", boardId), payload); } 
+            catch(e) { console.error(e); }
+        }
+
+        window.openEditBoardModal = (boardId) => {
+            const board = window.boards.find(b => b.id === boardId);
+            if (!board) return;
+            window.editBoardCurrentId = boardId;
+            document.getElementById('editBoardNameInput').value = board.name;
+            document.getElementById('editBoardModal').classList.add('active');
+        }
+
+        window.saveEditBoard = async () => {
+            if (!window.editBoardCurrentId) return;
+            const newName = document.getElementById('editBoardNameInput').value.trim();
+            if (!newName) return alert("Judul papan tidak boleh kosong!");
+
+            window.closeEditBoardModal();
+            try { await updateDoc(doc(dbRef, "collab_room_boards", window.editBoardCurrentId), { name: newName, updatedAt: Date.now() }); } 
+            catch(e) { console.error(e); }
+        }
+
+        window.showBoardInfo = (boardId) => {
+            const board = window.boards.find(b => b.id === boardId);
+            if (!board) return;
+            const ideasInBoard = window.ideas.filter(i => i.boardId === boardId);
+            const formatDate = (ms) => ms ? new Date(ms).toLocaleDateString('id-ID', { day: 'numeric', month: 'long', year: 'numeric', hour: '2-digit', minute:'2-digit' }) : '-';
+
+            document.getElementById('infoBoardTitle').innerText = board.name;
+            document.getElementById('infoBoardTotal').innerText = `${ideasInBoard.length} Ide`;
+            document.getElementById('infoBoardCreated').innerText = formatDate(board.createdAt);
+            document.getElementById('infoBoardUpdated').innerText = formatDate(board.updatedAt || board.createdAt);
+            
+            document.getElementById('infoBoardModal').classList.add('active');
+        }
+
+        window.toggleBoardDone = async (boardId) => {
+            const board = window.boards.find(b => b.id === boardId);
+            if (!board) return;
+            try { await updateDoc(doc(dbRef, "collab_room_boards", boardId), { done: !board.done, updatedAt: Date.now() }); } 
+            catch(e) { console.error(e); }
+        }
+
+        window.deleteBoard = async (boardId) => {
+            const isPulihan = (boardId === COLLAB_TRASH_BOARD_ID);
+            const msg = isPulihan 
+                ? "Hapus Papan Pulihan beserta SEMUA ide di dalamnya secara permanen untuk seluruh tim?" 
+                : "Hapus papan kategori ini beserta isinya secara permanen?";
+            
+            if(!confirm(msg)) return;
+            
+            const ideasToDelete = window.ideas.filter(i => i.boardId === boardId);
+            if (window.currentViewBoardId === boardId) window.closeBoardView();
+            
+            try {
+                if(!isPulihan) await deleteDoc(doc(dbRef, "collab_room_boards", boardId));
+                for(let idea of ideasToDelete) {
+                    await deleteDoc(doc(dbRef, "collab_ideas", idea.id));
+                }
+            } catch(e) { console.error(e); }
+        }
+
+        // ==========================================
+        // KONTROL IDE (KONTEN TIM)
+        // ==========================================
         window.addIdea = async () => {
+            if(!window.currentViewBoardId) return;
+            const boardId = window.currentViewBoardId;
+            
             const title = document.getElementById('addIdeaTitle').value.trim();
             const date = document.getElementById('addIdeaDate').value.trim();
             const link = document.getElementById('addIdeaLink').value.trim() || "-";
@@ -503,147 +731,83 @@
             if(!title || !date) return alert("Konten dan Tanggal wajib diisi!");
             
             const ideaId = "idea_" + Date.now();
-            const payload = { 
-                roomId: currentRoomId, 
-                innerBoardId: window.currentBoardId, 
-                creatorUid: currentUserUid,
-                creatorName: currentUserData.name,
-                title, date, link, 
-                done: false, 
-                isTrashed: false,
-                createdAt: Date.now() 
-            };
+            const payload = { roomId: currentRoomId, boardId, creatorUid: currentUserUid, creatorName: currentUserData.name, title, date, link, done: false, createdAt: Date.now() };
             
             document.getElementById('addIdeaTitle').value = "";
             document.getElementById('addIdeaDate').value = "";
             document.getElementById('addIdeaLink').value = "";
             
-            try {
-                await setDoc(doc(dbRef, "collab_ideas", ideaId), payload);
-            } catch (err) { console.error(err); alert("Gagal menambahkan ide."); }
-        };
+            try { await setDoc(doc(dbRef, "collab_ideas", ideaId), payload); } 
+            catch(e) { console.error(e); }
+        }
 
-        window.toggleDone = async (ideaId) => {
-            const idea = window.allIdeas.find(i => i.id === ideaId);
-            if (!idea) return;
-            try { await updateDoc(doc(dbRef, "collab_ideas", ideaId), { done: !idea.done }); } catch(e) {}
-        };
+        window.deleteIdea = async (ideaId, isAlreadyTrashed) => {
+            if (isAlreadyTrashed) {
+                // Hard Delete Manual jika dieksekusi di dalam Trash
+                if(!confirm("Hapus permanen ide ini? Anggota tim tidak akan bisa memulihkannya lagi.")) return;
+                try { await deleteDoc(doc(dbRef, "collab_ideas", ideaId)); } catch(e) {}
+            } else {
+                // Soft Delete: Lempar ke Trash dan aktifkan Timer 30 Hari
+                if(!confirm("Buang ide ini ke Trash Tim?")) return;
+                const expireTime = Date.now() + (30 * 24 * 60 * 60 * 1000);
+                try { 
+                    await updateDoc(doc(dbRef, "collab_ideas", ideaId), { 
+                        boardId: COLLAB_TRASH_BOARD_ID, 
+                        expireAt: expireTime, 
+                        deletedBy: currentUserData.name 
+                    }); 
+                } catch(e) {}
+            }
+        }
 
         window.openEditModal = (ideaId) => {
-            const idea = window.allIdeas.find(i => i.id === ideaId);
+            const idea = window.ideas.find(i => i.id === ideaId);
             if(!idea) return;
-            
             window.editCurrentId = ideaId;
+            
             document.getElementById('editTitleInput').value = idea.title;
-            document.getElementById('editDateInput').value = idea.date;
+            document.getElementById('editDateInput').value = idea.date === "Dipulihkan" ? "" : idea.date;
             document.getElementById('editLinkInput').value = idea.link === "-" ? "" : idea.link;
+            
+            const selectEl = document.getElementById('editBoardSelect');
+            selectEl.innerHTML = window.boards
+                .filter(b => b.id !== COLLAB_TRASH_BOARD_ID) 
+                .map(b => `<option value="${b.id}" ${b.id === idea.boardId ? 'selected' : ''}>${b.name}</option>`)
+                .join('');
+                
+            if (selectEl.options.length === 0) {
+                selectEl.innerHTML = `<option value="">-- Buat Papan Normal Dulu --</option>`;
+            }
+                
             document.getElementById('editIdeaModal').classList.add('active');
-        };
-
-        window.closeEditModal = () => { document.getElementById('editIdeaModal').classList.remove('active'); window.editCurrentId = null; };
+        }
 
         window.saveEdit = async () => {
             if(!window.editCurrentId) return;
+            const targetBoardId = document.getElementById('editBoardSelect').value;
+            
+            if(!targetBoardId) return alert("Anda harus memilih papan tujuan atau membuat papan baru terlebih dahulu!");
+            
             const title = document.getElementById('editTitleInput').value.trim();
             const date = document.getElementById('editDateInput').value.trim() || "-";
             const link = document.getElementById('editLinkInput').value.trim() || "-";
             
-            if(!title) return alert("Judul tidak boleh kosong.");
-
-            try {
-                await updateDoc(doc(dbRef, "collab_ideas", window.editCurrentId), { title, date, link });
-                window.closeEditModal();
-            } catch(e) { console.error(e); }
-        };
-
-        // ==========================================
-        // FUNGSI LAPIS 4: TRASH (30 DAYS LOGIC)
-        // ==========================================
-        function getDaysRemaining(expireAt) {
-            const diff = expireAt - Date.now();
-            return diff <= 0 ? 0 : Math.ceil(diff / (1000 * 60 * 60 * 24));
-        }
-
-        function renderTrashUI() {
-            const trashedIdeas = window.allIdeas.filter(i => i.isTrashed);
-            const trashContainer = document.getElementById('trashContainer');
-            
-            // Tampilkan atau sembunyikan banner trash di beranda
-            if (trashedIdeas.length > 0) {
-                trashContainer.style.display = "block";
-                document.getElementById('trashCounterUI').innerText = `${trashedIdeas.length} Ide`;
-            } else {
-                trashContainer.style.display = "none";
-                closeTrashView(); // Tutup modal jika isi sampah habis saat dibuka
-            }
-
-            // Jika modal trash sedang terbuka, render isinya
-            const trashListArea = document.getElementById('trashListArea');
-            if (trashedIdeas.length > 0) {
-                trashedIdeas.sort((a, b) => b.expireAt - a.expireAt);
-                
-                trashListArea.innerHTML = trashedIdeas.map(item => {
-                    const daysLeft = getDaysRemaining(item.expireAt);
-                    const badgeClass = daysLeft > 10 ? "badge-countdown warning" : "badge-countdown";
-                    
-                    // Cek Hak Akses Hapus Permanen (Owner Ruang atau Kreator Ide)
-                    const canHardDelete = (window.roomData.ownerId === currentUserUid) || (item.creatorUid === currentUserUid);
-                    const hardDeleteBtn = canHardDelete 
-                        ? `<button class="btn-action btn-delete" onclick="hardDeleteIdea('${item.id}')" title="Hapus Permanen">🗑️</button>` 
-                        : ``;
-
-                    return `
-                    <div class="trash-card">
-                        <div class="card-top">
-                            <div class="card-title" title="${item.title}">${item.title}</div>
-                            <div class="card-desc">Dihapus oleh: ${item.deletedBy || 'Anggota Tim'}<br>Link: ${item.link || '-'}</div>
-                        </div>
-                        <div class="card-bottom">
-                            <div class="${badgeClass}">⏳ Sisa ${daysLeft} Hari</div>
-                            <div class="card-actions">
-                                <button class="btn-action btn-restore" onclick="restoreIdea('${item.id}')" title="Pulihkan ke Papan Asal">♻️ Pulihkan</button>
-                                ${hardDeleteBtn}
-                            </div>
-                        </div>
-                    </div>`;
-                }).join('');
-            }
-        }
-
-        window.openTrashView = () => document.getElementById('trashViewModal').classList.add('active');
-        window.closeTrashView = () => document.getElementById('trashViewModal').classList.remove('active');
-
-        // SOFT DELETE: Pindahkan ke Trash, Set Timer 30 Hari
-        window.softDeleteIdea = async (ideaId) => {
-            if(!confirm("Buang ide ini ke Trash Tim?")) return;
-            const expireTime = Date.now() + (30 * 24 * 60 * 60 * 1000);
-            try {
-                await updateDoc(doc(dbRef, "collab_ideas", ideaId), {
-                    isTrashed: true,
-                    expireAt: expireTime,
-                    deletedBy: currentUserData.name
-                });
-            } catch(e) { console.error(e); }
-        };
-
-        // RESTORE: Kembalikan dari Trash
-        window.restoreIdea = async (ideaId) => {
-            try {
-                await updateDoc(doc(dbRef, "collab_ideas", ideaId), {
-                    isTrashed: false,
-                    expireAt: null,
+            window.closeEditModal();
+            try { 
+                await updateDoc(doc(dbRef, "collab_ideas", window.editCurrentId), { 
+                    title, date, link, 
+                    boardId: targetBoardId,
+                    expireAt: null, // Clear timer jika dipulihkan dari Trash
                     deletedBy: null
-                });
+                }); 
             } catch(e) { console.error(e); }
-        };
+        }
 
-        // HARD DELETE: Hapus Permanen secara manual (Hanya Owner/Kreator)
-        window.hardDeleteIdea = async (ideaId) => {
-            if(!confirm("Hapus permanen ide ini? Anggota tim lain tidak akan bisa memulihkannya lagi.")) return;
-            try {
-                await deleteDoc(doc(dbRef, "collab_ideas", ideaId));
-            } catch(e) { console.error(e); }
-        };
+        window.toggleDone = async (ideaId) => {
+            const idea = window.ideas.find(i => i.id === ideaId);
+            try { await updateDoc(doc(dbRef, "collab_ideas", ideaId), { done: !idea.done }); } 
+            catch(e) { console.error(e); }
+        }
     </script>
 </body>
 </html>
