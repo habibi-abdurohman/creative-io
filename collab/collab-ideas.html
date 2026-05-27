@@ -1,0 +1,386 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+    <title>Collab Workspace - Creative.io</title>
+    <link rel="icon" type="image/png" sizes="192x192" href="../assets/favicon-192x192.png">
+
+    <link rel="stylesheet" href="../navbar/navbar.css">
+    <link rel="manifest" href="../manifest.json">
+    <meta name="theme-color" content="#2563eb">
+
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800;900&display=swap');
+        * { margin: 0; padding: 0; box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+        *::-webkit-scrollbar { display: none; }
+        :root { --bg-grad: linear-gradient(180deg, #f8fbff 0%, #eef4ff 100%); --card-glass: rgba(255, 255, 255, 0.9); --card-solid: #ffffff; --card-tint: #f1f5f9; --border: #e2e8f0; --text-main: #0f172a; --text-muted: #64748b; --primary: #2563eb; --primary-grad: linear-gradient(135deg, #3b82f6, #2563eb); --primary-soft: rgba(37, 99, 235, 0.1); --success: #16a34a; --danger: #ef4444; --warning: #f59e0b; --shadow-flat: 0 4px 20px rgba(0, 0, 0, 0.04); --radius-btn: 14px; --radius-card: 24px; }
+        body.dark { --bg-grad: linear-gradient(180deg, #0f172a 0%, #1e293b 100%); --card-glass: rgba(30, 41, 59, 0.9); --card-solid: #1e293b; --card-tint: #0f172a; --border: #334155; --text-main: #f8fafc; --text-muted: #94a3b8; --primary-soft: rgba(59, 130, 246, 0.2); --shadow-flat: 0 4px 20px rgba(0, 0, 0, 0.2); --danger-soft: rgba(239, 68, 68, 0.15); }
+        body { font-family: 'Inter', system-ui, sans-serif; background: var(--bg-grad); color: var(--text-main); min-height: 100vh; padding: 86px 16px 100px; transition: background 0.3s, color 0.3s; overflow-x: hidden; width: 100vw; max-width: 100%; }
+        
+        .bg-glow { position: fixed; border-radius: 50%; filter: blur(90px); z-index: 0; opacity: 0.5; pointer-events: none; }
+        .bg-glow.one { width: 340px; height: 340px; background: rgba(59, 130, 246, 0.15); top: -50px; left: -100px; }
+        .bg-glow.two { width: 320px; height: 320px; background: rgba(16, 185, 129, 0.15); bottom: 100px; right: -100px; }
+        
+        .wrapper { position: relative; z-index: 2; max-width: 1000px; margin: 0 auto; width: 100%; display: flex; flex-direction: column; min-height: calc(100vh - 186px); }
+        
+        .page-header { display: flex; align-items: center; gap: 16px; margin-bottom: 32px; width: 100%; }
+        .btn-back { width: 44px; height: 44px; border-radius: 14px; background: var(--card-glass); border: 1px solid var(--border); display: flex; align-items: center; justify-content: center; font-size: 20px; color: var(--text-main); text-decoration: none; box-shadow: var(--shadow-flat); transition: 0.2s; flex-shrink: 0; }
+        .btn-back:hover { background: var(--primary); color: white; border-color: var(--primary); }
+        
+        .header-title { flex: 1; min-width: 0; }
+        .header-title h1 { font-size: 24px; font-weight: 900; letter-spacing: -0.5px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+        .header-title p { font-size: 13px; color: var(--text-muted); margin-top: 4px; display: flex; align-items: center; gap: 6px; }
+        .live-indicator { width: 8px; height: 8px; background: #ef4444; border-radius: 50%; display: inline-block; animation: pulse 2s infinite; }
+        @keyframes pulse { 0% { transform: scale(0.95); box-shadow: 0 0 0 0 rgba(239, 68, 68, 0.7); } 70% { transform: scale(1); box-shadow: 0 0 0 6px rgba(239, 68, 68, 0); } 100% { transform: scale(0.95); box-shadow: 0 0 0 0 rgba(239, 68, 68, 0); } }
+        
+        /* FORM INPUT (SAMA SEPERTI IDEAS.HTML) */
+        .board-view-form-area { background: var(--card-solid); border: 1px solid var(--border); border-radius: 20px; padding: 24px; box-shadow: var(--shadow-flat); margin-bottom: 32px; flex-shrink: 0; width: 100%; box-sizing: border-box; }
+        .board-form-grid { display: grid; grid-template-columns: 1fr 1fr 1.5fr auto; gap: 16px; align-items: center; width: 100%; box-sizing: border-box; }
+        
+        .input-wrap { position: relative; width: 100%; min-width: 0; display: flex; flex-direction: column; }
+        .input-wrap span { position: absolute; left: 16px; top: 50%; transform: translateY(-50%); font-size: 12px; font-weight: 800; color: var(--text-muted); pointer-events: none; z-index: 2; }
+        .input-wrap input { width: 100%; border: 1px solid var(--border); background: var(--card-tint); border-radius: 14px; color: var(--text-main); padding: 14px 16px 14px 80px; font-size: 14px; font-weight: 600; outline: none; transition: 0.2s; min-width: 0; box-sizing: border-box; }
+        .input-wrap input:focus { border-color: var(--primary); box-shadow: 0 0 0 3px var(--primary-soft); background: var(--card-solid); }
+        
+        .add-btn { border: none; background: var(--primary-grad); color: white; padding: 14px 20px; border-radius: 14px; font-size: 14px; font-weight: 800; cursor: pointer; height: 100%; white-space: nowrap; outline: none; width: 100%; transition: 0.2s; box-shadow: 0 8px 20px rgba(37,99,235,0.2); }
+        .add-btn:active { transform: scale(0.96); }
+        
+        .idea-list-header { font-size: 14px; font-weight: 800; color: var(--text-muted); margin-bottom: 16px; padding-bottom: 12px; border-bottom: 1px dashed var(--border); display: flex; justify-content: space-between; align-items: center; }
+        
+        /* KARTU IDE KONTEN - GRID ANTI TABRAK */
+        .idea-item { 
+            background: var(--card-solid); border: 1px solid var(--border); border-radius: 16px; 
+            padding: 16px 20px; margin-bottom: 12px; box-shadow: var(--shadow-flat); 
+            width: 100%; box-sizing: border-box; min-width: 0; overflow: hidden;
+            display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 16px; align-items: center; 
+        }
+        
+        .idea-left { display: flex; flex-direction: column; gap: 8px; min-width: 0; width: 100%; justify-self: start; }
+        .idea-title { font-size: 15px; font-weight: 800; line-height: 1.4; color: var(--text-main); word-break: break-word; overflow-wrap: break-word; white-space: normal; }
+        
+        .badge-group { display: flex; flex-wrap: wrap; gap: 6px; }
+        .badge { display: inline-flex; align-items: center; gap: 4px; background: var(--card-tint); color: var(--text-muted); border: 1px solid var(--border); padding: 4px 8px; border-radius: 8px; font-size: 11px; font-weight: 800; white-space: normal; word-break: break-word; text-align: left; line-height: 1.4; width: fit-content; max-width: 100%; }
+        .badge.creator { background: var(--primary-soft); color: var(--primary); border-color: rgba(37,99,235,0.2); }
+        
+        .idea-middle { min-width: 0; display: flex; justify-content: center; width: 100%; justify-self: center; }
+        .link-box { display: inline-flex; align-items: center; gap: 6px; padding: 8px 14px; background: rgba(16, 185, 129, 0.1); color: #10b981; border-radius: 12px; width: 100%; border: 1px dashed rgba(16, 185, 129, 0.3); cursor: pointer; box-sizing: border-box; overflow: hidden; transition: 0.2s; }
+        .link-box:hover { background: rgba(16, 185, 129, 0.15); }
+        .link-box .icon { font-size: 14px; flex-shrink: 0; pointer-events: none; }
+        .link-text { flex: 1; min-width: 0; display: block; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; font-size: 12px; font-weight: 700; color: inherit; user-select: all; -webkit-user-select: all; }
+        
+        .idea-right { display: flex; gap: 8px; flex-shrink: 0; justify-self: end; }
+        .btn-icon-action { width: 36px; height: 36px; border-radius: 10px; cursor: pointer; border: 1px solid var(--border); display: flex; align-items: center; justify-content: center; background: var(--card-solid); font-size: 14px; color: var(--text-main); outline: none; flex-shrink: 0; transition: 0.2s; }
+        .btn-icon-action:hover { background: var(--card-tint); }
+        .btn-edit { color: var(--text-muted); }
+        .btn-done { color: var(--border); font-size: 16px; font-weight: 900; }
+        .btn-done.active { background: var(--success); border-color: var(--success); color: white; }
+        .btn-del { color: var(--danger); }
+        .btn-del:hover { background: rgba(239, 68, 68, 0.1); border-color: rgba(239, 68, 68, 0.3); }
+        
+        .idea-item.completed { opacity: 0.6; background: var(--card-tint); border-style: dashed; }
+        .idea-item.completed .idea-title { text-decoration: line-through; color: var(--text-muted); }
+        .idea-item.completed .link-box { filter: grayscale(100%); opacity: 0.8; }
+        
+        .empty-board { text-align: center; padding: 60px 20px; font-size: 14px; font-weight: 600; color: var(--text-muted); border: 1px dashed var(--border); border-radius: 20px; width: 100%; background: var(--card-glass); }
+
+        /* MODAL EDIT */
+        .modal-overlay { position: fixed; inset: 0; background: rgba(0,0,0,0.4); backdrop-filter: blur(4px); z-index: 100001; display: none; align-items: center; justify-content: center; padding: 20px; width: 100vw; height: 100vh; box-sizing: border-box; }
+        .modal-overlay.active { display: flex; }
+        .modal-card { background: var(--card-solid); width: 100%; max-width: 360px; border-radius: var(--radius-card); padding: 24px; box-shadow: var(--shadow-flat); border: 1px solid var(--border); box-sizing: border-box; }
+        .modal-card h3 { font-size: 18px; font-weight: 900; margin-bottom: 16px; color: var(--text-main); }
+        .modal-input { width: 100%; padding: 14px 16px; border-radius: 14px; border: 1px solid var(--border); background: var(--card-tint); color: var(--text-main); font-size: 14px; font-weight: 600; outline: none; margin-bottom: 12px; transition: 0.2s; box-sizing: border-box; }
+        .modal-input:focus { border-color: var(--primary); box-shadow: 0 0 0 3px var(--primary-soft); }
+        .modal-actions { display: flex; gap: 12px; margin-top: 8px; }
+        .btn-modal { flex: 1; padding: 12px; border-radius: 12px; font-size: 13px; font-weight: 800; cursor: pointer; border: none; transition: 0.2s; outline: none; }
+        .btn-cancel { background: var(--card-tint); color: var(--text-main); border: 1px solid var(--border); }
+        .btn-cancel:hover { background: #e2e8f0; }
+        body.dark .btn-cancel:hover { background: #334155; }
+        .btn-confirm { background: var(--primary-grad); color: white; }
+        
+        /* RESPONSIVITAS */
+        @media(max-width: 1024px) {
+            .board-form-grid { grid-template-columns: 1fr 1fr; }
+        }
+        
+        @media(max-width: 768px) {
+            .board-form-grid { grid-template-columns: 1fr; gap: 12px; }
+            .board-view-form-area { padding: 20px; }
+            
+            .idea-item { 
+                grid-template-columns: 1fr auto; 
+                grid-template-rows: auto auto auto;
+                align-items: start; gap: 12px; padding: 16px;
+            }
+            .idea-left { display: contents; }
+            .idea-title { grid-column: 1 / 2; grid-row: 1; padding-right: 8px; margin-top: 7px; }
+            .idea-right { grid-column: 2 / 3; grid-row: 1; justify-self: end; align-self: start; }
+            .badge-group { grid-column: 1 / -1; grid-row: 2; justify-self: start; }
+            .idea-middle { grid-column: 1 / -1; grid-row: 3; width: 100%; }
+        }
+    </style>
+</head>
+<body>
+
+    <div id="navbar-container"></div>
+    <div class="bg-glow one"></div><div class="bg-glow two"></div>
+
+    <div class="wrapper">
+        <div class="page-header">
+            <a href="collab-hub.html" class="btn-back" title="Kembali ke Lobi">🔙</a>
+            <div class="header-title">
+                <h1 id="uiBoardName">Memuat Ruang...</h1>
+                <p id="uiBoardInfo"><span class="live-indicator"></span> Menghubungkan ke server...</p>
+            </div>
+        </div>
+
+        <div class="board-view-form-area">
+            <div class="board-form-grid">
+                <div class="input-wrap"><span>Konten</span><input type="text" id="addIdeaTitle" placeholder="Judul ide konten..."></div>
+                <div class="input-wrap"><span>Tanggal</span><input type="text" id="addIdeaDate" placeholder="Misal: 17 Agustus"></div>
+                <div class="input-wrap"><span>Link</span><input type="url" id="addIdeaLink" placeholder="Tempel tautan referensi..."></div>
+                <button class="add-btn" onclick="addIdea()">+ Tambah Ide</button>
+            </div>
+        </div>
+
+        <div class="idea-list-header">
+            <span>Daftar Konten Tim</span>
+            <span id="uiCounter">0 Ide</span>
+        </div>
+
+        <div id="ideaListArea">
+            </div>
+    </div>
+
+    <div class="modal-overlay" id="editIdeaModal">
+        <div class="modal-card">
+            <h3>Edit Ide Konten</h3>
+            <div class="input-wrap" style="margin-bottom:12px;">
+                <span>Konten</span>
+                <input type="text" id="editTitleInput" class="modal-input" style="padding-left:80px; margin-bottom:0;" placeholder="Judul ide...">
+            </div>
+            <div class="input-wrap" style="margin-bottom:12px;">
+                <span>Tanggal</span>
+                <input type="text" id="editDateInput" class="modal-input" style="padding-left:80px; margin-bottom:0;" placeholder="Misal: 17 Agustus 2026">
+            </div>
+            <div class="input-wrap" style="margin-bottom:16px;">
+                <span>Link</span>
+                <input type="text" id="editLinkInput" class="modal-input" style="padding-left:80px; margin-bottom:0;" placeholder="Tautan referensi...">
+            </div>
+            <div class="modal-actions">
+                <button class="btn-modal btn-cancel" onclick="closeEditModal()">Batal</button>
+                <button class="btn-modal btn-confirm" onclick="saveEdit()">Simpan</button>
+            </div>
+        </div>
+    </div>
+
+    <script src="../navbar/navbar.js"></script>
+    <script src="../js/pwa.js"></script>
+
+    <script type="module">
+        import { onSnapshot, collection, query, where, doc, setDoc, updateDoc, deleteDoc } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
+        
+        let currentUserUid = null;
+        let currentUserData = { name: "Anonim", email: "" };
+        let dbRef = null;
+        
+        // Ambil ID Papan dari URL Parameter (?id=XXXX)
+        const urlParams = new URLSearchParams(window.location.search);
+        const currentBoardId = urlParams.get('id');
+        
+        window.collabIdeas = [];
+        window.editCurrentId = null;
+
+        // Script ajaib untuk Text Selection
+        window.selectLinkText = function(container) {
+            const textEl = container.querySelector('.link-text');
+            if (!textEl) return;
+            const range = document.createRange();
+            range.selectNodeContents(textEl);
+            const sel = window.getSelection();
+            sel.removeAllRanges();
+            sel.addRange(range);
+        };
+
+        document.addEventListener("DOMContentLoaded", () => {
+            if (!currentBoardId) {
+                alert("ID Ruang tidak ditemukan!");
+                window.location.replace("collab-hub.html");
+                return;
+            }
+
+            if (localStorage.getItem("dashboard_theme") === "dark") document.body.classList.add("dark");
+
+            import("../js/firebase.js").then(module => {
+                dbRef = module.db;
+                import("https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js").then(authLib => {
+                    authLib.onAuthStateChanged(module.auth, (user) => {
+                        if (user) {
+                            currentUserUid = user.uid;
+                            // Set nama default: Ambil nama asli, jika kosong ambil depan email
+                            currentUserData.name = user.displayName || user.email.split('@')[0];
+                            currentUserData.email = user.email;
+                            
+                            initRealtimeListeners();
+                        } else {
+                            window.location.replace("../login.html");
+                        }
+                    });
+                });
+            });
+        });
+
+        function initRealtimeListeners() {
+            // 1. Dengarkan Info Papan (Verifikasi Akses)
+            onSnapshot(doc(dbRef, "collab_boards", currentBoardId), (docSnap) => {
+                if (!docSnap.exists() || !docSnap.data().members.includes(currentUserUid)) {
+                    alert("Akses Ditolak: Anda bukan anggota dari ruang ini, atau ruang telah dihapus.");
+                    window.location.replace("collab-hub.html");
+                    return;
+                }
+                const boardData = docSnap.data();
+                document.getElementById('uiBoardName').innerText = boardData.name;
+                document.getElementById('uiBoardInfo').innerHTML = `<span class="live-indicator"></span> Live Session • ${boardData.members.length} Anggota`;
+            });
+
+            // 2. Dengarkan Data Ide Konten
+            const qIdeas = query(collection(dbRef, "collab_ideas"), where("boardId", "==", currentBoardId));
+            onSnapshot(qIdeas, (snapshot) => {
+                window.collabIdeas = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
+                renderIdeas();
+            });
+        }
+
+        function renderIdeas() {
+            const listArea = document.getElementById('ideaListArea');
+            document.getElementById('uiCounter').innerText = `${window.collabIdeas.length} Ide`;
+
+            // Sort: Yang belum selesai di atas, lalu berdasarkan urutan pembuatan
+            window.collabIdeas.sort((a, b) => {
+                if (a.done === b.done) return b.createdAt - a.createdAt;
+                return a.done ? 1 : -1;
+            });
+
+            if (window.collabIdeas.length === 0) {
+                listArea.innerHTML = `<div class="empty-board">Ruang kerja masih kosong.<br>Jadilah yang pertama menambahkan ide konten untuk tim Anda!</div>`;
+                return;
+            }
+
+            listArea.innerHTML = window.collabIdeas.map(i => {
+                const linkDisplay = (i.link === '-' || !i.link) ? 'Tidak ada tautan referensi' : i.link;
+                const creatorName = i.creatorName || "Anggota Tim";
+                
+                return `
+                <div class="idea-item ${i.done ? "completed" : ""}">
+                    <div class="idea-left">
+                        <div class="idea-title">${i.title}</div>
+                        <div class="badge-group">
+                            <div class="badge">📅 ${i.date}</div>
+                            <div class="badge creator" title="Ditambahkan oleh ${creatorName}">👤 ${creatorName}</div>
+                        </div>
+                    </div>
+                    
+                    <div class="idea-middle">
+                        <div class="link-box" onclick="event.stopPropagation(); window.selectLinkText(this);" title="Klik untuk Salin/Buka Tautan">
+                            <span class="icon">🔗</span>
+                            <span class="link-text">${linkDisplay}</span>
+                        </div>
+                    </div>
+
+                    <div class="idea-right">
+                        <button class="btn-icon-action btn-edit" onclick="openEditModal('${i.id}')" title="Edit Konten">✏️</button>
+                        <button class="btn-icon-action btn-done ${i.done ? "active" : ""}" onclick="toggleDone('${i.id}')" title="Tandai Selesai">✓</button>
+                        <button class="btn-icon-action btn-del" onclick="deleteIdea('${i.id}')" title="Hapus Permanen">🗑</button>
+                    </div>
+                </div>
+                `;
+            }).join('');
+        }
+
+        window.addIdea = async () => {
+            const title = document.getElementById('addIdeaTitle').value.trim();
+            const date = document.getElementById('addIdeaDate').value.trim();
+            const link = document.getElementById('addIdeaLink').value.trim() || "-";
+            
+            if(!title || !date) return alert("Konten dan Tanggal wajib diisi!");
+            
+            const ideaId = "collab_idea_" + Date.now();
+            const payload = { 
+                boardId: currentBoardId, 
+                uid: currentUserUid, 
+                creatorName: currentUserData.name,
+                title, 
+                date, 
+                link, 
+                done: false, 
+                createdAt: Date.now() 
+            };
+            
+            // UI dibersihkan langsung untuk fast response
+            document.getElementById('addIdeaTitle').value = "";
+            document.getElementById('addIdeaDate').value = "";
+            document.getElementById('addIdeaLink').value = "";
+            
+            try {
+                await setDoc(doc(dbRef, "collab_ideas", ideaId), payload);
+            } catch (err) {
+                console.error("Gagal menambah ide:", err);
+                alert("Gagal menambahkan ide. Periksa koneksi internet Anda.");
+            }
+        };
+
+        window.toggleDone = async (ideaId) => {
+            const idea = window.collabIdeas.find(i => i.id === ideaId);
+            if (!idea) return;
+            try {
+                await updateDoc(doc(dbRef, "collab_ideas", ideaId), { done: !idea.done });
+            } catch(e) { console.error(e); }
+        };
+
+        window.deleteIdea = async (ideaId) => {
+            if(!confirm("Hapus permanen ide ini dari ruang kolaborasi? Tindakan ini tidak bisa dibatalkan.")) return;
+            try {
+                await deleteDoc(doc(dbRef, "collab_ideas", ideaId));
+            } catch(e) { console.error(e); }
+        };
+
+        window.openEditModal = (ideaId) => {
+            const idea = window.collabIdeas.find(i => i.id === ideaId);
+            if(!idea) return;
+            
+            window.editCurrentId = ideaId;
+            document.getElementById('editTitleInput').value = idea.title;
+            document.getElementById('editDateInput').value = idea.date;
+            document.getElementById('editLinkInput').value = idea.link === "-" ? "" : idea.link;
+            
+            document.getElementById('editIdeaModal').classList.add('active');
+        };
+
+        window.closeEditModal = () => {
+            document.getElementById('editIdeaModal').classList.remove('active');
+            window.editCurrentId = null;
+        };
+
+        window.saveEdit = async () => {
+            if(!window.editCurrentId) return;
+            
+            const title = document.getElementById('editTitleInput').value.trim();
+            const date = document.getElementById('editDateInput').value.trim() || "-";
+            const link = document.getElementById('editLinkInput').value.trim() || "-";
+            
+            if(!title) {
+                alert("Judul tidak boleh kosong.");
+                return;
+            }
+
+            try {
+                await updateDoc(doc(dbRef, "collab_ideas", window.editCurrentId), { title, date, link });
+                window.closeEditModal();
+            } catch(e) {
+                console.error(e);
+                alert("Gagal menyimpan perubahan.");
+            }
+        };
+    </script>
+</body>
+</html>
