@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-    <title>Collab Workspace - Creative.io</title>
+    <title>Ruang Kerja Tim - Creative.io</title>
     <link rel="icon" type="image/png" sizes="192x192" href="../assets/favicon-192x192.png">
 
     <link rel="stylesheet" href="../navbar/navbar.css">
@@ -23,18 +23,17 @@
         .bg-glow.two { width: 320px; height: 320px; background: rgba(96, 165, 250, 0.15); bottom: 100px; right: -100px; }
         
         .wrapper { position: relative; z-index: 2; max-width: 1200px; margin: 0 auto; width: 100%; display: flex; flex-direction: column; min-height: calc(100vh - 186px); }
-        
-        /* HEADER COLLAB */
         .page-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 24px; flex-wrap: wrap; gap: 16px; width: 100%; }
-        .header-left { display: flex; align-items: center; gap: 16px; flex: 1; min-width: 250px; }
-        .btn-back { width: 44px; height: 44px; border-radius: 14px; background: var(--card-glass); border: 1px solid var(--border); display: flex; align-items: center; justify-content: center; font-size: 20px; color: var(--text-main); text-decoration: none; box-shadow: var(--shadow-flat); transition: 0.2s; flex-shrink: 0; outline: none; }
-        .btn-back:hover { background: var(--primary); color: white; border-color: var(--primary); }
+        .header-title { flex: 1; min-width: 250px; }
+        .header-title h1 { font-size: 26px; font-weight: 900; letter-spacing: -0.5px; display: flex; align-items: center; gap: 12px; }
+        .header-title p { font-size: 13px; color: var(--text-muted); margin-top: 4px; line-height: 1.6; display: flex; align-items: center; gap: 6px;}
         
-        .header-title h1 { font-size: 26px; font-weight: 900; letter-spacing: -0.5px; }
-        .header-title p { font-size: 13px; color: var(--text-muted); margin-top: 4px; display: flex; align-items: center; gap: 6px; }
+        .btn-back { width: 38px; height: 38px; border-radius: 12px; background: var(--card-glass); border: 1px solid var(--border); display: flex; align-items: center; justify-content: center; font-size: 16px; color: var(--text-main); text-decoration: none; box-shadow: var(--shadow-flat); transition: 0.2s; flex-shrink: 0; outline: none; }
+        .btn-back:hover { background: var(--card-tint); }
+        
         .live-indicator { width: 8px; height: 8px; background: #10b981; border-radius: 50%; display: inline-block; animation: pulse 2s infinite; }
         @keyframes pulse { 0% { transform: scale(0.95); box-shadow: 0 0 0 0 rgba(16, 185, 129, 0.7); } 70% { transform: scale(1); box-shadow: 0 0 0 6px rgba(16, 185, 129, 0); } 100% { transform: scale(0.95); box-shadow: 0 0 0 0 rgba(16, 185, 129, 0); } }
-        
+
         .btn-add-board { background: var(--primary-grad); color: white; border: none; padding: 12px 20px; border-radius: var(--radius-btn); font-size: 13px; font-weight: 800; cursor: pointer; box-shadow: 0 10px 25px rgba(37, 99, 235, 0.3); transition: 0.2s; display: flex; align-items: center; gap: 8px; flex-shrink: 0; outline: none; }
         .btn-add-board:hover { transform: translateY(-2px); box-shadow: 0 12px 30px rgba(37, 99, 235, 0.4); }
         
@@ -60,7 +59,7 @@
         .board-actions { display: flex; align-items: center; gap: 8px; z-index: 10; flex-shrink: 0; }
         .counter { background: var(--primary-soft); color: var(--primary); padding: 6px 14px; border-radius: 20px; font-size: 12px; font-weight: 800; white-space: nowrap; border: 1px solid rgba(37, 99, 235, 0.1); }
         
-        /* BANNER PAPAN TRASH / PULIHAN */
+        /* BANNER PAPAN TRASH / PULIHAN TERPISAH */
         #trashContainer { margin-top: 40px; border-top: 1px solid var(--border); padding-top: 24px; display: none; }
         .trash-banner { background: rgba(245, 158, 11, 0.05); border: 1px dashed rgba(245, 158, 11, 0.4); border-radius: 16px; padding: 16px 24px; display: flex; justify-content: space-between; align-items: center; cursor: pointer; transition: 0.2s; width: 100%; outline: none; }
         .trash-banner:hover { background: rgba(245, 158, 11, 0.1); border-color: rgba(245, 158, 11, 0.6); }
@@ -115,7 +114,7 @@
         .idea-list-header { font-size: 14px; font-weight: 800; color: var(--text-muted); margin-bottom: 16px; padding-bottom: 12px; border-bottom: 1px dashed var(--border); display: flex; justify-content: space-between; align-items: center; width: 100%; box-sizing: border-box; }
         .board-view-body { flex: 1; width: 100%; box-sizing: border-box; display: flex; flex-direction: column; }
         
-        /* KARTU IDE KONTEN GRID */
+        /* KARTU IDE KONTEN */
         .idea-item { 
             background: var(--card-solid); border: 1px solid var(--border); border-radius: 16px; 
             padding: 16px 20px; margin-bottom: 12px; box-shadow: var(--shadow-flat); 
@@ -127,12 +126,11 @@
         .idea-title { font-size: 15px; font-weight: 800; line-height: 1.4; color: var(--text-main); word-break: break-word; overflow-wrap: break-word; white-space: normal; }
         
         .badge-group { display: flex; flex-wrap: wrap; gap: 6px; }
-        .badge { display: inline-flex; align-items: center; gap: 4px; background: var(--card-tint); color: var(--text-muted); border: 1px solid var(--border); padding: 6px 10px; border-radius: 8px; font-size: 11px; font-weight: 800; white-space: normal; word-break: break-word; text-align: left; line-height: 1.4; width: fit-content; max-width: 100%; }
+        .badge { display: inline-flex; align-items: flex-start; gap: 4px; background: var(--card-tint); color: var(--text-muted); border: 1px solid var(--border); padding: 6px 10px; border-radius: 8px; font-size: 11px; font-weight: 800; white-space: normal; word-break: break-word; text-align: left; line-height: 1.4; width: fit-content; max-width: 100%; }
         .badge.restored { background: rgba(245, 158, 11, 0.1); color: var(--warning); border-color: rgba(245, 158, 11, 0.2); }
         .badge.creator { background: var(--primary-soft); color: var(--primary); border-color: rgba(37,99,235,0.2); }
         
         .idea-middle { min-width: 0; display: flex; justify-content: center; width: 100%; justify-self: center; }
-        
         .link-box { 
             display: inline-flex; align-items: center; gap: 6px; padding: 8px 14px; 
             background: var(--primary-soft); color: var(--primary); border-radius: 12px; 
@@ -144,13 +142,11 @@
         .link-text { flex: 1; min-width: 0; display: block; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; font-size: 12px; font-weight: 700; color: inherit; user-select: all; -webkit-user-select: all; }
         
         .idea-right { display: flex; gap: 8px; flex-shrink: 0; justify-self: end; }
-        .btn-icon { width: 36px; height: 36px; border-radius: 10px; cursor: pointer; border: 1px solid var(--border); display: flex; align-items: center; justify-content: center; background: var(--card-solid); font-size: 14px; color: var(--text-main); outline: none; flex-shrink: 0; transition: 0.2s;}
-        .btn-icon:hover { background: var(--card-tint); }
+        .btn-icon { width: 36px; height: 36px; border-radius: 10px; cursor: pointer; border: 1px solid var(--border); display: flex; align-items: center; justify-content: center; background: var(--card-solid); font-size: 14px; color: var(--text-main); outline: none; flex-shrink: 0; }
         .btn-edit { color: var(--text-muted); }
         .btn-done { color: var(--border); font-size: 16px; font-weight: 900; }
         .btn-done.active { background: var(--success); border-color: var(--success); color: white; }
         .btn-del { color: var(--danger); }
-        .btn-del:hover { background: rgba(239, 68, 68, 0.1); border-color: rgba(239, 68, 68, 0.3); }
         
         .idea-item.completed { opacity: 0.55; background: var(--card-tint); border-style: dashed; }
         .idea-item.completed .idea-title { text-decoration: line-through; color: var(--text-muted); }
@@ -226,12 +222,12 @@
 
     <div class="wrapper">
         <div class="page-header">
-            <div class="header-left">
-                <a href="collab-hub.html" class="btn-back" title="Kembali ke Lobi">🔙</a>
-                <div class="header-title">
-                    <h1 id="uiRoomName">Memuat Ruang...</h1>
-                    <p id="uiRoomInfo"><span class="live-indicator"></span> Menghubungkan ke server...</p>
-                </div>
+            <div class="header-title">
+                <h1 id="uiRoomName">
+                    <a href="collab-hub.html" class="btn-back" title="Kembali ke Lobi">🔙</a>
+                    Memuat Ruang...
+                </h1>
+                <p id="uiRoomInfo"><span class="live-indicator"></span> Menghubungkan...</p>
             </div>
             <button class="btn-add-board" onclick="openAddBoardModal()">
                 <span style="font-size:18px; margin-right: 4px;">+</span> Buat Papan Kategori
@@ -268,8 +264,7 @@
                     <span id="bvCounter">0 Ide</span>
                 </div>
 
-                <div class="board-view-body" id="bvListArea">
-                    </div>
+                <div class="board-view-body" id="bvListArea"></div>
             </div>
         </div>
     </div>
@@ -339,7 +334,7 @@
     <script src="../js/pwa.js"></script>
 
     <script type="module">
-        import { onSnapshot, collection, query, where, doc, setDoc, updateDoc, deleteDoc } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
+        import { onSnapshot, collection, query, where, doc, setDoc, updateDoc, deleteDoc, arrayUnion, arrayRemove } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
         
         let currentUserUid = null;
         let currentUserData = { name: "Anonim" };
@@ -353,16 +348,15 @@
         window.roomData = null;
         window.boards = [];
         window.ideas = [];
+        let isIdeasLoaded = false;
         
         // State UI
         window.editCurrentId = null;
         window.editBoardCurrentId = null; 
         window.currentViewBoardId = null;
         
-        // Konvensi ID Papan Pulihan (Khusus Collab Room ini)
         const COLLAB_TRASH_BOARD_ID = "board_pulihan_collab";
 
-        // Script Text Selection
         window.selectLinkText = function(container) {
             const textEl = container.querySelector('.link-text');
             if (!textEl) return;
@@ -373,7 +367,6 @@
             sel.addRange(range);
         };
 
-        // Manajemen Z-index Dropdown
         document.addEventListener('click', function(e) {
             if (!e.target.closest('.dropdown-wrap')) {
                 document.querySelectorAll('.dropdown-menu').forEach(m => m.classList.remove('active'));
@@ -407,7 +400,7 @@
         });
 
         function initRealtimeCollab() {
-            // 1. Dengar Data Ruang (Untuk Validasi Akses & Info Header)
+            // 1. Dengar Data Ruang (Untuk Validasi Akses & Menyimpan Daftar Papan)
             onSnapshot(doc(dbRef, "collab_boards", currentRoomId), (docSnap) => {
                 if (!docSnap.exists() || !docSnap.data().members.includes(currentUserUid)) {
                     alert("Akses Ditolak: Anda bukan anggota, atau ruang telah dihapus oleh pemilik.");
@@ -415,39 +408,65 @@
                     return;
                 }
                 window.roomData = docSnap.data();
-                document.getElementById('uiRoomName').innerText = window.roomData.name;
+                
+                document.getElementById('uiRoomName').innerHTML = `<a href="collab-hub.html" class="btn-back" title="Kembali ke Lobi">🔙</a> ${window.roomData.name}`;
                 document.getElementById('uiRoomInfo').innerHTML = `<span class="live-indicator"></span> Live • ${window.roomData.members.length} Anggota`;
+                
+                processAndRender();
             });
 
-            // 2. Dengar Papan Kategori (collab_room_boards)
-            const qBoards = query(collection(dbRef, "collab_room_boards"), where("roomId", "==", currentRoomId));
-            onSnapshot(qBoards, (snapshot) => {
-                window.boards = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
-                // Trigger render setiap papan berubah
-                if (window.ideas.length > 0) window.renderWorkspace();
-            });
-
-            // 3. Dengar Ide Konten (collab_ideas) + GARBAGE COLLECTION 30 HARI
+            // 2. Dengar Ide Konten (collab_ideas) + GARBAGE COLLECTION 30 HARI
             const qIdeas = query(collection(dbRef, "collab_ideas"), where("roomId", "==", currentRoomId));
             onSnapshot(qIdeas, (snapshot) => {
                 const now = Date.now();
                 let validIdeas = [];
                 
-                snapshot.docs.forEach(async (docSnap) => {
+                snapshot.docs.forEach((docSnap) => {
                     let ideaData = { id: docSnap.id, ...docSnap.data() };
-                    
                     // CEK 30 HARI AUTO DESTROY
                     if (ideaData.boardId === COLLAB_TRASH_BOARD_ID && ideaData.expireAt && ideaData.expireAt < now) {
-                        try { await deleteDoc(doc(dbRef, "collab_ideas", ideaData.id)); } catch(e) {}
+                        deleteDoc(doc(dbRef, "collab_ideas", ideaData.id)).catch(e => console.error(e));
                     } else {
                         validIdeas.push(ideaData);
                     }
                 });
                 
                 window.ideas = validIdeas;
-                window.renderWorkspace();
-                if (window.currentViewBoardId) window.renderBoardViewContent();
+                isIdeasLoaded = true;
+                processAndRender();
             });
+        }
+
+        // FUNGSI PENGGABUNG: Menyatukan Papan Normal dan Papan Trash Virtual
+        function processAndRender() {
+            if (!window.roomData || !isIdeasLoaded) return;
+            
+            // Kloning array papan asli dari database
+            let currentBoards = JSON.parse(JSON.stringify(window.roomData.innerBoards || []));
+            
+            // Cek apakah ada ide sampah, jika ada tambahkan Papan Pulihan secara virtual ke UI
+            const hasTrashIdeas = window.ideas.some(i => i.boardId === COLLAB_TRASH_BOARD_ID);
+            if (hasTrashIdeas) {
+                currentBoards.push({
+                    id: COLLAB_TRASH_BOARD_ID,
+                    name: "♻️ Papan Pulihan (Trash) Tim",
+                    createdAt: Date.now(),
+                    updatedAt: Date.now(),
+                    done: false,
+                    isVirtual: true // Tanda bahwa papan ini tidak disimpan di database
+                });
+            }
+            
+            window.boards = currentBoards;
+            window.renderWorkspace();
+            
+            if (window.currentViewBoardId) {
+                const activeBoard = window.boards.find(b => b.id === window.currentViewBoardId);
+                if (activeBoard && activeBoard.id !== COLLAB_TRASH_BOARD_ID) {
+                    document.getElementById('bvTitle').innerHTML = activeBoard.name;
+                }
+                window.renderBoardViewContent();
+            }
         }
 
         // ==========================================
@@ -457,7 +476,7 @@
             const container = document.getElementById("boardContainer");
             const trashContainer = document.getElementById("trashContainer");
             
-            const regularBoards = window.boards.filter(b => b.id !== COLLAB_TRASH_BOARD_ID);
+            const regularBoards = window.boards.filter(b => !b.isVirtual);
             
             regularBoards.sort((a, b) => {
                 const aDone = a.done || false;
@@ -504,22 +523,24 @@
                 }).join('');
             }
             
-            // Render Papan Pulihan (Hanya muncul jika ada isinya)
-            const trashIdeas = window.ideas.filter(i => i.boardId === COLLAB_TRASH_BOARD_ID);
-            if (trashIdeas.length > 0) {
+            const trashBoards = window.boards.filter(b => b.isVirtual);
+            if (trashBoards.length > 0) {
                 trashContainer.style.display = "block";
-                trashContainer.innerHTML = `
-                    <div class="trash-banner" onclick="openBoardView('${COLLAB_TRASH_BOARD_ID}')" tabindex="0">
+                trashContainer.innerHTML = trashBoards.map(b => {
+                    const ideasInBoard = window.ideas.filter(i => i.boardId === b.id);
+                    return `
+                    <div class="trash-banner" onclick="openBoardView('${b.id}')" tabindex="0">
                         <div class="trash-banner-left">
                             <span class="trash-banner-icon">♻️</span>
-                            <div class="trash-banner-title">Papan Pulihan (Trash) Tim</div>
+                            <div class="trash-banner-title">${b.name}</div>
                         </div>
                         <div class="trash-banner-actions">
-                            <div class="trash-counter">${trashIdeas.length} Ide</div>
-                            <button class="btn-dots danger" onclick="event.stopPropagation(); deleteBoard('${COLLAB_TRASH_BOARD_ID}')" title="Hapus Permanen Trash Ini">🗑</button>
+                            <div class="trash-counter">${ideasInBoard.length} Ide</div>
+                            <button class="btn-dots danger" onclick="event.stopPropagation(); deleteBoard('${b.id}')" title="Hapus Permanen Papan Ini">🗑</button>
                         </div>
                     </div>
-                `;
+                    `;
+                }).join('');
             } else {
                 trashContainer.style.display = "none";
                 trashContainer.innerHTML = "";
@@ -581,21 +602,18 @@
                 let badgeGroupHTML = `<div class="badge-group">`;
                 
                 if (isPulihan) {
-                    // Logic Hitung Mundur 30 Hari
                     const daysLeft = Math.max(0, Math.ceil((i.expireAt - Date.now()) / (1000*60*60*24)));
-                    badgeGroupHTML += `<div class="badge" style="color:var(--danger); background:var(--danger-soft); border-color:var(--danger-soft);">⏳ Lenyap dalam ${daysLeft} Hari</div>`;
+                    badgeGroupHTML += `<div class="badge" style="color:var(--danger); background:var(--danger-soft); border-color:var(--danger-soft);">⏳ Lenyap: ${daysLeft} Hari</div>`;
                     badgeGroupHTML += `<div class="badge creator" title="Dihapus oleh ${i.deletedBy}">🗑️ ${i.deletedBy}</div>`;
                 } else {
                     badgeGroupHTML += i.date === "Dipulihkan" 
                         ? `<div class="badge restored">♻️ Dipulihkan</div>` 
                         : `<div class="badge">📅 ${i.date}</div>`;
-                    badgeGroupHTML += `<div class="badge creator" title="Oleh ${i.creatorName}">👤 ${i.creatorName}</div>`;
+                    badgeGroupHTML += `<div class="badge creator" title="Ditambahkan oleh ${i.creatorName}">👤 ${i.creatorName}</div>`;
                 }
                 badgeGroupHTML += `</div>`;
                 
                 const linkDisplay = (i.link === '-' || !i.link) ? 'Tidak ada tautan referensi' : i.link;
-                
-                // Di Papan Pulihan, tombol Hapus berubah fungsi jadi Hard Delete
                 const delTitle = isPulihan ? "Hapus Permanen" : "Hapus ke Trash";
 
                 return `
@@ -623,7 +641,7 @@
         }
 
         // ==========================================
-        // KONTROL PAPAN (KATEGORI)
+        // KONTROL PAPAN (KATEGORI) & DATABASE WRITER
         // ==========================================
         window.openAddBoardModal = () => document.getElementById('addBoardModal').classList.add('active');
         window.closeAddBoardModal = () => document.getElementById('addBoardModal').classList.remove('active');
@@ -650,13 +668,17 @@
             if(!boardName) return alert("Nama papan tidak boleh kosong!");
             const boardId = "board_" + Date.now();
             
-            const payload = { roomId: currentRoomId, name: boardName, done: false, createdAt: Date.now(), updatedAt: Date.now() };
+            const newBoard = { id: boardId, name: boardName, done: false, createdAt: Date.now(), updatedAt: Date.now() };
             
             document.getElementById('boardNameInput').value = ""; 
             window.closeAddBoardModal();
             
-            try { await setDoc(doc(dbRef, "collab_room_boards", boardId), payload); } 
-            catch(e) { console.error(e); }
+            // Menyisipkan array baru ke dokumen Ruang Kolaborasi
+            try { 
+                await updateDoc(doc(dbRef, "collab_boards", currentRoomId), {
+                    innerBoards: arrayUnion(newBoard)
+                });
+            } catch(e) { console.error(e); alert("Gagal membuat papan."); }
         }
 
         window.openEditBoardModal = (boardId) => {
@@ -673,8 +695,21 @@
             if (!newName) return alert("Judul papan tidak boleh kosong!");
 
             window.closeEditBoardModal();
-            try { await updateDoc(doc(dbRef, "collab_room_boards", window.editBoardCurrentId), { name: newName, updatedAt: Date.now() }); } 
-            catch(e) { console.error(e); }
+            
+            try {
+                // Modifikasi array lokal lalu simpan ulang (karena Firebase tidak bisa mengedit objek spesifik di dalam array)
+                const boardsArray = [...(window.roomData.innerBoards || [])];
+                const idx = boardsArray.findIndex(b => b.id === window.editBoardCurrentId);
+                
+                if (idx > -1) {
+                    boardsArray[idx].name = newName;
+                    boardsArray[idx].updatedAt = Date.now();
+                    
+                    await updateDoc(doc(dbRef, "collab_boards", currentRoomId), {
+                        innerBoards: boardsArray
+                    });
+                }
+            } catch(e) { console.error(e); }
         }
 
         window.showBoardInfo = (boardId) => {
@@ -692,10 +727,19 @@
         }
 
         window.toggleBoardDone = async (boardId) => {
-            const board = window.boards.find(b => b.id === boardId);
-            if (!board) return;
-            try { await updateDoc(doc(dbRef, "collab_room_boards", boardId), { done: !board.done, updatedAt: Date.now() }); } 
-            catch(e) { console.error(e); }
+            try {
+                const boardsArray = [...(window.roomData.innerBoards || [])];
+                const idx = boardsArray.findIndex(b => b.id === boardId);
+                
+                if (idx > -1) {
+                    boardsArray[idx].done = !boardsArray[idx].done;
+                    boardsArray[idx].updatedAt = Date.now();
+                    
+                    await updateDoc(doc(dbRef, "collab_boards", currentRoomId), {
+                        innerBoards: boardsArray
+                    });
+                }
+            } catch(e) { console.error(e); }
         }
 
         window.deleteBoard = async (boardId) => {
@@ -710,7 +754,16 @@
             if (window.currentViewBoardId === boardId) window.closeBoardView();
             
             try {
-                if(!isPulihan) await deleteDoc(doc(dbRef, "collab_room_boards", boardId));
+                if(!isPulihan) {
+                    // Gunakan data presisi dari roomData untuk arrayRemove
+                    const boardToRemove = window.roomData.innerBoards.find(b => b.id === boardId);
+                    if (boardToRemove) {
+                        await updateDoc(doc(dbRef, "collab_boards", currentRoomId), {
+                            innerBoards: arrayRemove(boardToRemove)
+                        });
+                    }
+                }
+                // Hapus seluruh Ide yang ada di dalam papan tersebut
                 for(let idea of ideasToDelete) {
                     await deleteDoc(doc(dbRef, "collab_ideas", idea.id));
                 }
@@ -722,8 +775,6 @@
         // ==========================================
         window.addIdea = async () => {
             if(!window.currentViewBoardId) return;
-            const boardId = window.currentViewBoardId;
-            
             const title = document.getElementById('addIdeaTitle').value.trim();
             const date = document.getElementById('addIdeaDate').value.trim();
             const link = document.getElementById('addIdeaLink').value.trim() || "-";
@@ -731,7 +782,15 @@
             if(!title || !date) return alert("Konten dan Tanggal wajib diisi!");
             
             const ideaId = "idea_" + Date.now();
-            const payload = { roomId: currentRoomId, boardId, creatorUid: currentUserUid, creatorName: currentUserData.name, title, date, link, done: false, createdAt: Date.now() };
+            const payload = { 
+                roomId: currentRoomId, 
+                boardId: window.currentViewBoardId, 
+                creatorUid: currentUserUid, 
+                creatorName: currentUserData.name, 
+                title, date, link, 
+                done: false, 
+                createdAt: Date.now() 
+            };
             
             document.getElementById('addIdeaTitle').value = "";
             document.getElementById('addIdeaDate').value = "";
@@ -743,20 +802,19 @@
 
         window.deleteIdea = async (ideaId, isAlreadyTrashed) => {
             if (isAlreadyTrashed) {
-                // Hard Delete Manual jika dieksekusi di dalam Trash
                 if(!confirm("Hapus permanen ide ini? Anggota tim tidak akan bisa memulihkannya lagi.")) return;
-                try { await deleteDoc(doc(dbRef, "collab_ideas", ideaId)); } catch(e) {}
+                try { await deleteDoc(doc(dbRef, "collab_ideas", ideaId)); } catch(e) { console.error(e); }
             } else {
-                // Soft Delete: Lempar ke Trash dan aktifkan Timer 30 Hari
                 if(!confirm("Buang ide ini ke Trash Tim?")) return;
                 const expireTime = Date.now() + (30 * 24 * 60 * 60 * 1000);
                 try { 
                     await updateDoc(doc(dbRef, "collab_ideas", ideaId), { 
                         boardId: COLLAB_TRASH_BOARD_ID, 
                         expireAt: expireTime, 
-                        deletedBy: currentUserData.name 
+                        deletedBy: currentUserData.name,
+                        date: "Dipulihkan" // Agar saat di-restore ada indikator "Dipulihkan" seperti ideas.html
                     }); 
-                } catch(e) {}
+                } catch(e) { console.error(e); }
             }
         }
 
@@ -797,7 +855,7 @@
                 await updateDoc(doc(dbRef, "collab_ideas", window.editCurrentId), { 
                     title, date, link, 
                     boardId: targetBoardId,
-                    expireAt: null, // Clear timer jika dipulihkan dari Trash
+                    expireAt: null, // Bersihkan timer auto-delete jika sebelumnya ada di Trash
                     deletedBy: null
                 }); 
             } catch(e) { console.error(e); }
@@ -805,6 +863,7 @@
 
         window.toggleDone = async (ideaId) => {
             const idea = window.ideas.find(i => i.id === ideaId);
+            if(!idea) return;
             try { await updateDoc(doc(dbRef, "collab_ideas", ideaId), { done: !idea.done }); } 
             catch(e) { console.error(e); }
         }
