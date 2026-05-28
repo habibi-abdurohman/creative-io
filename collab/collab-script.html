@@ -32,6 +32,7 @@
             --success: #16a34a; 
             --success-soft: rgba(22, 163, 74, 0.1); 
             --danger: #ef4444; 
+            --danger-soft: rgba(239, 68, 68, 0.1); 
             --warning: #f59e0b; 
             --shadow-flat: 0 4px 20px rgba(0, 0, 0, 0.04); 
             --radius-btn: 14px; 
@@ -56,7 +57,8 @@
         .bg-glow.one { width: 340px; height: 340px; background: rgba(59, 130, 246, 0.15); top: -50px; left: -100px; }
         .bg-glow.two { width: 320px; height: 320px; background: rgba(96, 165, 250, 0.15); bottom: 100px; right: -100px; }
 
-        .hero-card { background: var(--primary-grad); border-radius: var(--radius-card); padding: 36px 32px; color: white; position: relative; overflow: hidden; margin-bottom: 24px; box-shadow: 0 10px 30px rgba(37, 99, 235, 0.2); }
+        .hero-card { background: var(--primary-grad); border-radius: var(--radius-card); padding: 36px 32px; color: white; position: relative; overflow: hidden; margin-bottom: 24px; box-shadow: 0 10px 30px rgba(37, 99, 235, 0.2); transition: background 0.3s ease; }
+        .hero-card.trash-mode { background: #475569; box-shadow: 0 10px 30px rgba(71, 85, 105, 0.2); }
         .hero-card::after { content: ""; position: absolute; width: 250px; height: 250px; background: rgba(255, 255, 255, 0.1); border-radius: 50%; top: -80px; right: -80px; pointer-events: none; }
         .hero-title { font-size: 26px; font-weight: 900; letter-spacing: -0.5px; margin-bottom: 8px; position: relative; z-index: 1; display: flex; align-items: center; gap: 12px;}
         .hero-desc { font-size: 14px; line-height: 1.6; opacity: 0.9; margin-bottom: 24px; max-width: 500px; position: relative; z-index: 1; display: flex; align-items: center; gap: 8px; }
@@ -90,28 +92,15 @@
         }
         .sticky-tools-inner.searching { gap: 0; overflow: hidden; }
 
-        .search-expandable { 
-            flex-shrink: 0; display: flex; align-items: center; background: var(--card-solid); 
-            border: 1px solid var(--border); border-radius: 12px; 
-            height: 38px; width: 38px; overflow: hidden; 
-            transition: width 0.3s cubic-bezier(0.4, 0, 0.2, 1), border-color 0.3s, box-shadow 0.3s; 
-            box-shadow: var(--shadow-flat);
-        }
+        .search-expandable { flex-shrink: 0; display: flex; align-items: center; background: var(--card-solid); border: 1px solid var(--border); border-radius: 12px; height: 38px; width: 38px; overflow: hidden; transition: width 0.3s cubic-bezier(0.4, 0, 0.2, 1), border-color 0.3s, box-shadow 0.3s; box-shadow: var(--shadow-flat); }
         body.dark .search-expandable { background: var(--card-solid); border-color: var(--border); }
         .search-expandable.expanded { border-color: var(--primary); }
         
-        .search-icon-btn, .close-search-btn { 
-            flex-shrink: 0; min-width: 38px; height: 38px; background: transparent; border: none; font-size: 14px; 
-            cursor: pointer; color: var(--text-muted); display: flex; align-items: center; justify-content: center; transition: 0.2s; outline: none;
-        }
+        .search-icon-btn, .close-search-btn { flex-shrink: 0; min-width: 38px; height: 38px; background: transparent; border: none; font-size: 14px; cursor: pointer; color: var(--text-muted); display: flex; align-items: center; justify-content: center; transition: 0.2s; outline: none; }
         .search-expandable.expanded .search-icon-btn { color: var(--primary); pointer-events: none; }
         
-        .search-expandable input { 
-            flex: 1; border: none; outline: none; background: transparent; font-size: 13px; 
-            color: var(--text-main); padding: 0 4px; opacity: 0; pointer-events: none; transition: opacity 0.2s 0.1s; 
-        }
+        .search-expandable input { flex: 1; border: none; outline: none; background: transparent; font-size: 13px; color: var(--text-main); padding: 0 4px; opacity: 0; pointer-events: none; transition: opacity 0.2s 0.1s; }
         .search-expandable.expanded input { opacity: 1; pointer-events: auto; }
-        
         .close-search-btn { opacity: 0; pointer-events: none; }
         .close-search-btn:hover { color: var(--danger); }
         .search-expandable.expanded .close-search-btn { opacity: 1; pointer-events: auto; }
@@ -121,23 +110,28 @@
 
         .filter-btn { flex-shrink: 0; padding: 8px 14px; border-radius: 10px; background: var(--card-solid); border: 1px solid var(--border); font-size: 12px; font-weight: 700; color: var(--text-muted); cursor: pointer; transition: 0.2s; white-space: nowrap; outline: none; }
         .filter-btn.active { background: var(--primary-soft); border-color: var(--primary); color: var(--primary); }
+        .filter-btn.trash-btn { color: var(--danger); border-color: var(--danger-soft); background: var(--danger-soft); }
+        .filter-btn.trash-btn.active { background: var(--danger); color: white; border-color: var(--danger); }
+        
         .divider { flex-shrink: 0; width: 1px; height: 18px; background: var(--border); margin: 0 2px; }
 
         /* =========================================================
            UI KARTU & PAGINATION
         ========================================================= */
-        .list-container { column-count: 3; column-gap: 16px; margin-top: 10px; }
+        .list-container { column-count: 3; column-gap: 16px; margin-top: 10px; transition: opacity 0.2s; }
         
         .empty-state { column-span: all; text-align: center; padding: 60px 20px; background: var(--card-glass); border: 1px dashed var(--border); border-radius: var(--radius-card); cursor: pointer; transition: 0.2s; }
         .empty-state:hover { background: var(--card-tint); }
         .empty-state-icon { font-size: 42px; margin-bottom: 12px; opacity: 0.8; }
         .empty-state-text { font-size: 13px; color: var(--text-muted); line-height: 1.6; }
         
-        .card { break-inside: avoid; margin-bottom: 16px; background: var(--card-glass); backdrop-filter: blur(12px); border: 1px solid var(--border); border-radius: 20px; padding: 20px; box-shadow: var(--shadow-flat); transition: transform 0.2s, border-color 0.2s; position: relative; }
+        .card { break-inside: avoid; margin-bottom: 16px; background: var(--card-glass); backdrop-filter: blur(12px); border: 1px solid var(--border); border-radius: 20px; padding: 20px; box-shadow: var(--shadow-flat); transition: transform 0.2s, border-color 0.2s; position: relative; cursor: pointer; }
         .card:hover { transform: translateY(-2px); border-color: #cbd5e1; }
         .card.pinned { border-left: 4px solid var(--warning); }
         .card.completed { opacity: 0.6; }
         .card.completed .card-title { text-decoration: line-through; }
+        .card.trash-card { border: 1px dashed var(--danger); background: var(--card-tint); cursor: default; }
+        .card.trash-card:hover { transform: none; border-color: var(--danger); }
         
         .card-header { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 8px; gap: 8px; }
         .card-title { font-size: 16px; font-weight: 800; line-height: 1.4; color: var(--text-main); word-break: break-word; }
@@ -149,8 +143,14 @@
         .badge.ch { background: var(--primary-soft); color: var(--primary); border: none; }
         .badge.done { background: var(--success-soft); color: var(--success); border: none; }
         .badge.lock { background: var(--warning); color: white; border: none; }
+        .badge.deleted { background: var(--danger-soft); color: var(--danger); border: none; }
         
         .card-actions { display: flex; gap: 8px; }
+        .btn-card-action { padding: 6px 12px; border-radius: 8px; font-size: 12px; font-weight: 700; border: none; cursor: pointer; transition: 0.2s; outline: none; display: flex; align-items: center; gap: 4px; }
+        .btn-card-action.restore { background: var(--success-soft); color: var(--success); }
+        .btn-card-action.restore:hover { background: var(--success); color: white; }
+        .btn-card-action.destroy { background: var(--danger-soft); color: var(--danger); }
+        .btn-card-action.destroy:hover { background: var(--danger); color: white; }
         
         .pagination-container { display: flex; justify-content: center; align-items: center; gap: 8px; margin-top: 32px; padding-bottom: 24px; flex-wrap: wrap; column-span: all; }
         .page-btn { min-width: 38px; height: 38px; padding: 0 12px; border-radius: 12px; border: 1px solid var(--border); background: var(--card-solid); color: var(--text-main); font-size: 14px; font-weight: 700; cursor: pointer; display: flex; justify-content: center; align-items: center; transition: all 0.2s; outline: none; }
@@ -162,7 +162,8 @@
         body.dark .page-btn { background: var(--card-solid, #1e293b); border-color: var(--border, #334155); color: var(--text-main, #f8fafc); }
         body.dark .page-btn.active { background: var(--primary); color: white; border-color: var(--primary); }
 
-        .fab { position: fixed; right: 24px; bottom: 24px; width: 56px; height: 56px; border: none; border-radius: 20px; background: var(--primary-grad); color: white; font-size: 28px; cursor: pointer; box-shadow: 0 10px 25px rgba(37, 99, 235, 0.3); z-index: 100; display: flex; align-items: center; justify-content: center; outline: none;}
+        .fab { position: fixed; right: 24px; bottom: 24px; width: 56px; height: 56px; border: none; border-radius: 20px; background: var(--primary-grad); color: white; font-size: 28px; cursor: pointer; box-shadow: 0 10px 25px rgba(37, 99, 235, 0.3); z-index: 100; display: flex; align-items: center; justify-content: center; outline: none; transition: transform 0.3s; }
+        .fab.hidden { transform: scale(0); pointer-events: none; }
         
         /* POPUP EDITOR */
         .popup-overlay { position: fixed; inset: 0; background: var(--bg-grad); z-index: 99999; display: none; flex-direction: column; width: 100vw; height: 100vh; }
@@ -275,7 +276,7 @@
     <div class="bg-glow one"></div><div class="bg-glow two"></div>
 
     <div class="wrapper">
-        <div class="hero-card">
+        <div class="hero-card" id="heroCard">
             <h1 class="hero-title" id="uiRoomName">
                 <a href="collab-hub.html" class="btn-back" title="Kembali ke Lobi">🔙</a>
                 Memuat Ruang...
@@ -283,7 +284,7 @@
             <p class="hero-desc" id="uiRoomInfo">
                 <span class="live-indicator"></span> Menghubungkan...
             </p>
-            <div class="hero-stats">
+            <div class="hero-stats" id="uiStats">
                 <div class="stat-pill">📝 Total: <span id="statTotal">0</span></div>
                 <div class="stat-pill">🕒 Draft: <span id="statDraft">0</span></div>
                 <div class="stat-pill">✅ Selesai: <span id="statDone">0</span></div>
@@ -309,7 +310,7 @@
             <div style="text-align: center; padding: 40px; color: var(--text-muted); column-span: all;">Memuat data...</div>
         </div>
         <div id="paginationContainer" class="pagination-container"></div>
-        <button class="fab" onclick="openPopup()">+</button>
+        <button class="fab" id="fabAdd" onclick="openPopup()">+</button>
     </div>
 
     <div class="popup-overlay" id="editorPopup">
@@ -374,7 +375,7 @@
             <div class="info-row"><span class="info-label">Judul</span> <span class="info-value" id="infoTitle">-</span></div>
             <div class="info-row"><span class="info-label">Kategori</span> <span class="info-value" id="infoCat">-</span></div>
             <div class="info-row"><span class="info-label">Status</span> <span class="info-value" id="infoStatus">-</span></div>
-            <div class="info-row"><span class="info-label">Kreator</span> <span class="info-value" id="infoCreator">-</span></div>
+            <div class="info-row"><span class="info-label">Kreator Asli</span> <span class="info-value" id="infoCreator">-</span></div>
             <div class="info-row"><span class="info-label">Jumlah Kata</span> <span class="info-value" id="infoWords">0</span></div>
             <div class="info-row"><span class="info-label">Dibuat</span> <span class="info-value" id="infoCreated">-</span></div>
             <div class="info-row"><span class="info-label">Diubah</span> <span class="info-value" id="infoUpdated">-</span></div>
@@ -390,7 +391,7 @@
         import { onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
         import { onSnapshot, collection, query, where, doc, setDoc, updateDoc, deleteDoc } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
 
-        // URL Params untuk ID Ruang
+        // URL Params
         const urlParams = new URLSearchParams(window.location.search);
         const currentRoomId = urlParams.get('id');
 
@@ -399,9 +400,11 @@
         let currentUserData = { name: "Anonim" };
         window.roomData = null;
         window.scriptData = [];
+        window.trashData = [];
         window.currentId = null;
         window.isLockedByOther = false;
         
+        window.isTrashView = false; // Mode Trash Toggle
         window.currentFilter = 'all';
         window.currentSort = 'newest';
         window.currentPinned = false;
@@ -439,7 +442,6 @@
             });
         });
 
-        // Hapus Kunci jika user menutup tab browser secara tiba-tiba
         window.addEventListener('beforeunload', () => {
             if (window.currentId && !window.isLockedByOther) {
                 updateDoc(doc(db, "collab_scripts", window.currentId), { lockedBy: null, lockedByName: null }).catch(()=>{});
@@ -450,7 +452,6 @@
             const filterWrap = document.getElementById('filterWrap');
             if (!filterWrap) return;
             let isDown = false, startX, scrollLeft;
-
             filterWrap.addEventListener('mousedown', (e) => { if(e.target.tagName.toLowerCase() === 'input') return; isDown = true; filterWrap.style.cursor = 'grabbing'; startX = e.pageX - filterWrap.offsetLeft; scrollLeft = filterWrap.scrollLeft; });
             filterWrap.addEventListener('mouseleave', () => { isDown = false; filterWrap.style.cursor = ''; });
             filterWrap.addEventListener('mouseup', () => { isDown = false; filterWrap.style.cursor = ''; });
@@ -462,12 +463,15 @@
             const width = window.innerWidth;
             let newLimit = 18; 
             if (width <= 600) newLimit = 12; else if (width <= 1024) newLimit = 16; 
-            if (window.itemsPerPage !== newLimit) { window.itemsPerPage = newLimit; if (window.scriptData.length > 0) { window.currentPage = 1; window.renderList(); } }
+            if (window.itemsPerPage !== newLimit) { window.itemsPerPage = newLimit; window.currentPage = 1; window.renderList(); }
         }
         window.addEventListener('resize', () => { clearTimeout(window.resizeTimeout); window.resizeTimeout = setTimeout(window.updateItemsPerPage, 200); });
 
+        // ==========================================
+        // REALTIME LISTENER & TRASH SWEEPER
+        // ==========================================
         function initRealtimeCollab() {
-            // 1. Dengar Data Ruang (collab_boards)
+            // 1. Data Ruang
             onSnapshot(doc(db, "collab_boards", currentRoomId), (docSnap) => {
                 if (!docSnap.exists() || !docSnap.data().members.includes(currentUserUid)) {
                     alert("Akses Ditolak: Anda bukan anggota atau ruang telah dihapus.");
@@ -475,19 +479,18 @@
                 }
                 window.roomData = docSnap.data();
                 document.getElementById('uiRoomName').innerHTML = `<a href="collab-hub.html" class="btn-back" title="Kembali ke Lobi">🔙</a> ${window.roomData.name}`;
-                document.getElementById('uiRoomInfo').innerHTML = `<span class="live-indicator"></span> Live • ${window.roomData.members.length} Anggota`;
+                if(!window.isTrashView) document.getElementById('uiRoomInfo').innerHTML = `<span class="live-indicator"></span> Live • ${window.roomData.members.length} Anggota`;
             }, (error) => {
                 console.error("Error Akses Ruang:", error);
                 document.getElementById('listContainer').innerHTML = `<div class="empty-state" style="border-color: var(--danger); background: var(--danger-soft);"><div class="empty-state-icon" style="color: var(--danger);">🔒</div><div class="empty-state-text" style="color: var(--danger); font-weight: 700;">Akses Ruang Ditolak oleh Database.</div></div>`;
             });
 
-            // 2. Dengar Daftar Script (collab_scripts)
-            const q = query(collection(db, "collab_scripts"), where("roomId", "==", currentRoomId));
-            onSnapshot(q, (snapshot) => {
+            // 2. Daftar Script Aktif
+            const qScript = query(collection(db, "collab_scripts"), where("roomId", "==", currentRoomId));
+            onSnapshot(qScript, (snapshot) => {
                 window.scriptData = snapshot.docs.map(d => ({ id: d.id, ...d.data() }));
                 
-                // Jika sedang membuka popup dalam mode Read-Only, update isinya secara real-time
-                if (window.currentId && window.isLockedByOther) {
+                if (window.currentId && window.isLockedByOther && !window.isTrashView) {
                     const liveItem = window.scriptData.find(x => x.id === window.currentId);
                     if (liveItem) {
                         document.getElementById('inputTitle').value = liveItem.title || '';
@@ -496,17 +499,134 @@
                         window.autoResizeTitle(); window.autoResizeContent(); window.updateWordCount();
                     }
                 }
-                window.renderList();
+                if(!window.isTrashView) window.renderList();
             }, (error) => {
                 console.error("Error Akses Script:", error);
-                document.getElementById('listContainer').innerHTML = `<div class="empty-state" style="border-color: var(--danger); background: var(--danger-soft);"><div class="empty-state-icon" style="color: var(--danger);">🔒</div><div class="empty-state-text" style="color: var(--danger); font-weight: 700;">Akses Naskah Ditolak oleh Database. Pastikan Rules Firebase sudah diatur.</div></div>`;
+                document.getElementById('listContainer').innerHTML = `<div class="empty-state" style="border-color: var(--danger); background: var(--danger-soft);"><div class="empty-state-icon" style="color: var(--danger);">🔒</div><div class="empty-state-text" style="color: var(--danger); font-weight: 700;">Akses Naskah Ditolak oleh Database.</div></div>`;
             });
+
+            // 3. Daftar Trash & Auto Sweeper
+            const qTrash = query(collection(db, "collab_trash_scripts"), where("roomId", "==", currentRoomId));
+            onSnapshot(qTrash, (snapshot) => {
+                window.trashData = snapshot.docs.map(d => ({ id: d.id, ...d.data() }));
+                checkAndCleanTrash(); // Bersihkan yang sudah 30 hari
+                if(window.isTrashView) window.renderList();
+                else generateDynamicChannels(); // Update counter di tombol trash
+            }, (error) => { console.error("Error Akses Trash:", error); });
+        }
+
+        // Penghapus Otomatis (Client-side sweep 30 hari)
+        function checkAndCleanTrash() {
+            const now = Date.now();
+            window.trashData.forEach(async (item) => {
+                if (item.expireAt && now > item.expireAt) {
+                    try { await deleteDoc(doc(db, "collab_trash_scripts", item.id)); } catch(e){}
+                }
+            });
+        }
+
+        // ==========================================
+        // LOGIKA TRASH (SOFT DELETE, RESTORE, DESTROY)
+        // ==========================================
+        window.toggleTrashView = function() {
+            window.isTrashView = !window.isTrashView;
+            window.currentPage = 1;
+            
+            const heroCard = document.getElementById('heroCard');
+            const uiInfo = document.getElementById('uiRoomInfo');
+            const uiStats = document.getElementById('uiStats');
+            const fab = document.getElementById('fabAdd');
+            
+            if(window.isTrashView) {
+                heroCard.classList.add('trash-mode');
+                uiInfo.innerHTML = `🗑️ Menampilkan naskah yang dihapus. Lenyap dalam 30 hari.`;
+                uiStats.style.display = 'none';
+                fab.classList.add('hidden');
+            } else {
+                heroCard.classList.remove('trash-mode');
+                uiInfo.innerHTML = `<span class="live-indicator"></span> Live • ${window.roomData ? window.roomData.members.length : 0} Anggota`;
+                uiStats.style.display = 'flex';
+                fab.classList.remove('hidden');
+            }
+            window.renderList();
+        }
+
+        window.softDeleteScript = async function() {
+            if (!window.currentId || window.isLockedByOther) return;
+            document.getElementById('actionMenu').classList.remove('active');
+            if (!confirm('Pindahkan script ini ke tempat sampah tim? (Terhapus otomatis setelah 30 hari)')) return;
+
+            const item = window.scriptData.find(x => x.id === window.currentId);
+            if(!item) return;
+            
+            const now = Date.now();
+            const trashId = 'ctrash_' + now;
+
+            // Bawa metadata asli agar bisa dipulihkan dengan sempurna
+            const trashPayload = {
+                roomId: currentRoomId,
+                deletedByUid: currentUserUid,
+                deletedByName: currentUserData.name, 
+                originalId: item.id, 
+                title: item.title, 
+                content: item.content, 
+                channel: item.channel,
+                originalCreatorName: item.creatorName,
+                originalUid: item.uid,
+                originalCreatedAt: item.createdAt,
+                deletedAt: now, 
+                expireAt: now + (30*24*60*60*1000)
+            };
+
+            try {
+                await setDoc(doc(db, "collab_trash_scripts", trashId), trashPayload);
+                await deleteDoc(doc(db, "collab_scripts", item.id));
+                document.getElementById('editorPopup').classList.remove('active');
+                window.currentId = null;
+            } catch (e) { console.error(e); alert("Gagal menghapus naskah."); }
+        }
+
+        window.restoreScript = async function(trashId, event) {
+            if(event) event.stopPropagation();
+            const item = window.trashData.find(x => x.id === trashId);
+            if(!item) return;
+
+            const restorePayload = {
+                roomId: item.roomId,
+                uid: item.originalUid || currentUserUid, 
+                creatorName: item.originalCreatorName || currentUserData.name,
+                title: item.title, 
+                content: item.content,
+                status: 'draft', // Kembalikan sebagai draft
+                channel: item.channel || 'Umum', 
+                pinned: false, 
+                createdAt: item.originalCreatedAt || Date.now(),
+                updatedAt: Date.now(),
+                lockedBy: null,
+                lockedByName: null
+            };
+
+            try {
+                await setDoc(doc(db, "collab_scripts", item.originalId), restorePayload);
+                await deleteDoc(doc(db, "collab_trash_scripts", trashId));
+            } catch(e) { console.error(e); alert("Gagal memulihkan naskah."); }
+        }
+
+        window.hardDeleteScript = async function(trashId, event) {
+            if(event) event.stopPropagation();
+            if(!confirm("Hapus PERMANEN naskah ini? Tindakan ini tidak bisa dibatalkan bagi seluruh anggota tim.")) return;
+            
+            try {
+                await deleteDoc(doc(db, "collab_trash_scripts", trashId));
+            } catch(e) { console.error(e); alert("Gagal menghapus permanen."); }
         }
 
         // ==========================================
         // LOGIKA LOCKING & EDITOR
         // ==========================================
         window.openPopup = async function(id = null) {
+            if(window.isTrashView) return; // Tidak bisa edit di mode trash
+            
             document.getElementById('editorPopup').classList.add('active');
             const titleEl = document.getElementById('inputTitle');
             const contentEl = document.getElementById('inputContent');
@@ -514,8 +634,6 @@
             const lockBanner = document.getElementById('lockBanner');
             const editorFooter = document.getElementById('editorFooter');
             const editorBody = document.getElementById('editorBody');
-            const btnUndo = document.getElementById('btnUndo');
-            const btnRedo = document.getElementById('btnRedo');
             const btnDelete = document.getElementById('btnDelete');
 
             if (id) {
@@ -525,7 +643,6 @@
                     window.currentPinned = item.pinned || false;
                     titleEl.value = item.title; contentEl.value = item.content; catEl.value = item.channel || '';
                     
-                    // Cek Status Gembok
                     if (item.lockedBy && item.lockedBy !== currentUserUid) {
                         window.isLockedByOther = true;
                         lockBanner.innerHTML = `🔒 Sedang diedit oleh ${item.lockedByName.split(' ')[0]}`;
@@ -541,12 +658,10 @@
                         editorBody.classList.remove('locked');
                         titleEl.disabled = false; contentEl.disabled = false; catEl.disabled = false;
                         btnDelete.style.display = 'block';
-                        // Terapkan Gembok di Database agar orang lain tidak bisa masuk
                         await updateDoc(doc(db, "collab_scripts", item.id), { lockedBy: currentUserUid, lockedByName: currentUserData.name });
                     }
                 }
             } else {
-                // Script Baru
                 window.currentId = null; window.currentPinned = false; window.isLockedByOther = false;
                 titleEl.value = ''; contentEl.value = ''; catEl.value = '';
                 lockBanner.classList.remove('active');
@@ -567,26 +682,23 @@
         }
 
         window.closePopup = async function() {
-            // Hanya jalankan save & lepas gembok jika kita bukan pengunjung Read-Only
             if (!window.isLockedByOther) {
                 const title = document.getElementById('inputTitle').value.trim();
                 const content = document.getElementById('inputContent').value.trim();
                 if(title || content) {
                     const curStatus = window.currentId ? (window.scriptData.find(x => x.id === window.currentId)?.status || 'draft') : 'draft';
-                    await window.performSave(curStatus, true, true); // true terakhir = lepas gembok
+                    await window.performSave(curStatus, true, true); 
                 } else if (window.currentId) {
-                    // Lepas gembok jika kosong tanpa save
                     await updateDoc(doc(db, "collab_scripts", window.currentId), { lockedBy: null, lockedByName: null });
                 }
             }
-            
             document.getElementById('editorPopup').classList.remove('active', 'reading-mode');
             window.currentId = null;
             window.isLockedByOther = false;
         }
 
         window.performSave = async function(status, isAuto = false, releaseLock = false) {
-            if (window.isLockedByOther) return; // Proteksi ganda
+            if (window.isLockedByOther) return; 
 
             const title = document.getElementById('inputTitle').value.trim();
             const content = document.getElementById('inputContent').value;
@@ -615,9 +727,8 @@
                 lockedByName: releaseLock ? null : currentUserData.name
             };
 
-            try { 
-                await setDoc(doc(db, "collab_scripts", docId), payload); 
-            } catch(e) { console.error("Gagal save:", e); }
+            try { await setDoc(doc(db, "collab_scripts", docId), payload); } 
+            catch(e) { console.error("Gagal save:", e); }
         }
 
         window.triggerAutoSave = function() {
@@ -625,53 +736,16 @@
             clearTimeout(autoSaveTimeout);
             autoSaveTimeout = setTimeout(() => {
                 const curStatus = window.currentId ? (window.scriptData.find(x => x.id === window.currentId)?.status || 'draft') : 'draft';
-                window.performSave(curStatus, true, false); // Jangan lepas gembok saat auto-save
+                window.performSave(curStatus, true, false); 
                 const indicator = document.getElementById('saveIndicator');
                 indicator.innerText = "Tersimpan"; indicator.classList.add('show');
                 setTimeout(() => indicator.classList.remove('show'), 2000);
             }, 1000); 
         }
-
-        window.softDeleteScript = async function() {
-            if (!window.currentId || window.isLockedByOther) return;
-            document.getElementById('actionMenu').classList.remove('active');
-            if (!confirm('Pindahkan script ini ke tempat sampah tim? (Terhapus otomatis setelah 30 hari)')) return;
-
-            const item = window.scriptData.find(x => x.id === window.currentId);
-            if(!item) return;
-            
-            const now = Date.now();
-            const trashId = 'ctrash_' + now;
-
-            const trashPayload = {
-                roomId: currentRoomId,
-                deletedByUid: currentUserUid,
-                deletedByName: currentUserData.name, 
-                originalId: item.id, 
-                title: item.title, 
-                content: item.content, 
-                deletedAt: now, 
-                expireAt: now + (30*24*60*60*1000)
-            };
-
-            try {
-                // Simpan ke collection khusus trash kolaborasi (agar tidak bercampur dengan personal)
-                await setDoc(doc(db, "collab_trash_scripts", trashId), trashPayload);
-                await deleteDoc(doc(db, "collab_scripts", item.id));
-                
-                document.getElementById('editorPopup').classList.remove('active');
-                window.currentId = null;
-            } catch (e) { console.error(e); alert("Gagal menghapus naskah."); }
-        }
-
-        window.saveScript = function(status) { 
-            if(window.isLockedByOther) return; 
-            window.performSave(status, false, true); 
-            document.getElementById('editorPopup').classList.remove('active'); 
-        }
+        window.saveScript = function(status) { if(window.isLockedByOther) return; window.performSave(status, false, true); document.getElementById('editorPopup').classList.remove('active'); }
 
         // ==========================================
-        // UI & TOOLS
+        // UI & TOOLS 
         // ==========================================
         window.openSearch = function(event) { if (event) event.stopPropagation(); document.getElementById('filterWrap').classList.add('searching'); document.getElementById('searchContainer').style.width = '100%'; document.getElementById('searchContainer').classList.add('expanded'); setTimeout(() => { document.getElementById('searchInput').focus(); }, 300); }
         window.closeSearch = function(event) { if (event) event.stopPropagation(); document.getElementById('searchContainer').style.width = '38px'; document.getElementById('searchContainer').classList.remove('expanded'); document.getElementById('filterWrap').classList.remove('searching'); const input = document.getElementById('searchInput'); if (input.value !== '') { input.value = ''; window.currentPage = 1; window.renderList(); } }
@@ -697,25 +771,56 @@
         
         window.copyContent = function() { const text = document.getElementById('inputTitle').value + '\n\n' + document.getElementById('inputContent').value; navigator.clipboard.writeText(text).then(() => alert('Script disalin!')); document.getElementById('actionMenu').classList.remove('active'); }
         window.exportTxt = function() { const text = document.getElementById('inputContent').value; if(!text) return alert("Script kosong."); const blob = new Blob([text], { type: 'text/plain' }); const link = document.createElement('a'); link.href = URL.createObjectURL(blob); link.download = (document.getElementById('inputTitle').value || 'Script_Kolaborasi') + '.txt'; link.click(); document.getElementById('actionMenu').classList.remove('active'); }
-        window.showInfo = function() { if(!window.currentId) return alert("Belum disimpan."); const item = window.scriptData.find(x => x.id === window.currentId); if(!item) return; const text = document.getElementById('inputContent').value; const words = text.trim() === '' ? 0 : text.trim().split(/\s+/).length; const formatDate = (ms) => ms ? new Date(ms).toLocaleDateString('id-ID', { day: 'numeric', month: 'long', year: 'numeric', hour: '2-digit', minute:'2-digit' }) : '-'; document.getElementById('infoTitle').innerText = item.title || 'Tanpa Judul'; document.getElementById('infoCat').innerText = item.channel || 'Umum'; document.getElementById('infoStatus').innerText = item.status === 'done' ? 'Selesai' : 'Draft'; document.getElementById('infoCreator').innerText = item.creatorName || 'Anonim'; document.getElementById('infoWords').innerText = words.toLocaleString('id-ID'); document.getElementById('infoCreated').innerText = formatDate(item.createdAt); document.getElementById('infoUpdated').innerText = formatDate(item.updatedAt); document.getElementById('actionMenu').classList.remove('active'); document.getElementById('infoModal').classList.add('active'); }
+        
+        window.showInfo = function() { 
+            if(!window.currentId) return alert("Belum disimpan."); 
+            const item = window.scriptData.find(x => x.id === window.currentId); 
+            if(!item) return; 
+            const text = document.getElementById('inputContent').value; 
+            const words = text.trim() === '' ? 0 : text.trim().split(/\s+/).length; 
+            const formatDate = (ms) => ms ? new Date(ms).toLocaleDateString('id-ID', { day: 'numeric', month: 'long', year: 'numeric', hour: '2-digit', minute:'2-digit' }) : '-'; 
+            
+            document.getElementById('infoTitle').innerText = item.title || 'Tanpa Judul'; 
+            document.getElementById('infoCat').innerText = item.channel || 'Umum'; 
+            document.getElementById('infoStatus').innerText = item.status === 'done' ? 'Selesai' : 'Draft'; 
+            document.getElementById('infoCreator').innerText = item.creatorName || 'Anonim'; 
+            document.getElementById('infoWords').innerText = words.toLocaleString('id-ID'); 
+            document.getElementById('infoCreated').innerText = formatDate(item.createdAt); 
+            document.getElementById('infoUpdated').innerText = formatDate(item.updatedAt); 
+            document.getElementById('actionMenu').classList.remove('active'); 
+            document.getElementById('infoModal').classList.add('active'); 
+        }
         window.closeInfoModal = function() { document.getElementById('infoModal').classList.remove('active'); }
         
         window.setFilter = function(type) { window.currentFilter = type; window.currentPage = 1; window.renderList(); }
         window.setSort = function(type) { window.currentSort = type; window.currentPage = 1; window.renderList(); }
         window.changePage = function(page) { window.currentPage = page; window.renderList(); window.scrollTo({ top: 0, behavior: 'smooth' }); }
 
-        function generateDynamicChannels(data) {
-            const channels = [...new Set(data.map(item => item.channel).filter(c => c && c.trim() !== "Umum" && c.trim() !== ""))];
-            let html = `
-                <button class="filter-btn ${window.currentFilter === 'all' ? 'active' : ''}" onclick="setFilter('all')">Semua</button>
-                <button class="filter-btn ${window.currentFilter === 'draft' ? 'active' : ''}" onclick="setFilter('draft')">Draft</button>
-                <button class="filter-btn ${window.currentFilter === 'done' ? 'active' : ''}" onclick="setFilter('done')">Selesai</button>
-                <div class="divider"></div>
-                <button class="filter-btn ${window.currentSort === 'newest' ? 'active' : ''}" onclick="setSort('newest')">🆕 Terbaru</button>
-                <button class="filter-btn ${window.currentSort === 'oldest' ? 'active' : ''}" onclick="setSort('oldest')">⏳ Terlama</button>
-                <div class="divider"></div>
-            `;
-            channels.forEach(ch => { html += `<button class="filter-btn ${window.currentFilter === ch ? 'active' : ''}" onclick="setFilter('${ch}')">📺 ${ch}</button>`; });
+        function generateDynamicChannels() {
+            let data = window.isTrashView ? window.trashData : window.scriptData;
+            
+            let html = '';
+            
+            // Jika bukan mode Trash, tampilkan filter normal
+            if (!window.isTrashView) {
+                const channels = [...new Set(data.map(item => item.channel).filter(c => c && c.trim() !== "Umum" && c.trim() !== ""))];
+                html += `
+                    <button class="filter-btn ${window.currentFilter === 'all' ? 'active' : ''}" onclick="setFilter('all')">Semua</button>
+                    <button class="filter-btn ${window.currentFilter === 'draft' ? 'active' : ''}" onclick="setFilter('draft')">Draft</button>
+                    <button class="filter-btn ${window.currentFilter === 'done' ? 'active' : ''}" onclick="setFilter('done')">Selesai</button>
+                    <div class="divider"></div>
+                    <button class="filter-btn ${window.currentSort === 'newest' ? 'active' : ''}" onclick="setSort('newest')">🆕 Terbaru</button>
+                    <button class="filter-btn ${window.currentSort === 'oldest' ? 'active' : ''}" onclick="setSort('oldest')">⏳ Terlama</button>
+                    <div class="divider"></div>
+                `;
+                channels.forEach(ch => { html += `<button class="filter-btn ${window.currentFilter === ch ? 'active' : ''}" onclick="setFilter('${ch}')">📺 ${ch}</button>`; });
+                html += `<div class="divider"></div>`;
+            }
+            
+            // Tombol Trash selalu ada di ujung kanan (atau kiri kalau mode trash)
+            let trashActive = window.isTrashView ? 'active' : '';
+            html += `<button class="filter-btn trash-btn ${trashActive}" onclick="toggleTrashView()">🗑️ Trash (${window.trashData.length})</button>`;
+            
             document.getElementById('dynamicFilters').innerHTML = html;
         }
 
@@ -731,36 +836,51 @@
         window.renderList = function() {
             const listContainer = document.getElementById('listContainer');
             const keyword = document.getElementById('searchInput').value.toLowerCase();
-            let data = [...window.scriptData]; 
+            
+            // Ambil sumber data sesuai mode aktif
+            let data = window.isTrashView ? [...window.trashData] : [...window.scriptData]; 
+            generateDynamicChannels();
 
-            generateDynamicChannels(data);
+            if (!window.isTrashView) {
+                document.getElementById('statTotal').innerText = data.length;
+                document.getElementById('statDraft').innerText = data.filter(x => x.status === 'draft').length;
+                document.getElementById('statDone').innerText = data.filter(x => x.status === 'done').length;
 
-            document.getElementById('statTotal').innerText = data.length;
-            document.getElementById('statDraft').innerText = data.filter(x => x.status === 'draft').length;
-            document.getElementById('statDone').innerText = data.filter(x => x.status === 'done').length;
+                data.sort((a, b) => {
+                    if(a.pinned && !b.pinned) return -1;
+                    if(!a.pinned && b.pinned) return 1;
+                    const timeA = a.createdAt || 0; const timeB = b.createdAt || 0;
+                    return window.currentSort === 'oldest' ? timeA - timeB : timeB - timeA; 
+                });
 
-            data.sort((a, b) => {
-                if(a.pinned && !b.pinned) return -1;
-                if(!a.pinned && b.pinned) return 1;
-                const timeA = a.createdAt || 0; const timeB = b.createdAt || 0;
-                return window.currentSort === 'oldest' ? timeA - timeB : timeB - timeA; 
-            });
-
-            data = data.filter(item => {
-                const title = item.title ? item.title.toLowerCase() : "";
-                const content = item.content ? item.content.toLowerCase() : "";
-                const match = title.includes(keyword) || content.includes(keyword);
-                if (window.currentFilter === 'all') return match;
-                if (window.currentFilter === 'draft' || window.currentFilter === 'done') return match && item.status === window.currentFilter;
-                return match && item.channel === window.currentFilter;
-            });
+                data = data.filter(item => {
+                    const title = item.title ? item.title.toLowerCase() : "";
+                    const content = item.content ? item.content.toLowerCase() : "";
+                    const match = title.includes(keyword) || content.includes(keyword);
+                    if (window.currentFilter === 'all') return match;
+                    if (window.currentFilter === 'draft' || window.currentFilter === 'done') return match && item.status === window.currentFilter;
+                    return match && item.channel === window.currentFilter;
+                });
+            } else {
+                // Mode Trash: Sort by deletedAt Terbaru
+                data.sort((a, b) => (b.deletedAt || 0) - (a.deletedAt || 0));
+                data = data.filter(item => {
+                    const title = item.title ? item.title.toLowerCase() : "";
+                    const content = item.content ? item.content.toLowerCase() : "";
+                    return title.includes(keyword) || content.includes(keyword);
+                });
+            }
 
             const totalItems = data.length;
             const totalPages = Math.ceil(totalItems / window.itemsPerPage);
             if (totalPages > 0 && window.currentPage > totalPages) window.currentPage = totalPages; else if (totalPages === 0) window.currentPage = 1;
 
             if (totalItems === 0) {
-                listContainer.innerHTML = `<div class="empty-state" onclick="openPopup()"><div class="empty-state-icon">📄</div><div class="empty-state-text">Ruang kolaborasi ini masih kosong.<br>Ketuk di sini untuk mulai menulis naskah tim.</div></div>`;
+                if (window.isTrashView) {
+                    listContainer.innerHTML = `<div class="empty-state"><div class="empty-state-icon">✨</div><div class="empty-state-text">Tempat sampah bersih.</div></div>`;
+                } else {
+                    listContainer.innerHTML = `<div class="empty-state" onclick="openPopup()"><div class="empty-state-icon">📄</div><div class="empty-state-text">Ruang kolaborasi ini masih kosong.<br>Ketuk di sini untuk mulai menulis naskah tim.</div></div>`;
+                }
                 document.getElementById('paginationContainer').innerHTML = '';
                 return;
             }
@@ -770,27 +890,60 @@
             const paginatedData = data.slice(startIndex, endIndex);
 
             let html = '';
-            paginatedData.forEach(item => {
-                let lockBadgeHTML = item.lockedBy ? `<div class="badge lock">🔒 ${item.lockedByName.split(' ')[0]}</div>` : '';
-                let authorBadgeHTML = `<div class="badge" style="background:transparent; border:1px solid var(--border); color:var(--text-muted);">👤 ${item.creatorName || 'Anonim'}</div>`;
+            
+            if (!window.isTrashView) {
+                // RENDER NASKAH AKTIF
+                paginatedData.forEach(item => {
+                    let lockBadgeHTML = item.lockedBy ? `<div class="badge lock">🔒 ${item.lockedByName.split(' ')[0]}</div>` : '';
+                    let authorBadgeHTML = `<div class="badge" style="background:transparent; border:1px solid var(--border); color:var(--text-muted);">👤 ${item.creatorName || 'Anonim'}</div>`;
 
-                html += `
-                <div class="card ${item.pinned ? 'pinned' : ''} ${item.status === 'done' ? 'completed' : ''}" onclick="openPopup('${item.id}')" style="cursor:pointer;">
-                    <div class="card-header">
-                        <div class="card-title">${item.title}</div>
-                        ${item.pinned ? '<div title="Disematkan" style="font-size:16px;">📌</div>' : ''}
-                    </div>
-                    <div class="card-preview">${item.content || '<em>Belum ada isi script...</em>'}</div>
-                    <div class="card-bottom">
-                        <div class="badges">
-                            <div class="badge ch">${item.channel || 'Umum'}</div>
-                            <div class="badge ${item.status === 'done' ? 'done' : ''}">${item.status === 'draft' ? 'Draft' : 'Selesai'}</div>
-                            ${authorBadgeHTML}
-                            ${lockBadgeHTML}
+                    html += `
+                    <div class="card ${item.pinned ? 'pinned' : ''} ${item.status === 'done' ? 'completed' : ''}" onclick="openPopup('${item.id}')">
+                        <div class="card-header">
+                            <div class="card-title">${item.title}</div>
+                            ${item.pinned ? '<div title="Disematkan" style="font-size:16px;">📌</div>' : ''}
                         </div>
-                    </div>
-                </div>`;
-            });
+                        <div class="card-preview">${item.content || '<em>Belum ada isi script...</em>'}</div>
+                        <div class="card-bottom">
+                            <div class="badges">
+                                <div class="badge ch">${item.channel || 'Umum'}</div>
+                                <div class="badge ${item.status === 'done' ? 'done' : ''}">${item.status === 'draft' ? 'Draft' : 'Selesai'}</div>
+                                ${authorBadgeHTML}
+                                ${lockBadgeHTML}
+                            </div>
+                        </div>
+                    </div>`;
+                });
+            } else {
+                // RENDER TRASH
+                paginatedData.forEach(item => {
+                    let sisaHari = Math.ceil((item.expireAt - Date.now()) / (1000 * 60 * 60 * 24));
+                    if(sisaHari < 0) sisaHari = 0;
+                    
+                    let delInfo = `<div class="badge deleted" title="Dihapus oleh ${item.deletedByName}">🗑️ oleh ${item.deletedByName.split(' ')[0]}</div>`;
+                    let authorBadge = `<div class="badge" style="background:transparent; border:1px solid var(--border); color:var(--text-muted);">Kreator: ${item.originalCreatorName || 'Anonim'}</div>`;
+
+                    html += `
+                    <div class="card trash-card">
+                        <div class="card-header">
+                            <div class="card-title">${item.title}</div>
+                            <div style="font-size:11px; font-weight:800; color:var(--danger);">${sisaHari} hari tersisa</div>
+                        </div>
+                        <div class="card-preview">${item.content || '<em>Naskah kosong</em>'}</div>
+                        <div class="card-bottom">
+                            <div class="badges">
+                                ${delInfo}
+                                ${authorBadge}
+                            </div>
+                            <div class="card-actions" style="margin-top:12px;">
+                                <button class="btn-card-action restore" onclick="restoreScript('${item.id}', event)">♻️ Pulihkan</button>
+                                <button class="btn-card-action destroy" onclick="hardDeleteScript('${item.id}', event)">❌ Musnahkan</button>
+                            </div>
+                        </div>
+                    </div>`;
+                });
+            }
+            
             listContainer.innerHTML = html;
             window.renderPagination(totalPages);
         }
