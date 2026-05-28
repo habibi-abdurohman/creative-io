@@ -189,7 +189,6 @@
     <script src="../navbar/navbar.js"></script>
     <script src="../js/pwa.js"></script>
 
-    <!-- Script PWA & Navbar tetapkan sama ... -->
     <script type="module">
         import { auth, db } from "../js/firebase.js";
         import { onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
@@ -204,9 +203,10 @@
         async function fetchDashboardStats(uid) {
             try {
                 if (USE_FIREBASE) {
-                    // Query untuk script (menghitung SEMUA: draft maupun done)
+                    // PENTING: Klausa "where('uid', '==', uid)" ini yang membuat dashboard aman 
+                    // dan lolos dari blokir Firestore Rules.
                     const qScript = query(collection(db, "creative_script"), where("uid", "==", uid));
-                    const qIdeas = query(collection(db, "creative_ideas"), where("uid", "==", uid)); // Perbaikan nama collection
+                    const qIdeas = query(collection(db, "creative_ideas"), where("uid", "==", uid));
                     const qNotes = query(collection(db, "creative_notes_v2"), where("uid", "==", uid));
                     const qTrash = query(collection(db, "creative_trash"), where("uid", "==", uid));
 
@@ -241,8 +241,10 @@
         function updateStatsUI(sCount, iCount, nCount, tCount) {
             const setStat = (id, val) => {
                 const el = document.getElementById(id);
-                el.innerText = val;
-                el.classList.remove("loading-pulse"); 
+                if(el) {
+                    el.innerText = val;
+                    el.classList.remove("loading-pulse"); 
+                }
             };
             setStat("totalScript", sCount);
             setStat("totalIdeas", iCount);
