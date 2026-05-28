@@ -60,21 +60,29 @@
         .bg-glow.one { width: 340px; height: 340px; background: rgba(59, 130, 246, 0.15); top: -50px; left: -100px; }
         .bg-glow.two { width: 320px; height: 320px; background: rgba(96, 165, 250, 0.15); bottom: 100px; right: -100px; }
         
-        /* BANNER ATAS RUANG */
-        .top-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px; gap: 16px; }
-        .header-title-wrap { display: flex; flex-direction: column; min-width: 0; }
-        .page-title { font-size: 24px; font-weight: 800; letter-spacing: -0.5px; display: flex; align-items: center; gap: 10px; min-width: 0; }
-        .page-title span.room-name-text { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
-        .page-subtitle { font-size: 13px; color: var(--text-muted); line-height: 1.6; display: flex; align-items: center; gap: 6px; }
-        .total-badge { padding: 6px 14px; border-radius: 20px; background: var(--primary-soft); color: var(--primary); font-size: 12px; font-weight: 800; border: 1px solid var(--border); white-space: nowrap; flex-shrink: 0; }
+        /* =========================================================
+           BANNER ATAS RUANG (DIREVISI PROPORSINYA)
+        ========================================================= */
+        .top-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 24px; gap: 16px; flex-wrap: wrap; }
+        .header-title-wrap { display: flex; align-items: center; gap: 16px; flex: 1; min-width: 250px; }
         
-        .btn-back { width: 34px; height: 34px; border-radius: 10px; background: var(--card-solid); border: 1px solid var(--border); display: flex; align-items: center; justify-content: center; font-size: 14px; color: var(--text-main); text-decoration: none; transition: 0.2s; flex-shrink: 0; outline: none; box-shadow: var(--shadow-flat); }
-        .btn-back:hover { background: var(--card-tint); }
-
+        .btn-back { 
+            width: 44px; height: 44px; border-radius: 14px; background: var(--card-solid); border: 1px solid var(--border); 
+            display: flex; align-items: center; justify-content: center; color: var(--text-main); text-decoration: none; 
+            transition: all 0.2s; flex-shrink: 0; outline: none; box-shadow: 0 4px 12px rgba(0,0,0,0.03); 
+        }
+        .btn-back:hover { background: var(--card-tint); transform: translateX(-2px); }
+        body.dark .btn-back { background: rgba(30, 41, 59, 0.8); border-color: rgba(255,255,255,0.1); box-shadow: 0 4px 12px rgba(0,0,0,0.3); }
+        
+        .header-text-group { display: flex; flex-direction: column; justify-content: center; min-width: 0; }
+        .page-title { font-size: 24px; font-weight: 800; letter-spacing: -0.5px; line-height: 1.2; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; margin-bottom: 4px; }
+        .page-subtitle { font-size: 13px; color: var(--text-muted); line-height: 1.4; display: flex; align-items: center; gap: 8px; font-weight: 600;}
+        
         .live-indicator { width: 8px; height: 8px; background: #10b981; border-radius: 50%; display: inline-block; animation: pulse 2s infinite; flex-shrink: 0; }
         @keyframes pulse { 0% { transform: scale(0.95); box-shadow: 0 0 0 0 rgba(16, 185, 129, 0.7); } 70% { transform: scale(1); box-shadow: 0 0 0 6px rgba(16, 185, 129, 0); } 100% { transform: scale(0.95); box-shadow: 0 0 0 0 rgba(16, 185, 129, 0); } }
 
-        body.dark .top-header .total-badge { background: var(--primary-soft); color: #60a5fa; }
+        .total-badge { padding: 8px 16px; border-radius: 20px; background: var(--card-solid); color: var(--text-main); font-size: 13px; font-weight: 800; border: 1px solid var(--border); box-shadow: var(--shadow-flat); white-space: nowrap; flex-shrink: 0; display: flex; align-items: center; gap: 8px; }
+        body.dark .total-badge { background: var(--card-solid); border-color: var(--border); color: var(--text-main); }
         
         /* =========================================================
            UI SEARCH BAR DAN FILTER (STICKY TOOL)
@@ -139,43 +147,61 @@
         .divider { flex-shrink: 0; width: 1px; height: 18px; background: var(--border); margin: 0 2px; }
         
         /* =========================================================
-           UI KARTU NOTES & PAGINATION
+           UI KARTU NOTES (DIREVISI PROPORSINYA)
         ========================================================= */
         .notes-list { column-count: 4; column-gap: 16px; margin-top: 10px; transition: opacity 0.2s; }
+        
         .empty-state { column-span: all; text-align: center; padding: 60px 20px; background: var(--card-glass); border: 1px dashed var(--border); border-radius: var(--radius-card); cursor: pointer; transition: 0.2s; }
         .empty-state:hover { background: var(--card-tint); }
         .empty-state-icon { font-size: 42px; margin-bottom: 12px; opacity: 0.8; }
         .empty-state-text { font-size: 13px; color: var(--text-muted); line-height: 1.6; }
         
-        .note-card { break-inside: avoid; margin-bottom: 16px; padding: 20px 16px 16px 20px; border-radius: var(--radius-card); background: var(--card-glass); border: 1px solid var(--border); cursor: pointer; position: relative; overflow: hidden; box-shadow: var(--shadow-flat); transition: transform 0.2s, border-color 0.2s; background-image: linear-gradient(var(--paper-line) 1px, transparent 1px); background-size: 100% 28px; background-position: 0 12px; }
+        .note-card { 
+            break-inside: avoid; margin-bottom: 16px; padding: 20px; 
+            border-radius: var(--radius-card); background: var(--card-glass); border: 1px solid var(--border); 
+            cursor: pointer; position: relative; overflow: hidden; box-shadow: var(--shadow-flat); 
+            transition: transform 0.2s, border-color 0.2s; 
+            background-image: linear-gradient(var(--paper-line) 1px, transparent 1px); 
+            background-size: 100% 28px; background-position: 0 12px; 
+            display: flex; flex-direction: column; gap: 12px;
+        }
         .note-card:hover { transform: translateY(-2px); border-color: #cbd5e1; }
         .note-card.pinned { border-color: var(--warning); border-width: 2px; }
         .note-card.trash-mode-card { border: 1px dashed var(--danger); background: var(--card-tint); cursor: default; background-image: none; }
         .note-card.trash-mode-card:hover { transform: none; border-color: var(--danger); }
         
-        .note-top { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 10px; position: relative; z-index: 2; gap: 8px; }
-        .note-title { font-size: 15px; font-weight: 800; line-height: 1.4; color: var(--text-main); word-break: break-word; }
-        .note-content { font-size: 13px; line-height: 28px; color: var(--text-muted); position: relative; z-index: 2; white-space: pre-wrap; display: -webkit-box; -webkit-line-clamp: 6; -webkit-box-orient: vertical; overflow: hidden; word-break: break-word; }
+        /* Bagian Atas Kartu (Judul & Pin) */
+        .note-header { display: flex; justify-content: space-between; align-items: flex-start; gap: 12px; position: relative; z-index: 2; }
+        .note-title-wrap { display: flex; flex-direction: column; gap: 8px; flex: 1; }
+        .note-title { font-size: 16px; font-weight: 800; line-height: 1.4; color: var(--text-main); word-break: break-word; }
         
-        .note-footer { margin-top: 14px; padding-top: 10px; border-top: 1px dashed var(--border); display: flex; justify-content: space-between; align-items: center; position: relative; z-index: 2; gap: 8px; flex-wrap: wrap; }
-        .note-date { font-size: 11px; font-weight: 700; color: var(--text-muted); display: flex; flex-direction: column; gap: 2px; }
-        
-        .badges-container { display: flex; gap: 4px; flex-wrap: wrap; margin-bottom: 4px; }
-        .card-badge { padding: 3px 8px; border-radius: 6px; font-size: 10px; font-weight: 700; background: var(--card-tint); color: var(--text-muted); border: 1px solid var(--border); max-width: 140px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
-        .card-badge.user-badge { background: rgba(37, 99, 235, 0.05); color: var(--primary); }
-        .card-badge.lock-badge { background: var(--warning); color: white; border: none; font-weight: 800; animation: flash 1.5s infinite alternate; }
-        .card-badge.trash-badge { background: var(--danger-soft); color: var(--danger); border: none; }
+        /* Wadah Badge Fleksibel */
+        .badges-container { display: flex; gap: 6px; flex-wrap: wrap; }
+        .badge { padding: 4px 8px; border-radius: 8px; font-size: 11px; font-weight: 700; background: var(--card-tint); color: var(--text-muted); border: 1px solid var(--border); display: flex; align-items: center; gap: 4px; line-height: 1.2; }
+        .badge.lock { background: var(--warning); color: white; border: none; animation: flash 1.5s infinite alternate; }
+        .badge.restored { background: rgba(245, 158, 11, 0.1); color: var(--warning); border-color: rgba(245, 158, 11, 0.2); }
+        .badge.user { background: transparent; }
+        .badge.danger { background: var(--danger-soft); color: var(--danger); border-color: var(--danger-soft); }
         @keyframes flash { from { opacity: 0.7; } to { opacity: 1; } }
 
-        .btn-quick-del { border: none; background: transparent; color: var(--text-muted); font-size: 14px; cursor: pointer; padding: 4px; border-radius: 6px; transition: 0.2s; outline: none; }
+        /* Isi Konten */
+        .note-content { font-size: 13px; line-height: 28px; color: var(--text-muted); position: relative; z-index: 2; white-space: pre-wrap; display: -webkit-box; -webkit-line-clamp: 5; -webkit-box-orient: vertical; overflow: hidden; word-break: break-word; }
+        
+        /* Footer Kartu Aktif */
+        .note-footer { display: flex; justify-content: space-between; align-items: flex-end; gap: 8px; margin-top: auto; padding-top: 12px; border-top: 1px dashed var(--border); position: relative; z-index: 2; }
+        .note-meta { display: flex; flex-direction: column; gap: 6px; }
+        .note-date { font-size: 11px; font-weight: 700; color: var(--text-muted); }
+        
+        /* Tombol Aksi */
+        .btn-quick-del { width: 32px; height: 32px; border: none; background: transparent; color: var(--text-muted); font-size: 14px; cursor: pointer; border-radius: 8px; transition: 0.2s; outline: none; display: flex; align-items: center; justify-content: center; }
         .btn-quick-del:hover { background: rgba(239, 68, 68, 0.1); color: var(--danger); }
         
-        .trash-card-actions { display: flex; gap: 6px; width: 100%; justify-content: flex-end; margin-top: 4px; }
-        .btn-trash-action { padding: 6px 12px; border-radius: 8px; font-size: 12px; font-weight: 700; border: none; cursor: pointer; transition: 0.2s; outline: none; display: flex; align-items: center; gap: 4px; }
+        .trash-actions { display: flex; flex-direction: column; gap: 8px; width: 100%; margin-top: 4px; }
+        .btn-trash-action { width: 100%; padding: 8px; border-radius: 10px; font-size: 12px; font-weight: 800; border: none; cursor: pointer; transition: 0.2s; outline: none; display: flex; align-items: center; justify-content: center; gap: 6px; }
         .btn-trash-action.restore { background: var(--success-soft); color: var(--success); }
         .btn-trash-action.restore:hover { background: var(--success); color: white; }
-        .btn-trash-action.destroy { background: var(--danger-soft); color: var(--danger); }
-        .btn-trash-action.destroy:hover { background: var(--danger); color: white; }
+        .btn-trash-action.destroy { background: var(--danger-soft); color: var(--danger); border: 1px solid rgba(239, 68, 68, 0.2); }
+        .btn-trash-action.destroy:hover { background: var(--danger); color: white; border-color: var(--danger); }
 
         /* DESAIN PAGINATION */
         .pagination-container { display: flex; justify-content: center; align-items: center; gap: 8px; margin-top: 32px; padding-bottom: 24px; flex-wrap: wrap; column-span: all; }
@@ -273,14 +299,14 @@
         @media(max-width: 768px) { .notes-list { column-count: 2; } }
         @media(max-width: 480px) { 
             body { padding-top: 66px; }
+            .top-header { flex-direction: column; align-items: flex-start; gap: 20px; }
+            .header-title-wrap { width: 100%; }
             .notes-list { column-count: 1; } 
             .note-card { padding: 16px; margin-bottom: 12px; } 
-            .note-title { font-size: 14px; } 
+            .note-title { font-size: 15px; } 
             .note-content { font-size: 12px; line-height: 24px; } 
             .editor-container { padding: 0 16px; }
             .title-input { font-size: 26px; }
-            .top-header { flex-direction: row; align-items: center; }
-            .page-title { font-size: 20px; }
             .editor-footer { padding: 12px 16px; }
             .save-btn { padding: 10px 20px; }
         }
@@ -294,15 +320,18 @@
     <div class="wrapper">
         <div class="top-header">
             <div class="header-title-wrap">
-                <h1 class="page-title">
-                    <a href="collab-hub.html" class="btn-back" title="Kembali ke Lobi">🔙</a>
-                    <span class="room-name-text" id="uiRoomName">Memuat...</span>
-                </h1>
-                <div class="page-subtitle" id="uiRoomInfo">
-                    <span class="live-indicator"></span> Menghubungkan...
+                <a href="collab-hub.html" class="btn-back" title="Kembali ke Lobi">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                        <line x1="19" y1="12" x2="5" y2="12"></line>
+                        <polyline points="12 19 5 12 12 5"></polyline>
+                    </svg>
+                </a>
+                <div class="header-text-group">
+                    <h1 class="page-title" id="uiRoomName">Memuat...</h1>
+                    <div class="page-subtitle" id="uiRoomInfo"><span class="live-indicator"></span> Menghubungkan...</div>
                 </div>
             </div>
-            <div class="total-badge" id="totalBadge">0 Catatan</div>
+            <div class="total-badge" id="totalBadge">📝 0 Catatan</div>
         </div>
 
         <div class="sticky-tools" id="stickyToolsBar">
@@ -310,7 +339,7 @@
                 
                 <div class="search-expandable" id="searchContainer">
                     <button class="search-icon-btn" onclick="openSearch(event)" title="Cari Catatan">🔍</button>
-                    <input type="text" id="searchInput" placeholder="Cari catatan tim..." oninput="window.currentPage=1; window.renderNotes()">
+                    <input type="text" id="searchInput" placeholder="Cari catatan tim..." autocomplete="off" oninput="window.currentPage=1; window.renderNotes()">
                     <button class="close-search-btn" onclick="closeSearch(event)" title="Tutup Pencarian">✕</button>
                 </div>
                 
@@ -351,9 +380,9 @@
 
         <div class="editor-body" id="editorBody">
             <div class="editor-container">
-                <textarea id="titleInput" class="title-input" placeholder="Judul catatan..." rows="1" spellcheck="false" oninput="autoResizeTitle(); markAsEdited(); triggerAutoSave(); triggerHistorySave()" onkeydown="if(event.key==='Enter'){event.preventDefault(); document.getElementById('contentInput').focus();}"></textarea>
+                <textarea id="titleInput" class="title-input" placeholder="Judul catatan..." autocomplete="off" rows="1" spellcheck="false" oninput="autoResizeTitle(); markAsEdited(); triggerAutoSave(); triggerHistorySave()" onkeydown="if(event.key==='Enter'){event.preventDefault(); document.getElementById('contentInput').focus();}"></textarea>
                 
-                <textarea id="contentInput" class="content-input" placeholder="Mulai menulis secara leluasa..." oninput="autoResizeContent(); updateCounter(); markAsEdited(); triggerAutoSave(); triggerHistorySave()"></textarea>
+                <textarea id="contentInput" class="content-input" placeholder="Mulai menulis secara leluasa..." autocomplete="off" oninput="autoResizeContent(); updateCounter(); markAsEdited(); triggerAutoSave(); triggerHistorySave()"></textarea>
             </div>
         </div>
 
@@ -410,7 +439,7 @@
         const formatFullDate = (ms) => {
             if(!ms) return '';
             const d = new Date(ms);
-            const months = ['Januari', 'Februari', 'Maret', 'April', 'Mei', 'Juni', 'Juli', 'Agustus', 'September', 'Oktober', 'November', 'Desember'];
+            const months = ['Jan', 'Feb', 'Mar', 'Apr', 'Mei', 'Jun', 'Jul', 'Ags', 'Sep', 'Okt', 'Nov', 'Des'];
             const time = String(d.getHours()).padStart(2, '0') + ':' + String(d.getMinutes()).padStart(2, '0');
             return `${d.getDate()} ${months[d.getMonth()]} ${d.getFullYear()} • ${time}`;
         };
@@ -471,7 +500,7 @@
                 }
                 window.roomData = docSnap.data();
                 document.getElementById('uiRoomName').innerText = window.roomData.name;
-                if(!window.isTrashView) document.getElementById('uiRoomInfo').innerHTML = `<span class="live-indicator"></span> Live • ${window.roomData.members.length} Anggota Tim`;
+                if(!window.isTrashView) document.getElementById('uiRoomInfo').innerHTML = `<span class="live-indicator"></span> Live • ${window.roomData.members.length} Anggota`;
             }, (error) => {
                 console.error(error);
                 document.getElementById('notesList').innerHTML = `<div class="empty-state" style="border-color: var(--danger); background: var(--danger-soft);"><div class="empty-state-icon" style="color: var(--danger);">🔒</div><div class="empty-state-text" style="color: var(--danger); font-weight: 700;">Akses Ruang Ditolak Database. Pastikan Rules Firebase diatur.</div></div>`;
@@ -527,11 +556,11 @@
             
             if(window.isTrashView) {
                 stickyToolsBar.classList.add('trash-active');
-                uiInfo.innerHTML = `🗑️ Menampilkan sampah ruang. Dihapus permanen otomatis dalam 30 hari.`;
+                uiInfo.innerHTML = `🗑️ Menampilkan sampah ruang. Hilang selamanya dalam 30 hari.`;
                 fab.classList.add('hidden');
             } else {
                 stickyToolsBar.classList.remove('trash-active');
-                uiInfo.innerHTML = `<span class="live-indicator"></span> Live • ${window.roomData ? window.roomData.members.length : 0} Anggota Tim`;
+                uiInfo.innerHTML = `<span class="live-indicator"></span> Live • ${window.roomData ? window.roomData.members.length : 0} Anggota`;
                 fab.classList.remove('hidden');
             }
             window.renderNotes();
@@ -582,7 +611,7 @@
                 title: item.title,
                 content: item.content,
                 pinned: false,
-                isRestored: true,
+                isRestored: true, // Beri tanda badge pulih
                 createdAt: item.originalCreatedAt || Date.now(),
                 updatedAt: Date.now(),
                 lockedBy: null,
@@ -648,7 +677,7 @@
                     }
                 }
             } else {
-                window.currentId = null; window.currentPinned = false; window.isLockedByOther = false;
+                window.currentId = null; window.currentPinned = false; window.isLockedByOther = false; window.isRestored = false;
                 titleInput.value = ''; contentInput.value = '';
                 lockBanner.classList.remove('active');
                 editorFooter.style.display = 'flex';
@@ -667,6 +696,8 @@
         }
 
         window.closeEditor = async function() {
+            clearTimeout(autoSaveTimeout); // PENTING: Mencegah bug auto-save membuat duplikat ID
+            
             if (!window.isLockedByOther) {
                 const title = document.getElementById('titleInput').value.trim();
                 const content = document.getElementById('contentInput').value.trim();
@@ -715,13 +746,20 @@
             if(window.isLockedByOther) return;
             clearTimeout(autoSaveTimeout);
             autoSaveTimeout = setTimeout(() => {
+                if(!document.getElementById('editor').classList.contains('active')) return; // Cegah save jika sudah ditutup
                 window.performSave(true, false);
                 const indicator = document.getElementById('autoSaveStatus');
                 indicator.innerText = "Tersimpan ✓"; indicator.classList.add('show');
                 setTimeout(() => indicator.classList.remove('show'), 2000);
             }, 1000); 
         }
-        window.saveNote = function() { if(window.isLockedByOther) return; window.performSave(false, true); window.closeEditor(); }
+        
+        window.saveNote = function() { 
+            if(window.isLockedByOther) return; 
+            window.isRestored = false; // Copot lencana dipulihkan jika disimpan manual
+            window.performSave(false, true); 
+            window.closeEditor(); 
+        }
 
         // ==========================================
         // UNDO / REDO / HISTORY STATE ENGINE
@@ -806,7 +844,7 @@
                     return title.includes(keyword) || content.includes(keyword);
                 });
 
-                document.getElementById('totalBadge').innerText = `${data.length} Catatan`;
+                document.getElementById('totalBadge').innerText = `📝 ${data.length} Catatan`;
             } else {
                 // Di Menu Trash, Urutkan Berdasarkan Waktu Dihapus Terbaru
                 data.sort((a, b) => (b.deletedAt || 0) - (a.deletedAt || 0));
@@ -840,24 +878,29 @@
             if(!window.isTrashView) {
                 // TAMPILKAN CATATAN AKTIF TIM
                 paginatedData.forEach(item => {
-                    const cardClass = `note-card ${item.pinned ? 'pinned' : ''} ${item.isRestored ? 'restored' : ''}`;
-                    let lockBadge = item.lockedBy ? `<div class="card-badge lock-badge">🔒 Editan ${item.lockedByName.split(' ')[0]}</div>` : '';
-                    let userBadge = `<div class="card-badge user-badge">👤 ${item.creatorName || 'Anonim'}</div>`;
+                    const cardClass = `note-card ${item.pinned ? 'pinned' : ''}`;
+                    let lockBadge = item.lockedBy ? `<div class="badge lock">🔒 Editan ${item.lockedByName.split(' ')[0]}</div>` : '';
+                    let restoredBadge = item.isRestored ? `<div class="badge restored">♻️ Pulih</div>` : '';
 
                     html += `
                     <div class="${cardClass}" onclick="openEditor('${item.id}')">
-                        ${item.isRestored ? '<div class="badge-corner">♻️ Pulih</div>' : ''}
-                        <div class="note-top">
-                            <div class="note-title">${item.title}</div>
-                            ${item.pinned ? '<span title="Disematkan" style="font-size:14px; z-index:2; flex-shrink:0;">📌</span>' : ''}
+                        <div class="note-header">
+                            <div class="note-title-wrap">
+                                <div class="note-title">${item.title}</div>
+                                <div class="badges-container">
+                                    ${restoredBadge}
+                                    ${lockBadge}
+                                </div>
+                            </div>
+                            ${item.pinned ? '<div title="Disematkan" style="font-size:16px; flex-shrink:0;">📌</div>' : ''}
                         </div>
                         <div class="note-content">${item.content || '<em>Kosong...</em>'}</div>
                         <div class="note-footer">
-                            <div class="note-date">
-                                <div class="badges-container">${userBadge}${lockBadge}</div>
-                                <div>${formatFullDate(item.updatedAt)}</div>
+                            <div class="note-meta">
+                                <div class="badge user" style="border:none; padding:0; font-size:12px; color:var(--primary);">👤 ${item.creatorName || 'Anonim'}</div>
+                                <div class="note-date">${formatFullDate(item.updatedAt)}</div>
                             </div>
-                            <button class="btn-quick-del" onclick="event.stopPropagation(); softDeleteNote('${item.id}')" title="Hapus">🗑️</button>
+                            <button class="btn-quick-del" onclick="event.stopPropagation(); softDeleteNote('${item.id}')" title="Hapus ke Trash">🗑️</button>
                         </div>
                     </div>`;
                 });
@@ -867,24 +910,23 @@
                     let sisaHari = Math.ceil((item.expireAt - Date.now()) / (1000 * 60 * 60 * 24));
                     if(sisaHari < 0) sisaHari = 0;
                     
-                    let delBadge = `<div class="card-badge trash-badge">🗑️ oleh ${item.deletedByName.split(' ')[0]}</div>`;
-                    let originalBadge = `<div class="card-badge">👤 Penulis: ${item.originalCreatorName.split(' ')[0]}</div>`;
+                    let delBadge = `<div class="badge danger" style="padding: 6px 10px;">🗑️ Dihapus: ${item.deletedByName.split(' ')[0]}</div>`;
+                    let originalBadge = `<div class="badge user" style="padding: 6px 10px;">👤 Asli: ${item.originalCreatorName.split(' ')[0]}</div>`;
 
                     html += `
                     <div class="note-card trash-mode-card">
-                        <div class="note-top">
-                            <div class="note-title">${item.title}</div>
-                            <div style="font-size:11px; font-weight:800; color:var(--danger); flex-shrink:0;">${sisaHari} hari lagi</div>
-                        </div>
-                        <div class="note-content">${item.content || '<em>Kosong...</em>'}</div>
-                        <div class="note-footer">
-                            <div class="note-date">
-                                <div class="badges-container">${delBadge}${originalBadge}</div>
-                                <div>Dibuat: ${new Date(item.originalCreatedAt).toLocaleDateString('id-ID')}</div>
+                        <div class="note-header">
+                            <div class="note-title-wrap">
+                                <div class="note-title">${item.title}</div>
+                                <div class="badge" style="color:var(--danger); background:var(--danger-soft); border-color:var(--danger-soft); width: fit-content; padding: 4px 8px;">⏳ Lenyap: ${sisaHari} Hari</div>
                             </div>
-                            <div class="trash-card-actions">
-                                <button class="btn-trash-action restore" onclick="restoreTrashNote('${item.id}', event)">♻️ Pulihkan</button>
-                                <button class="btn-trash-action destroy" onclick="hardDeleteTrashNote('${item.id}', event)">❌ Hapus</button>
+                        </div>
+                        <div class="note-content" style="margin-bottom: 8px;">${item.content || '<em>Kosong...</em>'}</div>
+                        <div class="note-footer" style="flex-direction: column; align-items: flex-start; gap: 12px; padding-top: 16px;">
+                            <div class="badges-container">${delBadge}${originalBadge}</div>
+                            <div class="trash-actions">
+                                <button class="btn-trash-action restore" onclick="restoreTrashNote('${item.id}', event)">♻️ Pulihkan Catatan</button>
+                                <button class="btn-trash-action destroy" onclick="hardDeleteTrashNote('${item.id}', event)">❌ Musnahkan</button>
                             </div>
                         </div>
                     </div>`;
