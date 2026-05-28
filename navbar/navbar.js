@@ -94,16 +94,32 @@ function setActiveMenu() {
     }
 }
 
-// FIX: Sistem Sinkronisasi User Global yang Stabil
+// FIX: Sistem Sinkronisasi User Global ke Firestore Database
 async function syncGlobalUserData() {
     try {
-        const { auth } = await import(rootPath + 'js/firebase.js');
+        const { auth, db } = await import(rootPath + 'js/firebase.js'); // Import db
         const { onAuthStateChanged } = await import("https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js");
+        const { doc, onSnapshot } = await import("https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js"); // Import Firestore
 
         onAuthStateChanged(auth, (user) => {
             if (user) {
                 const savedPhoto = localStorage.getItem(`creative_photo_${user.uid}`);
+                // Tampilkan data UI secepat mungkin berdasarkan Auth
                 updateNavbarUI(user.displayName, user.email, savedPhoto);
+                
+                // Real-time Database Listener: Otomatis ubah nama tanpa perlu refresh halaman
+                try {
+                    const userRef = doc(db, "users", user.uid);
+                    onSnapshot(userRef, (docSnap) => {
+                        if (docSnap.exists()) {
+                            const dbData = docSnap.data();
+                            const finalName = dbData.name || dbData.displayName || user.displayName;
+                            updateNavbarUI(finalName, user.email, savedPhoto);
+                        }
+                    });
+                } catch (e) {
+                    console.warn("Gagal listen data Firestore untuk Navbar:", e);
+                }
             }
         });
     } catch (error) {
