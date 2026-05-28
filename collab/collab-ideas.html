@@ -135,6 +135,9 @@
         .badge { display: inline-flex; align-items: flex-start; gap: 4px; background: var(--card-tint); color: var(--text-muted); border: 1px solid var(--border); padding: 6px 10px; border-radius: 8px; font-size: 11px; font-weight: 800; white-space: normal; word-break: break-word; text-align: left; line-height: 1.4; width: fit-content; max-width: 100%; }
         .badge.restored { background: rgba(245, 158, 11, 0.1); color: var(--warning); border-color: rgba(245, 158, 11, 0.2); }
         .badge.creator { background: var(--primary-soft); color: var(--primary); border-color: rgba(37,99,235,0.2); }
+        /* LENCANA GEMBOK BARU */
+        .badge.lock { background: var(--warning); color: white; border: none; font-weight: 800; animation: flash 1.5s infinite alternate; }
+        @keyframes flash { from { opacity: 0.7; } to { opacity: 1; } }
         
         .idea-middle { min-width: 0; display: flex; justify-content: center; width: 100%; justify-self: center; }
         .link-box { 
@@ -154,6 +157,8 @@
         .btn-done { color: var(--border); font-size: 16px; font-weight: 900; }
         .btn-done.active { background: var(--success); border-color: var(--success); color: white; }
         .btn-del { color: var(--danger); }
+        /* KELAS DISABLED UNTUK TOMBOL SAAT DIGEMBOK */
+        .btn-icon.disabled { opacity: 0.3; pointer-events: none; cursor: not-allowed; }
         
         .idea-item.completed { opacity: 0.55; background: var(--card-tint); border-style: dashed; }
         .idea-item.completed .idea-title { text-decoration: line-through; color: var(--text-muted); }
@@ -263,9 +268,9 @@
                 
                 <div class="board-view-form-area" id="bvFormArea">
                     <div class="board-form-grid">
-                        <div class="input-wrap"><span>Konten</span><input type="text" id="addIdeaTitle" placeholder="Judul ide konten..."></div>
-                        <div class="input-wrap"><span>Tanggal</span><input type="text" id="addIdeaDate" placeholder="Misal: 17 Agustus"></div>
-                        <div class="input-wrap"><span>Link</span><input type="url" id="addIdeaLink" placeholder="Tempel tautan referensi..."></div>
+                        <div class="input-wrap"><span>Konten</span><input type="text" id="addIdeaTitle" autocomplete="off" placeholder="Judul ide konten..."></div>
+                        <div class="input-wrap"><span>Tanggal</span><input type="text" id="addIdeaDate" autocomplete="off" placeholder="Misal: 17 Agustus"></div>
+                        <div class="input-wrap"><span>Link</span><input type="url" id="addIdeaLink" autocomplete="off" placeholder="Tempel tautan referensi..."></div>
                         <button class="add-btn" onclick="addIdea()">+ Tambah Ide</button>
                     </div>
                 </div>
@@ -288,7 +293,7 @@
         <div class="modal-card">
             <h3>Buat Papan Kategori</h3>
             <p>Masukkan nama channel atau kategori konten yang ingin dikelola bersama tim.</p>
-            <input type="text" class="modal-input" id="boardNameInput" placeholder="Misal: YouTube Gaming, Ide Campaign...">
+            <input type="text" class="modal-input" id="boardNameInput" autocomplete="off" placeholder="Misal: YouTube Gaming, Ide Campaign...">
             <div class="modal-actions">
                 <button class="btn-modal btn-cancel" onclick="closeAddBoardModal()">Batal</button>
                 <button class="btn-modal btn-confirm" onclick="confirmAddBoard()">Buat Papan</button>
@@ -300,7 +305,7 @@
         <div class="modal-card">
             <h3>Edit Judul Papan</h3>
             <p>Ubah nama channel atau kategori papan ini.</p>
-            <input type="text" class="modal-input" id="editBoardNameInput" placeholder="Nama papan baru...">
+            <input type="text" class="modal-input" id="editBoardNameInput" autocomplete="off" placeholder="Nama papan baru...">
             <div class="modal-actions">
                 <button class="btn-modal btn-cancel" onclick="closeEditBoardModal()">Batal</button>
                 <button class="btn-modal btn-confirm" onclick="saveEditBoard()">Simpan Perubahan</button>
@@ -324,15 +329,15 @@
             <h3>Edit Ide Konten</h3>
             <div class="input-wrap" style="margin-bottom:12px;">
                 <span>Konten</span>
-                <input type="text" id="editTitleInput" class="modal-input" style="padding-left:80px; margin-bottom:0;" placeholder="Judul ide...">
+                <input type="text" id="editTitleInput" class="modal-input" autocomplete="off" style="padding-left:80px; margin-bottom:0;" placeholder="Judul ide...">
             </div>
             <div class="input-wrap" style="margin-bottom:12px;">
                 <span>Tanggal</span>
-                <input type="text" id="editDateInput" class="modal-input" style="padding-left:80px; margin-bottom:0;" placeholder="Misal: 17 Agustus 2026">
+                <input type="text" id="editDateInput" class="modal-input" autocomplete="off" style="padding-left:80px; margin-bottom:0;" placeholder="Misal: 17 Agustus 2026">
             </div>
             <div class="input-wrap" style="margin-bottom:12px;">
                 <span>Link</span>
-                <input type="text" id="editLinkInput" class="modal-input" style="padding-left:80px; margin-bottom:0;" placeholder="Tautan referensi...">
+                <input type="text" id="editLinkInput" class="modal-input" autocomplete="off" style="padding-left:80px; margin-bottom:0;" placeholder="Tautan referensi...">
             </div>
             <div class="input-wrap" style="margin-bottom:16px;">
                 <span>Papan</span>
@@ -412,6 +417,13 @@
                     });
                 });
             });
+        });
+
+        // Pembersihan Kunci Gembok jika tab/browser ditutup paksa
+        window.addEventListener('beforeunload', () => {
+            if (window.editCurrentId) {
+                updateDoc(doc(dbRef, "collab_ideas", window.editCurrentId), { lockedBy: null, lockedByName: null }).catch(()=>{});
+            }
         });
 
         function initRealtimeCollab() {
@@ -614,7 +626,13 @@
             }
 
             listArea.innerHTML = ideasInBoard.map(i => {
+                const isLockedByOther = i.lockedBy && i.lockedBy !== currentUserUid;
                 let badgeGroupHTML = `<div class="badge-group">`;
+                
+                // INJEKSI LENCANA GEMBOK JIKA SEDANG DIEDIT ORANG LAIN
+                if (isLockedByOther) {
+                    badgeGroupHTML += `<div class="badge lock">🔒 Diedit ${i.lockedByName.split(' ')[0]}</div>`;
+                }
                 
                 // Konfigurasi Badge Berdasarkan Papan (Normal / Trash)
                 if (isPulihan) {
@@ -634,8 +652,11 @@
                 const linkDisplay = (i.link === '-' || !i.link) ? 'Tidak ada tautan referensi' : i.link;
                 const delTitle = isPulihan ? "Hapus Permanen" : "Hapus ke Trash";
                 
-                // Sembunyikan tombol 'done' dan batalkan style 'completed' bila item ada di Trash
-                const doneBtnHTML = isPulihan ? "" : `<button class="btn-icon btn-done ${i.done ? "active" : ""}" onclick="toggleDone('${i.id}')" title="Tandai Selesai">✓</button>`;
+                // Konfigurasi Status Tombol (Dinonaktifkan jika dikunci)
+                const editBtnClass = isLockedByOther ? "btn-icon btn-edit disabled" : "btn-icon btn-edit";
+                const doneBtnHTML = isPulihan ? "" : `<button class="btn-icon btn-done ${i.done ? "active" : ""} ${isLockedByOther ? "disabled" : ""}" onclick="toggleDone('${i.id}')" title="Tandai Selesai">✓</button>`;
+                const delBtnClass = isLockedByOther ? "btn-icon btn-del disabled" : "btn-icon btn-del";
+
                 const isCompletedClass = (!isPulihan && i.done) ? "completed" : "";
 
                 return `
@@ -653,9 +674,9 @@
                     </div>
 
                     <div class="idea-right">
-                        <button class="btn-icon btn-edit" onclick="openEditModal('${i.id}')" title="Edit / Pindahkan">✏️</button>
+                        <button class="${editBtnClass}" onclick="openEditModal('${i.id}')" title="Edit / Pindahkan">✏️</button>
                         ${doneBtnHTML}
-                        <button class="btn-icon btn-del" onclick="deleteIdea('${i.id}', ${isPulihan})" title="${delTitle}">🗑</button>
+                        <button class="${delBtnClass}" onclick="deleteIdea('${i.id}', ${isPulihan})" title="${delTitle}">🗑</button>
                     </div>
                 </div>
                 `;
@@ -667,7 +688,6 @@
         // ==========================================
         window.openAddBoardModal = () => document.getElementById('addBoardModal').classList.add('active');
         window.closeAddBoardModal = () => document.getElementById('addBoardModal').classList.remove('active');
-        window.closeEditModal = () => document.getElementById('editIdeaModal').classList.remove('active');
         window.closeEditBoardModal = () => document.getElementById('editBoardModal').classList.remove('active');
         window.closeInfoBoardModal = () => document.getElementById('infoBoardModal').classList.remove('active');
 
@@ -789,7 +809,7 @@
         }
 
         // ==========================================
-        // KONTROL IDE (KONTEN TIM)
+        // KONTROL IDE (KONTEN TIM) + ENGINE LITE-LOCK
         // ==========================================
         window.addIdea = async () => {
             if(!window.currentViewBoardId) return;
@@ -807,7 +827,9 @@
                 creatorName: currentUserData.name, 
                 title, date, link, 
                 done: false, 
-                createdAt: Date.now() 
+                createdAt: Date.now(),
+                lockedBy: null,
+                lockedByName: null
             };
             
             document.getElementById('addIdeaTitle').value = "";
@@ -819,6 +841,9 @@
         }
 
         window.deleteIdea = async (ideaId, isAlreadyTrashed) => {
+            const idea = window.ideas.find(i => i.id === ideaId);
+            if(!idea || (idea.lockedBy && idea.lockedBy !== currentUserUid)) return; // Blokir jika sedang digembok
+            
             if (isAlreadyTrashed) {
                 if(!confirm("Hapus permanen ide ini? Anggota tim tidak akan bisa memulihkannya lagi.")) return;
                 try { await deleteDoc(doc(dbRef, "collab_ideas", ideaId)); } catch(e) { console.error(e); }
@@ -830,16 +855,30 @@
                         boardId: COLLAB_TRASH_BOARD_ID, 
                         expireAt: expireTime, 
                         deletedBy: currentUserData.name
-                        // Tidak lagi menimpa data date asli, sehingga tanggal tetap ada di trash
                     }); 
                 } catch(e) { console.error(e); }
             }
         }
 
-        window.openEditModal = (ideaId) => {
+        window.openEditModal = async (ideaId) => {
             const idea = window.ideas.find(i => i.id === ideaId);
             if(!idea) return;
+            
+            // PROTEKSI AWAL: Tolak akses jika ide sedang dikerjakan orang lain
+            if (idea.lockedBy && idea.lockedBy !== currentUserUid) {
+                alert(`Maaf, ide ini sedang diedit oleh ${idea.lockedByName}. Silakan tunggu sebentar.`);
+                return;
+            }
+            
             window.editCurrentId = ideaId;
+            
+            // LOCK IDE DI DATABASE
+            try {
+                await updateDoc(doc(dbRef, "collab_ideas", ideaId), { 
+                    lockedBy: currentUserUid, 
+                    lockedByName: currentUserData.name 
+                });
+            } catch(e) { console.error(e); }
             
             document.getElementById('editTitleInput').value = idea.title;
             document.getElementById('editDateInput').value = idea.date;
@@ -857,6 +896,19 @@
                 
             document.getElementById('editIdeaModal').classList.add('active');
         }
+        
+        window.closeEditModal = async () => {
+            document.getElementById('editIdeaModal').classList.remove('active');
+            
+            // LEPASKAN GEMBOK SAAT MODAL DITUTUP (BATAL EDIT)
+            if (window.editCurrentId) {
+                const ideaId = window.editCurrentId;
+                window.editCurrentId = null; // Kosongkan ID agar beforeunload tidak memicu update ganda
+                try {
+                    await updateDoc(doc(dbRef, "collab_ideas", ideaId), { lockedBy: null, lockedByName: null });
+                } catch(e) { console.error(e); }
+            }
+        }
 
         window.saveEdit = async () => {
             if(!window.editCurrentId) return;
@@ -868,21 +920,28 @@
             const date = document.getElementById('editDateInput').value.trim() || "-";
             const link = document.getElementById('editLinkInput').value.trim() || "-";
             
-            window.closeEditModal();
+            const ideaId = window.editCurrentId;
+            document.getElementById('editIdeaModal').classList.remove('active');
+            window.editCurrentId = null; 
+            
+            // SIMPAN DATA SEKALIGUS MELEPASKAN KUNCI GEMBOK
             try { 
-                await updateDoc(doc(dbRef, "collab_ideas", window.editCurrentId), { 
+                await updateDoc(doc(dbRef, "collab_ideas", ideaId), { 
                     title, date, link, 
                     boardId: targetBoardId,
                     expireAt: null,
                     deletedBy: null,
-                    isRestored: true // Tanda bahwa ide ini telah dipulihkan / diedit dari trash
+                    isRestored: true,
+                    lockedBy: null,
+                    lockedByName: null
                 }); 
             } catch(e) { console.error(e); }
         }
 
         window.toggleDone = async (ideaId) => {
             const idea = window.ideas.find(i => i.id === ideaId);
-            if(!idea) return;
+            if(!idea || (idea.lockedBy && idea.lockedBy !== currentUserUid)) return; // Blokir jika sedang digembok
+            
             try { await updateDoc(doc(dbRef, "collab_ideas", ideaId), { done: !idea.done }); } 
             catch(e) { console.error(e); }
         }
