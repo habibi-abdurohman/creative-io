@@ -169,7 +169,6 @@
 </head>
 <body>
 
-    <!-- Container Khusus untuk Mencegah Kebocoran Scroll -->
     <div class="bg-wrapper">
         <div class="bg-glow one"></div>
         <div class="bg-glow two"></div>
@@ -187,14 +186,13 @@
         <form id="loginForm" onsubmit="handleLogin(event)">
             <div class="input-group">
                 <label class="input-label" for="emailInput">Email</label>
-                <input type="email" id="emailInput" class="auth-input" placeholder="nama@email.com" required oninput="hideError()">
+                <input type="email" id="emailInput" class="auth-input" placeholder="nama@email.com" required autocomplete="email" oninput="hideError()">
             </div>
             
             <div class="input-group">
                 <label class="input-label" for="passwordInput">Password</label>
-                <!-- STRUKTUR PASSWORD YANG BENAR -->
                 <div class="password-wrapper">
-                    <input type="password" id="passwordInput" class="auth-input" placeholder="Masukkan password Anda" required oninput="hideError()">
+                    <input type="password" id="passwordInput" class="auth-input" placeholder="Masukkan password Anda" required autocomplete="current-password" oninput="hideError()">
                     <button type="button" class="toggle-password" onclick="togglePassword()" title="Tampilkan Password">👁️</button>
                 </div>
             </div>
@@ -283,11 +281,40 @@
                 try {
                     const module = await import('./js/firebase.js');
                     const authLib = await import("https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js");
+                    // TAMBAHAN: Import Firestore untuk Sinkronisasi Self-Healing
+                    const fsLib = await import("https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js");
                     
                     const persistence = rememberMe ? authLib.browserLocalPersistence : authLib.browserSessionPersistence;
                     await authLib.setPersistence(module.auth, persistence);
 
-                    await authLib.signInWithEmailAndPassword(module.auth, email, password);
+                    const userCredential = await authLib.signInWithEmailAndPassword(module.auth, email, password);
+                    const user = userCredential.user;
+
+                    // [SINKRONISASI FIRESTORE - Self Healing]
+                    // Memastikan dokumen profil Firestore selalu tersinkronisasi dan ada,
+                    // sehingga user lama tidak error saat masuk ke modul Kolaborasi.
+                    try {
+                        const userRef = fsLib.doc(module.db, "users", user.uid);
+                        await fsLib.updateDoc(userRef, {
+                            lastLogin: Date.now()
+                        });
+                    } catch (dbError) {
+                        // Jika dokumen belum ada (misal pendaftar versi lama), buatkan dokumennya
+                        if (dbError.code === 'not-found') {
+                            const userRef = fsLib.doc(module.db, "users", user.uid);
+                            await fsLib.setDoc(userRef, {
+                                uid: user.uid,
+                                email: user.email,
+                                name: user.displayName || email.split('@')[0],
+                                displayName: user.displayName || email.split('@')[0],
+                                createdAt: Date.now(),
+                                lastLogin: Date.now()
+                            });
+                        } else {
+                            console.warn("Kesalahan koneksi saat sinkronisasi data:", dbError);
+                        }
+                    }
+
                     window.location.replace("./pages/dashboard.html");
                     
                 } catch (error) {
@@ -316,6 +343,7 @@
             }
         }
 
+        // Listener jika pengguna sudah login, langsung alihkan tanpa perlu isi form lagi
         if (USE_FIREBASE) {
             import('./js/firebase.js').then(module => {
                 import("https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js").then(authLib => {
