@@ -170,9 +170,9 @@
     <script src="./js/pwa.js"></script>
 
     <script type="module">
-        import { auth } from "./js/firebase.js";
-        // Tambahkan import 'deleteUser' dari Firebase Auth
+        import { auth, db } from "./js/firebase.js"; // IMPORT db DARI FIREBASE
         import { onAuthStateChanged, updateProfile, sendPasswordResetEmail, deleteUser, signOut } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
+        import { doc, updateDoc, setDoc, deleteDoc } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js"; // IMPORT FIRESTORE FUNCTIONS
 
         const USE_FIREBASE = true;
         const avatarPreview = document.getElementById('avatarPreview');
@@ -226,8 +226,32 @@
             if (USE_FIREBASE && currentUser) {
                 btn.innerHTML = "⏳ Menyimpan...";
                 try {
-                    // Update Firebase
+                    // Update Firebase Authentication
                     await updateProfile(currentUser, { displayName: newName });
+                    
+                    // SINKRONISASI KE FIRESTORE DATABASE (Perbaikan Kunci Kompatibilitas)
+                    const userRef = doc(db, "users", currentUser.uid);
+                    try {
+                        await updateDoc(userRef, { 
+                            name: newName, 
+                            displayName: newName,
+                            updatedAt: Date.now()
+                        });
+                    } catch (dbError) {
+                        // Jika dokumen user belum ada di Firestore, buat dokumen baru
+                        if (dbError.code === 'not-found') {
+                            await setDoc(userRef, {
+                                uid: currentUser.uid,
+                                email: currentUser.email,
+                                name: newName,
+                                displayName: newName,
+                                createdAt: Date.now(),
+                                updatedAt: Date.now()
+                            });
+                        } else {
+                            throw dbError; // Lempar error lain untuk ditangkap di catch utama
+                        }
+                    }
                     
                     // Simpan Foto
                     localStorage.setItem(`creative_photo_${currentUser.uid}`, avatarPreview.src);
@@ -285,6 +309,13 @@
             btn.disabled = true;
 
             try {
+                // Menghapus Data User dari Koleksi Firestore (Sinkronisasi Baru)
+                try {
+                    await deleteDoc(doc(db, "users", currentUser.uid));
+                } catch(e) { 
+                    console.warn("Gagal/Tidak menemukan data di Firestore untuk dihapus", e); 
+                }
+
                 // Proses menghapus User Authentication dari sistem Firebase
                 await deleteUser(currentUser);
                 
