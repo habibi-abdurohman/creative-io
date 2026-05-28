@@ -476,6 +476,9 @@
                 window.roomData = docSnap.data();
                 document.getElementById('uiRoomName').innerHTML = `<a href="collab-hub.html" class="btn-back" title="Kembali ke Lobi">🔙</a> ${window.roomData.name}`;
                 document.getElementById('uiRoomInfo').innerHTML = `<span class="live-indicator"></span> Live • ${window.roomData.members.length} Anggota`;
+            }, (error) => {
+                console.error("Error Akses Ruang:", error);
+                document.getElementById('listContainer').innerHTML = `<div class="empty-state" style="border-color: var(--danger); background: var(--danger-soft);"><div class="empty-state-icon" style="color: var(--danger);">🔒</div><div class="empty-state-text" style="color: var(--danger); font-weight: 700;">Akses Ruang Ditolak oleh Database.</div></div>`;
             });
 
             // 2. Dengar Daftar Script (collab_scripts)
@@ -494,6 +497,9 @@
                     }
                 }
                 window.renderList();
+            }, (error) => {
+                console.error("Error Akses Script:", error);
+                document.getElementById('listContainer').innerHTML = `<div class="empty-state" style="border-color: var(--danger); background: var(--danger-soft);"><div class="empty-state-icon" style="color: var(--danger);">🔒</div><div class="empty-state-text" style="color: var(--danger); font-weight: 700;">Akses Naskah Ditolak oleh Database. Pastikan Rules Firebase sudah diatur.</div></div>`;
             });
         }
 
