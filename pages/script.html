@@ -75,12 +75,11 @@
         }
         body.dark .sticky-tools { box-shadow: 0 12px 32px rgba(0, 0, 0, 0.4); }
         
-        /* PERBAIKAN: Penambahan transisi halus saat scroll manual dengan mouse */
         .sticky-tools-inner { 
             position: relative; display: flex; align-items: center; 
             height: 38px; gap: 8px; max-width: 100%; margin: 0 auto; 
             overflow-x: auto; scrollbar-width: none; transition: gap 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-            user-select: none; /* Cegah teks filter tersorot saat di-drag */
+            user-select: none;
         }
         .sticky-tools-inner::-webkit-scrollbar { display: none; }
         .sticky-tools-inner.searching { gap: 0; overflow: hidden; }
@@ -148,7 +147,7 @@
         .badge.done { background: var(--success-soft); color: var(--success); border: none; }
         .card-actions { display: flex; gap: 8px; }
         
-        /* DESAIN PAGINATION KLASIK MODERN */
+        /* DESAIN PAGINATION */
         .pagination-container {
             display: flex; justify-content: center; align-items: center; gap: 8px;
             margin-top: 32px; padding-bottom: 24px; flex-wrap: wrap; column-span: all;
@@ -284,7 +283,7 @@
         .info-value { font-weight: 800; color: var(--text-main); text-align: right; max-width: 60%; word-break: break-word;}
         .btn-close-info { width: 100%; padding: 12px; margin-top: 20px; border: none; background: var(--card-tint); color: var(--text-main); font-weight: 800; border-radius: 12px; cursor: pointer; font-family: 'Inter', system-ui, sans-serif; }
         
-        /* BREAKPOINT RESPONSIF (DINAMIS UNTUK PAGINATION) */
+        /* BREAKPOINT RESPONSIF */
         @media(max-width: 1024px) { .list-container { column-count: 2; } }
         @media(max-width: 600px) { 
             .hero-card { padding: 28px 24px; border-radius: 20px; } 
@@ -429,9 +428,8 @@
         window.currentSort = 'newest';
         window.currentPinned = false;
         
-        // VARIABEL PAGINATION DINAMIS
         window.currentPage = 1;
-        window.itemsPerPage = 12; // Akan langsung tertimpa oleh updateItemsPerPage()
+        window.itemsPerPage = 12; 
         
         let autoSaveTimeout = null;
         let currentUserUid = null;
@@ -459,12 +457,8 @@
         document.addEventListener('DOMContentLoaded', () => {
             if (localStorage.getItem("dashboard_theme") === "dark") document.body.classList.add("dark");
 
-            // Atur jumlah item berdasarkan ukuran layar saat pertama kali muat
             window.updateItemsPerPage();
 
-            // ==========================================
-            // FIX SCROLL FILTER UNTUK LAPTOP (DRAG & WHEEL)
-            // ==========================================
             const filterWrap = document.getElementById('filterWrap');
             if (filterWrap) {
                 let isDown = false;
@@ -472,7 +466,6 @@
                 let scrollLeft;
 
                 filterWrap.addEventListener('mousedown', (e) => {
-                    // Abaikan klik pada input pencarian agar tetap bisa diisi teks
                     if(e.target.tagName.toLowerCase() === 'input') return;
                     isDown = true;
                     filterWrap.style.cursor = 'grabbing';
@@ -480,25 +473,17 @@
                     scrollLeft = filterWrap.scrollLeft;
                 });
 
-                filterWrap.addEventListener('mouseleave', () => {
-                    isDown = false;
-                    filterWrap.style.cursor = '';
-                });
-
-                filterWrap.addEventListener('mouseup', () => {
-                    isDown = false;
-                    filterWrap.style.cursor = '';
-                });
+                filterWrap.addEventListener('mouseleave', () => { isDown = false; filterWrap.style.cursor = ''; });
+                filterWrap.addEventListener('mouseup', () => { isDown = false; filterWrap.style.cursor = ''; });
 
                 filterWrap.addEventListener('mousemove', (e) => {
                     if (!isDown) return;
-                    e.preventDefault(); // Mencegah teks terblok saat dragging
+                    e.preventDefault(); 
                     const x = e.pageX - filterWrap.offsetLeft;
-                    const walk = (x - startX) * 1.5; // Kecepatan geser 1.5x
+                    const walk = (x - startX) * 1.5; 
                     filterWrap.scrollLeft = scrollLeft - walk;
                 });
 
-                // Memungkinkan gulir horizontal menggunakan roda mouse (scroll wheel)
                 filterWrap.addEventListener('wheel', (e) => {
                     if (e.deltaY !== 0) {
                         e.preventDefault();
@@ -527,12 +512,11 @@
             }
         });
 
-        // Event listener cerdas untuk mereset jumlah pagination saat layar di-resize (misal tablet diputar)
         window.updateItemsPerPage = function() {
             const width = window.innerWidth;
-            let newLimit = 18; // Desktop (3 kolom)
-            if (width <= 600) newLimit = 12; // Ponsel (1 kolom)
-            else if (width <= 1024) newLimit = 16; // Tablet (2 kolom)
+            let newLimit = 18; 
+            if (width <= 600) newLimit = 12; 
+            else if (width <= 1024) newLimit = 16; 
 
             if (window.itemsPerPage !== newLimit) {
                 window.itemsPerPage = newLimit;
@@ -547,15 +531,36 @@
             window.resizeTimeout = setTimeout(window.updateItemsPerPage, 200);
         });
 
+        // ---------------------------------------------------------
+        // PERBAIKAN LOGIKA LOAD DATA CLOUD
+        // ---------------------------------------------------------
         async function loadDataCloud() {
             try {
-                const q = query(collection(db, "creative_script"), where("uid", "==", currentUserUid));
-                const snap = await getDocs(q);
+                // Catatan: Jika Rules baru Anda menggunakan pola sub-koleksi /users/{uid}/creative_script, 
+                // ubah parameter di bawah menjadi: collection(db, "users", currentUserUid, "creative_script")
                 
+                const q = query(
+                    collection(db, "creative_script"), 
+                    where("uid", "==", currentUserUid)
+                );
+                
+                const snap = await getDocs(q);
                 window.scriptData = snap.docs.map(d => ({ id: d.id, ...d.data() }));
                 window.renderList();
+                
             } catch (error) {
-                document.getElementById('listContainer').innerHTML = `<div class="empty-state">Gagal memuat data dari Cloud.<br><br>Pesan Error: ${error.message}</div>`;
+                console.error("Firestore Permission Error:", error);
+                document.getElementById('listContainer').innerHTML = `
+                    <div class="empty-state" style="border-color: var(--danger); background: var(--danger-soft);">
+                        <div class="empty-state-icon" style="color: var(--danger);">🔒</div>
+                        <div class="empty-state-text" style="color: var(--danger); font-weight: 700;">
+                            Gagal memuat data (Akses Ditolak).
+                        </div>
+                        <div class="empty-state-text" style="margin-top:8px;">
+                            Sistem keamanan (Rules) Anda memblokir permintaan ini.<br>
+                            Pastikan aturan di Firebase mengizinkan akses ke koleksi <b>creative_script</b> untuk <i>uid</i> Anda.
+                        </div>
+                    </div>`;
             }
         }
 
@@ -709,23 +714,33 @@
             }
         });
 
+        // ---------------------------------------------------------
+        // PERBAIKAN LOGIKA PENYIMPANAN DATA CLOUD
+        // ---------------------------------------------------------
         window.performSave = async function(status, isAuto = false) {
             const title = document.getElementById('inputTitle').value.trim();
             const content = document.getElementById('inputContent').value;
             const channel = document.getElementById('inputCategory').value.trim() || 'Umum';
+            
             if (title === '' && content.trim() === '') return;
+            
             const now = Date.now();
             const docId = window.currentId || "script_" + now;
             window.currentId = docId;
 
             const payload = {
-                uid: currentUserUid, title: title || 'Tanpa Judul', content: content,
-                status: status, channel: channel, pinned: window.currentPinned, updatedAt: now
+                uid: currentUserUid, 
+                title: title || 'Tanpa Judul', 
+                content: content,
+                status: status, 
+                channel: channel, 
+                pinned: window.currentPinned, 
+                updatedAt: now
             };
 
             const existingIndex = window.scriptData.findIndex(x => x.id === docId);
             if(existingIndex > -1) {
-                payload.createdAt = window.scriptData[existingIndex].createdAt;
+                payload.createdAt = window.scriptData[existingIndex].createdAt || now;
                 window.scriptData[existingIndex] = { id: docId, ...payload };
             } else {
                 payload.createdAt = now;
@@ -735,7 +750,11 @@
             if(!isAuto) window.renderList();
 
             if (USE_FIREBASE) {
-                try { await setDoc(doc(db, "creative_script", docId), payload); } catch(e) {}
+                try { 
+                    await setDoc(doc(db, "creative_script", docId), payload); 
+                } catch(e) { 
+                    console.error("Gagal menyimpan ke cloud:", e); 
+                }
             } else {
                 localStorage.setItem('creative_script', JSON.stringify(window.scriptData));
             }
@@ -752,9 +771,13 @@
             }, 1000); 
         }
 
+        // ---------------------------------------------------------
+        // PERBAIKAN LOGIKA DELETE CLOUD
+        // ---------------------------------------------------------
         window.softDeleteScript = async function(idOverride = null) {
             const idToDelete = idOverride || window.currentId;
             if (!idToDelete) return;
+            
             document.getElementById('actionMenu').classList.remove('active');
             if (!confirm('Pindahkan script ini ke tempat sampah? (Terhapus otomatis setelah 30 hari)')) return;
 
@@ -765,8 +788,13 @@
             const trashId = 'trash_' + now;
 
             const trashPayload = {
-                uid: currentUserUid, originalId: item.id, type: 'script',
-                title: item.title, content: item.content, deletedAt: now, expireAt: now + (30*24*60*60*1000)
+                uid: currentUserUid, 
+                originalId: item.id, 
+                type: 'script',
+                title: item.title, 
+                content: item.content, 
+                deletedAt: now, 
+                expireAt: now + (30*24*60*60*1000)
             };
 
             window.scriptData.splice(itemIndex, 1);
@@ -774,8 +802,13 @@
             window.renderList(); 
 
             if (USE_FIREBASE) {
-                await setDoc(doc(db, "creative_trash", trashId), trashPayload);
-                await deleteDoc(doc(db, "creative_script", item.id));
+                try {
+                    await setDoc(doc(db, "creative_trash", trashId), trashPayload);
+                    await deleteDoc(doc(db, "creative_script", item.id));
+                } catch (e) {
+                    console.error("Gagal menghapus dari cloud:", e);
+                    alert("Akses Ditolak: Rules Anda saat ini melarang penghapusan data.");
+                }
             } else {
                 let trashData = JSON.parse(localStorage.getItem('creative_trash')) || [];
                 trashData.push({ id: trashId, ...trashPayload });
