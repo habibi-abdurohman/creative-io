@@ -1,0 +1,793 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+    <title>Collab Script - Creative.io</title>
+    <link rel="icon" type="image/png" sizes="192x192" href="../assets/favicon-192x192.png">
+    
+    <link rel="manifest" href="../manifest.json">
+    <link rel="stylesheet" href="../navbar/navbar.css">
+    <meta name="theme-color" content="#3b82f6">
+
+    <style>
+        /* =========================================================
+           CSS UTAMA DAN EDITOR IMMERSIVE
+        ========================================================= */
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800;900&display=swap');
+        * { margin: 0; padding: 0; box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+        *::-webkit-scrollbar { display: none; }
+        :root { 
+            --bg-grad: linear-gradient(180deg, #f8fbff 0%, #eef4ff 100%); 
+            --sticky-bg: rgba(255, 255, 255, 0.75);
+            --card-glass: rgba(255, 255, 255, 0.9);
+            --card-solid: #ffffff;
+            --card-tint: #f1f5f9;
+            --border: #e2e8f0; 
+            --text-main: #0f172a; 
+            --text-muted: #64748b; 
+            --primary: #2563eb; 
+            --primary-grad: linear-gradient(135deg, #3b82f6, #2563eb); 
+            --primary-soft: rgba(37, 99, 235, 0.1); 
+            --success: #16a34a; 
+            --success-soft: rgba(22, 163, 74, 0.1); 
+            --danger: #ef4444; 
+            --warning: #f59e0b; 
+            --shadow-flat: 0 4px 20px rgba(0, 0, 0, 0.04); 
+            --radius-btn: 14px; 
+            --radius-card: 24px; 
+        }
+        body.dark { 
+            --bg-grad: linear-gradient(180deg, #0f172a 0%, #1e293b 100%); 
+            --sticky-bg: rgba(30, 41, 59, 0.75);
+            --card-glass: rgba(30, 41, 59, 0.9);
+            --card-solid: #1e293b; 
+            --card-tint: #0f172a; 
+            --border: #334155; 
+            --text-main: #f8fafc; 
+            --text-muted: #94a3b8; 
+            --shadow-flat: 0 4px 20px rgba(0, 0, 0, 0.2); 
+            --danger-soft: rgba(239, 68, 68, 0.15);
+        }
+        body { font-family: 'Inter', system-ui, sans-serif; background: var(--bg-grad); color: var(--text-main); min-height: 100vh; padding: 76px 16px 100px 16px; }
+        
+        .wrapper { position: relative; z-index: 2; max-width: 1100px; margin: 0 auto; }
+        .bg-glow { position: fixed; border-radius: 50%; filter: blur(90px); z-index: 0; opacity: 0.5; pointer-events: none; }
+        .bg-glow.one { width: 340px; height: 340px; background: rgba(59, 130, 246, 0.15); top: -50px; left: -100px; }
+        .bg-glow.two { width: 320px; height: 320px; background: rgba(96, 165, 250, 0.15); bottom: 100px; right: -100px; }
+
+        .hero-card { background: var(--primary-grad); border-radius: var(--radius-card); padding: 36px 32px; color: white; position: relative; overflow: hidden; margin-bottom: 24px; box-shadow: 0 10px 30px rgba(37, 99, 235, 0.2); }
+        .hero-card::after { content: ""; position: absolute; width: 250px; height: 250px; background: rgba(255, 255, 255, 0.1); border-radius: 50%; top: -80px; right: -80px; pointer-events: none; }
+        .hero-title { font-size: 26px; font-weight: 900; letter-spacing: -0.5px; margin-bottom: 8px; position: relative; z-index: 1; display: flex; align-items: center; gap: 12px;}
+        .hero-desc { font-size: 14px; line-height: 1.6; opacity: 0.9; margin-bottom: 24px; max-width: 500px; position: relative; z-index: 1; display: flex; align-items: center; gap: 8px; }
+        
+        .btn-back { width: 36px; height: 36px; border-radius: 12px; background: rgba(255,255,255,0.2); backdrop-filter: blur(4px); display: flex; align-items: center; justify-content: center; font-size: 16px; color: white; text-decoration: none; transition: 0.2s; flex-shrink: 0; outline: none; border: 1px solid rgba(255,255,255,0.3); }
+        .btn-back:hover { background: rgba(255,255,255,0.3); }
+        
+        .live-indicator { width: 8px; height: 8px; background: #10b981; border-radius: 50%; display: inline-block; animation: pulse 2s infinite; }
+        @keyframes pulse { 0% { transform: scale(0.95); box-shadow: 0 0 0 0 rgba(16, 185, 129, 0.7); } 70% { transform: scale(1); box-shadow: 0 0 0 6px rgba(16, 185, 129, 0); } 100% { transform: scale(0.95); box-shadow: 0 0 0 0 rgba(16, 185, 129, 0); } }
+
+        .hero-stats { display: flex; gap: 12px; overflow-x: auto; position: relative; z-index: 1; padding-bottom: 4px; scrollbar-width: none; }
+        .hero-stats::-webkit-scrollbar { display: none; }
+        .stat-pill { display: flex; align-items: center; gap: 8px; background: rgba(255, 255, 255, 0.2); backdrop-filter: blur(10px); border: 1px solid rgba(255, 255, 255, 0.3); padding: 8px 16px; border-radius: 20px; font-size: 12px; font-weight: 700; white-space: nowrap; }
+        .stat-pill span { font-size: 16px; font-weight: 900; }
+        
+        /* =========================================================
+           UI SEARCH BAR DAN FILTER
+        ========================================================= */
+        .sticky-tools { 
+            position: sticky; top: 76px; z-index: 50; padding: 10px 16px; margin: 16px 0 24px 0; 
+            background: var(--sticky-bg); backdrop-filter: blur(16px); -webkit-backdrop-filter: blur(16px); 
+            border: 1px solid var(--border); border-radius: 20px; 
+            box-shadow: 0 12px 32px rgba(0, 0, 0, 0.05); transition: box-shadow 0.3s ease;
+        }
+        body.dark .sticky-tools { box-shadow: 0 12px 32px rgba(0, 0, 0, 0.4); }
+        
+        .sticky-tools-inner { 
+            position: relative; display: flex; align-items: center; 
+            height: 38px; gap: 8px; max-width: 100%; margin: 0 auto; 
+            overflow-x: auto; scrollbar-width: none; transition: gap 0.3s cubic-bezier(0.4, 0, 0.2, 1); user-select: none;
+        }
+        .sticky-tools-inner.searching { gap: 0; overflow: hidden; }
+
+        .search-expandable { 
+            flex-shrink: 0; display: flex; align-items: center; background: var(--card-solid); 
+            border: 1px solid var(--border); border-radius: 12px; 
+            height: 38px; width: 38px; overflow: hidden; 
+            transition: width 0.3s cubic-bezier(0.4, 0, 0.2, 1), border-color 0.3s, box-shadow 0.3s; 
+            box-shadow: var(--shadow-flat);
+        }
+        body.dark .search-expandable { background: var(--card-solid); border-color: var(--border); }
+        .search-expandable.expanded { border-color: var(--primary); }
+        
+        .search-icon-btn, .close-search-btn { 
+            flex-shrink: 0; min-width: 38px; height: 38px; background: transparent; border: none; font-size: 14px; 
+            cursor: pointer; color: var(--text-muted); display: flex; align-items: center; justify-content: center; transition: 0.2s; outline: none;
+        }
+        .search-expandable.expanded .search-icon-btn { color: var(--primary); pointer-events: none; }
+        
+        .search-expandable input { 
+            flex: 1; border: none; outline: none; background: transparent; font-size: 13px; 
+            color: var(--text-main); padding: 0 4px; opacity: 0; pointer-events: none; transition: opacity 0.2s 0.1s; 
+        }
+        .search-expandable.expanded input { opacity: 1; pointer-events: auto; }
+        
+        .close-search-btn { opacity: 0; pointer-events: none; }
+        .close-search-btn:hover { color: var(--danger); }
+        .search-expandable.expanded .close-search-btn { opacity: 1; pointer-events: auto; }
+        
+        .filters-wrapper { display: flex; align-items: center; gap: 8px; max-width: 2000px; opacity: 1; overflow: hidden; flex-shrink: 0; transition: max-width 0.3s cubic-bezier(0.4, 0, 0.2, 1), opacity 0.2s ease; }
+        .sticky-tools-inner.searching .filters-wrapper { max-width: 0; opacity: 0; transition: max-width 0.3s cubic-bezier(0.4, 0, 0.2, 1), opacity 0.1s ease; }
+
+        .filter-btn { flex-shrink: 0; padding: 8px 14px; border-radius: 10px; background: var(--card-solid); border: 1px solid var(--border); font-size: 12px; font-weight: 700; color: var(--text-muted); cursor: pointer; transition: 0.2s; white-space: nowrap; outline: none; }
+        .filter-btn.active { background: var(--primary-soft); border-color: var(--primary); color: var(--primary); }
+        .divider { flex-shrink: 0; width: 1px; height: 18px; background: var(--border); margin: 0 2px; }
+
+        /* =========================================================
+           UI KARTU & PAGINATION
+        ========================================================= */
+        .list-container { column-count: 3; column-gap: 16px; margin-top: 10px; }
+        
+        .empty-state { column-span: all; text-align: center; padding: 60px 20px; background: var(--card-glass); border: 1px dashed var(--border); border-radius: var(--radius-card); cursor: pointer; transition: 0.2s; }
+        .empty-state:hover { background: var(--card-tint); }
+        .empty-state-icon { font-size: 42px; margin-bottom: 12px; opacity: 0.8; }
+        .empty-state-text { font-size: 13px; color: var(--text-muted); line-height: 1.6; }
+        
+        .card { break-inside: avoid; margin-bottom: 16px; background: var(--card-glass); backdrop-filter: blur(12px); border: 1px solid var(--border); border-radius: 20px; padding: 20px; box-shadow: var(--shadow-flat); transition: transform 0.2s, border-color 0.2s; position: relative; }
+        .card:hover { transform: translateY(-2px); border-color: #cbd5e1; }
+        .card.pinned { border-left: 4px solid var(--warning); }
+        .card.completed { opacity: 0.6; }
+        .card.completed .card-title { text-decoration: line-through; }
+        
+        .card-header { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 8px; gap: 8px; }
+        .card-title { font-size: 16px; font-weight: 800; line-height: 1.4; color: var(--text-main); word-break: break-word; }
+        .card-preview { font-size: 13px; line-height: 1.6; color: var(--text-muted); display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; margin-bottom: 16px; word-break: break-word; }
+        .card-bottom { display: flex; justify-content: space-between; align-items: center; gap: 8px; flex-wrap: wrap;}
+        
+        .badges { display: flex; gap: 6px; flex-wrap: wrap; }
+        .badge { padding: 4px 10px; border-radius: 8px; font-size: 11px; font-weight: 700; background: var(--card-tint); color: var(--text-muted); border: 1px solid var(--border); }
+        .badge.ch { background: var(--primary-soft); color: var(--primary); border: none; }
+        .badge.done { background: var(--success-soft); color: var(--success); border: none; }
+        .badge.lock { background: var(--warning); color: white; border: none; }
+        
+        .card-actions { display: flex; gap: 8px; }
+        
+        .pagination-container { display: flex; justify-content: center; align-items: center; gap: 8px; margin-top: 32px; padding-bottom: 24px; flex-wrap: wrap; column-span: all; }
+        .page-btn { min-width: 38px; height: 38px; padding: 0 12px; border-radius: 12px; border: 1px solid var(--border); background: var(--card-solid); color: var(--text-main); font-size: 14px; font-weight: 700; cursor: pointer; display: flex; justify-content: center; align-items: center; transition: all 0.2s; outline: none; }
+        .page-btn:hover:not(.disabled):not(.active) { background: var(--card-tint); }
+        .page-btn.active { background: var(--primary); color: white; border-color: var(--primary); box-shadow: 0 4px 12px rgba(37, 99, 235, 0.2); }
+        .page-btn.disabled { opacity: 0.4; pointer-events: none; }
+        .page-dots { color: var(--text-muted); font-weight: 700; padding: 0 4px; }
+        
+        body.dark .page-btn { background: var(--card-solid, #1e293b); border-color: var(--border, #334155); color: var(--text-main, #f8fafc); }
+        body.dark .page-btn.active { background: var(--primary); color: white; border-color: var(--primary); }
+
+        .fab { position: fixed; right: 24px; bottom: 24px; width: 56px; height: 56px; border: none; border-radius: 20px; background: var(--primary-grad); color: white; font-size: 28px; cursor: pointer; box-shadow: 0 10px 25px rgba(37, 99, 235, 0.3); z-index: 100; display: flex; align-items: center; justify-content: center; outline: none;}
+        
+        /* POPUP EDITOR */
+        .popup-overlay { position: fixed; inset: 0; background: var(--bg-grad); z-index: 99999; display: none; flex-direction: column; width: 100vw; height: 100vh; }
+        .popup-overlay.active { display: flex; }
+        
+        .editor-header { display: flex; justify-content: space-between; align-items: center; height: 52px; padding: 0 16px; background: rgba(255, 255, 255, 0.85); backdrop-filter: blur(12px); border-bottom: 1px solid var(--border); z-index: 10; transition: all 0.3s ease; flex-shrink: 0; width: 100%; box-sizing: border-box; }
+        body.dark .editor-header { background: rgba(15, 23, 42, 0.85); border-bottom: 1px solid var(--border, #334155); }
+        .header-left, .header-right { display: flex; align-items: center; gap: 8px; transition: opacity 0.2s; }
+        
+        .save-indicator { font-size: 11px; font-weight: 700; color: var(--text-muted); background: var(--card-tint); padding: 4px 10px; border-radius: 8px; opacity: 0; transition: 0.2s; white-space: nowrap;}
+        .save-indicator.show { opacity: 1; }
+        
+        .lock-banner { font-size: 11px; font-weight: 800; color: white; background: var(--danger); padding: 4px 10px; border-radius: 8px; display: none; white-space: nowrap; }
+        .lock-banner.active { display: block; }
+        body.dark .lock-banner { background: rgba(239, 68, 68, 0.8); border: 1px solid rgba(239, 68, 68, 0.4); }
+
+        .btn-icon { width: 34px; height: 34px; border: 1px solid var(--border); border-radius: 10px; background: var(--card-solid); color: var(--text-main); display: flex; align-items: center; justify-content: center; font-size: 15px; cursor: pointer; transition: all 0.2s; outline: none; }
+        .btn-icon:hover { background: var(--card-tint); }
+        .btn-icon.disabled { opacity: 0.35; pointer-events: none; }
+        .btn-icon.active-pin { background: var(--warning); border-color: var(--warning); color: white; }
+        .btn-icon.active-read { background: var(--primary-soft); border-color: var(--primary); color: var(--primary); }
+        
+        body.dark .btn-icon { border-color: var(--border, #334155); background: var(--card-solid, #1e293b); color: var(--text-main, #f8fafc); }
+        body.dark .btn-icon.active-pin { border-color: var(--warning); background: var(--warning); color: white; }
+        body.dark .btn-icon.active-read { background: rgba(37, 99, 235, 0.2); border-color: var(--primary); color: #60a5fa; }
+        
+        .editor-body { flex: 1; overflow-y: auto; padding: 32px 24px 150px; scroll-padding-bottom: 120px; max-width: 800px; margin: 0 auto; width: 100%; transition: padding 0.3s; box-sizing: border-box; }
+        .editor-body.locked { opacity: 0.8; }
+        
+        .input-title { font-family: 'Inter', system-ui, sans-serif; width: 100%; border: none; outline: none; background: transparent; font-size: 24px; font-weight: 900; color: var(--text-main); margin-bottom: 8px; letter-spacing: -0.5px; transition: text-align 0.3s; resize: none; overflow: hidden; line-height: 1.4; box-sizing: border-box; }
+        .input-title::placeholder { color: var(--text-muted); opacity: 0.5; }
+        .input-title:disabled { color: var(--text-main); -webkit-text-fill-color: var(--text-main); opacity: 1; cursor: not-allowed; }
+        
+        .category-wrapper { position: relative; width: 100%; margin-bottom: 32px; box-sizing: border-box; }
+        .input-category { width: 100%; border: none; outline: none; background: transparent; font-size: 14px; font-weight: 700; color: var(--primary); margin-bottom: 0; font-family: 'Inter', system-ui, sans-serif; box-sizing: border-box; }
+        .input-category::placeholder { color: var(--text-muted); font-weight: 600; opacity: 0.6; }
+        .input-category:disabled { color: var(--primary); -webkit-text-fill-color: var(--primary); opacity: 1; cursor: not-allowed; }
+        
+        .suggest-dropdown { position: absolute; top: 100%; left: 0; background: var(--card-solid); border: 1px solid var(--border); border-radius: 12px; padding: 6px; box-shadow: var(--shadow-flat); z-index: 100; min-width: 200px; max-height: 200px; overflow-y: auto; display: none; flex-direction: column; gap: 4px; margin-top: 8px; }
+        .suggest-dropdown.active { display: flex; }
+        .suggest-item { padding: 10px 14px; border-radius: 8px; font-size: 13px; font-weight: 700; color: var(--text-main); cursor: pointer; transition: 0.2s; text-align: left; background: transparent; border: none; font-family: 'Inter', system-ui, sans-serif; }
+        .suggest-item:hover { background: var(--primary-soft); color: var(--primary); }
+
+        .input-content { width: 100%; min-height: 50vh; border: none; outline: none; resize: none; overflow: hidden; background: transparent; font-size: 16px; line-height: 1.8; color: rgba(15, 23, 42, 0.85); letter-spacing: 0.2px; font-family: 'Inter', system-ui, sans-serif; box-sizing: border-box; }
+        body.dark .input-content { color: rgba(248, 250, 252, 0.85); }
+        .input-content::placeholder { color: var(--text-muted); opacity: 0.5; }
+        .input-content:disabled { color: rgba(15, 23, 42, 0.85); -webkit-text-fill-color: rgba(15, 23, 42, 0.85); opacity: 1; cursor: not-allowed; }
+        body.dark .input-content:disabled { color: rgba(248, 250, 252, 0.85); -webkit-text-fill-color: rgba(248, 250, 252, 0.85); }
+        
+        .editor-footer { width: 100%; flex-shrink: 0; background: rgba(255, 255, 255, 0.9); backdrop-filter: blur(12px); border-top: 1px solid var(--border); padding: 16px 24px calc(16px + env(safe-area-inset-bottom)); display: flex; justify-content: space-between; align-items: center; z-index: 20; transition: transform 0.3s ease; box-sizing: border-box; }
+        body.dark .editor-footer { background: rgba(15, 23, 42, 0.9); }
+        .word-count { font-size: 12px; font-weight: 700; color: var(--text-muted); }
+        .footer-actions { display: flex; gap: 12px; }
+        .btn-action { padding: 12px 20px; border: none; border-radius: 12px; font-size: 13px; font-weight: 800; cursor: pointer; transition: 0.2s; outline: none; }
+        .btn-draft { background: var(--card-solid); border: 1px solid var(--border); color: var(--text-main); }
+        .btn-draft:hover { background: var(--card-tint); }
+        .btn-done { background: var(--primary-grad); color: white; }
+        
+        .dropdown-wrap { position: relative; }
+        .dropdown-menu { position: absolute; top: 42px; right: 0; background: var(--card-solid); border: 1px solid var(--border); border-radius: 16px; padding: 8px; display: none; flex-direction: column; gap: 4px; min-width: 180px; box-shadow: var(--shadow-flat); z-index: 1000; }
+        body.dark .dropdown-menu { border-color: var(--border, #334155); }
+        .dropdown-menu.active { display: flex; }
+        .dropdown-menu button { background: transparent; border: none; padding: 10px 14px; border-radius: 10px; font-size: 13px; font-weight: 700; color: var(--text-main); text-align: left; cursor: pointer; transition: 0.2s; font-family: 'Inter', system-ui, sans-serif; outline: none;}
+        .dropdown-menu button:hover { background: var(--bg-grad); }
+        
+        /* READING MODE */
+        .fab-back { position: fixed; top: 24px; left: 24px; width: 56px; height: 56px; border: 1px solid var(--border); border-radius: 20px; background: var(--card-solid); color: var(--text-main); cursor: pointer; box-shadow: var(--shadow-flat); z-index: 100000; display: none; align-items: center; justify-content: center; transition: transform 0.2s ease, box-shadow 0.2s ease; outline: none; }
+        body.dark .fab-back { box-shadow: 0 10px 25px rgba(0, 0, 0, 0.4); border-color: var(--border); }
+        .fab-back:hover { transform: translateY(-2px); box-shadow: 0 12px 30px rgba(0, 0, 0, 0.1); }
+        
+        .popup-overlay.reading-mode .fab-back { display: flex; }
+        .popup-overlay.reading-mode .editor-header { display: none; }
+        .popup-overlay.reading-mode .category-wrapper, .popup-overlay.reading-mode .editor-footer { display: none; }
+        .popup-overlay.reading-mode .editor-body { max-width: 700px; padding-top: 100px; padding-bottom: 150px; scroll-padding-bottom: 80px; }
+        .popup-overlay.reading-mode .input-title { text-align: center; font-size: 28px; margin-bottom: 24px; }
+        .popup-overlay.reading-mode .input-content { font-size: 18px; line-height: 2; }
+
+        /* MODAL INFO */
+        .info-modal-overlay { position: fixed; inset: 0; background: rgba(0,0,0,0.4); backdrop-filter: blur(4px); z-index: 100000; display: none; align-items: center; justify-content: center; padding: 20px; width: 100vw; height: 100vh; box-sizing: border-box; }
+        .info-modal-overlay.active { display: flex; }
+        .info-card { background: var(--card-solid); width: 100%; max-width: 360px; border-radius: 24px; padding: 24px; box-shadow: var(--shadow-flat); font-family: 'Inter', system-ui, sans-serif; box-sizing: border-box; }
+        .info-card h3 { font-size: 18px; font-weight: 800; margin-bottom: 20px; text-align: center; }
+        .info-row { display: flex; justify-content: space-between; margin-bottom: 12px; font-size: 13px; gap: 12px; }
+        .info-label { color: var(--text-muted); font-weight: 600; flex-shrink: 0; }
+        .info-value { font-weight: 800; color: var(--text-main); text-align: right; max-width: 60%; word-break: break-word;}
+        .btn-close-info { width: 100%; padding: 12px; margin-top: 20px; border: none; background: var(--card-tint); color: var(--text-main); font-weight: 800; border-radius: 12px; cursor: pointer; font-family: 'Inter', system-ui, sans-serif; outline: none;}
+        
+        /* BREAKPOINT RESPONSIF */
+        @media(max-width: 1024px) { .list-container { column-count: 2; } }
+        @media(max-width: 600px) { 
+            body { padding-top: 66px; }
+            .hero-card { padding: 24px 20px; border-radius: 20px; } 
+            .hero-title { font-size: 22px; flex-wrap: wrap; } 
+            .hero-desc { font-size: 13px; }
+            .editor-footer { flex-direction: column; gap: 16px; align-items: flex-start; padding: 16px; } 
+            .footer-actions { width: 100%; } 
+            .btn-action { flex: 1; text-align: center; } 
+            .word-count { width: 100%; text-align: left; } 
+            .list-container { column-count: 1; }
+            .fab-back { top: 16px; left: 16px; width: 48px; height: 48px; }
+            .popup-overlay.reading-mode .editor-body { padding-top: 80px; }
+            .editor-body { padding: 24px 16px 120px; }
+            .header-left, .header-right { gap: 4px; }
+        }
+    </style>
+</head>
+<body>
+
+    <div id="navbar-container"></div>
+    <div class="bg-glow one"></div><div class="bg-glow two"></div>
+
+    <div class="wrapper">
+        <div class="hero-card">
+            <h1 class="hero-title" id="uiRoomName">
+                <a href="collab-hub.html" class="btn-back" title="Kembali ke Lobi">🔙</a>
+                Memuat Ruang...
+            </h1>
+            <p class="hero-desc" id="uiRoomInfo">
+                <span class="live-indicator"></span> Menghubungkan...
+            </p>
+            <div class="hero-stats">
+                <div class="stat-pill">📝 Total: <span id="statTotal">0</span></div>
+                <div class="stat-pill">🕒 Draft: <span id="statDraft">0</span></div>
+                <div class="stat-pill">✅ Selesai: <span id="statDone">0</span></div>
+            </div>
+        </div>
+    </div>
+
+    <div class="wrapper" style="position: sticky; top: 76px; z-index: 50;">
+        <div class="sticky-tools">
+            <div class="sticky-tools-inner" id="filterWrap">
+                <div class="search-expandable" id="searchContainer">
+                    <button class="search-icon-btn" onclick="openSearch(event)" title="Cari Script">🔍</button>
+                    <input type="text" id="searchInput" placeholder="Cari naskah tim..." autocomplete="off" oninput="window.currentPage=1; renderList()">
+                    <button class="close-search-btn" onclick="closeSearch(event)" title="Tutup Pencarian">✕</button>
+                </div>
+                <div class="filters-wrapper" id="dynamicFilters"></div>
+            </div>
+        </div>
+    </div>
+
+    <div class="wrapper">
+        <div class="list-container" id="listContainer">
+            <div style="text-align: center; padding: 40px; color: var(--text-muted); column-span: all;">Memuat data...</div>
+        </div>
+        <div id="paginationContainer" class="pagination-container"></div>
+        <button class="fab" onclick="openPopup()">+</button>
+    </div>
+
+    <div class="popup-overlay" id="editorPopup">
+        <button class="fab-back" id="btnExitReadingMode" onclick="toggleReadingMode()" title="Kembali">
+            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                <line x1="19" y1="12" x2="5" y2="12"></line>
+                <polyline points="12 19 5 12 12 5"></polyline>
+            </svg>
+        </button>
+
+        <div class="editor-header">
+            <div class="header-left">
+                <button class="btn-icon" id="btnClosePopup" onclick="closePopup()" title="Tutup">✕</button>
+                <button class="btn-icon disabled" id="btnUndo" onclick="handleUndo()" title="Undo (Ctrl+Z)">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M3 7v6h6"></path><path d="M21 17a9 9 0 0 0-9-9 9 9 0 0 0-6 2.3L3 13"></path></svg>
+                </button>
+                <button class="btn-icon disabled" id="btnRedo" onclick="handleRedo()" title="Redo (Ctrl+Y)">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M21 7v6h-6"></path><path d="M3 17a9 9 0 0 1 9-9 9 9 0 0 1 6 2.3l3 2.7"></path></svg>
+                </button>
+                <div class="save-indicator" id="saveIndicator">Menyimpan...</div>
+                <div class="lock-banner" id="lockBanner">🔒 Read-Only</div>
+            </div>
+            <div class="header-right">
+                <button class="btn-icon" onclick="togglePin()" id="btnPin" title="Sematkan">📌</button>
+                <button class="btn-icon" onclick="toggleReadingMode()" id="btnReadingMode" title="Mode Fokus">👁️</button>
+                <div class="dropdown-wrap">
+                    <button class="btn-icon" onclick="toggleDropdown(event, 'actionMenu')">⋮</button>
+                    <div class="dropdown-menu" id="actionMenu">
+                        <button onclick="showInfo()">ℹ️ Detail Info</button>
+                        <button onclick="copyContent()">📋 Salin Teks</button>
+                        <button onclick="exportTxt()">📄 Export .txt</button>
+                        <hr style="border: 0; border-top: 1px solid var(--border); margin: 4px 0;">
+                        <button id="btnDelete" onclick="softDeleteScript()" style="color: var(--danger);">🗑 Hapus ke Trash</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="editor-body" id="editorBody">
+            <textarea id="inputTitle" class="input-title" placeholder="Judul Script..." autocomplete="off" spellcheck="false" rows="1" oninput="autoResizeTitle(); triggerAutoSave(); triggerHistorySave()" onkeydown="if(event.key==='Enter'){event.preventDefault(); document.getElementById('inputCategory').focus();}"></textarea>
+            
+            <div class="category-wrapper">
+                <input type="text" id="inputCategory" class="input-category" placeholder="Ketik Kategori (misal: YouTube, Tiktok)..." autocomplete="off" oninput="handleCategoryInput(); triggerHistorySave()" onfocus="showCategorySuggestions()">
+                <div class="suggest-dropdown" id="categorySuggestions"></div>
+            </div>
+            
+            <textarea id="inputContent" class="input-content" placeholder="Mulai menulis cerita Anda..." autocomplete="off" oninput="handleTyping(); autoResizeContent(); triggerHistorySave()"></textarea>
+        </div>
+        
+        <div class="editor-footer" id="editorFooter">
+            <div class="word-count" id="wordCountDisplay">0 Kata • 0 Karakter</div>
+            <div class="footer-actions">
+                <button class="btn-action btn-draft" onclick="saveScript('draft')">Simpan Draft</button>
+                <button class="btn-action btn-done" onclick="saveScript('done')">Tandai Selesai</button>
+            </div>
+        </div>
+    </div>
+
+    <div class="info-modal-overlay" id="infoModal">
+        <div class="info-card">
+            <h3>Informasi Script</h3>
+            <div class="info-row"><span class="info-label">Judul</span> <span class="info-value" id="infoTitle">-</span></div>
+            <div class="info-row"><span class="info-label">Kategori</span> <span class="info-value" id="infoCat">-</span></div>
+            <div class="info-row"><span class="info-label">Status</span> <span class="info-value" id="infoStatus">-</span></div>
+            <div class="info-row"><span class="info-label">Kreator</span> <span class="info-value" id="infoCreator">-</span></div>
+            <div class="info-row"><span class="info-label">Jumlah Kata</span> <span class="info-value" id="infoWords">0</span></div>
+            <div class="info-row"><span class="info-label">Dibuat</span> <span class="info-value" id="infoCreated">-</span></div>
+            <div class="info-row"><span class="info-label">Diubah</span> <span class="info-value" id="infoUpdated">-</span></div>
+            <button class="btn-close-info" onclick="closeInfoModal()">Tutup</button>
+        </div>
+    </div>
+
+    <script src="../navbar/navbar.js"></script>
+    <script src="../js/pwa.js"></script>
+
+    <script type="module">
+        import { auth, db } from "../js/firebase.js";
+        import { onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
+        import { onSnapshot, collection, query, where, doc, setDoc, updateDoc, deleteDoc } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
+
+        // URL Params untuk ID Ruang
+        const urlParams = new URLSearchParams(window.location.search);
+        const currentRoomId = urlParams.get('id');
+
+        // State Kolaborasi & Editor
+        let currentUserUid = null;
+        let currentUserData = { name: "Anonim" };
+        window.roomData = null;
+        window.scriptData = [];
+        window.currentId = null;
+        window.isLockedByOther = false;
+        
+        window.currentFilter = 'all';
+        window.currentSort = 'newest';
+        window.currentPinned = false;
+        window.currentPage = 1;
+        window.itemsPerPage = 12; 
+        
+        let autoSaveTimeout = null;
+        window.historyStack = [];
+        window.historyIndex = -1;
+        let historyDebounceTimeout = null;
+        let isUndoingRedoing = false;
+
+        document.addEventListener('click', function(e) {
+            if (!e.target.closest('.dropdown-wrap')) document.querySelectorAll('.dropdown-menu').forEach(m => m.classList.remove('active'));
+            if (!e.target.closest('.category-wrapper')) document.getElementById('categorySuggestions')?.classList.remove('active');
+            const searchContainer = document.getElementById('searchContainer');
+            if (searchContainer && searchContainer.classList.contains('expanded') && !searchContainer.contains(e.target)) window.closeSearch();
+        });
+
+        document.addEventListener('DOMContentLoaded', () => {
+            if (!currentRoomId) { alert("ID Ruang tidak ditemukan!"); window.location.replace("collab-hub.html"); return; }
+            if (localStorage.getItem("dashboard_theme") === "dark") document.body.classList.add("dark");
+
+            window.updateItemsPerPage();
+            setupFilterScroll();
+
+            onAuthStateChanged(auth, (user) => {
+                if (user) {
+                    currentUserUid = user.uid;
+                    currentUserData.name = user.displayName || user.email.split('@')[0];
+                    initRealtimeCollab();
+                } else {
+                    window.location.replace("../login.html");
+                }
+            });
+        });
+
+        // Hapus Kunci jika user menutup tab browser secara tiba-tiba
+        window.addEventListener('beforeunload', () => {
+            if (window.currentId && !window.isLockedByOther) {
+                updateDoc(doc(db, "collab_scripts", window.currentId), { lockedBy: null, lockedByName: null }).catch(()=>{});
+            }
+        });
+
+        function setupFilterScroll() {
+            const filterWrap = document.getElementById('filterWrap');
+            if (!filterWrap) return;
+            let isDown = false, startX, scrollLeft;
+
+            filterWrap.addEventListener('mousedown', (e) => { if(e.target.tagName.toLowerCase() === 'input') return; isDown = true; filterWrap.style.cursor = 'grabbing'; startX = e.pageX - filterWrap.offsetLeft; scrollLeft = filterWrap.scrollLeft; });
+            filterWrap.addEventListener('mouseleave', () => { isDown = false; filterWrap.style.cursor = ''; });
+            filterWrap.addEventListener('mouseup', () => { isDown = false; filterWrap.style.cursor = ''; });
+            filterWrap.addEventListener('mousemove', (e) => { if (!isDown) return; e.preventDefault(); const x = e.pageX - filterWrap.offsetLeft; const walk = (x - startX) * 1.5; filterWrap.scrollLeft = scrollLeft - walk; });
+            filterWrap.addEventListener('wheel', (e) => { if (e.deltaY !== 0) { e.preventDefault(); filterWrap.scrollLeft += e.deltaY; } }, { passive: false });
+        }
+
+        window.updateItemsPerPage = function() {
+            const width = window.innerWidth;
+            let newLimit = 18; 
+            if (width <= 600) newLimit = 12; else if (width <= 1024) newLimit = 16; 
+            if (window.itemsPerPage !== newLimit) { window.itemsPerPage = newLimit; if (window.scriptData.length > 0) { window.currentPage = 1; window.renderList(); } }
+        }
+        window.addEventListener('resize', () => { clearTimeout(window.resizeTimeout); window.resizeTimeout = setTimeout(window.updateItemsPerPage, 200); });
+
+        function initRealtimeCollab() {
+            // 1. Dengar Data Ruang (collab_boards)
+            onSnapshot(doc(db, "collab_boards", currentRoomId), (docSnap) => {
+                if (!docSnap.exists() || !docSnap.data().members.includes(currentUserUid)) {
+                    alert("Akses Ditolak: Anda bukan anggota atau ruang telah dihapus.");
+                    window.location.replace("collab-hub.html"); return;
+                }
+                window.roomData = docSnap.data();
+                document.getElementById('uiRoomName').innerHTML = `<a href="collab-hub.html" class="btn-back" title="Kembali ke Lobi">🔙</a> ${window.roomData.name}`;
+                document.getElementById('uiRoomInfo').innerHTML = `<span class="live-indicator"></span> Live • ${window.roomData.members.length} Anggota`;
+            });
+
+            // 2. Dengar Daftar Script (collab_scripts)
+            const q = query(collection(db, "collab_scripts"), where("roomId", "==", currentRoomId));
+            onSnapshot(q, (snapshot) => {
+                window.scriptData = snapshot.docs.map(d => ({ id: d.id, ...d.data() }));
+                
+                // Jika sedang membuka popup dalam mode Read-Only, update isinya secara real-time
+                if (window.currentId && window.isLockedByOther) {
+                    const liveItem = window.scriptData.find(x => x.id === window.currentId);
+                    if (liveItem) {
+                        document.getElementById('inputTitle').value = liveItem.title || '';
+                        document.getElementById('inputContent').value = liveItem.content || '';
+                        document.getElementById('inputCategory').value = liveItem.channel || '';
+                        window.autoResizeTitle(); window.autoResizeContent(); window.updateWordCount();
+                    }
+                }
+                window.renderList();
+            });
+        }
+
+        // ==========================================
+        // LOGIKA LOCKING & EDITOR
+        // ==========================================
+        window.openPopup = async function(id = null) {
+            document.getElementById('editorPopup').classList.add('active');
+            const titleEl = document.getElementById('inputTitle');
+            const contentEl = document.getElementById('inputContent');
+            const catEl = document.getElementById('inputCategory');
+            const lockBanner = document.getElementById('lockBanner');
+            const editorFooter = document.getElementById('editorFooter');
+            const editorBody = document.getElementById('editorBody');
+            const btnUndo = document.getElementById('btnUndo');
+            const btnRedo = document.getElementById('btnRedo');
+            const btnDelete = document.getElementById('btnDelete');
+
+            if (id) {
+                const item = window.scriptData.find(x => x.id === id);
+                if (item) {
+                    window.currentId = item.id; 
+                    window.currentPinned = item.pinned || false;
+                    titleEl.value = item.title; contentEl.value = item.content; catEl.value = item.channel || '';
+                    
+                    // Cek Status Gembok
+                    if (item.lockedBy && item.lockedBy !== currentUserUid) {
+                        window.isLockedByOther = true;
+                        lockBanner.innerHTML = `🔒 Sedang diedit oleh ${item.lockedByName.split(' ')[0]}`;
+                        lockBanner.classList.add('active');
+                        editorFooter.style.display = 'none';
+                        editorBody.classList.add('locked');
+                        titleEl.disabled = true; contentEl.disabled = true; catEl.disabled = true;
+                        btnDelete.style.display = 'none';
+                    } else {
+                        window.isLockedByOther = false;
+                        lockBanner.classList.remove('active');
+                        editorFooter.style.display = 'flex';
+                        editorBody.classList.remove('locked');
+                        titleEl.disabled = false; contentEl.disabled = false; catEl.disabled = false;
+                        btnDelete.style.display = 'block';
+                        // Terapkan Gembok di Database agar orang lain tidak bisa masuk
+                        await updateDoc(doc(db, "collab_scripts", item.id), { lockedBy: currentUserUid, lockedByName: currentUserData.name });
+                    }
+                }
+            } else {
+                // Script Baru
+                window.currentId = null; window.currentPinned = false; window.isLockedByOther = false;
+                titleEl.value = ''; contentEl.value = ''; catEl.value = '';
+                lockBanner.classList.remove('active');
+                editorFooter.style.display = 'flex';
+                editorBody.classList.remove('locked');
+                titleEl.disabled = false; contentEl.disabled = false; catEl.disabled = false;
+                btnDelete.style.display = 'block';
+            }
+            
+            setTimeout(() => { window.autoResizeTitle(); window.autoResizeContent(); }, 10);
+            window.historyStack = []; window.historyIndex = -1; window.updateUndoRedoButtons();
+            if(!window.isLockedByOther) setTimeout(() => { window.saveHistoryState(); }, 50);
+            
+            document.getElementById('saveIndicator').classList.remove('show');
+            document.getElementById('editorPopup').classList.remove('reading-mode');
+            document.getElementById('btnReadingMode').classList.remove('active-read');
+            updatePinButton(); window.updateWordCount();
+        }
+
+        window.closePopup = async function() {
+            // Hanya jalankan save & lepas gembok jika kita bukan pengunjung Read-Only
+            if (!window.isLockedByOther) {
+                const title = document.getElementById('inputTitle').value.trim();
+                const content = document.getElementById('inputContent').value.trim();
+                if(title || content) {
+                    const curStatus = window.currentId ? (window.scriptData.find(x => x.id === window.currentId)?.status || 'draft') : 'draft';
+                    await window.performSave(curStatus, true, true); // true terakhir = lepas gembok
+                } else if (window.currentId) {
+                    // Lepas gembok jika kosong tanpa save
+                    await updateDoc(doc(db, "collab_scripts", window.currentId), { lockedBy: null, lockedByName: null });
+                }
+            }
+            
+            document.getElementById('editorPopup').classList.remove('active', 'reading-mode');
+            window.currentId = null;
+            window.isLockedByOther = false;
+        }
+
+        window.performSave = async function(status, isAuto = false, releaseLock = false) {
+            if (window.isLockedByOther) return; // Proteksi ganda
+
+            const title = document.getElementById('inputTitle').value.trim();
+            const content = document.getElementById('inputContent').value;
+            const channel = document.getElementById('inputCategory').value.trim() || 'Umum';
+            
+            if (title === '' && content.trim() === '') return;
+            
+            const now = Date.now();
+            const docId = window.currentId || "cscript_" + now;
+            window.currentId = docId;
+
+            const existingItem = window.scriptData.find(x => x.id === docId);
+
+            const payload = {
+                roomId: currentRoomId,
+                uid: existingItem ? existingItem.uid : currentUserUid, 
+                creatorName: existingItem ? existingItem.creatorName : currentUserData.name,
+                title: title || 'Tanpa Judul', 
+                content: content,
+                status: status, 
+                channel: channel, 
+                pinned: window.currentPinned, 
+                updatedAt: now,
+                createdAt: existingItem ? existingItem.createdAt : now,
+                lockedBy: releaseLock ? null : currentUserUid,
+                lockedByName: releaseLock ? null : currentUserData.name
+            };
+
+            try { 
+                await setDoc(doc(db, "collab_scripts", docId), payload); 
+            } catch(e) { console.error("Gagal save:", e); }
+        }
+
+        window.triggerAutoSave = function() {
+            if (window.isLockedByOther) return;
+            clearTimeout(autoSaveTimeout);
+            autoSaveTimeout = setTimeout(() => {
+                const curStatus = window.currentId ? (window.scriptData.find(x => x.id === window.currentId)?.status || 'draft') : 'draft';
+                window.performSave(curStatus, true, false); // Jangan lepas gembok saat auto-save
+                const indicator = document.getElementById('saveIndicator');
+                indicator.innerText = "Tersimpan"; indicator.classList.add('show');
+                setTimeout(() => indicator.classList.remove('show'), 2000);
+            }, 1000); 
+        }
+
+        window.softDeleteScript = async function() {
+            if (!window.currentId || window.isLockedByOther) return;
+            document.getElementById('actionMenu').classList.remove('active');
+            if (!confirm('Pindahkan script ini ke tempat sampah tim? (Terhapus otomatis setelah 30 hari)')) return;
+
+            const item = window.scriptData.find(x => x.id === window.currentId);
+            if(!item) return;
+            
+            const now = Date.now();
+            const trashId = 'ctrash_' + now;
+
+            const trashPayload = {
+                roomId: currentRoomId,
+                deletedByUid: currentUserUid,
+                deletedByName: currentUserData.name, 
+                originalId: item.id, 
+                title: item.title, 
+                content: item.content, 
+                deletedAt: now, 
+                expireAt: now + (30*24*60*60*1000)
+            };
+
+            try {
+                // Simpan ke collection khusus trash kolaborasi (agar tidak bercampur dengan personal)
+                await setDoc(doc(db, "collab_trash_scripts", trashId), trashPayload);
+                await deleteDoc(doc(db, "collab_scripts", item.id));
+                
+                document.getElementById('editorPopup').classList.remove('active');
+                window.currentId = null;
+            } catch (e) { console.error(e); alert("Gagal menghapus naskah."); }
+        }
+
+        window.saveScript = function(status) { 
+            if(window.isLockedByOther) return; 
+            window.performSave(status, false, true); 
+            document.getElementById('editorPopup').classList.remove('active'); 
+        }
+
+        // ==========================================
+        // UI & TOOLS
+        // ==========================================
+        window.openSearch = function(event) { if (event) event.stopPropagation(); document.getElementById('filterWrap').classList.add('searching'); document.getElementById('searchContainer').style.width = '100%'; document.getElementById('searchContainer').classList.add('expanded'); setTimeout(() => { document.getElementById('searchInput').focus(); }, 300); }
+        window.closeSearch = function(event) { if (event) event.stopPropagation(); document.getElementById('searchContainer').style.width = '38px'; document.getElementById('searchContainer').classList.remove('expanded'); document.getElementById('filterWrap').classList.remove('searching'); const input = document.getElementById('searchInput'); if (input.value !== '') { input.value = ''; window.currentPage = 1; window.renderList(); } }
+        window.showCategorySuggestions = function() { if(window.isLockedByOther) return; const inputVal = document.getElementById('inputCategory').value.toLowerCase(); const suggestBox = document.getElementById('categorySuggestions'); const channels = [...new Set(window.scriptData.map(item => item.channel).filter(c => c && c.trim() !== "Umum" && c.trim() !== ""))]; const filtered = channels.filter(ch => ch.toLowerCase().includes(inputVal)); if (filtered.length > 0) { suggestBox.innerHTML = filtered.map(ch => `<button type="button" class="suggest-item" onclick="selectCategory('${ch}')">📺 ${ch}</button>`).join(''); suggestBox.classList.add('active'); } else { suggestBox.classList.remove('active'); } }
+        window.handleCategoryInput = function() { window.triggerAutoSave(); window.showCategorySuggestions(); }
+        window.selectCategory = function(val) { document.getElementById('inputCategory').value = val; document.getElementById('categorySuggestions').classList.remove('active'); window.triggerAutoSave(); window.triggerHistorySave(); }
+        window.autoResizeTitle = function() { const titleEl = document.getElementById('inputTitle'); const parent = document.querySelector('.editor-body'); const scrollPos = parent.scrollTop; titleEl.style.height = 'auto'; titleEl.style.height = titleEl.scrollHeight + 'px'; titleEl.scrollTop = 0; parent.scrollTop = scrollPos; }
+        window.autoResizeContent = function() { const contentEl = document.getElementById('inputContent'); const parent = document.querySelector('.editor-body'); const scrollPos = parent.scrollTop; contentEl.style.height = 'auto'; contentEl.style.height = contentEl.scrollHeight + 'px'; contentEl.scrollTop = 0; parent.scrollTop = scrollPos; }
+
+        window.updateUndoRedoButtons = function() { if(window.isLockedByOther) return; const btnUndo = document.getElementById('btnUndo'); const btnRedo = document.getElementById('btnRedo'); if (window.historyIndex > 0) btnUndo.classList.remove('disabled'); else btnUndo.classList.add('disabled'); if (window.historyIndex < window.historyStack.length - 1) btnRedo.classList.remove('disabled'); else btnRedo.classList.add('disabled'); }
+        window.saveHistoryState = function() { if (isUndoingRedoing || window.isLockedByOther) return; const title = document.getElementById('inputTitle').value; const content = document.getElementById('inputContent').value; const category = document.getElementById('inputCategory').value; const currentState = { title, content, category }; if (window.historyIndex >= 0) { const lastState = window.historyStack[window.historyIndex]; if (lastState.title === title && lastState.content === content && lastState.category === category) return; } if (window.historyIndex < window.historyStack.length - 1) { window.historyStack = window.historyStack.slice(0, window.historyIndex + 1); } window.historyStack.push(currentState); if (window.historyStack.length > 50) { window.historyStack.shift(); } else { window.historyIndex++; } window.updateUndoRedoButtons(); }
+        window.triggerHistorySave = function() { if(window.isLockedByOther) return; clearTimeout(historyDebounceTimeout); historyDebounceTimeout = setTimeout(() => { window.saveHistoryState(); }, 800); }
+        window.handleUndo = function() { if (window.historyIndex > 0 && !window.isLockedByOther) { isUndoingRedoing = true; window.historyIndex--; const state = window.historyStack[window.historyIndex]; document.getElementById('inputTitle').value = state.title; document.getElementById('inputContent').value = state.content; document.getElementById('inputCategory').value = state.category; window.autoResizeTitle(); window.autoResizeContent(); window.updateWordCount(); window.triggerAutoSave(); window.updateUndoRedoButtons(); setTimeout(() => { isUndoingRedoing = false; }, 50); } }
+        window.handleRedo = function() { if (window.historyIndex < window.historyStack.length - 1 && !window.isLockedByOther) { isUndoingRedoing = true; window.historyIndex++; const state = window.historyStack[window.historyIndex]; document.getElementById('inputTitle').value = state.title; document.getElementById('inputContent').value = state.content; document.getElementById('inputCategory').value = state.category; window.autoResizeTitle(); window.autoResizeContent(); window.updateWordCount(); window.triggerAutoSave(); window.updateUndoRedoButtons(); setTimeout(() => { isUndoingRedoing = false; }, 50); } }
+        document.addEventListener('keydown', function(e) { if (!document.getElementById('editorPopup').classList.contains('active') || window.isLockedByOther) return; if ((e.ctrlKey || e.metaKey) && e.key.toLowerCase() === 'z') { e.preventDefault(); if (e.shiftKey) { window.handleRedo(); } else { window.handleUndo(); } } if ((e.ctrlKey || e.metaKey) && e.key.toLowerCase() === 'y') { e.preventDefault(); window.handleRedo(); } });
+
+        window.togglePin = function() { if(window.isLockedByOther) return; window.currentPinned = !window.currentPinned; updatePinButton(); window.triggerAutoSave(); }
+        function updatePinButton() { const btn = document.getElementById('btnPin'); if (window.currentPinned) btn.classList.add('active-pin'); else btn.classList.remove('active-pin'); }
+        window.toggleReadingMode = function() { const popup = document.getElementById('editorPopup'); const btn = document.getElementById('btnReadingMode'); popup.classList.toggle('reading-mode'); if (popup.classList.contains('reading-mode')) btn.classList.add('active-read'); else btn.classList.remove('active-read'); setTimeout(() => { window.autoResizeTitle(); window.autoResizeContent(); }, 10); }
+        window.updateWordCount = function() { const text = document.getElementById('inputContent').value; const words = text.trim() === '' ? 0 : text.trim().split(/\s+/).length; document.getElementById('wordCountDisplay').innerHTML = `${words.toLocaleString('id-ID')} Kata • ${text.length.toLocaleString('id-ID')} Karakter`; }
+        window.handleTyping = function() { if(window.isLockedByOther) return; window.updateWordCount(); window.triggerAutoSave(); }
+        window.toggleDropdown = function(event, id) { event.stopPropagation(); const target = document.getElementById(id); const isCurrentlyActive = target.classList.contains('active'); document.querySelectorAll('.dropdown-menu').forEach(m => m.classList.remove('active')); if(!isCurrentlyActive) target.classList.add('active'); }
+        
+        window.copyContent = function() { const text = document.getElementById('inputTitle').value + '\n\n' + document.getElementById('inputContent').value; navigator.clipboard.writeText(text).then(() => alert('Script disalin!')); document.getElementById('actionMenu').classList.remove('active'); }
+        window.exportTxt = function() { const text = document.getElementById('inputContent').value; if(!text) return alert("Script kosong."); const blob = new Blob([text], { type: 'text/plain' }); const link = document.createElement('a'); link.href = URL.createObjectURL(blob); link.download = (document.getElementById('inputTitle').value || 'Script_Kolaborasi') + '.txt'; link.click(); document.getElementById('actionMenu').classList.remove('active'); }
+        window.showInfo = function() { if(!window.currentId) return alert("Belum disimpan."); const item = window.scriptData.find(x => x.id === window.currentId); if(!item) return; const text = document.getElementById('inputContent').value; const words = text.trim() === '' ? 0 : text.trim().split(/\s+/).length; const formatDate = (ms) => ms ? new Date(ms).toLocaleDateString('id-ID', { day: 'numeric', month: 'long', year: 'numeric', hour: '2-digit', minute:'2-digit' }) : '-'; document.getElementById('infoTitle').innerText = item.title || 'Tanpa Judul'; document.getElementById('infoCat').innerText = item.channel || 'Umum'; document.getElementById('infoStatus').innerText = item.status === 'done' ? 'Selesai' : 'Draft'; document.getElementById('infoCreator').innerText = item.creatorName || 'Anonim'; document.getElementById('infoWords').innerText = words.toLocaleString('id-ID'); document.getElementById('infoCreated').innerText = formatDate(item.createdAt); document.getElementById('infoUpdated').innerText = formatDate(item.updatedAt); document.getElementById('actionMenu').classList.remove('active'); document.getElementById('infoModal').classList.add('active'); }
+        window.closeInfoModal = function() { document.getElementById('infoModal').classList.remove('active'); }
+        
+        window.setFilter = function(type) { window.currentFilter = type; window.currentPage = 1; window.renderList(); }
+        window.setSort = function(type) { window.currentSort = type; window.currentPage = 1; window.renderList(); }
+        window.changePage = function(page) { window.currentPage = page; window.renderList(); window.scrollTo({ top: 0, behavior: 'smooth' }); }
+
+        function generateDynamicChannels(data) {
+            const channels = [...new Set(data.map(item => item.channel).filter(c => c && c.trim() !== "Umum" && c.trim() !== ""))];
+            let html = `
+                <button class="filter-btn ${window.currentFilter === 'all' ? 'active' : ''}" onclick="setFilter('all')">Semua</button>
+                <button class="filter-btn ${window.currentFilter === 'draft' ? 'active' : ''}" onclick="setFilter('draft')">Draft</button>
+                <button class="filter-btn ${window.currentFilter === 'done' ? 'active' : ''}" onclick="setFilter('done')">Selesai</button>
+                <div class="divider"></div>
+                <button class="filter-btn ${window.currentSort === 'newest' ? 'active' : ''}" onclick="setSort('newest')">🆕 Terbaru</button>
+                <button class="filter-btn ${window.currentSort === 'oldest' ? 'active' : ''}" onclick="setSort('oldest')">⏳ Terlama</button>
+                <div class="divider"></div>
+            `;
+            channels.forEach(ch => { html += `<button class="filter-btn ${window.currentFilter === ch ? 'active' : ''}" onclick="setFilter('${ch}')">📺 ${ch}</button>`; });
+            document.getElementById('dynamicFilters').innerHTML = html;
+        }
+
+        window.renderPagination = function(totalPages) {
+            const container = document.getElementById('paginationContainer');
+            if (totalPages <= 1) { container.innerHTML = ''; return; }
+            let html = `<button class="page-btn ${window.currentPage === 1 ? 'disabled' : ''}" onclick="changePage(${window.currentPage - 1})">❮</button>`;
+            for (let i = 1; i <= totalPages; i++) { if (i === 1 || i === totalPages || (i >= window.currentPage - 1 && i <= window.currentPage + 1)) { html += `<button class="page-btn ${i === window.currentPage ? 'active' : ''}" onclick="changePage(${i})">${i}</button>`; } else if (i === window.currentPage - 2 || i === window.currentPage + 2) { html += `<span class="page-dots">...</span>`; } }
+            html += `<button class="page-btn ${window.currentPage === totalPages ? 'disabled' : ''}" onclick="changePage(${window.currentPage + 1})">❯</button>`;
+            container.innerHTML = html;
+        }
+
+        window.renderList = function() {
+            const listContainer = document.getElementById('listContainer');
+            const keyword = document.getElementById('searchInput').value.toLowerCase();
+            let data = [...window.scriptData]; 
+
+            generateDynamicChannels(data);
+
+            document.getElementById('statTotal').innerText = data.length;
+            document.getElementById('statDraft').innerText = data.filter(x => x.status === 'draft').length;
+            document.getElementById('statDone').innerText = data.filter(x => x.status === 'done').length;
+
+            data.sort((a, b) => {
+                if(a.pinned && !b.pinned) return -1;
+                if(!a.pinned && b.pinned) return 1;
+                const timeA = a.createdAt || 0; const timeB = b.createdAt || 0;
+                return window.currentSort === 'oldest' ? timeA - timeB : timeB - timeA; 
+            });
+
+            data = data.filter(item => {
+                const title = item.title ? item.title.toLowerCase() : "";
+                const content = item.content ? item.content.toLowerCase() : "";
+                const match = title.includes(keyword) || content.includes(keyword);
+                if (window.currentFilter === 'all') return match;
+                if (window.currentFilter === 'draft' || window.currentFilter === 'done') return match && item.status === window.currentFilter;
+                return match && item.channel === window.currentFilter;
+            });
+
+            const totalItems = data.length;
+            const totalPages = Math.ceil(totalItems / window.itemsPerPage);
+            if (totalPages > 0 && window.currentPage > totalPages) window.currentPage = totalPages; else if (totalPages === 0) window.currentPage = 1;
+
+            if (totalItems === 0) {
+                listContainer.innerHTML = `<div class="empty-state" onclick="openPopup()"><div class="empty-state-icon">📄</div><div class="empty-state-text">Ruang kolaborasi ini masih kosong.<br>Ketuk di sini untuk mulai menulis naskah tim.</div></div>`;
+                document.getElementById('paginationContainer').innerHTML = '';
+                return;
+            }
+            
+            const startIndex = (window.currentPage - 1) * window.itemsPerPage;
+            const endIndex = startIndex + window.itemsPerPage;
+            const paginatedData = data.slice(startIndex, endIndex);
+
+            let html = '';
+            paginatedData.forEach(item => {
+                let lockBadgeHTML = item.lockedBy ? `<div class="badge lock">🔒 ${item.lockedByName.split(' ')[0]}</div>` : '';
+                let authorBadgeHTML = `<div class="badge" style="background:transparent; border:1px solid var(--border); color:var(--text-muted);">👤 ${item.creatorName || 'Anonim'}</div>`;
+
+                html += `
+                <div class="card ${item.pinned ? 'pinned' : ''} ${item.status === 'done' ? 'completed' : ''}" onclick="openPopup('${item.id}')" style="cursor:pointer;">
+                    <div class="card-header">
+                        <div class="card-title">${item.title}</div>
+                        ${item.pinned ? '<div title="Disematkan" style="font-size:16px;">📌</div>' : ''}
+                    </div>
+                    <div class="card-preview">${item.content || '<em>Belum ada isi script...</em>'}</div>
+                    <div class="card-bottom">
+                        <div class="badges">
+                            <div class="badge ch">${item.channel || 'Umum'}</div>
+                            <div class="badge ${item.status === 'done' ? 'done' : ''}">${item.status === 'draft' ? 'Draft' : 'Selesai'}</div>
+                            ${authorBadgeHTML}
+                            ${lockBadgeHTML}
+                        </div>
+                    </div>
+                </div>`;
+            });
+            listContainer.innerHTML = html;
+            window.renderPagination(totalPages);
+        }
+    </script>
+</body>
+</html>
