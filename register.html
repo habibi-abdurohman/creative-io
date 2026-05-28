@@ -107,19 +107,28 @@
         // SAKELAR INTEGRASI UTAMA
         const USE_FIREBASE = true;
 
-        let auth, createUserWithEmailAndPassword, updateProfile, signOut;
+        let auth, db, createUserWithEmailAndPassword, updateProfile, signOut, doc, setDoc;
         
         // FLAG PENTING: Mencegah redirect otomatis oleh Firebase saat mendaftar
         let isRegistering = false; 
         
         if (USE_FIREBASE) {
             try {
+                // Import dari konfigurasi firebase Anda
                 const firebaseModule = await import("./js/firebase.js");
                 auth = firebaseModule.auth;
+                db = firebaseModule.db; // MENGAMBIL INSTANCE FIRESTORE
+
+                // Import Auth
                 const authLibrary = await import("https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js");
                 createUserWithEmailAndPassword = authLibrary.createUserWithEmailAndPassword;
                 updateProfile = authLibrary.updateProfile;
                 signOut = authLibrary.signOut;
+
+                // Import Firestore untuk Sinkronisasi Pendaftaran Awal
+                const fsLibrary = await import("https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js");
+                doc = fsLibrary.doc;
+                setDoc = fsLibrary.setDoc;
 
                 // PROTEKSI REDIRECT JIKA USER SUDAH LOGGED IN
                 authLibrary.onAuthStateChanged(auth, (user) => {
@@ -129,7 +138,7 @@
                     }
                 });
             } catch (err) {
-                console.error("Gagal memuat pustaka Firebase Auth:", err);
+                console.error("Gagal memuat pustaka Firebase Auth/Firestore:", err);
             }
         } else {
             // Fallback Redirect Status Lokal
@@ -169,11 +178,30 @@
                 try {
                     // 1. Buat Kredensial Pengguna Baru di Firebase Auth
                     const userCredential = await createUserWithEmailAndPassword(auth, emailVal, passwordVal);
+                    const user = userCredential.user;
                     
                     // 2. Tanamkan Nama Lengkap ke Dalam Data DisplayName Profile Auth
-                    await updateProfile(userCredential.user, { displayName: nameVal });
+                    await updateProfile(user, { displayName: nameVal });
                     
-                    // 3. FORCE LOGOUT SECARA MANUAL DENGAN AMAN
+                    // [TAMBAHAN BARU] 3. SINKRONISASI KE FIRESTORE DATABASE
+                    // Menciptakan dokumen pengguna agar langsung selaras dengan Rules saat masuk Dashboard
+                    try {
+                        const userRef = doc(db, "users", user.uid);
+                        await setDoc(userRef, {
+                            uid: user.uid,
+                            email: user.email,
+                            name: nameVal, 
+                            displayName: nameVal,
+                            createdAt: Date.now(),
+                            lastLogin: Date.now()
+                        });
+                    } catch (dbError) {
+                        console.error("Peringatan: Gagal mensinkronisasi data awal ke Firestore", dbError);
+                        // Kita tidak melakukan 'throw dbError' karena akun Auth sudah berhasil dibuat. 
+                        // Sistem Self-Healing di login.html akan mengambil alih jika ini gagal.
+                    }
+                    
+                    // 4. FORCE LOGOUT SECARA MANUAL DENGAN AMAN
                     await signOut(auth);
 
                     showAlert("success", "Akun Anda berhasil didaftarkan! Mengalihkan ke halaman login...");
