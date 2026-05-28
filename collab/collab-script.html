@@ -57,21 +57,37 @@
         .bg-glow.one { width: 340px; height: 340px; background: rgba(59, 130, 246, 0.15); top: -50px; left: -100px; }
         .bg-glow.two { width: 320px; height: 320px; background: rgba(96, 165, 250, 0.15); bottom: 100px; right: -100px; }
 
-        .hero-card { background: var(--primary-grad); border-radius: var(--radius-card); padding: 36px 32px; color: white; position: relative; overflow: hidden; margin-bottom: 24px; box-shadow: 0 10px 30px rgba(37, 99, 235, 0.2); transition: background 0.3s ease; }
+        /* =========================================================
+           HEADER RUANG (HERO CARD) DIREVISI
+        ========================================================= */
+        .hero-card { 
+            background: var(--primary-grad); border-radius: var(--radius-card); padding: 32px; color: white; 
+            position: relative; overflow: hidden; margin-bottom: 24px; box-shadow: 0 10px 30px rgba(37, 99, 235, 0.2); 
+            transition: background 0.3s ease, box-shadow 0.3s ease; 
+            display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 24px;
+        }
         .hero-card.trash-mode { background: #475569; box-shadow: 0 10px 30px rgba(71, 85, 105, 0.2); }
-        .hero-card::after { content: ""; position: absolute; width: 250px; height: 250px; background: rgba(255, 255, 255, 0.1); border-radius: 50%; top: -80px; right: -80px; pointer-events: none; }
-        .hero-title { font-size: 26px; font-weight: 900; letter-spacing: -0.5px; margin-bottom: 8px; position: relative; z-index: 1; display: flex; align-items: center; gap: 12px;}
-        .hero-desc { font-size: 14px; line-height: 1.6; opacity: 0.9; margin-bottom: 24px; max-width: 500px; position: relative; z-index: 1; display: flex; align-items: center; gap: 8px; }
+        .hero-card::after { content: ""; position: absolute; width: 250px; height: 250px; background: rgba(255, 255, 255, 0.08); border-radius: 50%; top: -80px; right: -80px; pointer-events: none; }
         
-        .btn-back { width: 36px; height: 36px; border-radius: 12px; background: rgba(255,255,255,0.2); backdrop-filter: blur(4px); display: flex; align-items: center; justify-content: center; font-size: 16px; color: white; text-decoration: none; transition: 0.2s; flex-shrink: 0; outline: none; border: 1px solid rgba(255,255,255,0.3); }
-        .btn-back:hover { background: rgba(255,255,255,0.3); }
+        .hero-header-left { display: flex; align-items: center; gap: 16px; flex: 1; min-width: 250px; position: relative; z-index: 1; }
+        .btn-back { 
+            width: 44px; height: 44px; border-radius: 14px; background: rgba(255,255,255,0.15); backdrop-filter: blur(8px); -webkit-backdrop-filter: blur(8px);
+            display: flex; align-items: center; justify-content: center; color: white; text-decoration: none; 
+            transition: all 0.2s ease; flex-shrink: 0; outline: none; border: 1px solid rgba(255,255,255,0.25); box-shadow: 0 4px 12px rgba(0,0,0,0.05);
+        }
+        .btn-back:hover { background: rgba(255,255,255,0.25); transform: translateX(-2px); }
+        body.dark .hero-card.trash-mode .btn-back { background: rgba(15, 23, 42, 0.4); border-color: rgba(255,255,255,0.1); }
+        body.dark .hero-card.trash-mode .btn-back:hover { background: rgba(15, 23, 42, 0.6); }
         
-        .live-indicator { width: 8px; height: 8px; background: #10b981; border-radius: 50%; display: inline-block; animation: pulse 2s infinite; }
+        .hero-text { display: flex; flex-direction: column; justify-content: center; min-width: 0; }
+        .hero-title { font-size: 24px; font-weight: 900; letter-spacing: -0.5px; line-height: 1.2; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; margin-bottom: 6px; }
+        .hero-desc { font-size: 13px; line-height: 1.4; opacity: 0.9; display: flex; align-items: center; gap: 8px; font-weight: 600; }
+        
+        .live-indicator { width: 8px; height: 8px; background: #10b981; border-radius: 50%; display: inline-block; animation: pulse 2s infinite; flex-shrink: 0; }
         @keyframes pulse { 0% { transform: scale(0.95); box-shadow: 0 0 0 0 rgba(16, 185, 129, 0.7); } 70% { transform: scale(1); box-shadow: 0 0 0 6px rgba(16, 185, 129, 0); } 100% { transform: scale(0.95); box-shadow: 0 0 0 0 rgba(16, 185, 129, 0); } }
 
-        .hero-stats { display: flex; gap: 12px; overflow-x: auto; position: relative; z-index: 1; padding-bottom: 4px; scrollbar-width: none; }
-        .hero-stats::-webkit-scrollbar { display: none; }
-        .stat-pill { display: flex; align-items: center; gap: 8px; background: rgba(255, 255, 255, 0.2); backdrop-filter: blur(10px); border: 1px solid rgba(255, 255, 255, 0.3); padding: 8px 16px; border-radius: 20px; font-size: 12px; font-weight: 700; white-space: nowrap; }
+        .hero-stats { display: flex; gap: 10px; position: relative; z-index: 1; flex-shrink: 0; flex-wrap: wrap; justify-content: flex-end; }
+        .stat-pill { display: flex; align-items: center; gap: 8px; background: rgba(255, 255, 255, 0.15); backdrop-filter: blur(10px); -webkit-backdrop-filter: blur(10px); border: 1px solid rgba(255, 255, 255, 0.2); padding: 8px 16px; border-radius: 20px; font-size: 12px; font-weight: 700; white-space: nowrap; }
         .stat-pill span { font-size: 16px; font-weight: 900; }
         
         /* =========================================================
@@ -133,24 +149,25 @@
         .card.trash-card { border: 1px dashed var(--danger); background: var(--card-tint); cursor: default; }
         .card.trash-card:hover { transform: none; border-color: var(--danger); }
         
-        .card-header { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 8px; gap: 8px; }
+        .card-header { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 8px; gap: 12px; }
         .card-title { font-size: 16px; font-weight: 800; line-height: 1.4; color: var(--text-main); word-break: break-word; }
         .card-preview { font-size: 13px; line-height: 1.6; color: var(--text-muted); display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; margin-bottom: 16px; word-break: break-word; }
         .card-bottom { display: flex; justify-content: space-between; align-items: center; gap: 8px; flex-wrap: wrap;}
         
         .badges { display: flex; gap: 6px; flex-wrap: wrap; }
-        .badge { padding: 4px 10px; border-radius: 8px; font-size: 11px; font-weight: 700; background: var(--card-tint); color: var(--text-muted); border: 1px solid var(--border); }
+        .badge { padding: 4px 10px; border-radius: 8px; font-size: 11px; font-weight: 700; background: var(--card-tint); color: var(--text-muted); border: 1px solid var(--border); display: flex; align-items: center; gap: 4px; }
         .badge.ch { background: var(--primary-soft); color: var(--primary); border: none; }
         .badge.done { background: var(--success-soft); color: var(--success); border: none; }
         .badge.lock { background: var(--warning); color: white; border: none; }
         .badge.deleted { background: var(--danger-soft); color: var(--danger); border: none; }
+        .badge.restored { background: rgba(245, 158, 11, 0.1); color: var(--warning); border-color: rgba(245, 158, 11, 0.2); }
         
         .card-actions { display: flex; gap: 8px; }
-        .btn-card-action { padding: 6px 12px; border-radius: 8px; font-size: 12px; font-weight: 700; border: none; cursor: pointer; transition: 0.2s; outline: none; display: flex; align-items: center; gap: 4px; }
+        .btn-card-action { padding: 6px 12px; border-radius: 8px; font-size: 12px; font-weight: 800; border: none; cursor: pointer; transition: 0.2s; outline: none; display: flex; align-items: center; gap: 4px; }
         .btn-card-action.restore { background: var(--success-soft); color: var(--success); }
         .btn-card-action.restore:hover { background: var(--success); color: white; }
-        .btn-card-action.destroy { background: var(--danger-soft); color: var(--danger); }
-        .btn-card-action.destroy:hover { background: var(--danger); color: white; }
+        .btn-card-action.destroy { background: var(--danger-soft); color: var(--danger); border: 1px solid rgba(239, 68, 68, 0.2); }
+        .btn-card-action.destroy:hover { background: var(--danger); color: white; border-color: var(--danger); }
         
         .pagination-container { display: flex; justify-content: center; align-items: center; gap: 8px; margin-top: 32px; padding-bottom: 24px; flex-wrap: wrap; column-span: all; }
         .page-btn { min-width: 38px; height: 38px; padding: 0 12px; border-radius: 12px; border: 1px solid var(--border); background: var(--card-solid); color: var(--text-main); font-size: 14px; font-weight: 700; cursor: pointer; display: flex; justify-content: center; align-items: center; transition: all 0.2s; outline: none; }
@@ -213,7 +230,7 @@
         .input-content:disabled { color: rgba(15, 23, 42, 0.85); -webkit-text-fill-color: rgba(15, 23, 42, 0.85); opacity: 1; cursor: not-allowed; }
         body.dark .input-content:disabled { color: rgba(248, 250, 252, 0.85); -webkit-text-fill-color: rgba(248, 250, 252, 0.85); }
         
-        .editor-footer { width: 100%; flex-shrink: 0; background: rgba(255, 255, 255, 0.9); backdrop-filter: blur(12px); border-top: 1px solid var(--border); padding: 16px 24px calc(16px + env(safe-area-inset-bottom)); display: flex; justify-content: space-between; align-items: center; z-index: 20; transition: transform 0.3s ease; box-sizing: border-box; }
+        .editor-footer { width: 100%; flex-shrink: 0; background: rgba(255, 255, 255, 0.9); backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px); border-top: 1px solid var(--border); padding: 16px 24px calc(16px + env(safe-area-inset-bottom)); display: flex; justify-content: space-between; align-items: center; z-index: 20; transition: transform 0.3s ease; box-sizing: border-box; }
         body.dark .editor-footer { background: rgba(15, 23, 42, 0.9); }
         .word-count { font-size: 12px; font-weight: 700; color: var(--text-muted); }
         .footer-actions { display: flex; gap: 12px; }
@@ -255,9 +272,11 @@
         @media(max-width: 1024px) { .list-container { column-count: 2; } }
         @media(max-width: 600px) { 
             body { padding-top: 66px; }
-            .hero-card { padding: 24px 20px; border-radius: 20px; } 
-            .hero-title { font-size: 22px; flex-wrap: wrap; } 
-            .hero-desc { font-size: 13px; }
+            .hero-card { padding: 24px 20px; flex-direction: column; align-items: flex-start; gap: 20px; } 
+            .hero-header-left { width: 100%; }
+            .hero-stats { width: 100%; justify-content: flex-start; }
+            .hero-title { font-size: 20px; } 
+            
             .editor-footer { flex-direction: column; gap: 16px; align-items: flex-start; padding: 16px; } 
             .footer-actions { width: 100%; } 
             .btn-action { flex: 1; text-align: center; } 
@@ -277,13 +296,18 @@
 
     <div class="wrapper">
         <div class="hero-card" id="heroCard">
-            <h1 class="hero-title" id="uiRoomName">
-                <a href="collab-hub.html" class="btn-back" title="Kembali ke Lobi">🔙</a>
-                Memuat Ruang...
-            </h1>
-            <p class="hero-desc" id="uiRoomInfo">
-                <span class="live-indicator"></span> Menghubungkan...
-            </p>
+            <div class="hero-header-left">
+                <a href="collab-hub.html" class="btn-back" title="Kembali ke Lobi">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                        <line x1="19" y1="12" x2="5" y2="12"></line>
+                        <polyline points="12 19 5 12 12 5"></polyline>
+                    </svg>
+                </a>
+                <div class="hero-text">
+                    <h1 class="hero-title" id="uiRoomName">Memuat Ruang...</h1>
+                    <p class="hero-desc" id="uiRoomInfo"><span class="live-indicator"></span> Menghubungkan...</p>
+                </div>
+            </div>
             <div class="hero-stats" id="uiStats">
                 <div class="stat-pill">📝 Total: <span id="statTotal">0</span></div>
                 <div class="stat-pill">🕒 Draft: <span id="statDraft">0</span></div>
@@ -357,7 +381,7 @@
                 <div class="suggest-dropdown" id="categorySuggestions"></div>
             </div>
             
-            <textarea id="inputContent" class="input-content" placeholder="Mulai menulis cerita Anda..." autocomplete="off" oninput="handleTyping(); autoResizeContent(); triggerHistorySave()"></textarea>
+            <textarea id="inputContent" class="input-content" placeholder="Mulai menulis naskah kolaborasi..." autocomplete="off" oninput="handleTyping(); autoResizeContent(); triggerHistorySave()"></textarea>
         </div>
         
         <div class="editor-footer" id="editorFooter">
@@ -408,6 +432,8 @@
         window.currentFilter = 'all';
         window.currentSort = 'newest';
         window.currentPinned = false;
+        window.isRestored = false; // State status pulihan
+        
         window.currentPage = 1;
         window.itemsPerPage = 12; 
         
@@ -478,7 +504,7 @@
                     window.location.replace("collab-hub.html"); return;
                 }
                 window.roomData = docSnap.data();
-                document.getElementById('uiRoomName').innerHTML = `<a href="collab-hub.html" class="btn-back" title="Kembali ke Lobi">🔙</a> ${window.roomData.name}`;
+                document.getElementById('uiRoomName').innerText = window.roomData.name;
                 if(!window.isTrashView) document.getElementById('uiRoomInfo').innerHTML = `<span class="live-indicator"></span> Live • ${window.roomData.members.length} Anggota`;
             }, (error) => {
                 console.error("Error Akses Ruang:", error);
@@ -509,9 +535,9 @@
             const qTrash = query(collection(db, "collab_trash_scripts"), where("roomId", "==", currentRoomId));
             onSnapshot(qTrash, (snapshot) => {
                 window.trashData = snapshot.docs.map(d => ({ id: d.id, ...d.data() }));
-                checkAndCleanTrash(); // Bersihkan yang sudah 30 hari
+                checkAndCleanTrash(); 
                 if(window.isTrashView) window.renderList();
-                else generateDynamicChannels(); // Update counter di tombol trash
+                else generateDynamicChannels(); 
             }, (error) => { console.error("Error Akses Trash:", error); });
         }
 
@@ -539,7 +565,7 @@
             
             if(window.isTrashView) {
                 heroCard.classList.add('trash-mode');
-                uiInfo.innerHTML = `🗑️ Menampilkan naskah yang dihapus. Lenyap dalam 30 hari.`;
+                uiInfo.innerHTML = `🗑️ Menampilkan naskah yang dihapus. Lenyap otomatis dalam 30 hari.`;
                 uiStats.style.display = 'none';
                 fab.classList.add('hidden');
             } else {
@@ -597,9 +623,10 @@
                 creatorName: item.originalCreatorName || currentUserData.name,
                 title: item.title, 
                 content: item.content,
-                status: 'draft', // Kembalikan sebagai draft
+                status: 'draft', 
                 channel: item.channel || 'Umum', 
                 pinned: false, 
+                isRestored: true, // Berikan indikator bahwa ini hasil pulihan
                 createdAt: item.originalCreatedAt || Date.now(),
                 updatedAt: Date.now(),
                 lockedBy: null,
@@ -625,7 +652,7 @@
         // LOGIKA LOCKING & EDITOR
         // ==========================================
         window.openPopup = async function(id = null) {
-            if(window.isTrashView) return; // Tidak bisa edit di mode trash
+            if(window.isTrashView) return; 
             
             document.getElementById('editorPopup').classList.add('active');
             const titleEl = document.getElementById('inputTitle');
@@ -641,6 +668,7 @@
                 if (item) {
                     window.currentId = item.id; 
                     window.currentPinned = item.pinned || false;
+                    window.isRestored = item.isRestored || false;
                     titleEl.value = item.title; contentEl.value = item.content; catEl.value = item.channel || '';
                     
                     if (item.lockedBy && item.lockedBy !== currentUserUid) {
@@ -662,7 +690,7 @@
                     }
                 }
             } else {
-                window.currentId = null; window.currentPinned = false; window.isLockedByOther = false;
+                window.currentId = null; window.currentPinned = false; window.isLockedByOther = false; window.isRestored = false;
                 titleEl.value = ''; contentEl.value = ''; catEl.value = '';
                 lockBanner.classList.remove('active');
                 editorFooter.style.display = 'flex';
@@ -720,7 +748,8 @@
                 content: content,
                 status: status, 
                 channel: channel, 
-                pinned: window.currentPinned, 
+                pinned: window.currentPinned,
+                isRestored: window.isRestored, // Pertahankan badge pulihan
                 updatedAt: now,
                 createdAt: existingItem ? existingItem.createdAt : now,
                 lockedBy: releaseLock ? null : currentUserUid,
@@ -742,7 +771,13 @@
                 setTimeout(() => indicator.classList.remove('show'), 2000);
             }, 1000); 
         }
-        window.saveScript = function(status) { if(window.isLockedByOther) return; window.performSave(status, false, true); document.getElementById('editorPopup').classList.remove('active'); }
+        
+        window.saveScript = function(status) { 
+            if(window.isLockedByOther) return; 
+            window.isRestored = false; // Jika user secara eksplisit simpan, lencana 'Dipulihkan' dilepas
+            window.performSave(status, false, true); 
+            document.getElementById('editorPopup').classList.remove('active'); 
+        }
 
         // ==========================================
         // UI & TOOLS 
@@ -837,7 +872,6 @@
             const listContainer = document.getElementById('listContainer');
             const keyword = document.getElementById('searchInput').value.toLowerCase();
             
-            // Ambil sumber data sesuai mode aktif
             let data = window.isTrashView ? [...window.trashData] : [...window.scriptData]; 
             generateDynamicChannels();
 
@@ -896,16 +930,18 @@
                 paginatedData.forEach(item => {
                     let lockBadgeHTML = item.lockedBy ? `<div class="badge lock">🔒 ${item.lockedByName.split(' ')[0]}</div>` : '';
                     let authorBadgeHTML = `<div class="badge" style="background:transparent; border:1px solid var(--border); color:var(--text-muted);">👤 ${item.creatorName || 'Anonim'}</div>`;
+                    let restoredBadge = item.isRestored ? `<div class="badge restored">♻️ Dipulihkan</div>` : '';
 
                     html += `
                     <div class="card ${item.pinned ? 'pinned' : ''} ${item.status === 'done' ? 'completed' : ''}" onclick="openPopup('${item.id}')">
                         <div class="card-header">
                             <div class="card-title">${item.title}</div>
-                            ${item.pinned ? '<div title="Disematkan" style="font-size:16px;">📌</div>' : ''}
+                            ${item.pinned ? '<div title="Disematkan" style="font-size:16px; flex-shrink:0;">📌</div>' : ''}
                         </div>
                         <div class="card-preview">${item.content || '<em>Belum ada isi script...</em>'}</div>
                         <div class="card-bottom">
                             <div class="badges">
+                                ${restoredBadge}
                                 <div class="badge ch">${item.channel || 'Umum'}</div>
                                 <div class="badge ${item.status === 'done' ? 'done' : ''}">${item.status === 'draft' ? 'Draft' : 'Selesai'}</div>
                                 ${authorBadgeHTML}
@@ -920,25 +956,25 @@
                     let sisaHari = Math.ceil((item.expireAt - Date.now()) / (1000 * 60 * 60 * 24));
                     if(sisaHari < 0) sisaHari = 0;
                     
-                    let delInfo = `<div class="badge deleted" title="Dihapus oleh ${item.deletedByName}">🗑️ oleh ${item.deletedByName.split(' ')[0]}</div>`;
-                    let authorBadge = `<div class="badge" style="background:transparent; border:1px solid var(--border); color:var(--text-muted);">Kreator: ${item.originalCreatorName || 'Anonim'}</div>`;
+                    let delInfo = `<div class="badge deleted" title="Dihapus oleh ${item.deletedByName}">🗑️ ${item.deletedByName.split(' ')[0]}</div>`;
+                    let authorBadge = `<div class="badge" style="background:transparent; border:1px solid var(--border); color:var(--text-muted);">👤 Asli: ${item.originalCreatorName || 'Anonim'}</div>`;
 
                     html += `
                     <div class="card trash-card">
-                        <div class="card-header">
-                            <div class="card-title">${item.title}</div>
-                            <div style="font-size:11px; font-weight:800; color:var(--danger);">${sisaHari} hari tersisa</div>
+                        <div class="card-header" style="align-items: flex-start;">
+                            <div style="display:flex; flex-direction:column; gap:8px;">
+                                <div class="card-title">${item.title}</div>
+                                <div class="badge" style="color:var(--danger); background:var(--danger-soft); border-color:var(--danger-soft); width: fit-content; padding: 4px 8px;">⏳ Lenyap: ${sisaHari} Hari</div>
+                            </div>
+                            <button class="btn-card-action destroy" style="padding: 8px; width: 34px; height: 34px; justify-content: center; flex-shrink:0;" onclick="hardDeleteScript('${item.id}', event)" title="Hapus Permanen">🗑️</button>
                         </div>
-                        <div class="card-preview">${item.content || '<em>Naskah kosong</em>'}</div>
-                        <div class="card-bottom">
+                        <div class="card-preview" style="margin-bottom: 12px;">${item.content || '<em>Naskah kosong</em>'}</div>
+                        <div class="card-bottom" style="margin-top: 12px; border-top: 1px dashed var(--border); padding-top: 12px;">
                             <div class="badges">
                                 ${delInfo}
                                 ${authorBadge}
                             </div>
-                            <div class="card-actions" style="margin-top:12px;">
-                                <button class="btn-card-action restore" onclick="restoreScript('${item.id}', event)">♻️ Pulihkan</button>
-                                <button class="btn-card-action destroy" onclick="hardDeleteScript('${item.id}', event)">❌ Musnahkan</button>
-                            </div>
+                            <button class="btn-card-action restore" onclick="restoreScript('${item.id}', event)">♻️ Pulihkan</button>
                         </div>
                     </div>`;
                 });
