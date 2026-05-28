@@ -249,15 +249,22 @@
                     const q = fsMod.query(fsMod.collection(dbRef, "creative_trash"), fsMod.where("uid", "==", currentUserUid));
                     const snap = await fsMod.getDocs(q);
                     
+                    // OPTIMASI: Kumpulkan antrean penghapusan otomatis
+                    let autoDeletePromises = [];
+
                     for (let document of snap.docs) {
                         const data = { id: document.id, ...document.data() };
                         // Validasi 30 Hari: Data expired dihancurkan otomatis
                         if (data.expireAt < now) {
-                            await fsMod.deleteDoc(fsMod.doc(dbRef, "creative_trash", document.id));
+                            autoDeletePromises.push(fsMod.deleteDoc(fsMod.doc(dbRef, "creative_trash", document.id)));
                         } else {
                             validTrash.push(data);
                         }
                     }
+                    
+                    // Eksekusi penghapusan massal jika ada item kadaluarsa
+                    if (autoDeletePromises.length > 0) await Promise.all(autoDeletePromises);
+
                 } else {
                     let localData = JSON.parse(localStorage.getItem('creative_trash')) || [];
                     validTrash = localData.filter(i => i.expireAt > now);
@@ -288,6 +295,8 @@
             if(itemIndex === -1) return;
             const item = window.trashData[itemIndex];
 
+            // UPDATE UI OPTIMISTIS & BUAT CADANGAN
+            const backupData = [...window.trashData];
             window.trashData.splice(itemIndex, 1);
             window.renderTrash();
 
@@ -360,17 +369,29 @@
 
             } catch (error) {
                 alert("Gagal memulihkan: " + error.message);
-                await fetchTrash(); 
+                // KEMBALIKAN UI KE AWAL JIKA GAGAL (GHOST UI FIX)
+                window.trashData = backupData;
+                window.renderTrash();
             }
         }
 
         window.deletePermanently = async function(id) {
             if (confirm("Hapus permanen item ini? Tindakan ini tidak dapat dibatalkan.")) {
+                
+                // UPDATE UI OPTIMISTIS & BUAT CADANGAN
+                const backupData = [...window.trashData];
                 window.trashData = window.trashData.filter(x => x.id !== id);
                 window.renderTrash();
                 
                 if(USE_FIREBASE) {
-                    await fsMod.deleteDoc(fsMod.doc(dbRef, "creative_trash", id));
+                    try {
+                        await fsMod.deleteDoc(fsMod.doc(dbRef, "creative_trash", id));
+                    } catch (error) {
+                        alert("Gagal menghapus: " + error.message);
+                        // KEMBALIKAN UI KE AWAL JIKA GAGAL (GHOST UI FIX)
+                        window.trashData = backupData;
+                        window.renderTrash();
+                    }
                 } else {
                     let trashLocal = JSON.parse(localStorage.getItem('creative_trash'));
                     localStorage.setItem('creative_trash', JSON.stringify(trashLocal.filter(x => x.id !== id)));
@@ -386,13 +407,25 @@
             if (itemsToDelete.length === 0) return alert("Tidak ada item untuk dikosongkan.");
             
             if (confirm(`Kosongkan ${itemsToDelete.length} item secara permanen?`)) {
+                
+                // UPDATE UI OPTIMISTIS & BUAT CADANGAN
+                const backupData = [...window.trashData];
                 if (window.currentFilter === 'all') window.trashData = [];
                 else window.trashData = window.trashData.filter(x => x.type !== window.currentFilter);
                 window.renderTrash();
 
                 if(USE_FIREBASE) {
-                    for (let item of itemsToDelete) {
-                        await fsMod.deleteDoc(fsMod.doc(dbRef, "creative_trash", item.id));
+                    try {
+                        // OPTIMASI: Eksekusi hapus massal secara paralel agar tidak freeze
+                        const deletePromises = itemsToDelete.map(item => 
+                            fsMod.deleteDoc(fsMod.doc(dbRef, "creative_trash", item.id))
+                        );
+                        await Promise.all(deletePromises);
+                    } catch (error) {
+                        alert("Sebagian item gagal dikosongkan: " + error.message);
+                        // KEMBALIKAN UI KE AWAL JIKA GAGAL (GHOST UI FIX)
+                        window.trashData = backupData;
+                        window.renderTrash();
                     }
                 } else {
                     let trashLocal = JSON.parse(localStorage.getItem('creative_trash'));
