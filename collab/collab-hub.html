@@ -144,8 +144,8 @@
                 <label>Jenis Ruang</label>
                 <select class="modal-select" id="roomTypeInput">
                     <option value="Idea Board">💡 Idea Board (Konten)</option>
-                    <option value="Script" disabled>📝 Script (Segera)</option>
-                    <option value="Notes" disabled>📒 Notes (Segera)</option>
+                    <option value="Script">📝 Script (Naskah)</option>
+                    <option value="Notes">📒 Notes (Catatan)</option>
                 </select>
             </div>
             
@@ -270,9 +270,10 @@
                     : `<button class="danger" onclick="event.preventDefault(); window.leaveRoom('${room.id}', '${room.name}')">🚪 Keluar dari Ruang</button>`;
 
                 // Dinamis mengarahkan link berdasarkan tipe ruang
-                // Karena kita baru punya collab-ideas.html, kita arahkan ke sana
                 let targetUrl = "javascript:void(0)";
                 if (room.type === "Idea Board") targetUrl = `collab-ideas.html?id=${room.id}`;
+                else if (room.type === "Script") targetUrl = `collab-script.html?id=${room.id}`;
+                else if (room.type === "Notes") targetUrl = `collab-notes.html?id=${room.id}`;
 
                 return `
                 <a href="${targetUrl}" class="board-card" id="room_card_${room.id}">
@@ -427,18 +428,27 @@
         };
 
         window.deleteRoom = async (roomId, roomName) => {
-            if(!confirm(`PERINGATAN! Hapus Permanen ruang "${roomName}"? Semua ide kolaborasi di dalamnya akan lenyap bagi semua orang.`)) return;
+            if(!confirm(`PERINGATAN! Hapus Permanen ruang "${roomName}"? Semua data kolaborasi di dalamnya akan lenyap bagi semua orang.`)) return;
             
             try {
-                // Menghapus Dokumen Papan
+                // Menghapus Dokumen Papan Utama
                 await deleteDoc(doc(dbRef, "collab_boards", roomId));
                 
-                // (Bonus Ekstra) Menghapus semua Ide yang nyangkut di Papan ini agar database bersih
-                const qIdeas = query(collection(dbRef, "collab_ideas"), where("boardId", "==", roomId));
+                // (Pembersihan Lanjutan) Menghapus Ide, Script, dan Notes yang nyangkut di Papan ini
+                // 1. Bersihkan Ide
+                const qIdeas = query(collection(dbRef, "collab_ideas"), where("roomId", "==", roomId));
                 const snapIdeas = await getDocs(qIdeas);
-                snapIdeas.forEach(async (ideaDoc) => {
-                    await deleteDoc(doc(dbRef, "collab_ideas", ideaDoc.id));
-                });
+                snapIdeas.forEach(async (docSnap) => await deleteDoc(doc(dbRef, "collab_ideas", docSnap.id)));
+                
+                // 2. Bersihkan Script
+                const qScripts = query(collection(dbRef, "collab_scripts"), where("roomId", "==", roomId));
+                const snapScripts = await getDocs(qScripts);
+                snapScripts.forEach(async (docSnap) => await deleteDoc(doc(dbRef, "collab_scripts", docSnap.id)));
+                
+                // 3. Bersihkan Notes (Jika nanti struktur koleksinya 'collab_notes')
+                const qNotes = query(collection(dbRef, "collab_notes"), where("roomId", "==", roomId));
+                const snapNotes = await getDocs(qNotes);
+                snapNotes.forEach(async (docSnap) => await deleteDoc(doc(dbRef, "collab_notes", docSnap.id)));
                 
                 // onSnapshot akan otomatis menghilangkan ruang ini dari layar
             } catch (e) { console.error(e); }
