@@ -437,6 +437,9 @@
             window.resizeTimeout = setTimeout(window.updateItemsPerPage, 200);
         });
 
+        // ==========================================
+        // PENINGKATAN PENANGANAN ERROR DATABASE
+        // ==========================================
         async function loadDataFromCloud() {
             try {
                 const q = query(collection(db, "creative_notes_v2"), where("uid", "==", currentUserUid));
@@ -445,7 +448,15 @@
                 window.notesData = snap.docs.map(doc => ({ id: doc.id, ...doc.data() }));
                 window.renderNotes();
             } catch (error) {
-                document.getElementById('notesList').innerHTML = `<div class="empty-state">Gagal memuat data dari server.<br>${error.message}</div>`;
+                console.error("Error memuat data dari cloud:", error);
+                document.getElementById('notesList').innerHTML = `
+                    <div class="empty-state" style="border-color: var(--danger); background: rgba(239, 68, 68, 0.05);">
+                        <div class="empty-state-icon" style="color: var(--danger);">🔒</div>
+                        <div class="empty-state-text" style="color: var(--danger); font-weight: 700;">
+                            Akses Database Ditolak (Missing Permissions).<br>Pastikan Anda sudah menambahkan Firebase Rules untuk Notes.
+                        </div>
+                    </div>`;
+                document.getElementById('paginationContainer').innerHTML = '';
             }
         }
 
@@ -609,7 +620,12 @@
             if(!isAuto) window.renderNotes();
 
             if (USE_FIREBASE) {
-                try { await setDoc(doc(db, "creative_notes_v2", docId), payload); } catch (e) {}
+                try { 
+                    await setDoc(doc(db, "creative_notes_v2", docId), payload); 
+                } catch (e) {
+                    console.error("Gagal menyimpan ke cloud:", e);
+                    if (!isAuto) alert("Gagal menyimpan catatan. Pastikan koneksi internet stabil dan Firebase Rules sudah diatur.");
+                }
             } else {
                 localStorage.setItem('creative_notes_v2', JSON.stringify(window.notesData));
             }
@@ -637,11 +653,16 @@
 
             window.notesData.splice(itemIndex, 1);
             window.closeEditor(); 
-            window.renderNotes(); // Render otomatis menyesuaikan currentPage yang kosong
+            window.renderNotes(); 
 
             if (USE_FIREBASE) {
-                await setDoc(doc(db, "creative_trash", trashId), trashPayload);
-                await deleteDoc(doc(db, "creative_notes_v2", item.id));
+                try {
+                    await setDoc(doc(db, "creative_trash", trashId), trashPayload);
+                    await deleteDoc(doc(db, "creative_notes_v2", item.id));
+                } catch (e) {
+                    console.error("Gagal memindahkan ke trash:", e);
+                    alert("Gagal menghapus catatan. Pastikan Firebase Rules sudah diatur.");
+                }
             } else {
                 let trashData = JSON.parse(localStorage.getItem('creative_trash')) || [];
                 trashData.push({ id: trashId, ...trashPayload });
@@ -811,10 +832,10 @@
                 return title.includes(keyword) || content.includes(keyword);
             });
 
-            // Update Total Badge (Tampilkan Total Seluruh Data Hasil Filter)
+            // Update Total Badge
             document.getElementById('totalBadge').innerText = `${data.length} Catatan`;
 
-            // TAHAP 2: KALKULASI PAGINATION (Mencegah Layar Blank)
+            // TAHAP 2: KALKULASI PAGINATION
             const totalItems = data.length;
             const totalPages = Math.ceil(totalItems / window.itemsPerPage);
             
