@@ -744,12 +744,16 @@
             if (!window.isLockedByOther) {
                 const title = document.getElementById('titleInput').value.trim();
                 const content = document.getElementById('contentInput').value.trim();
+                
                 if(title || content) {
-                    await window.performSave(true, true); // true kedua = lepas kunci gembok
+                    await window.performSave(true, true); // Lepas kunci gembok dan simpan
                 } else if (window.currentId) {
+                    // Jika catatan kosong saat ditutup, pastikan gembok dilepas
                     await updateDoc(doc(db, "collab_notes", window.currentId), { lockedBy: null, lockedByName: null });
                 }
             }
+            
+            // Tutup UI Editor
             document.getElementById('editor').classList.remove('active');
             window.currentId = null;
             window.isLockedByOther = false;
@@ -781,14 +785,19 @@
                 lockedByName: releaseLock ? null : currentUserData.name
             };
 
-            // Hapus Badge Restored otomatis via deleteField jika ada
+            // Hapus Badge Restored otomatis via deleteField
             if (window.isRestored) {
                 payload.isRestored = true;
             } else {
                 payload.isRestored = deleteField();
             }
 
-            try { await setDoc(doc(db, "collab_notes", docId), payload); } catch (e) { console.error(e); }
+            // PERBAIKAN: Menambahkan { merge: true } agar deleteField() diterima oleh Firebase
+            try { 
+                await setDoc(doc(db, "collab_notes", docId), payload, { merge: true }); 
+            } catch (e) { 
+                console.error("Gagal menyimpan data ke Firebase:", e); 
+            }
         }
 
         window.triggerAutoSave = function() {
@@ -805,8 +814,11 @@
         
         window.saveNote = function() { 
             if(window.isLockedByOther) return; 
-            window.isRestored = false; // Copot lencana dipulihkan jika disimpan manual
-            window.performSave(false, true); 
+            window.isRestored = false; 
+            
+            // PERBAIKAN: Langsung panggil closeEditor() saja karena di dalamnya 
+            // sudah ada logika yang secara otomatis memanggil window.performSave(true, true)
+            // Ini mencegah penyimpanan ganda dalam waktu sepersekian detik.
             window.closeEditor(); 
         }
 
