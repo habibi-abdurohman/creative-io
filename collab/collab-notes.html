@@ -401,8 +401,8 @@
     <script type="module">
         import { auth, db } from "../js/firebase.js";
         import { onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
-        // UPDATE: Penambahan getDoc untuk Name Cache dan deleteField untuk Badge Removal
-        import { onSnapshot, collection, query, where, doc, setDoc, getDoc, deleteDoc, updateDoc, deleteField } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
+        // UPDATE: Penyesuaian murni ke onSnapshot untuk Name Cache Real-Time dan deleteField untuk Badge
+        import { onSnapshot, collection, query, where, doc, setDoc, deleteDoc, updateDoc, deleteField } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
 
         // Ambil ID Parameter Ruang
         const urlParams = new URLSearchParams(window.location.search);
@@ -414,7 +414,10 @@
         window.roomData = null;
         window.notesData = [];
         window.trashData = [];
-        window.userCache = {}; // Cache nama dinamis client-side
+        
+        // Cache nama dinamis client-side & Registry Listener Profil
+        window.userCache = {}; 
+        window.userListeners = {}; 
         
         window.currentId = null;
         window.isLockedByOther = false;
@@ -504,31 +507,36 @@
                 document.getElementById('notesList').innerHTML = `<div class="empty-state" style="border-color: var(--danger); background: var(--danger-soft);"><div class="empty-state-icon" style="color: var(--danger);">🔒</div><div class="empty-state-text" style="color: var(--danger); font-weight: 700;">Akses Ruang Ditolak Database. Pastikan Rules Firebase diatur.</div></div>`;
             });
 
-            // 2. Ambil List Catatan Aktif (Dengan Name Cache Fetcher)
+            // 2. Ambil List Catatan Aktif & Terapkan Radar Name Sync Real-Time
             const qNotes = query(collection(db, "collab_notes"), where("roomId", "==", currentRoomId));
-            onSnapshot(qNotes, async (snapshot) => {
+            onSnapshot(qNotes, (snapshot) => {
                 window.notesData = snapshot.docs.map(d => ({ id: d.id, ...d.data() }));
                 
-                let uidsToFetch = new Set();
+                let allUids = new Set();
                 window.notesData.forEach(item => {
-                    if (item.uid) uidsToFetch.add(item.uid);
-                    if (item.lockedBy) uidsToFetch.add(item.lockedBy);
+                    if (item.uid) allUids.add(item.uid);
+                    if (item.lockedBy) allUids.add(item.lockedBy);
                 });
 
-                const fetchPromises = [];
-                uidsToFetch.forEach(uid => {
-                    if (!window.userCache[uid]) {
-                        window.userCache[uid] = { name: "Memuat..." };
-                        const p = getDoc(doc(db, "users", uid)).then(uDoc => {
+                allUids.forEach(uid => {
+                    if (!window.userListeners[uid]) {
+                        window.userListeners[uid] = onSnapshot(doc(db, "users", uid), (uDoc) => {
                             window.userCache[uid] = uDoc.exists() ? uDoc.data() : { name: "Anonim" };
-                        }).catch(() => {
-                            window.userCache[uid] = { name: "Anonim" };
+                            
+                            // Jika ada catatan yang sedang dilihat dan dikunci orang lain, segarkan banner
+                            if (window.currentId && window.isLockedByOther && !window.isTrashView) {
+                                const liveItem = window.notesData.find(x => x.id === window.currentId);
+                                if (liveItem && liveItem.lockedBy === uid) {
+                                    const lockedByNameSync = window.userCache[uid].name || window.userCache[uid].displayName || "Seseorang";
+                                    document.getElementById('lockBanner').innerText = `🔒 Sedang diedit oleh ${lockedByNameSync.split(' ')[0]}`;
+                                }
+                            }
+                            
+                            // Segarkan kartu tampilan
+                            if (!window.isTrashView) window.renderNotes();
                         });
-                        fetchPromises.push(p);
                     }
                 });
-
-                if (fetchPromises.length > 0) await Promise.all(fetchPromises);
                 
                 // Jika sedang membuka catatan yang diedit orang lain, lakukan live sync teks
                 if (window.currentId && window.isLockedByOther && !window.isTrashView) {
@@ -542,32 +550,26 @@
                 if(!window.isTrashView) window.renderNotes();
             }, (error) => { console.error(error); });
 
-            // 3. Ambil List Sampah (Trash) & Luncurkan Sweeper Otomatis (Dengan Name Cache)
+            // 3. Ambil List Sampah (Trash) & Luncurkan Sweeper Otomatis dengan Radar Profile
             const qTrash = query(collection(db, "collab_trash_notes"), where("roomId", "==", currentRoomId));
-            onSnapshot(qTrash, async (snapshot) => {
+            onSnapshot(qTrash, (snapshot) => {
                 window.trashData = snapshot.docs.map(d => ({ id: d.id, ...d.data() }));
                 executeTrashSweeper(); 
                 
-                let uidsToFetch = new Set();
+                let allUids = new Set();
                 window.trashData.forEach(item => {
-                    if (item.deletedByUid) uidsToFetch.add(item.deletedByUid);
-                    if (item.originalUid) uidsToFetch.add(item.originalUid);
+                    if (item.deletedByUid) allUids.add(item.deletedByUid);
+                    if (item.originalUid) allUids.add(item.originalUid);
                 });
 
-                const fetchPromises = [];
-                uidsToFetch.forEach(uid => {
-                    if (!window.userCache[uid]) {
-                        window.userCache[uid] = { name: "Memuat..." };
-                        const p = getDoc(doc(db, "users", uid)).then(uDoc => {
+                allUids.forEach(uid => {
+                    if (!window.userListeners[uid]) {
+                        window.userListeners[uid] = onSnapshot(doc(db, "users", uid), (uDoc) => {
                             window.userCache[uid] = uDoc.exists() ? uDoc.data() : { name: "Anonim" };
-                        }).catch(() => {
-                            window.userCache[uid] = { name: "Anonim" };
+                            if (window.isTrashView) window.renderNotes();
                         });
-                        fetchPromises.push(p);
                     }
                 });
-
-                if (fetchPromises.length > 0) await Promise.all(fetchPromises);
 
                 if(window.isTrashView) window.renderNotes();
                 else window.renderFilterButtons();
