@@ -15,7 +15,21 @@
         * { margin: 0; padding: 0; box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
         *::-webkit-scrollbar { display: none; }
         :root { --bg-grad: linear-gradient(180deg, #f8fbff 0%, #eef4ff 100%); --card-glass: rgba(255, 255, 255, 0.9); --card-solid: #ffffff; --card-tint: #f1f5f9; --border: #e2e8f0; --text-main: #0f172a; --text-muted: #64748b; --primary: #2563eb; --primary-grad: linear-gradient(135deg, #3b82f6, #2563eb); --primary-soft: rgba(37, 99, 235, 0.1); --success: #16a34a; --danger: #ef4444; --warning: #f59e0b; --shadow-flat: 0 4px 20px rgba(0, 0, 0, 0.04); --radius-btn: 14px; --radius-card: 24px; }
-        body.dark { --bg-grad: linear-gradient(180deg, #0f172a 0%, #1e293b 100%); --card-glass: rgba(30, 41, 59, 0.9); --card-solid: #1e293b; --card-tint: #0f172a; --border: #334155; --text-main: #f8fafc; --text-muted: #94a3b8; --primary-soft: rgba(59, 130, 246, 0.2); --shadow-flat: 0 4px 20px rgba(0, 0, 0, 0.2); --danger-soft: rgba(239, 68, 68, 0.15); }
+        
+        /* PENYEMPURNAAN DARK MODE */
+        body.dark { 
+            --bg-grad: linear-gradient(180deg, #0f172a 0%, #1e293b 100%); 
+            --card-glass: rgba(30, 41, 59, 0.9); 
+            --card-solid: #1e293b; 
+            --card-tint: #0f172a; 
+            --border: #334155; 
+            --text-main: #f8fafc; 
+            --text-muted: #cbd5e1; 
+            --primary-soft: rgba(59, 130, 246, 0.2); 
+            --shadow-flat: 0 10px 30px rgba(0, 0, 0, 0.4); 
+            --danger-soft: rgba(239, 68, 68, 0.15); 
+        }
+        
         body { font-family: 'Inter', system-ui, sans-serif; background: var(--bg-grad); color: var(--text-main); min-height: 100vh; padding: 86px 16px 100px; transition: background 0.3s, color 0.3s; overflow-x: hidden; width: 100vw; max-width: 100%; }
         
         .bg-glow { position: fixed; border-radius: 50%; filter: blur(90px); z-index: 0; opacity: 0.5; pointer-events: none; }
@@ -81,9 +95,12 @@
         .dropdown-wrap { position: relative; }
         .btn-dots { background: transparent; border: none; font-size: 20px; font-weight: 900; color: var(--text-muted); cursor: pointer; display: flex; align-items: center; justify-content: center; padding: 4px 8px; transition: 0.2s; border-radius: 10px; outline: none; }
         .btn-dots:hover { background: rgba(0,0,0,0.05); color: var(--text-main); }
-        body.dark .btn-dots:hover { background: rgba(255,255,255,0.1); }
+        body.dark .btn-dots { color: #94a3b8; } 
+        body.dark .btn-dots:hover { background: rgba(255,255,255,0.15); color: #ffffff; }
         
         .dropdown-menu { position: absolute; top: 100%; right: 0; margin-top: 8px; background: var(--card-solid); border: 1px solid var(--border); border-radius: 14px; padding: 8px; display: none; flex-direction: column; gap: 2px; min-width: 170px; box-shadow: 0 10px 40px rgba(0,0,0,0.1); z-index: 1000; }
+        body.dark .dropdown-menu { box-shadow: 0 10px 40px rgba(0,0,0,0.5); }
+        
         .dropdown-menu.active { display: flex; }
         .dropdown-menu button { background: transparent; border: none; padding: 10px 12px; border-radius: 10px; font-size: 13px; font-weight: 700; color: var(--text-main); text-align: left; cursor: pointer; display: flex; align-items: center; gap: 10px; width: 100%; }
         .dropdown-menu button:hover { background: var(--card-tint); }
@@ -135,7 +152,7 @@
         .badge { display: inline-flex; align-items: flex-start; gap: 4px; background: var(--card-tint); color: var(--text-muted); border: 1px solid var(--border); padding: 6px 10px; border-radius: 8px; font-size: 11px; font-weight: 800; white-space: normal; word-break: break-word; text-align: left; line-height: 1.4; width: fit-content; max-width: 100%; }
         .badge.restored { background: rgba(245, 158, 11, 0.1); color: var(--warning); border-color: rgba(245, 158, 11, 0.2); }
         .badge.creator { background: var(--primary-soft); color: var(--primary); border-color: rgba(37,99,235,0.2); }
-        /* LENCANA GEMBOK BARU */
+        
         .badge.lock { background: var(--warning); color: white; border: none; font-weight: 800; animation: flash 1.5s infinite alternate; }
         @keyframes flash { from { opacity: 0.7; } to { opacity: 1; } }
         
@@ -157,7 +174,6 @@
         .btn-done { color: var(--border); font-size: 16px; font-weight: 900; }
         .btn-done.active { background: var(--success); border-color: var(--success); color: white; }
         .btn-del { color: var(--danger); }
-        /* KELAS DISABLED UNTUK TOMBOL SAAT DIGEMBOK */
         .btn-icon.disabled { opacity: 0.3; pointer-events: none; cursor: not-allowed; }
         
         .idea-item.completed { opacity: 0.55; background: var(--card-tint); border-style: dashed; }
@@ -354,7 +370,8 @@
     <script src="../js/pwa.js"></script>
 
     <script type="module">
-        import { onSnapshot, collection, query, where, doc, setDoc, updateDoc, deleteDoc, arrayUnion, arrayRemove } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
+        // UPDATE 1: Import getDoc & deleteField untuk Real-time Name Sync dan Badge Removal
+        import { onSnapshot, collection, query, where, doc, setDoc, getDoc, updateDoc, deleteDoc, arrayUnion, arrayRemove, deleteField } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
         
         let currentUserUid = null;
         let currentUserData = { name: "Anonim" };
@@ -364,10 +381,11 @@
         const urlParams = new URLSearchParams(window.location.search);
         const currentRoomId = urlParams.get('id');
         
-        // Variabel Data Global
+        // Variabel Data Global & CACHE
         window.roomData = null;
         window.boards = [];
         window.ideas = [];
+        window.userCache = {}; // UPDATE 2: Cache lokal untuk menyimpan nama anggota (Hemat Read Database)
         let isIdeasLoaded = false;
         
         // State UI
@@ -419,7 +437,6 @@
             });
         });
 
-        // Pembersihan Kunci Gembok jika tab/browser ditutup paksa
         window.addEventListener('beforeunload', () => {
             if (window.editCurrentId) {
                 updateDoc(doc(dbRef, "collab_ideas", window.editCurrentId), { lockedBy: null, lockedByName: null }).catch(()=>{});
@@ -427,10 +444,10 @@
         });
 
         function initRealtimeCollab() {
-            // 1. Dengar Data Ruang
+            // 1. Dengar Data Ruang (TERMASUK PROTEKSI REAL-TIME KICK)
             onSnapshot(doc(dbRef, "collab_boards", currentRoomId), (docSnap) => {
                 if (!docSnap.exists() || !docSnap.data().members.includes(currentUserUid)) {
-                    alert("Akses Ditolak: Anda bukan anggota, atau ruang telah dihapus oleh pemilik.");
+                    alert("Akses Ditolak: Anda dikeluarkan dari ruang, atau ruang telah dihapus oleh Admin.");
                     window.location.replace("collab-hub.html");
                     return;
                 }
@@ -442,45 +459,66 @@
                 processAndRender();
             });
 
-            // 2. Dengar Ide Konten (collab_ideas) + GARBAGE COLLECTION 30 HARI
+            // 2. Dengar Ide Konten + Cache System Sync Name
             const qIdeas = query(collection(dbRef, "collab_ideas"), where("roomId", "==", currentRoomId));
-            onSnapshot(qIdeas, (snapshot) => {
+            onSnapshot(qIdeas, async (snapshot) => {
                 const now = Date.now();
                 let validIdeas = [];
+                let uidsToFetch = new Set(); // Kumpulkan UID yang butuh diterjemahkan ke nama
                 
                 snapshot.docs.forEach((docSnap) => {
                     let ideaData = { id: docSnap.id, ...docSnap.data() };
-                    // CEK 30 HARI AUTO DESTROY
+                    
                     if (ideaData.boardId === COLLAB_TRASH_BOARD_ID && ideaData.expireAt && ideaData.expireAt < now) {
                         deleteDoc(doc(dbRef, "collab_ideas", ideaData.id)).catch(e => console.error(e));
                     } else {
                         validIdeas.push(ideaData);
+                        
+                        // Kumpulkan UID yang terlibat dalam dokumen ini
+                        if (ideaData.creatorUid) uidsToFetch.add(ideaData.creatorUid);
+                        if (ideaData.deletedByUid) uidsToFetch.add(ideaData.deletedByUid);
+                        if (ideaData.lockedBy) uidsToFetch.add(ideaData.lockedBy);
                     }
                 });
                 
+                // UPDATE 3: Fetching Data Profil secara Dinamis dan Asinkron (Hanya untuk UID yang belum ada di cache)
+                const fetchPromises = [];
+                uidsToFetch.forEach(uid => {
+                    if (!window.userCache[uid]) {
+                        window.userCache[uid] = { name: "Memuat..." };
+                        const p = getDoc(doc(dbRef, "users", uid)).then(uDoc => {
+                            window.userCache[uid] = uDoc.exists() ? uDoc.data() : { name: "Anonim" };
+                        }).catch(() => {
+                            window.userCache[uid] = { name: "Anonim" };
+                        });
+                        fetchPromises.push(p);
+                    }
+                });
+
+                if (fetchPromises.length > 0) {
+                    await Promise.all(fetchPromises); // Tunggu sampai semua nama baru tertarik dari Firestore Database
+                }
+
                 window.ideas = validIdeas;
                 isIdeasLoaded = true;
                 processAndRender();
             });
         }
 
-        // FUNGSI PENGGABUNG: Menyatukan Papan Normal dan Papan Trash Virtual
         function processAndRender() {
             if (!window.roomData || !isIdeasLoaded) return;
             
-            // Kloning array papan asli dari database
             let currentBoards = JSON.parse(JSON.stringify(window.roomData.innerBoards || []));
             
-            // Cek apakah ada ide sampah, jika ada tambahkan Papan Pulihan secara virtual ke UI
             const hasTrashIdeas = window.ideas.some(i => i.boardId === COLLAB_TRASH_BOARD_ID);
             if (hasTrashIdeas) {
                 currentBoards.push({
                     id: COLLAB_TRASH_BOARD_ID,
-                    name: "Papan Pulihan (Trash) Tim", // Nama virtual tanpa ikon recycle ganda
+                    name: "Papan Pulihan (Trash) Tim",
                     createdAt: Date.now(),
                     updatedAt: Date.now(),
                     done: false,
-                    isVirtual: true // Tanda bahwa papan ini tidak disimpan di database
+                    isVirtual: true
                 });
             }
             
@@ -627,32 +665,35 @@
 
             listArea.innerHTML = ideasInBoard.map(i => {
                 const isLockedByOther = i.lockedBy && i.lockedBy !== currentUserUid;
+                
+                // UPDATE 4: Implementasi Real-time Name Sync dengan Fallback
+                const creatorNameSync = (i.creatorUid && window.userCache[i.creatorUid]) ? (window.userCache[i.creatorUid].name || window.userCache[i.creatorUid].displayName || "Anonim") : (i.creatorName || "Anonim");
+                const deletedByNameSync = (i.deletedByUid && window.userCache[i.deletedByUid]) ? (window.userCache[i.deletedByUid].name || window.userCache[i.deletedByUid].displayName || "Anonim") : (i.deletedBy || "Anonim");
+                const lockedByNameSync = (i.lockedBy && window.userCache[i.lockedBy]) ? (window.userCache[i.lockedBy].name || window.userCache[i.lockedBy].displayName || "Anonim") : (i.lockedByName || "Anonim");
+
                 let badgeGroupHTML = `<div class="badge-group">`;
                 
-                // INJEKSI LENCANA GEMBOK JIKA SEDANG DIEDIT ORANG LAIN
                 if (isLockedByOther) {
-                    badgeGroupHTML += `<div class="badge lock">🔒 Diedit ${i.lockedByName.split(' ')[0]}</div>`;
+                    badgeGroupHTML += `<div class="badge lock">🔒 Diedit ${lockedByNameSync.split(' ')[0]}</div>`;
                 }
                 
-                // Konfigurasi Badge Berdasarkan Papan (Normal / Trash)
                 if (isPulihan) {
                     const daysLeft = Math.max(0, Math.ceil((i.expireAt - Date.now()) / (1000*60*60*24)));
                     badgeGroupHTML += `<div class="badge" style="color:var(--danger); background:var(--danger-soft); border-color:var(--danger-soft);">⏳ Lenyap: ${daysLeft} Hari</div>`;
                     badgeGroupHTML += `<div class="badge">📅 ${i.date}</div>`;
-                    badgeGroupHTML += `<div class="badge creator" title="Dihapus oleh ${i.deletedBy}">🗑️ ${i.deletedBy}</div>`;
+                    badgeGroupHTML += `<div class="badge creator" title="Dihapus oleh ${deletedByNameSync}">🗑️ ${deletedByNameSync}</div>`;
                 } else {
                     if (i.isRestored) {
                         badgeGroupHTML += `<div class="badge restored">♻️ Dipulihkan</div>`;
                     }
                     badgeGroupHTML += `<div class="badge">📅 ${i.date}</div>`;
-                    badgeGroupHTML += `<div class="badge creator" title="Ditambahkan oleh ${i.creatorName}">👤 ${i.creatorName}</div>`;
+                    badgeGroupHTML += `<div class="badge creator" title="Ditambahkan oleh ${creatorNameSync}">👤 ${creatorNameSync}</div>`;
                 }
                 badgeGroupHTML += `</div>`;
                 
                 const linkDisplay = (i.link === '-' || !i.link) ? 'Tidak ada tautan referensi' : i.link;
                 const delTitle = isPulihan ? "Hapus Permanen" : "Hapus ke Trash";
                 
-                // Konfigurasi Status Tombol (Dinonaktifkan jika dikunci)
                 const editBtnClass = isLockedByOther ? "btn-icon btn-edit disabled" : "btn-icon btn-edit";
                 const doneBtnHTML = isPulihan ? "" : `<button class="btn-icon btn-done ${i.done ? "active" : ""} ${isLockedByOther ? "disabled" : ""}" onclick="toggleDone('${i.id}')" title="Tandai Selesai">✓</button>`;
                 const delBtnClass = isLockedByOther ? "btn-icon btn-del disabled" : "btn-icon btn-del";
@@ -809,7 +850,7 @@
         }
 
         // ==========================================
-        // KONTROL IDE (KONTEN TIM) + ENGINE LITE-LOCK
+        // KONTROL IDE (KONTEN TIM)
         // ==========================================
         window.addIdea = async () => {
             if(!window.currentViewBoardId) return;
@@ -824,7 +865,7 @@
                 roomId: currentRoomId, 
                 boardId: window.currentViewBoardId, 
                 creatorUid: currentUserUid, 
-                creatorName: currentUserData.name, 
+                creatorName: currentUserData.name, // Disimpan sebagai fallback legacy
                 title, date, link, 
                 done: false, 
                 createdAt: Date.now(),
@@ -842,7 +883,7 @@
 
         window.deleteIdea = async (ideaId, isAlreadyTrashed) => {
             const idea = window.ideas.find(i => i.id === ideaId);
-            if(!idea || (idea.lockedBy && idea.lockedBy !== currentUserUid)) return; // Blokir jika sedang digembok
+            if(!idea || (idea.lockedBy && idea.lockedBy !== currentUserUid)) return; 
             
             if (isAlreadyTrashed) {
                 if(!confirm("Hapus permanen ide ini? Anggota tim tidak akan bisa memulihkannya lagi.")) return;
@@ -854,7 +895,8 @@
                     await updateDoc(doc(dbRef, "collab_ideas", ideaId), { 
                         boardId: COLLAB_TRASH_BOARD_ID, 
                         expireAt: expireTime, 
-                        deletedBy: currentUserData.name
+                        deletedByUid: currentUserUid, // UPDATE: Simpan UID untuk sinkronisasi nama dinamis
+                        deletedBy: currentUserData.name 
                     }); 
                 } catch(e) { console.error(e); }
             }
@@ -864,15 +906,14 @@
             const idea = window.ideas.find(i => i.id === ideaId);
             if(!idea) return;
             
-            // PROTEKSI AWAL: Tolak akses jika ide sedang dikerjakan orang lain
             if (idea.lockedBy && idea.lockedBy !== currentUserUid) {
-                alert(`Maaf, ide ini sedang diedit oleh ${idea.lockedByName}. Silakan tunggu sebentar.`);
+                const lockName = (idea.lockedBy && window.userCache[idea.lockedBy]) ? (window.userCache[idea.lockedBy].name || "Seseorang") : "Seseorang";
+                alert(`Maaf, ide ini sedang diedit oleh ${lockName}. Silakan tunggu sebentar.`);
                 return;
             }
             
             window.editCurrentId = ideaId;
             
-            // LOCK IDE DI DATABASE
             try {
                 await updateDoc(doc(dbRef, "collab_ideas", ideaId), { 
                     lockedBy: currentUserUid, 
@@ -900,10 +941,9 @@
         window.closeEditModal = async () => {
             document.getElementById('editIdeaModal').classList.remove('active');
             
-            // LEPASKAN GEMBOK SAAT MODAL DITUTUP (BATAL EDIT)
             if (window.editCurrentId) {
                 const ideaId = window.editCurrentId;
-                window.editCurrentId = null; // Kosongkan ID agar beforeunload tidak memicu update ganda
+                window.editCurrentId = null; 
                 try {
                     await updateDoc(doc(dbRef, "collab_ideas", ideaId), { lockedBy: null, lockedByName: null });
                 } catch(e) { console.error(e); }
@@ -921,26 +961,40 @@
             const link = document.getElementById('editLinkInput').value.trim() || "-";
             
             const ideaId = window.editCurrentId;
+            const idea = window.ideas.find(i => i.id === ideaId);
+            
+            // UPDATE 5: Logika Penghapusan Lencana Dipulihkan Otomatis
+            const wasTrashed = idea.boardId === COLLAB_TRASH_BOARD_ID;
+            const isRestoring = wasTrashed && targetBoardId !== COLLAB_TRASH_BOARD_ID;
+
             document.getElementById('editIdeaModal').classList.remove('active');
             window.editCurrentId = null; 
             
-            // SIMPAN DATA SEKALIGUS MELEPASKAN KUNCI GEMBOK
+            const payload = { 
+                title, date, link, 
+                boardId: targetBoardId,
+                expireAt: null,
+                deletedBy: null,
+                deletedByUid: null,
+                lockedBy: null,
+                lockedByName: null
+            };
+
+            // Jika dipulihkan dari Trash, berikan badge. Jika hanya diedit di papan normal, hapus badgenya.
+            if (isRestoring) {
+                payload.isRestored = true;
+            } else {
+                payload.isRestored = deleteField();
+            }
+
             try { 
-                await updateDoc(doc(dbRef, "collab_ideas", ideaId), { 
-                    title, date, link, 
-                    boardId: targetBoardId,
-                    expireAt: null,
-                    deletedBy: null,
-                    isRestored: true,
-                    lockedBy: null,
-                    lockedByName: null
-                }); 
+                await updateDoc(doc(dbRef, "collab_ideas", ideaId), payload); 
             } catch(e) { console.error(e); }
         }
 
         window.toggleDone = async (ideaId) => {
             const idea = window.ideas.find(i => i.id === ideaId);
-            if(!idea || (idea.lockedBy && idea.lockedBy !== currentUserUid)) return; // Blokir jika sedang digembok
+            if(!idea || (idea.lockedBy && idea.lockedBy !== currentUserUid)) return;
             
             try { await updateDoc(doc(dbRef, "collab_ideas", ideaId), { done: !idea.done }); } 
             catch(e) { console.error(e); }
