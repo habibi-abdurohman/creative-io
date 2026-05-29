@@ -370,8 +370,8 @@
     <script src="../js/pwa.js"></script>
 
     <script type="module">
-        // UPDATE 1: Import getDoc & deleteField untuk Real-time Name Sync dan Badge Removal
-        import { onSnapshot, collection, query, where, doc, setDoc, getDoc, updateDoc, deleteDoc, arrayUnion, arrayRemove, deleteField } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
+        // UPDATE 1: Hanya gunakan onSnapshot untuk Real-time Profile Listener (Hemat & Akurat)
+        import { onSnapshot, collection, query, where, doc, setDoc, updateDoc, deleteDoc, arrayUnion, arrayRemove, deleteField } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
         
         let currentUserUid = null;
         let currentUserData = { name: "Anonim" };
@@ -385,7 +385,10 @@
         window.roomData = null;
         window.boards = [];
         window.ideas = [];
-        window.userCache = {}; // UPDATE 2: Cache lokal untuk menyimpan nama anggota (Hemat Read Database)
+        
+        // UPDATE 2: Variabel Global penyimpan Cache dan Listener Identitas Real-time
+        window.userCache = {}; 
+        window.userListeners = {}; 
         let isIdeasLoaded = false;
         
         // State UI
@@ -459,12 +462,12 @@
                 processAndRender();
             });
 
-            // 2. Dengar Ide Konten + Cache System Sync Name
+            // 2. Dengar Ide Konten & Implementasi Real-Time Name Sync Listener
             const qIdeas = query(collection(dbRef, "collab_ideas"), where("roomId", "==", currentRoomId));
-            onSnapshot(qIdeas, async (snapshot) => {
+            onSnapshot(qIdeas, (snapshot) => {
                 const now = Date.now();
                 let validIdeas = [];
-                let uidsToFetch = new Set(); // Kumpulkan UID yang butuh diterjemahkan ke nama
+                let allUids = new Set(); 
                 
                 snapshot.docs.forEach((docSnap) => {
                     let ideaData = { id: docSnap.id, ...docSnap.data() };
@@ -474,30 +477,27 @@
                     } else {
                         validIdeas.push(ideaData);
                         
-                        // Kumpulkan UID yang terlibat dalam dokumen ini
-                        if (ideaData.creatorUid) uidsToFetch.add(ideaData.creatorUid);
-                        if (ideaData.deletedByUid) uidsToFetch.add(ideaData.deletedByUid);
-                        if (ideaData.lockedBy) uidsToFetch.add(ideaData.lockedBy);
+                        // Kumpulkan seluruh UIDs dari dokumen
+                        if (ideaData.creatorUid) allUids.add(ideaData.creatorUid);
+                        if (ideaData.deletedByUid) allUids.add(ideaData.deletedByUid);
+                        if (ideaData.lockedBy) allUids.add(ideaData.lockedBy);
                     }
                 });
                 
-                // UPDATE 3: Fetching Data Profil secara Dinamis dan Asinkron (Hanya untuk UID yang belum ada di cache)
-                const fetchPromises = [];
-                uidsToFetch.forEach(uid => {
-                    if (!window.userCache[uid]) {
-                        window.userCache[uid] = { name: "Memuat..." };
-                        const p = getDoc(doc(dbRef, "users", uid)).then(uDoc => {
+                // UPDATE 3: Pasang Radar (onSnapshot) Dinamis ke Profil Anggota. 
+                // Begitu ada ganti nama, UI otomatis render ulang
+                allUids.forEach(uid => {
+                    if (!window.userListeners[uid]) {
+                        window.userListeners[uid] = onSnapshot(doc(dbRef, "users", uid), (uDoc) => {
                             window.userCache[uid] = uDoc.exists() ? uDoc.data() : { name: "Anonim" };
-                        }).catch(() => {
-                            window.userCache[uid] = { name: "Anonim" };
+                            
+                            // Jika Papan sedang dibuka, segarkan tampilan seketika saat nama berubah!
+                            if (window.currentViewBoardId) {
+                                window.renderBoardViewContent();
+                            }
                         });
-                        fetchPromises.push(p);
                     }
                 });
-
-                if (fetchPromises.length > 0) {
-                    await Promise.all(fetchPromises); // Tunggu sampai semua nama baru tertarik dari Firestore Database
-                }
 
                 window.ideas = validIdeas;
                 isIdeasLoaded = true;
@@ -666,7 +666,7 @@
             listArea.innerHTML = ideasInBoard.map(i => {
                 const isLockedByOther = i.lockedBy && i.lockedBy !== currentUserUid;
                 
-                // UPDATE 4: Implementasi Real-time Name Sync dengan Fallback
+                // UPDATE 4: Implementasi Real-time Name Sync (Bebas dari masalah load karena Cache langsung menempel pada snapshot)
                 const creatorNameSync = (i.creatorUid && window.userCache[i.creatorUid]) ? (window.userCache[i.creatorUid].name || window.userCache[i.creatorUid].displayName || "Anonim") : (i.creatorName || "Anonim");
                 const deletedByNameSync = (i.deletedByUid && window.userCache[i.deletedByUid]) ? (window.userCache[i.deletedByUid].name || window.userCache[i.deletedByUid].displayName || "Anonim") : (i.deletedBy || "Anonim");
                 const lockedByNameSync = (i.lockedBy && window.userCache[i.lockedBy]) ? (window.userCache[i.lockedBy].name || window.userCache[i.lockedBy].displayName || "Anonim") : (i.lockedByName || "Anonim");
@@ -963,7 +963,7 @@
             const ideaId = window.editCurrentId;
             const idea = window.ideas.find(i => i.id === ideaId);
             
-            // UPDATE 5: Logika Penghapusan Lencana Dipulihkan Otomatis
+            // Logika Penghapusan Lencana Dipulihkan Otomatis
             const wasTrashed = idea.boardId === COLLAB_TRASH_BOARD_ID;
             const isRestoring = wasTrashed && targetBoardId !== COLLAB_TRASH_BOARD_ID;
 
