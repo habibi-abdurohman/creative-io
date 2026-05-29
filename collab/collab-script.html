@@ -46,8 +46,8 @@
             --card-tint: #0f172a; 
             --border: #334155; 
             --text-main: #f8fafc; 
-            --text-muted: #94a3b8; 
-            --shadow-flat: 0 4px 20px rgba(0, 0, 0, 0.2); 
+            --text-muted: #cbd5e1; 
+            --shadow-flat: 0 10px 30px rgba(0, 0, 0, 0.4); 
             --danger-soft: rgba(239, 68, 68, 0.15);
         }
         body { font-family: 'Inter', system-ui, sans-serif; background: var(--bg-grad); color: var(--text-main); min-height: 100vh; padding: 76px 16px 100px 16px; }
@@ -414,7 +414,8 @@
     <script type="module">
         import { auth, db } from "../js/firebase.js";
         import { onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
-        import { onSnapshot, collection, query, where, doc, setDoc, updateDoc, deleteDoc } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
+        // UPDATE 1: Import getDoc & deleteField untuk Real-time Name Sync dan Badge Removal
+        import { onSnapshot, collection, query, where, doc, setDoc, getDoc, updateDoc, deleteDoc, deleteField } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
 
         // URL Params
         const urlParams = new URLSearchParams(window.location.search);
@@ -426,6 +427,8 @@
         window.roomData = null;
         window.scriptData = [];
         window.trashData = [];
+        window.userCache = {}; // UPDATE 2: Cache lokal untuk sinkronisasi nama dinamis
+        
         window.currentId = null;
         window.isLockedByOther = false;
         
@@ -498,10 +501,10 @@
         // REALTIME LISTENER & TRASH SWEEPER
         // ==========================================
         function initRealtimeCollab() {
-            // 1. Data Ruang
+            // 1. Data Ruang (Dengan Peningkatan Keamanan Kick)
             onSnapshot(doc(db, "collab_boards", currentRoomId), (docSnap) => {
                 if (!docSnap.exists() || !docSnap.data().members.includes(currentUserUid)) {
-                    alert("Akses Ditolak: Anda bukan anggota atau ruang telah dihapus.");
+                    alert("Akses Ditolak: Anda dikeluarkan dari ruang, atau ruang telah dihapus oleh Admin.");
                     window.location.replace("collab-hub.html"); return;
                 }
                 window.roomData = docSnap.data();
@@ -512,11 +515,33 @@
                 document.getElementById('listContainer').innerHTML = `<div class="empty-state" style="border-color: var(--danger); background: var(--danger-soft);"><div class="empty-state-icon" style="color: var(--danger);">🔒</div><div class="empty-state-text" style="color: var(--danger); font-weight: 700;">Akses Ruang Ditolak oleh Database.</div></div>`;
             });
 
-            // 2. Daftar Script Aktif
+            // 2. Daftar Script Aktif (Ditambah Sinkronisasi Nama Cache)
             const qScript = query(collection(db, "collab_scripts"), where("roomId", "==", currentRoomId));
-            onSnapshot(qScript, (snapshot) => {
+            onSnapshot(qScript, async (snapshot) => {
                 window.scriptData = snapshot.docs.map(d => ({ id: d.id, ...d.data() }));
                 
+                let uidsToFetch = new Set();
+                window.scriptData.forEach(item => {
+                    if (item.uid) uidsToFetch.add(item.uid);
+                    if (item.lockedBy) uidsToFetch.add(item.lockedBy);
+                });
+
+                const fetchPromises = [];
+                uidsToFetch.forEach(uid => {
+                    if (!window.userCache[uid]) {
+                        window.userCache[uid] = { name: "Memuat..." };
+                        const p = getDoc(doc(db, "users", uid)).then(uDoc => {
+                            window.userCache[uid] = uDoc.exists() ? uDoc.data() : { name: "Anonim" };
+                        }).catch(() => {
+                            window.userCache[uid] = { name: "Anonim" };
+                        });
+                        fetchPromises.push(p);
+                    }
+                });
+
+                if (fetchPromises.length > 0) await Promise.all(fetchPromises);
+                
+                // Update ke antarmuka saat naskah sedang terbuka
                 if (window.currentId && window.isLockedByOther && !window.isTrashView) {
                     const liveItem = window.scriptData.find(x => x.id === window.currentId);
                     if (liveItem) {
@@ -532,11 +557,33 @@
                 document.getElementById('listContainer').innerHTML = `<div class="empty-state" style="border-color: var(--danger); background: var(--danger-soft);"><div class="empty-state-icon" style="color: var(--danger);">🔒</div><div class="empty-state-text" style="color: var(--danger); font-weight: 700;">Akses Naskah Ditolak oleh Database.</div></div>`;
             });
 
-            // 3. Daftar Trash & Auto Sweeper
+            // 3. Daftar Trash & Auto Sweeper (Ditambah Sinkronisasi Nama Cache)
             const qTrash = query(collection(db, "collab_trash_scripts"), where("roomId", "==", currentRoomId));
-            onSnapshot(qTrash, (snapshot) => {
+            onSnapshot(qTrash, async (snapshot) => {
                 window.trashData = snapshot.docs.map(d => ({ id: d.id, ...d.data() }));
                 checkAndCleanTrash(); 
+                
+                let uidsToFetch = new Set();
+                window.trashData.forEach(item => {
+                    if (item.deletedByUid) uidsToFetch.add(item.deletedByUid);
+                    if (item.originalUid) uidsToFetch.add(item.originalUid);
+                });
+
+                const fetchPromises = [];
+                uidsToFetch.forEach(uid => {
+                    if (!window.userCache[uid]) {
+                        window.userCache[uid] = { name: "Memuat..." };
+                        const p = getDoc(doc(db, "users", uid)).then(uDoc => {
+                            window.userCache[uid] = uDoc.exists() ? uDoc.data() : { name: "Anonim" };
+                        }).catch(() => {
+                            window.userCache[uid] = { name: "Anonim" };
+                        });
+                        fetchPromises.push(p);
+                    }
+                });
+
+                if (fetchPromises.length > 0) await Promise.all(fetchPromises);
+
                 if(window.isTrashView) window.renderList();
                 else generateDynamicChannels(); 
             }, (error) => { console.error("Error Akses Trash:", error); });
@@ -589,11 +636,10 @@
             const now = Date.now();
             const trashId = 'ctrash_' + now;
 
-            // Bawa metadata asli agar bisa dipulihkan dengan sempurna
             const trashPayload = {
                 roomId: currentRoomId,
                 deletedByUid: currentUserUid,
-                deletedByName: currentUserData.name, 
+                deletedByName: currentUserData.name, // Disimpan sebagai fallback Legacy
                 originalId: item.id, 
                 title: item.title, 
                 content: item.content, 
@@ -674,7 +720,11 @@
                     
                     if (item.lockedBy && item.lockedBy !== currentUserUid) {
                         window.isLockedByOther = true;
-                        lockBanner.innerHTML = `🔒 Sedang diedit oleh ${item.lockedByName.split(' ')[0]}`;
+                        
+                        // Menarik nama dinamis untuk spanduk pemberitahuan
+                        const lockedByNameSync = (item.lockedBy && window.userCache[item.lockedBy]) ? (window.userCache[item.lockedBy].name || window.userCache[item.lockedBy].displayName || "Seseorang") : (item.lockedByName || "Seseorang");
+                        
+                        lockBanner.innerHTML = `🔒 Sedang diedit oleh ${lockedByNameSync.split(' ')[0]}`;
                         lockBanner.classList.add('active');
                         editorFooter.style.display = 'none';
                         editorBody.classList.add('locked');
@@ -750,12 +800,18 @@
                 status: status, 
                 channel: channel, 
                 pinned: window.currentPinned,
-                isRestored: window.isRestored, // Pertahankan badge pulihan
                 updatedAt: now,
                 createdAt: existingItem ? existingItem.createdAt : now,
                 lockedBy: releaseLock ? null : currentUserUid,
                 lockedByName: releaseLock ? null : currentUserData.name
             };
+
+            // UPDATE: Hapus badge secara aman menggunakan deleteField
+            if (window.isRestored) {
+                payload.isRestored = true;
+            } else {
+                payload.isRestored = deleteField();
+            }
 
             try { await setDoc(doc(db, "collab_scripts", docId), payload); } 
             catch(e) { console.error("Gagal save:", e); }
@@ -816,10 +872,13 @@
             const words = text.trim() === '' ? 0 : text.trim().split(/\s+/).length; 
             const formatDate = (ms) => ms ? new Date(ms).toLocaleDateString('id-ID', { day: 'numeric', month: 'long', year: 'numeric', hour: '2-digit', minute:'2-digit' }) : '-'; 
             
+            // Nama pengguna dinamis
+            const creatorNameSync = (item.uid && window.userCache[item.uid]) ? (window.userCache[item.uid].name || window.userCache[item.uid].displayName || "Anonim") : (item.creatorName || "Anonim");
+            
             document.getElementById('infoTitle').innerText = item.title || 'Tanpa Judul'; 
             document.getElementById('infoCat').innerText = item.channel || 'Umum'; 
             document.getElementById('infoStatus').innerText = item.status === 'done' ? 'Selesai' : 'Draft'; 
-            document.getElementById('infoCreator').innerText = item.creatorName || 'Anonim'; 
+            document.getElementById('infoCreator').innerText = creatorNameSync; 
             document.getElementById('infoWords').innerText = words.toLocaleString('id-ID'); 
             document.getElementById('infoCreated').innerText = formatDate(item.createdAt); 
             document.getElementById('infoUpdated').innerText = formatDate(item.updatedAt); 
@@ -837,7 +896,6 @@
             
             let html = '';
             
-            // Jika bukan mode Trash, tampilkan filter normal
             if (!window.isTrashView) {
                 const channels = [...new Set(data.map(item => item.channel).filter(c => c && c.trim() !== "Umum" && c.trim() !== ""))];
                 html += `
@@ -853,7 +911,6 @@
                 html += `<div class="divider"></div>`;
             }
             
-            // Tombol Trash selalu ada di ujung kanan (atau kiri kalau mode trash)
             let trashActive = window.isTrashView ? 'active' : '';
             html += `<button class="filter-btn trash-btn ${trashActive}" onclick="toggleTrashView()">🗑️ Trash (${window.trashData.length})</button>`;
             
@@ -897,7 +954,6 @@
                     return match && item.channel === window.currentFilter;
                 });
             } else {
-                // Mode Trash: Sort by deletedAt Terbaru
                 data.sort((a, b) => (b.deletedAt || 0) - (a.deletedAt || 0));
                 data = data.filter(item => {
                     const title = item.title ? item.title.toLowerCase() : "";
@@ -927,10 +983,12 @@
             let html = '';
             
             if (!window.isTrashView) {
-                // RENDER NASKAH AKTIF
                 paginatedData.forEach(item => {
-                    let lockBadgeHTML = item.lockedBy ? `<div class="badge lock">🔒 ${item.lockedByName.split(' ')[0]}</div>` : '';
-                    let authorBadgeHTML = `<div class="badge" style="background:transparent; border:1px solid var(--border); color:var(--text-muted);">👤 ${item.creatorName || 'Anonim'}</div>`;
+                    const creatorNameSync = (item.uid && window.userCache[item.uid]) ? (window.userCache[item.uid].name || window.userCache[item.uid].displayName || "Anonim") : (item.creatorName || 'Anonim');
+                    const lockedByNameSync = (item.lockedBy && window.userCache[item.lockedBy]) ? (window.userCache[item.lockedBy].name || window.userCache[item.lockedBy].displayName || "Seseorang") : (item.lockedByName || "Seseorang");
+
+                    let lockBadgeHTML = item.lockedBy ? `<div class="badge lock">🔒 ${lockedByNameSync.split(' ')[0]}</div>` : '';
+                    let authorBadgeHTML = `<div class="badge" style="background:transparent; border:1px solid var(--border); color:var(--text-muted);">👤 ${creatorNameSync}</div>`;
                     let restoredBadge = item.isRestored ? `<div class="badge restored">♻️ Dipulihkan</div>` : '';
 
                     html += `
@@ -952,13 +1010,15 @@
                     </div>`;
                 });
             } else {
-                // RENDER TRASH
                 paginatedData.forEach(item => {
                     let sisaHari = Math.ceil((item.expireAt - Date.now()) / (1000 * 60 * 60 * 24));
                     if(sisaHari < 0) sisaHari = 0;
                     
-                    let delInfo = `<div class="badge deleted" title="Dihapus oleh ${item.deletedByName}">🗑️ ${item.deletedByName.split(' ')[0]}</div>`;
-                    let authorBadge = `<div class="badge" style="background:transparent; border:1px solid var(--border); color:var(--text-muted);">👤 Asli: ${item.originalCreatorName || 'Anonim'}</div>`;
+                    const deletedByNameSync = (item.deletedByUid && window.userCache[item.deletedByUid]) ? (window.userCache[item.deletedByUid].name || window.userCache[item.deletedByUid].displayName || "Anonim") : (item.deletedByName || "Anonim");
+                    const originalCreatorNameSync = (item.originalUid && window.userCache[item.originalUid]) ? (window.userCache[item.originalUid].name || window.userCache[item.originalUid].displayName || "Anonim") : (item.originalCreatorName || "Anonim");
+
+                    let delInfo = `<div class="badge deleted" title="Dihapus oleh ${deletedByNameSync}">🗑️ ${deletedByNameSync.split(' ')[0]}</div>`;
+                    let authorBadge = `<div class="badge" style="background:transparent; border:1px solid var(--border); color:var(--text-muted);">👤 Asli: ${originalCreatorNameSync}</div>`;
 
                     html += `
                     <div class="card trash-card">
