@@ -401,7 +401,8 @@
     <script type="module">
         import { auth, db } from "../js/firebase.js";
         import { onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
-        import { onSnapshot, collection, query, where, doc, setDoc, deleteDoc, updateDoc } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
+        // UPDATE: Penambahan getDoc untuk Name Cache dan deleteField untuk Badge Removal
+        import { onSnapshot, collection, query, where, doc, setDoc, getDoc, deleteDoc, updateDoc, deleteField } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
 
         // Ambil ID Parameter Ruang
         const urlParams = new URLSearchParams(window.location.search);
@@ -413,6 +414,8 @@
         window.roomData = null;
         window.notesData = [];
         window.trashData = [];
+        window.userCache = {}; // Cache nama dinamis client-side
+        
         window.currentId = null;
         window.isLockedByOther = false;
         
@@ -487,10 +490,10 @@
         // ENGINES REAL-TIME & SINKRONISASI DATABASES
         // ==========================================
         function initRealtimeNotesCollab() {
-            // 1. Ambil Informasi Ruang
+            // 1. Ambil Informasi Ruang (Perbarui penolakan Akses Kick)
             onSnapshot(doc(db, "collab_boards", currentRoomId), (docSnap) => {
                 if (!docSnap.exists() || !docSnap.data().members.includes(currentUserUid)) {
-                    alert("Akses Ditolak: Anda bukan anggota atau ruang telah dihapus.");
+                    alert("Akses Ditolak: Anda dikeluarkan dari ruang, atau ruang telah dihapus oleh Admin.");
                     window.location.replace("collab-hub.html"); return;
                 }
                 window.roomData = docSnap.data();
@@ -501,10 +504,31 @@
                 document.getElementById('notesList').innerHTML = `<div class="empty-state" style="border-color: var(--danger); background: var(--danger-soft);"><div class="empty-state-icon" style="color: var(--danger);">🔒</div><div class="empty-state-text" style="color: var(--danger); font-weight: 700;">Akses Ruang Ditolak Database. Pastikan Rules Firebase diatur.</div></div>`;
             });
 
-            // 2. Ambil List Catatan Aktif
+            // 2. Ambil List Catatan Aktif (Dengan Name Cache Fetcher)
             const qNotes = query(collection(db, "collab_notes"), where("roomId", "==", currentRoomId));
-            onSnapshot(qNotes, (snapshot) => {
+            onSnapshot(qNotes, async (snapshot) => {
                 window.notesData = snapshot.docs.map(d => ({ id: d.id, ...d.data() }));
+                
+                let uidsToFetch = new Set();
+                window.notesData.forEach(item => {
+                    if (item.uid) uidsToFetch.add(item.uid);
+                    if (item.lockedBy) uidsToFetch.add(item.lockedBy);
+                });
+
+                const fetchPromises = [];
+                uidsToFetch.forEach(uid => {
+                    if (!window.userCache[uid]) {
+                        window.userCache[uid] = { name: "Memuat..." };
+                        const p = getDoc(doc(db, "users", uid)).then(uDoc => {
+                            window.userCache[uid] = uDoc.exists() ? uDoc.data() : { name: "Anonim" };
+                        }).catch(() => {
+                            window.userCache[uid] = { name: "Anonim" };
+                        });
+                        fetchPromises.push(p);
+                    }
+                });
+
+                if (fetchPromises.length > 0) await Promise.all(fetchPromises);
                 
                 // Jika sedang membuka catatan yang diedit orang lain, lakukan live sync teks
                 if (window.currentId && window.isLockedByOther && !window.isTrashView) {
@@ -518,11 +542,33 @@
                 if(!window.isTrashView) window.renderNotes();
             }, (error) => { console.error(error); });
 
-            // 3. Ambil List Sampah (Trash) & Luncurkan Sweeper Otomatis
+            // 3. Ambil List Sampah (Trash) & Luncurkan Sweeper Otomatis (Dengan Name Cache)
             const qTrash = query(collection(db, "collab_trash_notes"), where("roomId", "==", currentRoomId));
-            onSnapshot(qTrash, (snapshot) => {
+            onSnapshot(qTrash, async (snapshot) => {
                 window.trashData = snapshot.docs.map(d => ({ id: d.id, ...d.data() }));
                 executeTrashSweeper(); 
+                
+                let uidsToFetch = new Set();
+                window.trashData.forEach(item => {
+                    if (item.deletedByUid) uidsToFetch.add(item.deletedByUid);
+                    if (item.originalUid) uidsToFetch.add(item.originalUid);
+                });
+
+                const fetchPromises = [];
+                uidsToFetch.forEach(uid => {
+                    if (!window.userCache[uid]) {
+                        window.userCache[uid] = { name: "Memuat..." };
+                        const p = getDoc(doc(db, "users", uid)).then(uDoc => {
+                            window.userCache[uid] = uDoc.exists() ? uDoc.data() : { name: "Anonim" };
+                        }).catch(() => {
+                            window.userCache[uid] = { name: "Anonim" };
+                        });
+                        fetchPromises.push(p);
+                    }
+                });
+
+                if (fetchPromises.length > 0) await Promise.all(fetchPromises);
+
                 if(window.isTrashView) window.renderNotes();
                 else window.renderFilterButtons();
             }, (error) => { console.error(error); });
@@ -573,7 +619,7 @@
             const trashPayload = {
                 roomId: currentRoomId,
                 deletedByUid: currentUserUid,
-                deletedByName: currentUserData.name,
+                deletedByName: currentUserData.name, // Sebagai fallback legacy
                 originalId: item.id,
                 title: item.title,
                 content: item.content,
@@ -650,7 +696,10 @@
                     // Eksekusi Pengecekan Kunci Gembok Multi-user
                     if (item.lockedBy && item.lockedBy !== currentUserUid) {
                         window.isLockedByOther = true;
-                        lockBanner.innerText = `🔒 Sedang diedit oleh ${item.lockedByName.split(' ')[0]}`;
+                        
+                        const lockedByNameSync = (item.lockedBy && window.userCache[item.lockedBy]) ? (window.userCache[item.lockedBy].name || window.userCache[item.lockedBy].displayName || "Seseorang") : (item.lockedByName || "Seseorang");
+
+                        lockBanner.innerText = `🔒 Sedang diedit oleh ${lockedByNameSync.split(' ')[0]}`;
                         lockBanner.classList.add('active');
                         editorFooter.style.display = 'none';
                         editorBody.classList.add('locked');
@@ -724,12 +773,18 @@
                 title: title || 'Tanpa Judul', 
                 content: content,
                 pinned: window.currentPinned, 
-                isRestored: window.isRestored, 
                 updatedAt: now,
                 createdAt: existingItem ? existingItem.createdAt : now,
                 lockedBy: releaseLock ? null : currentUserUid,
                 lockedByName: releaseLock ? null : currentUserData.name
             };
+
+            // Hapus Badge Restored otomatis via deleteField jika ada
+            if (window.isRestored) {
+                payload.isRestored = true;
+            } else {
+                payload.isRestored = deleteField();
+            }
 
             try { await setDoc(doc(db, "collab_notes", docId), payload); } catch (e) { console.error(e); }
         }
@@ -778,7 +833,25 @@
         window.updateCounter = function() { const text = document.getElementById('contentInput').value; const words = text.trim() === '' ? 0 : text.trim().split(/\s+/).length; document.getElementById('wordCounter').innerHTML = `${words.toLocaleString('id-ID')} kata | ${text.length.toLocaleString('id-ID')} karakter`; }
         
         window.exportTXT = function() { const text = document.getElementById('contentInput').value; if(!text) return alert("Catatan kosong."); const blob = new Blob([text], { type: 'text/plain' }); const link = document.createElement('a'); link.href = URL.createObjectURL(blob); link.download = (document.getElementById('titleInput').value || 'Collab_Notes') + '.txt'; link.click(); }
-        window.showInfo = function() { if(!window.currentId) return alert("Catatan belum disimpan."); const item = window.notesData.find(x => x.id === window.currentId); if(!item) return; const text = document.getElementById('contentInput').value; const words = text.trim() === '' ? 0 : text.trim().split(/\s+/).length; document.getElementById('infoContent').innerHTML = `<div class="info-row"><span class="info-label">Judul</span> <span class="info-value">${item.title || 'Tanpa Judul'}</span></div><div class="info-row"><span class="info-label">Kreator Asli</span> <span class="info-value">${item.creatorName || 'Anonim'}</span></div><div class="info-row"><span class="info-label">Jumlah Kata</span> <span class="info-value">${words.toLocaleString('id-ID')}</span></div><div class="info-row"><span class="info-label">Karakter</span> <span class="info-value">${text.length.toLocaleString('id-ID')}</span></div><div class="info-row"><span class="info-label">Dibuat</span> <span class="info-value">${formatFullDate(item.createdAt)}</span></div><div class="info-row"><span class="info-label">Diubah</span> <span class="info-value">${formatFullDate(item.updatedAt)}</span></div>`; document.getElementById('infoModal').style.display = 'flex'; }
+        window.showInfo = function() { 
+            if(!window.currentId) return alert("Catatan belum disimpan."); 
+            const item = window.notesData.find(x => x.id === window.currentId); 
+            if(!item) return; 
+            const text = document.getElementById('contentInput').value; 
+            const words = text.trim() === '' ? 0 : text.trim().split(/\s+/).length; 
+            
+            const creatorNameSync = (item.uid && window.userCache[item.uid]) ? (window.userCache[item.uid].name || window.userCache[item.uid].displayName || "Anonim") : (item.creatorName || "Anonim");
+
+            document.getElementById('infoContent').innerHTML = `
+                <div class="info-row"><span class="info-label">Judul</span> <span class="info-value">${item.title || 'Tanpa Judul'}</span></div>
+                <div class="info-row"><span class="info-label">Kreator Asli</span> <span class="info-value">${creatorNameSync}</span></div>
+                <div class="info-row"><span class="info-label">Jumlah Kata</span> <span class="info-value">${words.toLocaleString('id-ID')}</span></div>
+                <div class="info-row"><span class="info-label">Karakter</span> <span class="info-value">${text.length.toLocaleString('id-ID')}</span></div>
+                <div class="info-row"><span class="info-label">Dibuat</span> <span class="info-value">${formatFullDate(item.createdAt)}</span></div>
+                <div class="info-row"><span class="info-label">Diubah</span> <span class="info-value">${formatFullDate(item.updatedAt)}</span></div>
+            `; 
+            document.getElementById('infoModal').style.display = 'flex'; 
+        }
         
         window.setFilter = function(type, el) { window.currentFilter = type; window.currentPage = 1; window.renderNotes(); }
         window.setSort = function(type) { window.currentSort = type; window.currentPage = 1; window.renderNotes(); }
@@ -870,8 +943,11 @@
             if(!window.isTrashView) {
                 // TAMPILKAN CATATAN AKTIF TIM
                 paginatedData.forEach(item => {
+                    const creatorNameSync = (item.uid && window.userCache[item.uid]) ? (window.userCache[item.uid].name || window.userCache[item.uid].displayName || "Anonim") : (item.creatorName || 'Anonim');
+                    const lockedByNameSync = (item.lockedBy && window.userCache[item.lockedBy]) ? (window.userCache[item.lockedBy].name || window.userCache[item.lockedBy].displayName || "Seseorang") : (item.lockedByName || "Seseorang");
+
                     const cardClass = `note-card ${item.pinned ? 'pinned' : ''}`;
-                    let lockBadge = item.lockedBy ? `<div class="badge lock">🔒 Editan ${item.lockedByName.split(' ')[0]}</div>` : '';
+                    let lockBadge = item.lockedBy ? `<div class="badge lock">🔒 Editan ${lockedByNameSync.split(' ')[0]}</div>` : '';
                     let restoredBadge = item.isRestored ? `<div class="badge restored">♻️ Pulih</div>` : '';
 
                     html += `
@@ -889,7 +965,7 @@
                         <div class="note-content">${item.content || '<em>Kosong...</em>'}</div>
                         <div class="note-footer">
                             <div class="note-meta">
-                                <div class="badge user" style="border:none; padding:0; font-size:12px; color:var(--primary);">👤 ${item.creatorName || 'Anonim'}</div>
+                                <div class="badge user" style="border:none; padding:0; font-size:12px; color:var(--primary);">👤 ${creatorNameSync}</div>
                                 <div class="note-date">${formatFullDate(item.updatedAt)}</div>
                             </div>
                             <button class="btn-quick-del" onclick="event.stopPropagation(); softDeleteNote('${item.id}')" title="Hapus ke Trash">🗑️</button>
@@ -902,8 +978,11 @@
                     let sisaHari = Math.ceil((item.expireAt - Date.now()) / (1000 * 60 * 60 * 24));
                     if(sisaHari < 0) sisaHari = 0;
                     
-                    let delBadge = `<div class="badge danger">🗑️ Dihapus: ${item.deletedByName.split(' ')[0]}</div>`;
-                    let originalBadge = `<div class="badge user">👤 Asli: ${item.originalCreatorName.split(' ')[0]}</div>`;
+                    const deletedByNameSync = (item.deletedByUid && window.userCache[item.deletedByUid]) ? (window.userCache[item.deletedByUid].name || window.userCache[item.deletedByUid].displayName || "Anonim") : (item.deletedByName || "Anonim");
+                    const originalCreatorNameSync = (item.originalUid && window.userCache[item.originalUid]) ? (window.userCache[item.originalUid].name || window.userCache[item.originalUid].displayName || "Anonim") : (item.originalCreatorName || "Anonim");
+
+                    let delBadge = `<div class="badge danger">🗑️ Dihapus: ${deletedByNameSync.split(' ')[0]}</div>`;
+                    let originalBadge = `<div class="badge user">👤 Asli: ${originalCreatorNameSync.split(' ')[0]}</div>`;
 
                     html += `
                     <div class="note-card trash-mode-card">
