@@ -16,7 +16,7 @@
         *::-webkit-scrollbar { display: none; }
         :root { --bg-grad: linear-gradient(180deg, #f8fbff 0%, #eef4ff 100%); --card-glass: rgba(255, 255, 255, 0.9); --card-solid: #ffffff; --card-tint: #f1f5f9; --border: #e2e8f0; --text-main: #0f172a; --text-muted: #64748b; --primary: #2563eb; --primary-grad: linear-gradient(135deg, #3b82f6, #2563eb); --primary-soft: rgba(37, 99, 235, 0.1); --success: #16a34a; --danger: #ef4444; --danger-soft: rgba(239, 68, 68, 0.1); --warning: #f59e0b; --warning-soft: rgba(245, 158, 11, 0.1); --shadow-flat: 0 4px 20px rgba(0, 0, 0, 0.04); --radius-btn: 14px; --radius-card: 24px; }
         
-        /* PENYEMPURNAAN DARK MODE */
+        /* PENYEMPURNAAN DARK MODE & WARNA IKON NEON */
         body.dark { 
             --bg-grad: linear-gradient(180deg, #0f172a 0%, #1e293b 100%); 
             --card-glass: rgba(30, 41, 59, 0.9); 
@@ -24,9 +24,9 @@
             --card-tint: #0f172a; 
             --border: #334155; 
             --text-main: #f8fafc; 
-            --text-muted: #cbd5e1; /* Diterangkan sedikit agar terbaca */
+            --text-muted: #cbd5e1; 
             --primary-soft: rgba(59, 130, 246, 0.2); 
-            --shadow-flat: 0 10px 30px rgba(0, 0, 0, 0.4); /* Shadow dipertegas */
+            --shadow-flat: 0 10px 30px rgba(0, 0, 0, 0.4); 
             --danger-soft: rgba(239, 68, 68, 0.15); 
             --warning-soft: rgba(245, 158, 11, 0.15);
         }
@@ -46,8 +46,16 @@
         .action-cards-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin-bottom: 40px; }
         .action-card { background: var(--card-glass); backdrop-filter: blur(12px); border: 1px dashed var(--border); border-radius: 20px; padding: 24px; display: flex; align-items: center; gap: 16px; cursor: pointer; transition: 0.2s; box-shadow: var(--shadow-flat); outline: none; }
         .action-card:hover { transform: translateY(-4px); border-color: var(--primary); background: var(--card-solid); }
-        .action-icon { width: 50px; height: 50px; border-radius: 14px; background: var(--primary-soft); color: var(--primary); font-size: 24px; display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
+        
+        /* Ikon Vektor Resolusi Tinggi */
+        .action-icon { width: 50px; height: 50px; border-radius: 14px; background: var(--primary-soft); color: var(--primary); display: flex; align-items: center; justify-content: center; flex-shrink: 0; transition: 0.3s; }
+        .action-icon svg { width: 24px; height: 24px; }
         .action-icon.join { background: rgba(16, 185, 129, 0.1); color: #10b981; }
+        
+        /* Visibilitas Ikon Ekstra Kontras di Dark Mode */
+        body.dark .action-icon { background: rgba(59, 130, 246, 0.25); color: #60a5fa; box-shadow: 0 4px 12px rgba(59, 130, 246, 0.2); }
+        body.dark .action-icon.join { background: rgba(16, 185, 129, 0.25); color: #34d399; box-shadow: 0 4px 12px rgba(16, 185, 129, 0.2); }
+
         .action-text h3 { font-size: 16px; font-weight: 800; margin-bottom: 4px; }
         .action-text p { font-size: 12px; color: var(--text-muted); line-height: 1.4; }
 
@@ -64,21 +72,23 @@
         .badge-idea { background: rgba(37, 99, 235, 0.1); color: var(--primary); }
         .badge-script { background: rgba(245, 158, 11, 0.1); color: var(--warning); }
         .badge-notes { background: rgba(16, 185, 129, 0.1); color: #10b981; }
-        body.dark .board-badge { opacity: 0.9; } /* Badge di dark mode lebih cerah */
+        body.dark .board-badge { opacity: 0.9; } 
         
         .board-title { font-size: 16px; font-weight: 800; color: var(--text-main); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; width: 100%; pointer-events: none; }
         
         .board-actions { display: flex; align-items: center; gap: 8px; z-index: 10; flex-shrink: 0; }
-        .member-count { background: var(--card-tint); color: var(--text-muted); padding: 6px 12px; border-radius: 20px; font-size: 12px; font-weight: 800; border: 1px solid var(--border); display: flex; align-items: center; gap: 4px; }
-        
+        .member-count { background: var(--card-tint); color: var(--text-muted); padding: 6px 12px; border-radius: 20px; font-size: 12px; font-weight: 800; border: 1px solid var(--border); display: flex; align-items: center; gap: 6px; }
+        .member-count svg { width: 14px; height: 14px; opacity: 0.8; }
+        body.dark .member-count { color: #f8fafc; border-color: #475569; }
+
         .dropdown-wrap { position: relative; }
         .btn-dots { background: transparent; border: none; font-size: 20px; font-weight: 900; color: var(--text-muted); cursor: pointer; display: flex; align-items: center; justify-content: center; padding: 4px 8px; transition: 0.2s; border-radius: 10px; outline: none; }
         .btn-dots:hover { background: rgba(0,0,0,0.05); color: var(--text-main); }
-        body.dark .btn-dots { color: #94a3b8; } /* Warna ikon lebih menyala di gelap */
+        body.dark .btn-dots { color: #94a3b8; } 
         body.dark .btn-dots:hover { background: rgba(255,255,255,0.15); color: #ffffff; }
         
         .dropdown-menu { position: absolute; top: 100%; right: 0; margin-top: 8px; background: var(--card-solid); border: 1px solid var(--border); border-radius: 14px; padding: 8px; display: none; flex-direction: column; gap: 2px; min-width: 170px; box-shadow: 0 10px 40px rgba(0,0,0,0.1); z-index: 1000; }
-        body.dark .dropdown-menu { box-shadow: 0 10px 40px rgba(0,0,0,0.5); } /* Shadow dropdown dark mode */
+        body.dark .dropdown-menu { box-shadow: 0 10px 40px rgba(0,0,0,0.5); } 
         
         .dropdown-menu.active { display: flex; }
         .dropdown-menu button { background: transparent; border: none; padding: 10px 12px; border-radius: 10px; font-size: 13px; font-weight: 700; color: var(--text-main); text-align: left; cursor: pointer; display: flex; align-items: center; gap: 10px; width: 100%; }
@@ -125,11 +135,16 @@
         .member-role { font-size: 11px; font-weight: 600; color: var(--text-muted); }
         
         .member-actions { display: flex; gap: 6px; }
-        .btn-icon { width: 30px; height: 30px; border-radius: 10px; border: none; display: flex; align-items: center; justify-content: center; cursor: pointer; transition: 0.2s; font-size: 14px; }
+        .btn-icon { width: 32px; height: 32px; border-radius: 10px; border: none; display: flex; align-items: center; justify-content: center; cursor: pointer; transition: 0.2s; }
+        .btn-icon svg { width: 16px; height: 16px; stroke-width: 2.5; }
+        
         .btn-icon.kick { background: var(--danger-soft); color: var(--danger); }
         .btn-icon.kick:hover { background: var(--danger); color: white; }
+        body.dark .btn-icon.kick { color: #f87171; }
+        
         .btn-icon.admin { background: var(--warning-soft); color: var(--warning); }
         .btn-icon.admin:hover { background: var(--warning); color: white; }
+        body.dark .btn-icon.admin { color: #fbbf24; }
 
         @media(max-width: 768px) {
             .action-cards-grid { grid-template-columns: 1fr; }
@@ -149,7 +164,9 @@
 
         <div class="action-cards-grid">
             <div class="action-card" onclick="openCreateModal()">
-                <div class="action-icon">➕</div>
+                <div class="action-icon">
+                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="5" x2="12" y2="19"></line><line x1="5" y1="12" x2="19" y2="12"></line></svg>
+                </div>
                 <div class="action-text">
                     <h3>Buat Ruang Baru</h3>
                     <p>Mulai proyek baru & dapatkan kode invite untuk tim Anda.</p>
@@ -157,7 +174,9 @@
             </div>
             
             <div class="action-card" onclick="openJoinModal()">
-                <div class="action-icon join">🔑</div>
+                <div class="action-icon join">
+                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><path d="M21 2l-2 2m-7.61 7.61a5.5 5.5 0 1 1-7.778 7.778 5.5 5.5 0 0 1 7.777-7.777zm0 0L15.5 7.5m0 0l3 3L22 7l-3-3m-3.5 3.5L19 4"></path></svg>
+                </div>
                 <div class="action-text">
                     <h3>Gabung via Kode</h3>
                     <p>Masukkan kode invite dari teman untuk mengakses ruang mereka.</p>
@@ -229,7 +248,9 @@
                 <span class="info-label">Kode Invite</span> 
                 <div style="display: flex; align-items: center; gap: 8px;">
                     <span class="info-value" id="infoRoomCode" style="color: var(--primary); letter-spacing: 1px;">-</span>
-                    <button class="btn-icon admin" id="btnRefreshCode" style="display: none;" title="Perbarui Kode Invite (Admin)"></button>
+                    <button class="btn-icon admin" id="btnRefreshCode" style="display: none;" title="Perbarui Kode Invite (Admin)">
+                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><polyline points="23 4 23 10 17 10"></polyline><polyline points="1 20 1 14 7 14"></polyline><path d="M3.51 9a9 9 0 0 1 14.85-3.36L23 10M1 14l4.64 4.36A9 9 0 0 0 20.49 15"></path></svg>
+                    </button>
                 </div>
             </div>
             
@@ -253,12 +274,15 @@
     <script src="../js/pwa.js"></script>
 
     <script type="module">
-        import { onSnapshot, collection, query, where, doc, setDoc, getDocs, getDoc, updateDoc, deleteDoc, arrayUnion, arrayRemove } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
+        import { onSnapshot, collection, query, where, doc, setDoc, getDocs, updateDoc, deleteDoc, arrayUnion, arrayRemove } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
         
         let currentUserUid = null;
         let dbRef = null;
         window.collabRooms = [];
-        window.userCache = {}; // Cache untuk menyimpan data nama user agar tidak boros kuota fetch
+        
+        // Cache Real-time untuk menyimpan data user
+        window.userCache = {}; 
+        window.userListeners = {}; // Menyimpan subscriber profile user aktif
 
         // Penanganan klik di luar menu dropdown
         document.addEventListener('click', function(e) {
@@ -286,7 +310,7 @@
             }).catch(err => console.error("Firebase Gagal Dimuat:", err));
         });
 
-        // MESIN REAL-TIME LISTENER
+        // MESIN REAL-TIME LISTENER & DYNAMIC NAME SYNC
         function listenToMyRooms() {
             const q = query(collection(dbRef, "collab_boards"), where("members", "array-contains", currentUserUid));
             
@@ -295,13 +319,34 @@
                 
                 // Urutkan berdasarkan waktu pembuatan terbaru
                 window.collabRooms.sort((a, b) => b.createdAt - a.createdAt);
+                
+                // Ekstraksi UIDs unik dari seluruh ruang untuk Real-time Profile Listener
+                const allUids = new Set();
+                window.collabRooms.forEach(room => room.members.forEach(uid => allUids.add(uid)));
+
+                allUids.forEach(uid => {
+                    if (!window.userListeners[uid]) {
+                        // Tempelkan radar (onSnapshot) langsung ke profil member
+                        window.userListeners[uid] = onSnapshot(doc(dbRef, "users", uid), (uDoc) => {
+                            window.userCache[uid] = uDoc.exists() ? uDoc.data() : { name: "Anonim" };
+                            
+                            // Jika modal member sedang terbuka & ada nama yang berubah, otomatis Render ulang UI!
+                            const activeModal = document.getElementById('membersModal');
+                            if(activeModal && activeModal.classList.contains('active') && window.currentViewedRoomId) {
+                                window.renderMembersList(window.currentViewedRoomId);
+                            }
+                        });
+                    }
+                });
+
                 renderLobby();
                 
-                // Jika modal member sedang terbuka, update real-time juga
+                // Render ulang list jika modal sedang terbuka dan ada perubahan struktural ruang
                 const activeModal = document.getElementById('membersModal');
-                if(activeModal.classList.contains('active') && window.currentViewedRoomId) {
+                if(activeModal && activeModal.classList.contains('active') && window.currentViewedRoomId) {
                     window.renderMembersList(window.currentViewedRoomId);
                 }
+
             }, (error) => {
                 console.error("Gagal menarik data real-time: ", error);
             });
@@ -320,7 +365,6 @@
                 const isOwner = room.ownerId === currentUserUid;
                 const badgeClass = room.type === "Idea Board" ? "badge-idea" : (room.type === "Script" ? "badge-script" : "badge-notes");
                 
-                // Logika Hebat: Jika Admin, tidak ada tombol Keluar. Admin harus Hapus permanen atau Transfer Admin.
                 const leaveOrDeleteHTML = isOwner 
                     ? `<button class="danger" onclick="event.preventDefault(); window.deleteRoom('${room.id}', '${room.name}')">🗑️ Hapus Permanen Ruang</button>`
                     : `<button class="danger" onclick="event.preventDefault(); window.leaveRoom('${room.id}', '${room.name}')">🚪 Keluar dari Ruang</button>`;
@@ -338,7 +382,10 @@
                     </div>
                     
                     <div class="board-actions">
-                        <div class="member-count" title="${room.members.length} Anggota">👥 ${room.members.length}</div>
+                        <div class="member-count" title="${room.members.length} Anggota">
+                            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path><circle cx="9" cy="7" r="4"></circle><path d="M23 21v-2a4 4 0 0 0-3-3.87"></path><path d="M16 3.13a4 4 0 0 1 0 7.75"></path></svg>
+                            ${room.members.length}
+                        </div>
                         
                         <div class="dropdown-wrap">
                             <button class="btn-dots" onclick="event.preventDefault(); window.toggleRoomMenu('${room.id}')">⋮</button>
@@ -451,7 +498,6 @@
             const btnRefresh = document.getElementById('btnRefreshCode');
             if(room.ownerId === currentUserUid) {
                 btnRefresh.style.display = 'flex';
-                btnRefresh.innerHTML = '🔄';
                 btnRefresh.onclick = () => window.refreshInviteCode(roomId);
             } else {
                 btnRefresh.style.display = 'none';
@@ -484,31 +530,18 @@
             document.getElementById('membersModal').classList.remove('active');
         };
 
-        window.renderMembersList = async (roomId) => {
+        window.renderMembersList = (roomId) => {
             const room = window.collabRooms.find(r => r.id === roomId);
             const container = document.getElementById('membersListContainer');
             if(!room) return;
 
             const isOwner = room.ownerId === currentUserUid;
             document.getElementById('membersSubtitle').innerText = isOwner ? "Anda memiliki kontrol penuh sebagai Admin." : "Melihat daftar anggota di dalam ruang.";
-            container.innerHTML = '<div style="text-align: center; padding: 20px; color: var(--text-muted); font-size: 12px;">Memuat anggota...</div>';
-
-            // Ambil data user yang belum ada di cache
-            for(let uid of room.members) {
-                if(!window.userCache[uid]) {
-                    try {
-                        const uDoc = await getDoc(doc(dbRef, "users", uid));
-                        window.userCache[uid] = uDoc.exists() ? uDoc.data() : { name: "Pengguna Tidak Diketahui" };
-                    } catch(e) {
-                        window.userCache[uid] = { name: "Gagal memuat" };
-                    }
-                }
-            }
-
-            // Render HTML
+            
+            // Render dari Cache (Cache ini otomatis ter-update via onSnapshot profile di atas)
             container.innerHTML = room.members.map(uid => {
-                const user = window.userCache[uid];
-                const displayName = user.name || user.displayName || "Unknown";
+                const user = window.userCache[uid] || { name: "Memuat..." };
+                const displayName = user.name || user.displayName || "Anonim";
                 const initial = displayName.charAt(0).toUpperCase();
                 const isThisMemberAdmin = room.ownerId === uid;
                 const isMe = currentUserUid === uid;
@@ -518,8 +551,12 @@
                 if (isOwner && !isMe) {
                     actionHtml = `
                     <div class="member-actions">
-                        <button class="btn-icon admin" title="Jadikan Admin" onclick="window.transferAdmin('${roomId}', '${uid}', '${displayName}')">👑</button>
-                        <button class="btn-icon kick" title="Keluarkan Anggota" onclick="window.kickMember('${roomId}', '${uid}', '${displayName}')">✖</button>
+                        <button class="btn-icon admin" title="Jadikan Admin" onclick="window.transferAdmin('${roomId}', '${uid}', '${displayName}')">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon></svg>
+                        </button>
+                        <button class="btn-icon kick" title="Keluarkan Anggota" onclick="window.kickMember('${roomId}', '${uid}', '${displayName}')">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
+                        </button>
                     </div>`;
                 }
 
