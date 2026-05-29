@@ -765,9 +765,12 @@
         }
 
         window.closePopup = async function() {
+            clearTimeout(autoSaveTimeout); // PENTING: Mencegah bug simpan ganda otomatis
+            
             if (!window.isLockedByOther) {
                 const title = document.getElementById('inputTitle').value.trim();
                 const content = document.getElementById('inputContent').value.trim();
+                
                 if(title || content) {
                     const curStatus = window.currentId ? (window.scriptData.find(x => x.id === window.currentId)?.status || 'draft') : 'draft';
                     await window.performSave(curStatus, true, true); 
@@ -810,34 +813,49 @@
                 lockedByName: releaseLock ? null : currentUserData.name
             };
 
-            // UPDATE: Hapus badge secara aman menggunakan deleteField
+            // Hapus lencana pemulihan secara aman menggunakan deleteField
             if (window.isRestored) {
                 payload.isRestored = true;
             } else {
                 payload.isRestored = deleteField();
             }
 
-            try { await setDoc(doc(db, "collab_scripts", docId), payload); } 
-            catch(e) { console.error("Gagal save:", e); }
+            // PERBAIKAN: Tambahkan { merge: true } agar deleteField tidak diblokir Firebase
+            try { 
+                await setDoc(doc(db, "collab_scripts", docId), payload, { merge: true }); 
+            } catch(e) { 
+                console.error("Gagal save:", e); 
+            }
         }
 
         window.triggerAutoSave = function() {
             if (window.isLockedByOther) return;
             clearTimeout(autoSaveTimeout);
+            
             autoSaveTimeout = setTimeout(() => {
+                // Cegah auto-save berjalan jika popup sudah ditutup
+                if(!document.getElementById('editorPopup').classList.contains('active')) return;
+                
                 const curStatus = window.currentId ? (window.scriptData.find(x => x.id === window.currentId)?.status || 'draft') : 'draft';
                 window.performSave(curStatus, true, false); 
+                
                 const indicator = document.getElementById('saveIndicator');
-                indicator.innerText = "Tersimpan"; indicator.classList.add('show');
+                indicator.innerText = "Tersimpan ✓"; 
+                indicator.classList.add('show');
                 setTimeout(() => indicator.classList.remove('show'), 2000);
             }, 1000); 
         }
         
-        window.saveScript = function(status) { 
+        window.saveScript = async function(status) { 
             if(window.isLockedByOther) return; 
-            window.isRestored = false; // Jika user secara eksplisit simpan, lencana 'Dipulihkan' dilepas
-            window.performSave(status, false, true); 
+            clearTimeout(autoSaveTimeout); // PENTING: Mencegah tabrakan antara klik manual dan auto-save
+            window.isRestored = false; 
+            
+            await window.performSave(status, false, true); 
+            
             document.getElementById('editorPopup').classList.remove('active'); 
+            window.currentId = null;
+            window.isLockedByOther = false;
         }
 
         // ==========================================
