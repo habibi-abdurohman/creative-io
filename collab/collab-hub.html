@@ -214,6 +214,23 @@
         </div>
     </div>
 
+    <div class="modal-overlay" id="editRoomModal">
+        <div class="modal-card">
+            <h3>Ubah Nama Ruang</h3>
+            <p>Masukkan nama proyek baru untuk ruang ini.</p>
+            
+            <div class="input-group">
+                <label>Nama Proyek Baru</label>
+                <input type="text" class="modal-input" id="editRoomNameInput" placeholder="Ketik nama proyek yang baru..." maxlength="50">
+            </div>
+
+            <div class="modal-actions">
+                <button class="btn-modal btn-cancel" onclick="closeEditRoomModal()">Batal</button>
+                <button class="btn-modal btn-confirm" onclick="confirmEditRoomName()">Simpan</button>
+            </div>
+        </div>
+    </div>
+
     <div class="modal-overlay" id="successModal">
         <div class="modal-card">
             <h3>Ruang Berhasil Dibuat!</h3>
@@ -244,7 +261,10 @@
             <div class="info-row"><span class="info-label">Nama Proyek</span> <span class="info-value" id="infoRoomName">-</span></div>
             <div class="info-row"><span class="info-label">Status Anda</span> <span class="info-value" id="infoRoomRole">-</span></div>
             
-            <div class="info-row">
+            <div class="info-row" id="rowRenamedAt" style="display: none;"><span class="info-label">Terakhir Diubah</span> <span class="info-value" id="infoRoomRenamedAt" style="font-weight: 600; font-size: 12px;">-</span></div>
+            <div class="info-row" id="rowRenamedBy" style="display: none; margin-bottom: 20px;"><span class="info-label">Diubah Oleh</span> <span class="info-value" id="infoRoomRenamedBy">-</span></div>
+
+            <div class="info-row" style="margin-top: 8px;">
                 <span class="info-label">Kode Invite</span> 
                 <div style="display: flex; align-items: center; gap: 8px;">
                     <span class="info-value" id="infoRoomCode" style="color: var(--primary); letter-spacing: 1px;">-</span>
@@ -284,6 +304,9 @@
         window.userCache = {}; 
         window.userListeners = {}; // Menyimpan subscriber profile user aktif
 
+        // Variabel untuk modal edit
+        window.currentEditRoomId = null;
+
         // Penanganan klik di luar menu dropdown
         document.addEventListener('click', function(e) {
             if (!e.target.closest('.dropdown-wrap')) {
@@ -322,7 +345,11 @@
                 
                 // Ekstraksi UIDs unik dari seluruh ruang untuk Real-time Profile Listener
                 const allUids = new Set();
-                window.collabRooms.forEach(room => room.members.forEach(uid => allUids.add(uid)));
+                window.collabRooms.forEach(room => {
+                    room.members.forEach(uid => allUids.add(uid));
+                    // Masukkan juga lastRenamedBy agar namanya langsung ke-cache di radar kita
+                    if (room.lastRenamedBy) allUids.add(room.lastRenamedBy);
+                });
 
                 allUids.forEach(uid => {
                     if (!window.userListeners[uid]) {
@@ -330,7 +357,7 @@
                         window.userListeners[uid] = onSnapshot(doc(dbRef, "users", uid), (uDoc) => {
                             window.userCache[uid] = uDoc.exists() ? uDoc.data() : { name: "Anonim" };
                             
-                            // Jika modal member sedang terbuka & ada nama yang berubah, otomatis Render ulang UI!
+                            // Jika modal member sedang terbuka & ada nama yang berubah, otomatis Render ulang UI
                             const activeModal = document.getElementById('membersModal');
                             if(activeModal && activeModal.classList.contains('active') && window.currentViewedRoomId) {
                                 window.renderMembersList(window.currentViewedRoomId);
@@ -365,6 +392,10 @@
                 const isOwner = room.ownerId === currentUserUid;
                 const badgeClass = room.type === "Idea Board" ? "badge-idea" : (room.type === "Script" ? "badge-script" : "badge-notes");
                 
+                const renameHTML = isOwner 
+                    ? `<button onclick="event.preventDefault(); window.openEditRoomModal('${room.id}')">✏️ Ubah Nama Ruang</button>`
+                    : ``;
+
                 const leaveOrDeleteHTML = isOwner 
                     ? `<button class="danger" onclick="event.preventDefault(); window.deleteRoom('${room.id}', '${room.name}')">🗑️ Hapus Permanen Ruang</button>`
                     : `<button class="danger" onclick="event.preventDefault(); window.leaveRoom('${room.id}', '${room.name}')">🚪 Keluar dari Ruang</button>`;
@@ -392,6 +423,7 @@
                             <div class="dropdown-menu" id="menu_${room.id}">
                                 <button onclick="event.preventDefault(); window.showRoomInfo('${room.id}')">ℹ️ Info Kode Invite</button>
                                 <button onclick="event.preventDefault(); window.openMembersModal('${room.id}')">👥 Kelola Anggota</button>
+                                ${renameHTML}
                                 <div style="height: 1px; background: var(--border); margin: 4px 0;"></div>
                                 ${leaveOrDeleteHTML}
                             </div>
@@ -486,6 +518,54 @@
             }
         };
 
+        // --- EDIT RUANG (RENAME) KHUSUS ADMIN ---
+        window.openEditRoomModal = (roomId) => {
+            const room = window.collabRooms.find(r => r.id === roomId);
+            if (!room) return;
+            
+            window.currentEditRoomId = roomId;
+            document.getElementById('editRoomNameInput').value = room.name;
+            document.getElementById('editRoomModal').classList.add('active');
+        };
+
+        window.closeEditRoomModal = () => {
+            window.currentEditRoomId = null;
+            document.getElementById('editRoomModal').classList.remove('active');
+        };
+
+        window.confirmEditRoomName = async () => {
+            if (!window.currentEditRoomId) return;
+            
+            const inputName = document.getElementById('editRoomNameInput').value.trim();
+            
+            // Validasi string (Tidak Boleh Kosong & Minimal/Maksimal Karakter)
+            if (inputName.length < 3) return alert("Nama ruang minimal 3 karakter!");
+            if (inputName.length > 50) return alert("Nama ruang maksimal 50 karakter!");
+            
+            const room = window.collabRooms.find(r => r.id === window.currentEditRoomId);
+            
+            // Jika nama tidak berubah, abaikan saja (tutup popup tanpa ke database)
+            if (room.name === inputName) {
+                window.closeEditRoomModal();
+                return; 
+            }
+
+            try {
+                // Update ke Firebase, sertakan siapa dan kapan
+                await updateDoc(doc(dbRef, "collab_boards", window.currentEditRoomId), {
+                    name: inputName,
+                    lastRenamedAt: Date.now(),
+                    lastRenamedBy: currentUserUid
+                });
+                
+                window.closeEditRoomModal();
+                // Tidak perlu render ulang secara manual di sini karena onSnapshot akan merespon perubahan data.
+            } catch(e) {
+                alert("Gagal mengubah nama ruang.");
+                console.error(e);
+            }
+        };
+
         // --- INFO RUANG & REFRESH KODE ---
         window.showRoomInfo = (roomId) => {
             const room = window.collabRooms.find(r => r.id === roomId);
@@ -494,6 +574,28 @@
             document.getElementById('infoRoomName').innerText = room.name;
             document.getElementById('infoRoomRole').innerText = room.ownerId === currentUserUid ? "Pembuat Ruang (Admin)" : "Anggota Tim";
             document.getElementById('infoRoomCode').innerText = room.inviteCode;
+            
+            // Konversi Waktu dan Deteksi Jejak Audit
+            const formatDate = (ms) => ms ? new Date(ms).toLocaleDateString('id-ID', { day: 'numeric', month: 'short', year: 'numeric', hour: '2-digit', minute:'2-digit' }) : '-';
+            
+            const rowRenamedAt = document.getElementById('rowRenamedAt');
+            const rowRenamedBy = document.getElementById('rowRenamedBy');
+
+            if (room.lastRenamedAt && room.lastRenamedBy) {
+                document.getElementById('infoRoomRenamedAt').innerText = formatDate(room.lastRenamedAt);
+                
+                // Ambil sinkronisasi nama dari cache User
+                const renamedByUser = window.userCache[room.lastRenamedBy];
+                const renamedByName = renamedByUser ? (renamedByUser.name || renamedByUser.displayName || "Seorang Admin") : "Seorang Admin";
+                
+                document.getElementById('infoRoomRenamedBy').innerText = renamedByName;
+                
+                rowRenamedAt.style.display = 'flex';
+                rowRenamedBy.style.display = 'flex';
+            } else {
+                rowRenamedAt.style.display = 'none';
+                rowRenamedBy.style.display = 'none';
+            }
             
             const btnRefresh = document.getElementById('btnRefreshCode');
             if(room.ownerId === currentUserUid) {
