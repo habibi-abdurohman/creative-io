@@ -14,9 +14,8 @@
         @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800;900&display=swap');
         * { margin: 0; padding: 0; box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
         *::-webkit-scrollbar { display: none; }
-        :root { --bg-grad: linear-gradient(180deg, #f8fbff 0%, #eef4ff 100%); --card-glass: rgba(255, 255, 255, 0.9); --card-solid: #ffffff; --card-tint: #f1f5f9; --border: #e2e8f0; --text-main: #0f172a; --text-muted: #64748b; --primary: #2563eb; --primary-grad: linear-gradient(135deg, #3b82f6, #2563eb); --primary-soft: rgba(37, 99, 235, 0.1); --success: #16a34a; --danger: #ef4444; --danger-soft: rgba(239, 68, 68, 0.1); --warning: #f59e0b; --warning-soft: rgba(245, 158, 11, 0.1); --shadow-flat: 0 4px 20px rgba(0, 0, 0, 0.04); --radius-btn: 14px; --radius-card: 24px; }
+        :root { --bg-grad: linear-gradient(180deg, #f8fbff 0%, #eef4ff 100%); --card-glass: rgba(255, 255, 255, 0.9); --card-solid: #ffffff; --card-tint: #f1f5f9; --border: #e2e8f0; --text-main: #0f172a; --text-muted: #64748b; --primary: #2563eb; --primary-grad: linear-gradient(135deg, #3b82f6, #2563eb); --primary-soft: rgba(37, 99, 235, 0.1); --success: #16a34a; --danger: #ef4444; --danger-soft: rgba(239, 68, 68, 0.1); --warning: #f59e0b; --warning-soft: rgba(245, 158, 11, 0.1); --event: #8b5cf6; --event-soft: rgba(139, 92, 246, 0.1); --shadow-flat: 0 4px 20px rgba(0, 0, 0, 0.04); --radius-btn: 14px; --radius-card: 24px; }
         
-        /* PENYEMPURNAAN DARK MODE & WARNA IKON NEON */
         body.dark { 
             --bg-grad: linear-gradient(180deg, #0f172a 0%, #1e293b 100%); 
             --card-glass: rgba(30, 41, 59, 0.9); 
@@ -29,6 +28,7 @@
             --shadow-flat: 0 10px 30px rgba(0, 0, 0, 0.4); 
             --danger-soft: rgba(239, 68, 68, 0.15); 
             --warning-soft: rgba(245, 158, 11, 0.15);
+            --event-soft: rgba(139, 92, 246, 0.15);
         }
         
         body { font-family: 'Inter', system-ui, sans-serif; background: var(--bg-grad); color: var(--text-main); min-height: 100vh; padding: 86px 16px 100px; transition: background 0.3s, color 0.3s; overflow-x: hidden; width: 100vw; max-width: 100%; }
@@ -42,23 +42,17 @@
         .page-header h1 { font-size: 28px; font-weight: 900; letter-spacing: -0.5px; margin-bottom: 6px; }
         .page-header p { font-size: 14px; color: var(--text-muted); line-height: 1.6; }
         
-        /* MENU LOBI (BUAT / GABUNG) */
+        /* MENU LOBI */
         .action-cards-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin-bottom: 40px; }
         .action-card { background: var(--card-glass); backdrop-filter: blur(12px); border: 1px dashed var(--border); border-radius: 20px; padding: 24px; display: flex; align-items: center; gap: 16px; cursor: pointer; transition: 0.2s; box-shadow: var(--shadow-flat); outline: none; }
         .action-card:hover { transform: translateY(-4px); border-color: var(--primary); background: var(--card-solid); }
-        
-        /* Ikon Vektor Resolusi Tinggi */
         .action-icon { width: 50px; height: 50px; border-radius: 14px; background: var(--primary-soft); color: var(--primary); display: flex; align-items: center; justify-content: center; flex-shrink: 0; transition: 0.3s; }
         .action-icon svg { width: 24px; height: 24px; }
         .action-icon.join { background: rgba(16, 185, 129, 0.1); color: #10b981; }
-        
-        /* Visibilitas Ikon Ekstra Kontras di Dark Mode */
         body.dark .action-icon { background: rgba(59, 130, 246, 0.25); color: #60a5fa; box-shadow: 0 4px 12px rgba(59, 130, 246, 0.2); }
         body.dark .action-icon.join { background: rgba(16, 185, 129, 0.25); color: #34d399; box-shadow: 0 4px 12px rgba(16, 185, 129, 0.2); }
-
         .action-text h3 { font-size: 16px; font-weight: 800; margin-bottom: 4px; }
         .action-text p { font-size: 12px; color: var(--text-muted); line-height: 1.4; }
-
         .section-title { font-size: 18px; font-weight: 800; margin-bottom: 16px; color: var(--text-main); display: flex; align-items: center; gap: 8px; }
         
         /* KARTU RUANG KOLABORASI */
@@ -73,7 +67,6 @@
         .badge-script { background: rgba(245, 158, 11, 0.1); color: var(--warning); }
         .badge-notes { background: rgba(16, 185, 129, 0.1); color: #10b981; }
         body.dark .board-badge { opacity: 0.9; } 
-        
         .board-title { font-size: 16px; font-weight: 800; color: var(--text-main); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; width: 100%; pointer-events: none; }
         
         .board-actions { display: flex; align-items: center; gap: 8px; z-index: 10; flex-shrink: 0; }
@@ -81,15 +74,19 @@
         .member-count svg { width: 14px; height: 14px; opacity: 0.8; }
         body.dark .member-count { color: #f8fafc; border-color: #475569; }
 
-        .dropdown-wrap { position: relative; }
         .btn-dots { background: transparent; border: none; font-size: 20px; font-weight: 900; color: var(--text-muted); cursor: pointer; display: flex; align-items: center; justify-content: center; padding: 4px 8px; transition: 0.2s; border-radius: 10px; outline: none; }
         .btn-dots:hover { background: rgba(0,0,0,0.05); color: var(--text-main); }
         body.dark .btn-dots { color: #94a3b8; } 
         body.dark .btn-dots:hover { background: rgba(255,255,255,0.15); color: #ffffff; }
-        
+
+        /* MEGA-PHONE ICON UNREAD BADGE */
+        .btn-mega { position: relative; font-size: 16px; padding: 6px 10px; }
+        .btn-mega .unread-dot { position: absolute; top: 2px; right: 2px; width: 10px; height: 10px; background: var(--danger); border-radius: 50%; border: 2px solid var(--card-glass); animation: pulse 2s infinite; }
+        @keyframes pulse { 0% { transform: scale(0.95); box-shadow: 0 0 0 0 rgba(239, 68, 68, 0.7); } 70% { transform: scale(1); box-shadow: 0 0 0 6px rgba(239, 68, 68, 0); } 100% { transform: scale(0.95); box-shadow: 0 0 0 0 rgba(239, 68, 68, 0); } }
+
+        .dropdown-wrap { position: relative; }
         .dropdown-menu { position: absolute; top: 100%; right: 0; margin-top: 8px; background: var(--card-solid); border: 1px solid var(--border); border-radius: 14px; padding: 8px; display: none; flex-direction: column; gap: 2px; min-width: 170px; box-shadow: 0 10px 40px rgba(0,0,0,0.1); z-index: 1000; }
         body.dark .dropdown-menu { box-shadow: 0 10px 40px rgba(0,0,0,0.5); } 
-        
         .dropdown-menu.active { display: flex; }
         .dropdown-menu button { background: transparent; border: none; padding: 10px 12px; border-radius: 10px; font-size: 13px; font-weight: 700; color: var(--text-main); text-align: left; cursor: pointer; display: flex; align-items: center; gap: 10px; width: 100%; }
         .dropdown-menu button:hover { background: var(--card-tint); }
@@ -98,35 +95,75 @@
 
         .empty-state-global { grid-column: 1 / -1; text-align: center; padding: 60px 20px; background: var(--card-glass); border: 1px dashed var(--border); border-radius: var(--radius-card); color: var(--text-muted); font-size: 14px; font-weight: 600; width: 100%; }
         
+        /* BANNER PENGUMUMAN MENGAMBANG */
+        .floating-banner-wrap { position: fixed; top: 90px; left: 50%; transform: translateX(-50%); z-index: 99999; width: 92%; max-width: 700px; pointer-events: none; display: flex; flex-direction: column; gap: 12px; }
+        .announcement-banner { pointer-events: auto; background: rgba(255, 255, 255, 0.95); backdrop-filter: blur(16px); border: 1px solid var(--border); border-left: 5px solid var(--primary); border-radius: 16px; padding: 16px 20px; box-shadow: 0 12px 40px rgba(0,0,0,0.15); display: flex; justify-content: space-between; align-items: center; gap: 16px; animation: slideDown 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards; }
+        body.dark .announcement-banner { background: rgba(30, 41, 59, 0.95); box-shadow: 0 12px 40px rgba(0,0,0,0.6); border-color: var(--border); }
+        
+        .banner-info { border-left-color: var(--primary); }
+        .banner-warning { border-left-color: var(--warning); }
+        .banner-urgent { border-left-color: var(--danger); }
+        .banner-event { border-left-color: var(--event); }
+        
+        .banner-content { display: flex; flex-direction: column; gap: 4px; flex: 1; }
+        .banner-header { display: flex; align-items: center; gap: 8px; font-size: 11px; font-weight: 800; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.5px; }
+        .banner-room { color: var(--primary); background: var(--primary-soft); padding: 2px 8px; border-radius: 6px; }
+        .banner-message { font-size: 14px; font-weight: 600; color: var(--text-main); line-height: 1.5; }
+        .btn-understand { background: var(--primary); color: white; border: none; padding: 10px 16px; border-radius: 12px; font-size: 13px; font-weight: 800; cursor: pointer; flex-shrink: 0; outline: none; transition: 0.2s; white-space: nowrap; }
+        .btn-understand:hover { transform: translateY(-2px); box-shadow: 0 4px 12px rgba(37, 99, 235, 0.3); }
+
+        @keyframes slideDown { 0% { opacity: 0; transform: translateY(-20px); } 100% { opacity: 1; transform: translateY(0); } }
+
         /* MODAL STYLE */
         .modal-overlay { position: fixed; inset: 0; background: rgba(0,0,0,0.4); backdrop-filter: blur(4px); z-index: 100001; display: none; align-items: center; justify-content: center; padding: 20px; width: 100vw; height: 100vh; box-sizing: border-box; }
         .modal-overlay.active { display: flex; }
-        .modal-card { background: var(--card-solid); width: 100%; max-width: 380px; border-radius: var(--radius-card); padding: 24px; box-shadow: var(--shadow-flat); border: 1px solid var(--border); box-sizing: border-box; text-align: center; }
-        .modal-card h3 { font-size: 20px; font-weight: 900; margin-bottom: 8px; color: var(--text-main); }
-        .modal-card p { font-size: 13px; color: var(--text-muted); margin-bottom: 20px; line-height: 1.5; }
+        .modal-card { background: var(--card-solid); width: 100%; max-width: 420px; border-radius: var(--radius-card); padding: 24px; box-shadow: var(--shadow-flat); border: 1px solid var(--border); box-sizing: border-box; text-align: center; max-height: 90vh; display: flex; flex-direction: column; }
+        .modal-card h3 { font-size: 20px; font-weight: 900; margin-bottom: 8px; color: var(--text-main); flex-shrink: 0; }
+        .modal-card p { font-size: 13px; color: var(--text-muted); margin-bottom: 20px; line-height: 1.5; flex-shrink: 0; }
         
-        .input-group { text-align: left; margin-bottom: 16px; }
+        .input-group { text-align: left; margin-bottom: 16px; flex-shrink: 0; }
         .input-group label { display: block; font-size: 12px; font-weight: 800; color: var(--text-muted); margin-bottom: 8px; }
-        .modal-input, .modal-select { width: 100%; padding: 14px 16px; border-radius: 14px; border: 1px solid var(--border); background: var(--card-tint); color: var(--text-main); font-size: 14px; font-weight: 600; outline: none; transition: 0.2s; box-sizing: border-box; }
-        .modal-input:focus, .modal-select:focus { border-color: var(--primary); box-shadow: 0 0 0 3px var(--primary-soft); }
+        .modal-input, .modal-select, .modal-textarea { width: 100%; padding: 14px 16px; border-radius: 14px; border: 1px solid var(--border); background: var(--card-tint); color: var(--text-main); font-size: 14px; font-weight: 600; outline: none; transition: 0.2s; box-sizing: border-box; font-family: inherit; }
+        .modal-textarea { resize: vertical; min-height: 80px; }
+        .modal-input:focus, .modal-select:focus, .modal-textarea:focus { border-color: var(--primary); box-shadow: 0 0 0 3px var(--primary-soft); }
         .modal-select { appearance: none; cursor: pointer; }
         
-        .modal-actions { display: flex; gap: 12px; margin-top: 24px; }
+        .modal-actions { display: flex; gap: 12px; margin-top: 24px; flex-shrink: 0; }
         .btn-modal { flex: 1; padding: 14px; border-radius: 14px; font-size: 14px; font-weight: 800; cursor: pointer; border: none; transition: 0.2s; outline: none; }
         .btn-cancel { background: var(--card-tint); color: var(--text-main); border: 1px solid var(--border); }
         .btn-cancel:hover { background: #e2e8f0; }
         body.dark .btn-cancel:hover { background: #334155; }
         .btn-confirm { background: var(--primary-grad); color: white; }
         
-        /* TAMPILAN INVITE CODE & KELOLA ANGGOTA */
-        .code-box { background: var(--card-tint); border: 2px dashed var(--border); padding: 20px; border-radius: 16px; font-size: 32px; font-weight: 900; letter-spacing: 4px; color: var(--primary); margin: 20px 0; user-select: all; }
+        /* DAFTAR ANNOUNCEMENT / MEMBER */
+        .list-container-scroll { overflow-y: auto; display: flex; flex-direction: column; gap: 10px; text-align: left; padding-right: 4px; flex: 1; min-height: 50px; }
         
+        .announcement-item { background: var(--card-tint); border: 1px solid var(--border); border-radius: 16px; padding: 16px; display: flex; flex-direction: column; gap: 8px; position: relative; }
+        .announcement-item.unread { border-left: 4px solid var(--primary); background: var(--primary-soft); }
+        .ann-header { display: flex; justify-content: space-between; align-items: center; font-size: 11px; font-weight: 800; color: var(--text-muted); }
+        .ann-type { padding: 4px 8px; border-radius: 6px; text-transform: uppercase; letter-spacing: 0.5px; }
+        .ann-type.info { background: rgba(37, 99, 235, 0.1); color: var(--primary); }
+        .ann-type.warning { background: rgba(245, 158, 11, 0.1); color: var(--warning); }
+        .ann-type.urgent { background: rgba(239, 68, 68, 0.1); color: var(--danger); }
+        .ann-type.event { background: var(--event-soft); color: var(--event); }
+        .ann-msg { font-size: 13px; font-weight: 600; color: var(--text-main); line-height: 1.5; word-break: break-word; }
+        .ann-meta { font-size: 11px; color: var(--text-muted); font-weight: 600; display: flex; justify-content: space-between; align-items: center; margin-top: 4px;}
+        .ann-actions { display: flex; gap: 6px; }
+
+        /* CHECKBOX TARGET */
+        .target-member-item { display: flex; align-items: center; justify-content: space-between; padding: 12px; background: var(--card-solid); border: 1px solid var(--border); border-radius: 12px; cursor: pointer; transition: 0.2s; }
+        .target-member-item:hover { border-color: var(--primary); }
+        .target-info { display: flex; align-items: center; gap: 10px; }
+        .target-avatar { width: 30px; height: 30px; border-radius: 50%; background: var(--primary-grad); color: white; display: flex; align-items: center; justify-content: center; font-size: 12px; font-weight: 800; flex-shrink: 0; }
+        .target-name { font-size: 13px; font-weight: 700; color: var(--text-main); }
+        .checkbox-custom { width: 20px; height: 20px; border-radius: 6px; border: 2px solid var(--border); display: flex; align-items: center; justify-content: center; color: transparent; transition: 0.2s; }
+        input[type="checkbox"]:checked + .checkbox-custom { background: var(--primary); border-color: var(--primary); color: white; }
+        
+        .code-box { background: var(--card-tint); border: 2px dashed var(--border); padding: 20px; border-radius: 16px; font-size: 32px; font-weight: 900; letter-spacing: 4px; color: var(--primary); margin: 20px 0; user-select: all; }
         .info-row { display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px; font-size: 13px; gap: 12px; text-align: left;}
         .info-label { color: var(--text-muted); font-weight: 600; flex-shrink: 0; }
         .info-value { font-weight: 800; color: var(--text-main); text-align: right; word-break: break-all; }
-
-        /* LIST ANGGOTA */
-        .member-list-container { max-height: 280px; overflow-y: auto; display: flex; flex-direction: column; gap: 8px; text-align: left; }
+        
         .member-item { display: flex; align-items: center; justify-content: space-between; padding: 12px; background: var(--card-tint); border-radius: 14px; border: 1px solid var(--border); }
         .member-info { display: flex; align-items: center; gap: 12px; }
         .member-avatar { width: 34px; height: 34px; border-radius: 50%; background: var(--primary-grad); color: white; display: flex; align-items: center; justify-content: center; font-size: 13px; font-weight: 800; text-transform: uppercase; flex-shrink: 0; }
@@ -137,17 +174,17 @@
         .member-actions { display: flex; gap: 6px; }
         .btn-icon { width: 32px; height: 32px; border-radius: 10px; border: none; display: flex; align-items: center; justify-content: center; cursor: pointer; transition: 0.2s; }
         .btn-icon svg { width: 16px; height: 16px; stroke-width: 2.5; }
-        
         .btn-icon.kick { background: var(--danger-soft); color: var(--danger); }
         .btn-icon.kick:hover { background: var(--danger); color: white; }
         body.dark .btn-icon.kick { color: #f87171; }
-        
         .btn-icon.admin { background: var(--warning-soft); color: var(--warning); }
         .btn-icon.admin:hover { background: var(--warning); color: white; }
         body.dark .btn-icon.admin { color: #fbbf24; }
 
         @media(max-width: 768px) {
             .action-cards-grid { grid-template-columns: 1fr; }
+            .announcement-banner { flex-direction: column; align-items: stretch; }
+            .btn-understand { width: 100%; text-align: center; }
         }
     </style>
 </head>
@@ -155,6 +192,8 @@
 
     <div id="navbar-container"></div>
     <div class="bg-glow one"></div><div class="bg-glow two"></div>
+
+    <div class="floating-banner-wrap" id="bannerWrap"></div>
 
     <div class="wrapper">
         <div class="page-header">
@@ -172,7 +211,6 @@
                     <p>Mulai proyek baru & dapatkan kode invite untuk tim Anda.</p>
                 </div>
             </div>
-            
             <div class="action-card" onclick="openJoinModal()">
                 <div class="action-icon join">
                     <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><path d="M21 2l-2 2m-7.61 7.61a5.5 5.5 0 1 1-7.778 7.778 5.5 5.5 0 0 1 7.777-7.777zm0 0L15.5 7.5m0 0l3 3L22 7l-3-3m-3.5 3.5L19 4"></path></svg>
@@ -192,7 +230,6 @@
         <div class="modal-card">
             <h3>Buat Ruang Tim</h3>
             <p>Pilih tipe kolaborasi dan berikan nama proyeknya.</p>
-            
             <div class="input-group">
                 <label>Jenis Ruang</label>
                 <select class="modal-select" id="roomTypeInput">
@@ -201,12 +238,10 @@
                     <option value="Notes">📒 Notes (Catatan)</option>
                 </select>
             </div>
-            
             <div class="input-group">
                 <label>Nama Proyek</label>
                 <input type="text" class="modal-input" id="roomNameInput" placeholder="Misal: Campaign TikTok 2026">
             </div>
-
             <div class="modal-actions">
                 <button class="btn-modal btn-cancel" onclick="closeCreateModal()">Batal</button>
                 <button class="btn-modal btn-confirm" onclick="confirmCreateRoom()">Buat Ruang</button>
@@ -218,12 +253,10 @@
         <div class="modal-card">
             <h3>Ubah Nama Ruang</h3>
             <p>Masukkan nama proyek baru untuk ruang ini.</p>
-            
             <div class="input-group">
                 <label>Nama Proyek Baru</label>
                 <input type="text" class="modal-input" id="editRoomNameInput" placeholder="Ketik nama proyek yang baru..." maxlength="50">
             </div>
-
             <div class="modal-actions">
                 <button class="btn-modal btn-cancel" onclick="closeEditRoomModal()">Batal</button>
                 <button class="btn-modal btn-confirm" onclick="confirmEditRoomName()">Simpan</button>
@@ -257,13 +290,10 @@
     <div class="modal-overlay" id="infoRoomModal">
         <div class="modal-card">
             <h3 style="margin-bottom: 24px;">Informasi Ruang</h3>
-            
             <div class="info-row"><span class="info-label">Nama Proyek</span> <span class="info-value" id="infoRoomName">-</span></div>
             <div class="info-row"><span class="info-label">Status Anda</span> <span class="info-value" id="infoRoomRole">-</span></div>
-            
             <div class="info-row" id="rowRenamedAt" style="display: none;"><span class="info-label">Terakhir Diubah</span> <span class="info-value" id="infoRoomRenamedAt" style="font-weight: 600; font-size: 12px;">-</span></div>
             <div class="info-row" id="rowRenamedBy" style="display: none; margin-bottom: 20px;"><span class="info-label">Diubah Oleh</span> <span class="info-value" id="infoRoomRenamedBy">-</span></div>
-
             <div class="info-row" style="margin-top: 8px;">
                 <span class="info-label">Kode Invite</span> 
                 <div style="display: flex; align-items: center; gap: 8px;">
@@ -273,7 +303,6 @@
                     </button>
                 </div>
             </div>
-            
             <button class="btn-modal btn-cancel" style="width: 100%; margin-top: 24px;" onclick="closeInfoRoomModal()">Tutup</button>
         </div>
     </div>
@@ -282,11 +311,61 @@
         <div class="modal-card" style="max-width: 420px;">
             <h3 style="margin-bottom: 6px;">Kelola Anggota</h3>
             <p id="membersSubtitle">Melihat daftar anggota di dalam ruang.</p>
-            
-            <div class="member-list-container" id="membersListContainer">
-                </div>
-            
+            <div class="list-container-scroll" id="membersListContainer"></div>
             <button class="btn-modal btn-cancel" style="width: 100%; margin-top: 24px;" onclick="closeMembersModal()">Tutup</button>
+        </div>
+    </div>
+
+    <div class="modal-overlay" id="announcementModal">
+        <div class="modal-card" style="max-width: 460px;">
+            <h3 style="margin-bottom: 6px;">Papan Pengumuman</h3>
+            <p id="annSubtitle">Riwayat dan arsip pesan penting dari Admin ruang.</p>
+            
+            <button class="btn-modal btn-confirm" id="btnCreateAnn" style="margin-bottom: 16px; display: none; width: 100%;" onclick="openCreateAnnouncementForm()">+ Buat Pengumuman Baru</button>
+            
+            <div class="list-container-scroll" id="announcementListContainer"></div>
+            
+            <button class="btn-modal btn-cancel" style="width: 100%; margin-top: 24px;" onclick="closeAnnouncementModal()">Tutup</button>
+        </div>
+    </div>
+
+    <div class="modal-overlay" id="formAnnouncementModal">
+        <div class="modal-card" style="max-width: 460px;">
+            <h3 id="formAnnTitle">Buat Pengumuman</h3>
+            <p>Pesan akan langsung dikirimkan ke layar target anggota.</p>
+            
+            <div class="input-group">
+                <label>Pesan Pengumuman</label>
+                <textarea class="modal-textarea" id="annMessageInput" placeholder="Ketik pesan Anda di sini..." maxlength="200"></textarea>
+            </div>
+
+            <div class="input-group">
+                <label>Tingkat Urgensi / Tipe</label>
+                <select class="modal-select" id="annTypeInput">
+                    <option value="info">🔵 Informasi Umum</option>
+                    <option value="event">🎉 Acara / Event</option>
+                    <option value="warning">🟡 Peringatan / Deadline</option>
+                    <option value="urgent">🔴 Darurat / Penting</option>
+                </select>
+            </div>
+
+            <div class="input-group">
+                <label style="display: flex; justify-content: space-between;">
+                    Target Anggota 
+                    <label style="cursor: pointer; display: flex; align-items: center; gap: 4px; font-weight: 700; color: var(--primary);">
+                        <input type="checkbox" id="checkAllTargets" style="display:none;" onchange="toggleSelectAllTargets(this)">
+                        <div class="checkbox-custom" style="width:16px; height:16px; border-radius:4px;"><svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="4"><polyline points="20 6 9 17 4 12"></polyline></svg></div>
+                        Pilih Semua
+                    </label>
+                </label>
+                <div class="list-container-scroll" id="annTargetList" style="max-height: 150px; background: var(--card-tint); border: 1px solid var(--border); border-radius: 14px; padding: 8px;">
+                    </div>
+            </div>
+
+            <div class="modal-actions">
+                <button class="btn-modal btn-cancel" onclick="closeCreateAnnouncementForm()">Batal</button>
+                <button class="btn-modal btn-confirm" onclick="saveAnnouncement()">Kirim Pengumuman</button>
+            </div>
         </div>
     </div>
 
@@ -299,15 +378,16 @@
         let currentUserUid = null;
         let dbRef = null;
         window.collabRooms = [];
+        window.globalAnnouncements = [];
         
         // Cache Real-time untuk menyimpan data user
         window.userCache = {}; 
-        window.userListeners = {}; // Menyimpan subscriber profile user aktif
+        window.userListeners = {}; 
 
-        // Variabel untuk modal edit
         window.currentEditRoomId = null;
+        window.currentViewedAnnRoomId = null;
+        window.currentEditAnnId = null; // Menyimpan ID pengumuman yang sedang diedit
 
-        // Penanganan klik di luar menu dropdown
         document.addEventListener('click', function(e) {
             if (!e.target.closest('.dropdown-wrap')) {
                 document.querySelectorAll('.dropdown-menu').forEach(m => m.classList.remove('active'));
@@ -325,6 +405,7 @@
                         if (user) {
                             currentUserUid = user.uid;
                             listenToMyRooms();
+                            listenToAnnouncements();
                         } else {
                             window.location.replace("../login.html");
                         }
@@ -333,53 +414,113 @@
             }).catch(err => console.error("Firebase Gagal Dimuat:", err));
         });
 
-        // MESIN REAL-TIME LISTENER & DYNAMIC NAME SYNC
+        // 1. LISTENER RUANG (BOARD)
         function listenToMyRooms() {
             const q = query(collection(dbRef, "collab_boards"), where("members", "array-contains", currentUserUid));
-            
             onSnapshot(q, (snapshot) => {
                 window.collabRooms = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
-                
-                // Urutkan berdasarkan waktu pembuatan terbaru
                 window.collabRooms.sort((a, b) => b.createdAt - a.createdAt);
                 
-                // Ekstraksi UIDs unik dari seluruh ruang untuk Real-time Profile Listener
                 const allUids = new Set();
                 window.collabRooms.forEach(room => {
                     room.members.forEach(uid => allUids.add(uid));
-                    // Masukkan juga lastRenamedBy agar namanya langsung ke-cache di radar kita
                     if (room.lastRenamedBy) allUids.add(room.lastRenamedBy);
                 });
 
                 allUids.forEach(uid => {
                     if (!window.userListeners[uid]) {
-                        // Tempelkan radar (onSnapshot) langsung ke profil member
                         window.userListeners[uid] = onSnapshot(doc(dbRef, "users", uid), (uDoc) => {
                             window.userCache[uid] = uDoc.exists() ? uDoc.data() : { name: "Anonim" };
-                            
-                            // Jika modal member sedang terbuka & ada nama yang berubah, otomatis Render ulang UI
                             const activeModal = document.getElementById('membersModal');
                             if(activeModal && activeModal.classList.contains('active') && window.currentViewedRoomId) {
                                 window.renderMembersList(window.currentViewedRoomId);
                             }
+                            // Juga perbarui daftar target pengumuman jika modal pembuatan sedang terbuka
+                            const formModal = document.getElementById('formAnnouncementModal');
+                            if(formModal && formModal.classList.contains('active') && window.currentViewedAnnRoomId) {
+                                window.renderTargetCheckboxes(window.currentViewedAnnRoomId);
+                            }
                         });
                     }
                 });
-
                 renderLobby();
-                
-                // Render ulang list jika modal sedang terbuka dan ada perubahan struktural ruang
-                const activeModal = document.getElementById('membersModal');
-                if(activeModal && activeModal.classList.contains('active') && window.currentViewedRoomId) {
-                    window.renderMembersList(window.currentViewedRoomId);
-                }
-
-            }, (error) => {
-                console.error("Gagal menarik data real-time: ", error);
-            });
+            }, (error) => console.error(error));
         }
 
-        // FUNGSI RENDER TAMPILAN LOBI
+        // 2. LISTENER PENGUMUMAN (ANNOUNCEMENTS) GLOBAL TARGETED
+        function listenToAnnouncements() {
+            // Tarik SEMUA pengumuman di mana saya adalah salah satu target penerima
+            const q = query(collection(dbRef, "collab_announcements"), where("targetUids", "array-contains", currentUserUid));
+            
+            onSnapshot(q, (snapshot) => {
+                window.globalAnnouncements = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
+                
+                // Segarkan notifikasi lonceng (red dot) di Lobi
+                renderLobby(); 
+                
+                // Proses antrean Banner
+                processBannerQueue();
+                
+                // Jika modal daftar pengumuman sedang terbuka, render ulang secara real-time
+                const annModal = document.getElementById('announcementModal');
+                if(annModal && annModal.classList.contains('active') && window.currentViewedAnnRoomId) {
+                    window.renderAnnouncementList(window.currentViewedAnnRoomId);
+                }
+            }, (error) => console.error("Error Announcement:", error));
+        }
+
+        // --- SISTEM BANNER ANTREAN PINTAR ---
+        function processBannerQueue() {
+            const bannerWrap = document.getElementById('bannerWrap');
+            
+            // Cari pengumuman yang belum dibaca (currentUserUid tidak ada di readBy)
+            let unreadAnns = window.globalAnnouncements.filter(a => !a.readBy.includes(currentUserUid));
+            
+            // Urutkan: Yang diperbarui paling terakhir muncul paling atas antrean
+            unreadAnns.sort((a, b) => b.updatedAt - a.updatedAt);
+            
+            if (unreadAnns.length > 0) {
+                const activeAnn = unreadAnns[0]; // Ambil yang paling baru
+                const room = window.collabRooms.find(r => r.id === activeAnn.roomId);
+                const roomName = room ? room.name : "Ruang Tim";
+                
+                let icon = 'ℹ️', cls = 'banner-info';
+                if (activeAnn.type === 'warning') { icon = '⚠️'; cls = 'banner-warning'; }
+                else if (activeAnn.type === 'urgent') { icon = '🚨'; cls = 'banner-urgent'; }
+                else if (activeAnn.type === 'event') { icon = '🎉'; cls = 'banner-event'; }
+                
+                // Indikator "(Diperbarui)" jika pernah diedit setelah pembuatan
+                const isUpdated = activeAnn.updatedAt > (activeAnn.createdAt + 5000); 
+
+                bannerWrap.innerHTML = `
+                    <div class="announcement-banner ${cls}">
+                        <div style="font-size: 24px; flex-shrink: 0;">${icon}</div>
+                        <div class="banner-content">
+                            <div class="banner-header">
+                                <span class="banner-room">${roomName}</span>
+                                <span>${isUpdated ? 'Pembaruan Info' : 'Pengumuman Baru'}</span>
+                            </div>
+                            <div class="banner-message">${activeAnn.message}</div>
+                        </div>
+                        <button class="btn-understand" onclick="markAnnouncementAsRead('${activeAnn.id}')">Mengerti</button>
+                    </div>
+                `;
+            } else {
+                bannerWrap.innerHTML = ''; // Bersihkan layar
+            }
+        }
+
+        window.markAnnouncementAsRead = async (annId) => {
+            // Karena kita menggunakan listener real-time, kita hanya perlu update ke Firebase, 
+            // lalu banner berikutnya akan otomatis muncul.
+            try {
+                await updateDoc(doc(dbRef, "collab_announcements", annId), {
+                    readBy: arrayUnion(currentUserUid)
+                });
+            } catch(e) { console.error("Gagal menyembunyikan banner:", e); }
+        };
+
+        // --- RENDER LOBI UTAMA ---
         function renderLobby() {
             const container = document.getElementById("collabContainer");
             
@@ -392,18 +533,17 @@
                 const isOwner = room.ownerId === currentUserUid;
                 const badgeClass = room.type === "Idea Board" ? "badge-idea" : (room.type === "Script" ? "badge-script" : "badge-notes");
                 
-                const renameHTML = isOwner 
-                    ? `<button onclick="event.preventDefault(); window.openEditRoomModal('${room.id}')">✏️ Ubah Nama Ruang</button>`
-                    : ``;
-
-                const leaveOrDeleteHTML = isOwner 
-                    ? `<button class="danger" onclick="event.preventDefault(); window.deleteRoom('${room.id}', '${room.name}')">🗑️ Hapus Permanen Ruang</button>`
-                    : `<button class="danger" onclick="event.preventDefault(); window.leaveRoom('${room.id}', '${room.name}')">🚪 Keluar dari Ruang</button>`;
+                const renameHTML = isOwner ? `<button onclick="event.preventDefault(); window.openEditRoomModal('${room.id}')">✏️ Ubah Nama Ruang</button>` : ``;
+                const leaveOrDeleteHTML = isOwner ? `<button class="danger" onclick="event.preventDefault(); window.deleteRoom('${room.id}', '${room.name}')">🗑️ Hapus Permanen</button>` : `<button class="danger" onclick="event.preventDefault(); window.leaveRoom('${room.id}', '${room.name}')">🚪 Keluar Ruang</button>`;
 
                 let targetUrl = "javascript:void(0)";
                 if (room.type === "Idea Board") targetUrl = `collab-ideas.html?id=${room.id}`;
                 else if (room.type === "Script") targetUrl = `collab-script.html?id=${room.id}`;
                 else if (room.type === "Notes") targetUrl = `collab-notes.html?id=${room.id}`;
+                
+                // Hitung pengumuman belum dibaca untuk ruangan INI saja (badge titik merah)
+                const unreadInRoom = window.globalAnnouncements.filter(a => a.roomId === room.id && !a.readBy.includes(currentUserUid)).length;
+                const megaPhoneBadge = unreadInRoom > 0 ? `<div class="unread-dot"></div>` : '';
 
                 return `
                 <a href="${targetUrl}" class="board-card" id="room_card_${room.id}">
@@ -417,6 +557,10 @@
                             <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path><circle cx="9" cy="7" r="4"></circle><path d="M23 21v-2a4 4 0 0 0-3-3.87"></path><path d="M16 3.13a4 4 0 0 1 0 7.75"></path></svg>
                             ${room.members.length}
                         </div>
+                        
+                        <button class="btn-dots btn-mega" onclick="event.preventDefault(); window.openAnnouncementModal('${room.id}')" title="Papan Pengumuman">
+                            📢 ${megaPhoneBadge}
+                        </button>
                         
                         <div class="dropdown-wrap">
                             <button class="btn-dots" onclick="event.preventDefault(); window.toggleRoomMenu('${room.id}')">⋮</button>
@@ -434,10 +578,216 @@
             }).join('');
         }
 
-        // =========================================================
-        // AKSI JAVASCRIPT GLOBAL (DIIKAT KE WINDOW)
-        // =========================================================
+        // ==========================================
+        // FITUR PENGUMUMAN (MANAJEMEN ARSIP & FORM)
+        // ==========================================
+        window.openAnnouncementModal = (roomId) => {
+            window.currentViewedAnnRoomId = roomId;
+            const room = window.collabRooms.find(r => r.id === roomId);
+            const isOwner = room && room.ownerId === currentUserUid;
+            
+            // Admin (Owner) punya tombol sakti "+ Buat"
+            document.getElementById('btnCreateAnn').style.display = isOwner ? 'block' : 'none';
+            document.getElementById('annSubtitle').innerText = isOwner ? "Kelola informasi dan instruksi untuk anggota tim Anda." : "Riwayat pesan penting dari Admin ruang ini.";
+            
+            document.getElementById('announcementModal').classList.add('active');
+            window.renderAnnouncementList(roomId);
+        };
+
+        window.closeAnnouncementModal = () => {
+            window.currentViewedAnnRoomId = null;
+            document.getElementById('announcementModal').classList.remove('active');
+        };
+
+        window.renderAnnouncementList = (roomId) => {
+            const container = document.getElementById('announcementListContainer');
+            const room = window.collabRooms.find(r => r.id === roomId);
+            const isOwner = room && room.ownerId === currentUserUid;
+            
+            // Ambil pengumuman yang sesuai ruang ini
+            let anns = window.globalAnnouncements.filter(a => a.roomId === roomId);
+            anns.sort((a, b) => b.updatedAt - a.updatedAt); // Terbaru di atas
+
+            if (anns.length === 0) {
+                container.innerHTML = `<div style="text-align: center; color: var(--text-muted); padding: 30px 10px; font-size: 13px;">Belum ada pengumuman di ruang ini.</div>`;
+                return;
+            }
+
+            const formatDate = (ms) => ms ? new Date(ms).toLocaleDateString('id-ID', { day: 'numeric', month: 'short', hour: '2-digit', minute:'2-digit' }) : '';
+
+            container.innerHTML = anns.map(ann => {
+                const isUnread = !ann.readBy.includes(currentUserUid);
+                let labelType = "Info", typeCls = "info";
+                if (ann.type === 'warning') { labelType = "Peringatan"; typeCls = "warning"; }
+                else if (ann.type === 'urgent') { labelType = "Mendesak"; typeCls = "urgent"; }
+                else if (ann.type === 'event') { labelType = "Acara"; typeCls = "event"; }
+
+                // Hitung Rasio Keterbacaan (Kurangi 1 karena Admin otomatis dihitung)
+                const totalTarget = Math.max(0, ann.targetUids.length - 1); 
+                const totalRead = Math.max(0, ann.readBy.length - 1);
+                
+                const adminViewsHtml = isOwner ? `<span style="color: var(--primary);">👁️ ${totalRead}/${totalTarget} Dibaca</span>` : ``;
+                
+                const adminActionsHtml = isOwner ? `
+                    <button class="btn-icon admin" onclick="openCreateAnnouncementForm('${ann.id}')" title="Edit Pengumuman"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M12 20h9"></path><path d="M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4L16.5 3.5z"></path></svg></button>
+                    <button class="btn-icon kick" onclick="deleteAnnouncement('${ann.id}')" title="Tarik / Hapus Permanen"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg></button>
+                ` : ``;
+
+                return `
+                <div class="announcement-item ${isUnread ? 'unread' : ''}">
+                    <div class="ann-header">
+                        <span class="ann-type ${typeCls}">${labelType}</span>
+                        <span>${formatDate(ann.updatedAt)}</span>
+                    </div>
+                    <div class="ann-msg">${ann.message}</div>
+                    <div class="ann-meta">
+                        ${adminViewsHtml}
+                        <div class="ann-actions">${adminActionsHtml}</div>
+                    </div>
+                </div>`;
+            }).join('');
+        };
+
+        // --- FORM BUAT / EDIT PENGUMUMAN ---
+        window.openCreateAnnouncementForm = (editId = null) => {
+            window.currentEditAnnId = editId;
+            document.getElementById('formAnnTitle').innerText = editId ? "Edit Pengumuman" : "Buat Pengumuman Baru";
+            
+            if (editId) {
+                const ann = window.globalAnnouncements.find(a => a.id === editId);
+                document.getElementById('annMessageInput').value = ann.message;
+                document.getElementById('annTypeInput').value = ann.type;
+                window.renderTargetCheckboxes(window.currentViewedAnnRoomId, ann.targetUids);
+            } else {
+                document.getElementById('annMessageInput').value = "";
+                document.getElementById('annTypeInput').value = "info";
+                window.renderTargetCheckboxes(window.currentViewedAnnRoomId, []);
+            }
+            
+            document.getElementById('formAnnouncementModal').classList.add('active');
+        };
+
+        window.closeCreateAnnouncementForm = () => {
+            window.currentEditAnnId = null;
+            document.getElementById('formAnnouncementModal').classList.remove('active');
+        };
+
+        window.renderTargetCheckboxes = (roomId, preselectedUids = []) => {
+            const container = document.getElementById('annTargetList');
+            const room = window.collabRooms.find(r => r.id === roomId);
+            if(!room) return;
+
+            // Jangan tampilkan Admin sendiri di daftar centang untuk menghindari kebingungan UI
+            const targets = room.members.filter(uid => uid !== currentUserUid);
+            
+            if (targets.length === 0) {
+                container.innerHTML = `<div style="text-align: center; color: var(--text-muted); font-size: 12px; padding: 10px;">Anda adalah satu-satunya anggota di ruang ini.</div>`;
+                document.getElementById('checkAllTargets').disabled = true;
+                return;
+            }
+            
+            document.getElementById('checkAllTargets').disabled = false;
+            document.getElementById('checkAllTargets').checked = false; // Reset
+
+            container.innerHTML = targets.map(uid => {
+                const user = window.userCache[uid] || { name: "Memuat..." };
+                const displayName = user.name || user.displayName || "Anonim";
+                const initial = displayName.charAt(0).toUpperCase();
+                
+                // Jika sedang Create Baru, centang semua default. Jika Edit, ikuti preselected
+                const isChecked = window.currentEditAnnId ? preselectedUids.includes(uid) : true;
+                
+                return `
+                <label class="target-member-item">
+                    <div class="target-info">
+                        <div class="target-avatar">${initial}</div>
+                        <div class="target-name">${displayName}</div>
+                    </div>
+                    <label style="cursor: pointer;">
+                        <input type="checkbox" class="ann-target-checkbox" value="${uid}" style="display:none;" ${isChecked ? 'checked' : ''}>
+                        <div class="checkbox-custom"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="4"><polyline points="20 6 9 17 4 12"></polyline></svg></div>
+                    </label>
+                </label>`;
+            }).join('');
+            
+            // Trigger evaluasi "Pilih Semua" secara visual
+            window.evaluateSelectAllState();
+        };
+
+        window.toggleSelectAllTargets = (masterCheckbox) => {
+            const checkboxes = document.querySelectorAll('.ann-target-checkbox');
+            checkboxes.forEach(cb => cb.checked = masterCheckbox.checked);
+        };
         
+        window.evaluateSelectAllState = () => {
+            const checkboxes = document.querySelectorAll('.ann-target-checkbox');
+            const master = document.getElementById('checkAllTargets');
+            if(checkboxes.length === 0) return;
+            const allChecked = Array.from(checkboxes).every(cb => cb.checked);
+            master.checked = allChecked;
+        };
+
+        // Pasang pendengar manual agar "Pilih Semua" ter-update saat user menceklis manual
+        document.getElementById('annTargetList').addEventListener('change', function(e) {
+            if(e.target.classList.contains('ann-target-checkbox')) window.evaluateSelectAllState();
+        });
+
+        window.saveAnnouncement = async () => {
+            const msg = document.getElementById('annMessageInput').value.trim();
+            const type = document.getElementById('annTypeInput').value;
+            const room = window.collabRooms.find(r => r.id === window.currentViewedAnnRoomId);
+            
+            if (!msg) return alert("Pesan pengumuman tidak boleh kosong!");
+            
+            // Kumpulkan UID dari checkbox yang tercentang
+            const checkboxes = document.querySelectorAll('.ann-target-checkbox:checked');
+            let targetUids = Array.from(checkboxes).map(cb => cb.value);
+            
+            if (targetUids.length === 0 && room.members.length > 1) {
+                return alert("Pilih minimal satu anggota untuk menerima pengumuman ini.");
+            }
+
+            // PENTING: Selalu masukkan UID Admin ke dalam Target dan ReadBy agar mereka bisa memantaunya di riwayat, 
+            // namun Banner tidak muncul (mengganggu) layar Admin sendiri.
+            targetUids.push(currentUserUid); 
+            
+            const now = Date.now();
+            const payload = {
+                roomId: window.currentViewedAnnRoomId,
+                message: msg,
+                type: type,
+                targetUids: targetUids,
+                readBy: [currentUserUid], // Sistem "Sundul": Reset ke hanya Admin yang membaca!
+                updatedAt: now
+            };
+
+            try {
+                if (window.currentEditAnnId) {
+                    await updateDoc(doc(dbRef, "collab_announcements", window.currentEditAnnId), payload);
+                } else {
+                    // Buat Baru
+                    payload.createdAt = now;
+                    payload.createdBy = currentUserUid;
+                    const newId = "cann_" + now + Math.random().toString(36).substr(2, 5);
+                    await setDoc(doc(dbRef, "collab_announcements", newId), payload);
+                }
+                closeCreateAnnouncementForm();
+            } catch(e) {
+                alert("Gagal menyimpan pengumuman.");
+                console.error(e);
+            }
+        };
+
+        window.deleteAnnouncement = async (annId) => {
+            if(!confirm("Tarik dan hapus permanen pengumuman ini dari semua layar anggota?")) return;
+            try {
+                await deleteDoc(doc(dbRef, "collab_announcements", annId));
+            } catch(e) { alert("Gagal menghapus."); }
+        };
+
+        // ==========================================
+        // FUNGSI LAINNYA (TOGGLE, MODALS)
+        // ==========================================
         window.toggleRoomMenu = (roomId) => {
             const menu = document.getElementById('menu_' + roomId);
             const card = document.getElementById('room_card_' + roomId);
@@ -451,8 +801,7 @@
                 if (card) card.style.zIndex = '100'; 
             }
         };
-
-        // --- BUAT RUANG (CREATE) ---
+        
         window.openCreateModal = () => { document.getElementById('roomNameInput').value = ""; document.getElementById('createModal').classList.add('active'); };
         window.closeCreateModal = () => document.getElementById('createModal').classList.remove('active');
         
@@ -463,209 +812,112 @@
             
             const inviteCode = Math.random().toString(36).substring(2, 8).toUpperCase();
             const roomId = "collab_board_" + Date.now();
-            
-            const payload = {
-                id: roomId, name: roomName, type: roomType,
-                ownerId: currentUserUid, members: [currentUserUid],
-                inviteCode: inviteCode, createdAt: Date.now()
-            };
+            const payload = { id: roomId, name: roomName, type: roomType, ownerId: currentUserUid, members: [currentUserUid], inviteCode: inviteCode, createdAt: Date.now() };
 
             try {
                 await setDoc(doc(dbRef, "collab_boards", roomId), payload);
                 window.closeCreateModal();
                 document.getElementById('generatedCodeDisplay').innerText = inviteCode;
                 document.getElementById('successModal').classList.add('active');
-            } catch (err) {
-                alert("Terjadi kesalahan sistem saat membuat ruang.");
-            }
+            } catch (err) { alert("Terjadi kesalahan sistem saat membuat ruang."); }
         };
         window.closeSuccessModal = () => document.getElementById('successModal').classList.remove('active');
 
-        // --- GABUNG RUANG (JOIN) ---
         window.openJoinModal = () => { document.getElementById('joinCodeInput').value = ""; document.getElementById('joinModal').classList.add('active'); };
         window.closeJoinModal = () => document.getElementById('joinModal').classList.remove('active');
-
         window.confirmJoinRoom = async () => {
             const inputCode = document.getElementById('joinCodeInput').value.trim().toUpperCase();
             if(inputCode.length !== 6) return alert("Kode invite harus 6 karakter!");
-            
             try {
                 const q = query(collection(dbRef, "collab_boards"), where("inviteCode", "==", inputCode));
                 const snap = await getDocs(q);
-                
-                if (snap.empty) {
-                    alert("Kode invite tidak ditemukan, salah ketik, atau telah diperbarui oleh Admin.");
-                    return;
-                }
-
+                if (snap.empty) return alert("Kode invite tidak ditemukan.");
                 const roomDoc = snap.docs[0];
-                const roomData = roomDoc.data();
-
-                if (roomData.members.includes(currentUserUid)) {
-                    alert("Anda sudah menjadi anggota di ruang ini.");
-                    window.closeJoinModal();
-                    return;
+                if (roomDoc.data().members.includes(currentUserUid)) {
+                    alert("Anda sudah menjadi anggota di ruang ini."); window.closeJoinModal(); return;
                 }
-
-                await updateDoc(doc(dbRef, "collab_boards", roomDoc.id), {
-                    members: arrayUnion(currentUserUid)
-                });
-
-                alert("Berhasil bergabung ke ruang " + roomData.name + "!");
-                window.closeJoinModal();
-            } catch (err) {
-                alert("Terjadi kesalahan sistem.");
-            }
+                await updateDoc(doc(dbRef, "collab_boards", roomDoc.id), { members: arrayUnion(currentUserUid) });
+                alert("Berhasil bergabung!"); window.closeJoinModal();
+            } catch (err) { alert("Terjadi kesalahan sistem."); }
         };
 
-        // --- EDIT RUANG (RENAME) KHUSUS ADMIN ---
         window.openEditRoomModal = (roomId) => {
             const room = window.collabRooms.find(r => r.id === roomId);
             if (!room) return;
-            
             window.currentEditRoomId = roomId;
             document.getElementById('editRoomNameInput').value = room.name;
             document.getElementById('editRoomModal').classList.add('active');
         };
-
-        window.closeEditRoomModal = () => {
-            window.currentEditRoomId = null;
-            document.getElementById('editRoomModal').classList.remove('active');
-        };
-
+        window.closeEditRoomModal = () => { window.currentEditRoomId = null; document.getElementById('editRoomModal').classList.remove('active'); };
         window.confirmEditRoomName = async () => {
             if (!window.currentEditRoomId) return;
-            
             const inputName = document.getElementById('editRoomNameInput').value.trim();
-            
-            // Validasi string (Tidak Boleh Kosong & Minimal/Maksimal Karakter)
-            if (inputName.length < 3) return alert("Nama ruang minimal 3 karakter!");
-            if (inputName.length > 50) return alert("Nama ruang maksimal 50 karakter!");
-            
+            if (inputName.length < 3 || inputName.length > 50) return alert("Nama ruang 3 - 50 karakter!");
             const room = window.collabRooms.find(r => r.id === window.currentEditRoomId);
-            
-            // Jika nama tidak berubah, abaikan saja (tutup popup tanpa ke database)
-            if (room.name === inputName) {
-                window.closeEditRoomModal();
-                return; 
-            }
-
+            if (room.name === inputName) { window.closeEditRoomModal(); return; }
             try {
-                // Update ke Firebase, sertakan siapa dan kapan
-                await updateDoc(doc(dbRef, "collab_boards", window.currentEditRoomId), {
-                    name: inputName,
-                    lastRenamedAt: Date.now(),
-                    lastRenamedBy: currentUserUid
-                });
-                
+                await updateDoc(doc(dbRef, "collab_boards", window.currentEditRoomId), { name: inputName, lastRenamedAt: Date.now(), lastRenamedBy: currentUserUid });
                 window.closeEditRoomModal();
-                // Tidak perlu render ulang secara manual di sini karena onSnapshot akan merespon perubahan data.
-            } catch(e) {
-                alert("Gagal mengubah nama ruang.");
-                console.error(e);
-            }
+            } catch(e) { alert("Gagal mengubah nama ruang."); }
         };
 
-        // --- INFO RUANG & REFRESH KODE ---
         window.showRoomInfo = (roomId) => {
             const room = window.collabRooms.find(r => r.id === roomId);
             if(!room) return;
-
             document.getElementById('infoRoomName').innerText = room.name;
             document.getElementById('infoRoomRole').innerText = room.ownerId === currentUserUid ? "Pembuat Ruang (Admin)" : "Anggota Tim";
             document.getElementById('infoRoomCode').innerText = room.inviteCode;
-            
-            // Konversi Waktu dan Deteksi Jejak Audit
             const formatDate = (ms) => ms ? new Date(ms).toLocaleDateString('id-ID', { day: 'numeric', month: 'short', year: 'numeric', hour: '2-digit', minute:'2-digit' }) : '-';
             
-            const rowRenamedAt = document.getElementById('rowRenamedAt');
-            const rowRenamedBy = document.getElementById('rowRenamedBy');
-
+            const rowRenamedAt = document.getElementById('rowRenamedAt'), rowRenamedBy = document.getElementById('rowRenamedBy');
             if (room.lastRenamedAt && room.lastRenamedBy) {
                 document.getElementById('infoRoomRenamedAt').innerText = formatDate(room.lastRenamedAt);
-                
-                // Ambil sinkronisasi nama dari cache User
                 const renamedByUser = window.userCache[room.lastRenamedBy];
-                const renamedByName = renamedByUser ? (renamedByUser.name || renamedByUser.displayName || "Seorang Admin") : "Seorang Admin";
-                
-                document.getElementById('infoRoomRenamedBy').innerText = renamedByName;
-                
-                rowRenamedAt.style.display = 'flex';
-                rowRenamedBy.style.display = 'flex';
-            } else {
-                rowRenamedAt.style.display = 'none';
-                rowRenamedBy.style.display = 'none';
-            }
+                document.getElementById('infoRoomRenamedBy').innerText = renamedByUser ? (renamedByUser.name || renamedByUser.displayName || "Seorang Admin") : "Seorang Admin";
+                rowRenamedAt.style.display = 'flex'; rowRenamedBy.style.display = 'flex';
+            } else { rowRenamedAt.style.display = 'none'; rowRenamedBy.style.display = 'none'; }
             
             const btnRefresh = document.getElementById('btnRefreshCode');
             if(room.ownerId === currentUserUid) {
-                btnRefresh.style.display = 'flex';
-                btnRefresh.onclick = () => window.refreshInviteCode(roomId);
-            } else {
-                btnRefresh.style.display = 'none';
-            }
-            
+                btnRefresh.style.display = 'flex'; btnRefresh.onclick = () => window.refreshInviteCode(roomId);
+            } else { btnRefresh.style.display = 'none'; }
             document.getElementById('infoRoomModal').classList.add('active');
         };
         window.closeInfoRoomModal = () => document.getElementById('infoRoomModal').classList.remove('active');
 
         window.refreshInviteCode = async (roomId) => {
-            if(!confirm("Buat kode invite baru? Kode lama akan langsung hangus dan tidak bisa digunakan lagi.")) return;
+            if(!confirm("Buat kode invite baru? Kode lama akan hangus.")) return;
             const newCode = Math.random().toString(36).substring(2, 8).toUpperCase();
-            try {
-                await updateDoc(doc(dbRef, "collab_boards", roomId), { inviteCode: newCode });
-                document.getElementById('infoRoomCode').innerText = newCode;
-                alert("Berhasil! Kode invite baru telah dibuat.");
-            } catch(e) {
-                alert("Gagal memperbarui kode.");
-            }
+            try { await updateDoc(doc(dbRef, "collab_boards", roomId), { inviteCode: newCode }); document.getElementById('infoRoomCode').innerText = newCode; alert("Berhasil!"); } 
+            catch(e) { alert("Gagal memperbarui kode."); }
         };
 
-        // --- KELOLA ANGGOTA (KICK & TRANSFER ADMIN) ---
-        window.openMembersModal = (roomId) => {
-            window.currentViewedRoomId = roomId;
-            document.getElementById('membersModal').classList.add('active');
-            window.renderMembersList(roomId);
-        };
-        window.closeMembersModal = () => {
-            window.currentViewedRoomId = null;
-            document.getElementById('membersModal').classList.remove('active');
-        };
-
+        window.openMembersModal = (roomId) => { window.currentViewedRoomId = roomId; document.getElementById('membersModal').classList.add('active'); window.renderMembersList(roomId); };
+        window.closeMembersModal = () => { window.currentViewedRoomId = null; document.getElementById('membersModal').classList.remove('active'); };
         window.renderMembersList = (roomId) => {
             const room = window.collabRooms.find(r => r.id === roomId);
             const container = document.getElementById('membersListContainer');
             if(!room) return;
-
             const isOwner = room.ownerId === currentUserUid;
             document.getElementById('membersSubtitle').innerText = isOwner ? "Anda memiliki kontrol penuh sebagai Admin." : "Melihat daftar anggota di dalam ruang.";
             
-            // Render dari Cache (Cache ini otomatis ter-update via onSnapshot profile di atas)
             container.innerHTML = room.members.map(uid => {
                 const user = window.userCache[uid] || { name: "Memuat..." };
                 const displayName = user.name || user.displayName || "Anonim";
-                const initial = displayName.charAt(0).toUpperCase();
-                const isThisMemberAdmin = room.ownerId === uid;
-                const isMe = currentUserUid === uid;
-
+                const isThisMemberAdmin = room.ownerId === uid, isMe = currentUserUid === uid;
+                
                 let actionHtml = "";
-                // HANYA ADMIN yang bisa mengelola orang LAIN
                 if (isOwner && !isMe) {
                     actionHtml = `
                     <div class="member-actions">
-                        <button class="btn-icon admin" title="Jadikan Admin" onclick="window.transferAdmin('${roomId}', '${uid}', '${displayName}')">
-                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon></svg>
-                        </button>
-                        <button class="btn-icon kick" title="Keluarkan Anggota" onclick="window.kickMember('${roomId}', '${uid}', '${displayName}')">
-                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
-                        </button>
+                        <button class="btn-icon admin" title="Jadikan Admin" onclick="window.transferAdmin('${roomId}', '${uid}', '${displayName}')"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon></svg></button>
+                        <button class="btn-icon kick" title="Keluarkan Anggota" onclick="window.kickMember('${roomId}', '${uid}', '${displayName}')"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg></button>
                     </div>`;
                 }
-
                 return `
                 <div class="member-item">
                     <div class="member-info">
-                        <div class="member-avatar">${initial}</div>
+                        <div class="member-avatar">${displayName.charAt(0).toUpperCase()}</div>
                         <div class="member-details">
                             <div class="member-name">${displayName} ${isMe ? '(Anda)' : ''}</div>
                             <div class="member-role">${isThisMemberAdmin ? '👑 Admin' : 'Anggota'}</div>
@@ -675,55 +927,31 @@
                 </div>`;
             }).join('');
         };
-
         window.kickMember = async (roomId, targetUid, targetName) => {
-            if(!confirm(`Keluarkan ${targetName} dari ruang ini? Data yang sudah mereka buat akan tetap menjadi aset ruang.`)) return;
-            try {
-                await updateDoc(doc(dbRef, "collab_boards", roomId), {
-                    members: arrayRemove(targetUid)
-                });
-                // Render list berjalan otomatis berkat onSnapshot()
-            } catch(e) {
-                alert("Gagal mengeluarkan anggota.");
-            }
+            if(!confirm(`Keluarkan ${targetName} dari ruang ini?`)) return;
+            try { await updateDoc(doc(dbRef, "collab_boards", roomId), { members: arrayRemove(targetUid) }); } 
+            catch(e) { alert("Gagal mengeluarkan."); }
         };
-
         window.transferAdmin = async (roomId, targetUid, targetName) => {
-            if(!confirm(`PERINGATAN! Yakin memindahkan hak Admin ke ${targetName}? \n\nAnda akan otomatis menjadi anggota biasa, dan tombol pengaturan Admin akan hilang dari akun Anda. Tindakan ini tidak bisa dibatalkan.`)) return;
-            try {
-                await updateDoc(doc(dbRef, "collab_boards", roomId), {
-                    ownerId: targetUid
-                });
-                // Render UI (Tombol Delete ganti jadi Keluar) berjalan otomatis berkat onSnapshot()
-            } catch(e) {
-                alert("Gagal memindahkan hak Admin.");
-            }
+            if(!confirm(`Yakin memindahkan hak Admin ke ${targetName}? Anda akan jadi anggota biasa.`)) return;
+            try { await updateDoc(doc(dbRef, "collab_boards", roomId), { ownerId: targetUid }); } 
+            catch(e) { alert("Gagal."); }
         };
-
-        // --- KELUAR / HAPUS RUANG ---
         window.leaveRoom = async (roomId, roomName) => {
-            if(!confirm(`Anda yakin ingin KELUAR dari ruang "${roomName}"? Anda harus minta kode invite lagi untuk masuk.`)) return;
-            try {
-                await updateDoc(doc(dbRef, "collab_boards", roomId), { members: arrayRemove(currentUserUid) });
-            } catch (e) { console.error(e); }
+            if(!confirm(`KELUAR dari ruang "${roomName}"?`)) return;
+            try { await updateDoc(doc(dbRef, "collab_boards", roomId), { members: arrayRemove(currentUserUid) }); } 
+            catch (e) {}
         };
-
         window.deleteRoom = async (roomId, roomName) => {
-            if(!confirm(`PERINGATAN! Hapus Permanen ruang "${roomName}"? Semua data kolaborasi di dalamnya akan lenyap bagi semua orang.`)) return;
+            if(!confirm(`Hapus Permanen ruang "${roomName}"?`)) return;
             try {
                 await deleteDoc(doc(dbRef, "collab_boards", roomId));
-                
-                // Pembersihan Dokumen Anak Kolaborasi
                 const clearDocs = async (collectionName) => {
                     const q = query(collection(dbRef, collectionName), where("roomId", "==", roomId));
-                    const snap = await getDocs(q);
-                    snap.forEach(async (d) => await deleteDoc(doc(dbRef, collectionName, d.id)));
+                    const snap = await getDocs(q); snap.forEach(async (d) => await deleteDoc(doc(dbRef, collectionName, d.id)));
                 };
-                
-                await clearDocs("collab_ideas");
-                await clearDocs("collab_scripts");
-                await clearDocs("collab_notes");
-            } catch (e) { console.error(e); }
+                await clearDocs("collab_ideas"); await clearDocs("collab_scripts"); await clearDocs("collab_notes"); await clearDocs("collab_announcements");
+            } catch (e) {}
         };
     </script>
 </body>
