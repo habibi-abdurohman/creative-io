@@ -34,6 +34,8 @@
             --danger: #ef4444; 
             --danger-soft: rgba(239, 68, 68, 0.1); 
             --warning: #f59e0b; 
+            --event: #8b5cf6;
+            --event-soft: rgba(139, 92, 246, 0.1);
             --shadow-flat: 0 4px 20px rgba(0, 0, 0, 0.04); 
             --radius-btn: 14px; 
             --radius-card: 24px; 
@@ -49,6 +51,7 @@
             --text-muted: #cbd5e1; 
             --shadow-flat: 0 10px 30px rgba(0, 0, 0, 0.4); 
             --danger-soft: rgba(239, 68, 68, 0.15);
+            --event-soft: rgba(139, 92, 246, 0.15);
         }
         body { font-family: 'Inter', system-ui, sans-serif; background: var(--bg-grad); color: var(--text-main); min-height: 100vh; padding: 76px 16px 100px 16px; }
         
@@ -58,7 +61,7 @@
         .bg-glow.two { width: 320px; height: 320px; background: rgba(96, 165, 250, 0.15); bottom: 100px; right: -100px; }
 
         /* =========================================================
-           HEADER RUANG (HERO CARD) DIREVISI
+           HEADER RUANG (HERO CARD)
         ========================================================= */
         .hero-card { 
             background: var(--primary-grad); border-radius: var(--radius-card); padding: 32px; color: white; 
@@ -70,14 +73,19 @@
         .hero-card::after { content: ""; position: absolute; width: 250px; height: 250px; background: rgba(255, 255, 255, 0.08); border-radius: 50%; top: -80px; right: -80px; pointer-events: none; }
         
         .hero-header-left { display: flex; align-items: center; gap: 16px; flex: 1; min-width: 250px; position: relative; z-index: 1; }
-        .btn-back { 
+        .btn-back, .btn-mega { 
             width: 44px; height: 44px; border-radius: 14px; background: rgba(255,255,255,0.15); backdrop-filter: blur(8px); -webkit-backdrop-filter: blur(8px);
-            display: flex; align-items: center; justify-content: center; color: white; text-decoration: none; 
-            transition: all 0.2s ease; flex-shrink: 0; outline: none; border: 1px solid rgba(255,255,255,0.25); box-shadow: 0 4px 12px rgba(0,0,0,0.05);
+            display: flex; align-items: center; justify-content: center; color: white; text-decoration: none; border: none; font-size: 18px;
+            transition: all 0.2s ease; flex-shrink: 0; outline: none; border: 1px solid rgba(255,255,255,0.25); box-shadow: 0 4px 12px rgba(0,0,0,0.05); cursor: pointer;
         }
-        .btn-back:hover { background: rgba(255,255,255,0.25); transform: translateX(-2px); }
-        body.dark .hero-card.trash-mode .btn-back { background: rgba(15, 23, 42, 0.4); border-color: rgba(255,255,255,0.1); }
-        body.dark .hero-card.trash-mode .btn-back:hover { background: rgba(15, 23, 42, 0.6); }
+        .btn-back:hover, .btn-mega:hover { background: rgba(255,255,255,0.25); transform: translateY(-2px); }
+        .btn-back:hover { transform: translateX(-2px); } /* Override for back btn */
+        
+        body.dark .hero-card.trash-mode .btn-back, body.dark .hero-card.trash-mode .btn-mega { background: rgba(15, 23, 42, 0.4); border-color: rgba(255,255,255,0.1); }
+        body.dark .hero-card.trash-mode .btn-back:hover, body.dark .hero-card.trash-mode .btn-mega:hover { background: rgba(15, 23, 42, 0.6); }
+        
+        .btn-mega { position: relative; }
+        .btn-mega .unread-dot { position: absolute; top: -3px; right: -3px; width: 12px; height: 12px; background: var(--danger); border-radius: 50%; border: 2px solid rgba(255,255,255,0.8); animation: pulseAlert 2s infinite; display: none; }
         
         .hero-text { display: flex; flex-direction: column; justify-content: center; min-width: 0; }
         .hero-title { font-size: 24px; font-weight: 900; letter-spacing: -0.5px; line-height: 1.2; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; margin-bottom: 6px; }
@@ -85,11 +93,31 @@
         
         .live-indicator { width: 8px; height: 8px; background: #10b981; border-radius: 50%; display: inline-block; animation: pulse 2s infinite; flex-shrink: 0; }
         @keyframes pulse { 0% { transform: scale(0.95); box-shadow: 0 0 0 0 rgba(16, 185, 129, 0.7); } 70% { transform: scale(1); box-shadow: 0 0 0 6px rgba(16, 185, 129, 0); } 100% { transform: scale(0.95); box-shadow: 0 0 0 0 rgba(16, 185, 129, 0); } }
+        @keyframes pulseAlert { 0% { transform: scale(0.95); box-shadow: 0 0 0 0 rgba(239, 68, 68, 0.7); } 70% { transform: scale(1); box-shadow: 0 0 0 6px rgba(239, 68, 68, 0); } 100% { transform: scale(0.95); box-shadow: 0 0 0 0 rgba(239, 68, 68, 0); } }
 
-        .hero-stats { display: flex; gap: 10px; position: relative; z-index: 1; flex-shrink: 0; overflow-x: auto; scrollbar-width: none; max-width: 100%; padding-bottom: 4px; }
+        .hero-header-right { display: flex; align-items: center; gap: 16px; position: relative; z-index: 1; flex-shrink: 0; max-width: 100%; }
+        .hero-stats { display: flex; gap: 10px; overflow-x: auto; scrollbar-width: none; max-width: 100%; padding-bottom: 4px; }
         .hero-stats::-webkit-scrollbar { display: none; }
         .stat-pill { display: flex; align-items: center; gap: 8px; background: rgba(255, 255, 255, 0.15); backdrop-filter: blur(10px); -webkit-backdrop-filter: blur(10px); border: 1px solid rgba(255, 255, 255, 0.2); padding: 8px 16px; border-radius: 20px; font-size: 12px; font-weight: 700; white-space: nowrap; }
         .stat-pill span { font-size: 16px; font-weight: 900; }
+
+        /* =========================================================
+           BANNER PENGUMUMAN MENGAMBANG
+        ========================================================= */
+        .floating-banner-wrap { position: fixed; top: 90px; left: 50%; transform: translateX(-50%); z-index: 99999; width: 92%; max-width: 700px; pointer-events: none; display: flex; flex-direction: column; gap: 12px; }
+        .announcement-banner { pointer-events: auto; background: rgba(255, 255, 255, 0.95); backdrop-filter: blur(16px); border: 1px solid var(--border); border-left: 5px solid var(--primary); border-radius: 16px; padding: 16px 20px; box-shadow: 0 12px 40px rgba(0,0,0,0.15); display: flex; justify-content: space-between; align-items: center; gap: 16px; animation: slideDown 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards; }
+        body.dark .announcement-banner { background: rgba(30, 41, 59, 0.95); box-shadow: 0 12px 40px rgba(0,0,0,0.6); border-color: var(--border); }
+        .banner-info { border-left-color: var(--primary); }
+        .banner-warning { border-left-color: var(--warning); }
+        .banner-urgent { border-left-color: var(--danger); }
+        .banner-event { border-left-color: var(--event); }
+        .banner-content { display: flex; flex-direction: column; gap: 4px; flex: 1; }
+        .banner-header { display: flex; align-items: center; gap: 8px; font-size: 11px; font-weight: 800; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.5px; }
+        .banner-room { color: var(--primary); background: var(--primary-soft); padding: 2px 8px; border-radius: 6px; }
+        .banner-message { font-size: 14px; font-weight: 600; color: var(--text-main); line-height: 1.5; }
+        .btn-understand { background: var(--primary); color: white; border: none; padding: 10px 16px; border-radius: 12px; font-size: 13px; font-weight: 800; cursor: pointer; flex-shrink: 0; outline: none; transition: 0.2s; white-space: nowrap; }
+        .btn-understand:hover { transform: translateY(-2px); box-shadow: 0 4px 12px rgba(37, 99, 235, 0.3); }
+        @keyframes slideDown { 0% { opacity: 0; transform: translateY(-20px); } 100% { opacity: 1; transform: translateY(0); } }
         
         /* =========================================================
            UI SEARCH BAR DAN FILTER
@@ -259,15 +287,53 @@
         .popup-overlay.reading-mode .input-title { text-align: center; font-size: 28px; margin-bottom: 24px; }
         .popup-overlay.reading-mode .input-content { font-size: 18px; line-height: 2; }
 
-        /* MODAL INFO */
-        .info-modal-overlay { position: fixed; inset: 0; background: rgba(0,0,0,0.4); backdrop-filter: blur(4px); z-index: 100000; display: none; align-items: center; justify-content: center; padding: 20px; width: 100vw; height: 100vh; box-sizing: border-box; }
-        .info-modal-overlay.active { display: flex; }
-        .info-card { background: var(--card-solid); width: 100%; max-width: 360px; border-radius: 24px; padding: 24px; box-shadow: var(--shadow-flat); font-family: 'Inter', system-ui, sans-serif; box-sizing: border-box; }
-        .info-card h3 { font-size: 18px; font-weight: 800; margin-bottom: 20px; text-align: center; }
+        /* =========================================================
+           MODAL UMUM & PENGUMUMAN
+        ========================================================= */
+        .modal-overlay { position: fixed; inset: 0; background: rgba(0,0,0,0.4); backdrop-filter: blur(4px); z-index: 100001; display: none; align-items: center; justify-content: center; padding: 20px; width: 100vw; height: 100vh; box-sizing: border-box; }
+        .modal-overlay.active { display: flex; }
+        .modal-card { background: var(--card-solid); width: 100%; max-width: 420px; border-radius: var(--radius-card); padding: 24px; box-shadow: var(--shadow-flat); border: 1px solid var(--border); box-sizing: border-box; display: flex; flex-direction: column; max-height: 90vh; }
+        .modal-card h3 { font-size: 18px; font-weight: 900; margin-bottom: 8px; color: var(--text-main); flex-shrink: 0; text-align: center; }
+        .modal-card p { font-size: 13px; color: var(--text-muted); margin-bottom: 20px; line-height: 1.5; flex-shrink: 0; text-align: center; }
+        
+        .modal-input, .modal-select, .modal-textarea { width: 100%; padding: 14px 16px; border-radius: 14px; border: 1px solid var(--border); background: var(--card-tint); color: var(--text-main); font-size: 14px; font-weight: 600; outline: none; margin-bottom: 12px; transition: 0.2s; box-sizing: border-box; font-family: inherit; }
+        .modal-textarea { resize: vertical; min-height: 80px; }
+        .modal-input:focus, .modal-select:focus, .modal-textarea:focus { border-color: var(--primary); box-shadow: 0 0 0 3px var(--primary-soft); }
+        .modal-select { appearance: none; }
+        .modal-actions { display: flex; gap: 12px; margin-top: 8px; flex-shrink: 0; }
+        .btn-modal { flex: 1; padding: 12px; border-radius: 12px; font-size: 13px; font-weight: 800; cursor: pointer; border: none; transition: 0.2s; outline: none; }
+        .btn-cancel { background: var(--card-tint); color: var(--text-main); border: 1px solid var(--border); }
+        .btn-cancel:hover { background: #e2e8f0; }
+        body.dark .btn-cancel:hover { background: #334155; }
+        .btn-confirm { background: var(--primary-grad); color: white; }
+        
         .info-row { display: flex; justify-content: space-between; margin-bottom: 12px; font-size: 13px; gap: 12px; }
         .info-label { color: var(--text-muted); font-weight: 600; flex-shrink: 0; }
         .info-value { font-weight: 800; color: var(--text-main); text-align: right; max-width: 60%; word-break: break-word;}
         .btn-close-info { width: 100%; padding: 12px; margin-top: 20px; border: none; background: var(--card-tint); color: var(--text-main); font-weight: 800; border-radius: 12px; cursor: pointer; font-family: 'Inter', system-ui, sans-serif; outline: none;}
+
+        /* LIST PENGUMUMAN */
+        .list-container-scroll { overflow-y: auto; display: flex; flex-direction: column; gap: 10px; text-align: left; padding-right: 4px; flex: 1; min-height: 50px; }
+        .announcement-item { background: var(--card-tint); border: 1px solid var(--border); border-radius: 16px; padding: 16px; display: flex; flex-direction: column; gap: 8px; position: relative; }
+        .announcement-item.unread { border-left: 4px solid var(--primary); background: var(--primary-soft); }
+        .ann-header { display: flex; justify-content: space-between; align-items: center; font-size: 11px; font-weight: 800; color: var(--text-muted); }
+        .ann-type { padding: 4px 8px; border-radius: 6px; text-transform: uppercase; letter-spacing: 0.5px; }
+        .ann-type.info { background: rgba(37, 99, 235, 0.1); color: var(--primary); }
+        .ann-type.warning { background: rgba(245, 158, 11, 0.1); color: var(--warning); }
+        .ann-type.urgent { background: rgba(239, 68, 68, 0.1); color: var(--danger); }
+        .ann-type.event { background: var(--event-soft); color: var(--event); }
+        .ann-msg { font-size: 13px; font-weight: 600; color: var(--text-main); line-height: 1.5; word-break: break-word; }
+        .ann-meta { font-size: 11px; color: var(--text-muted); font-weight: 600; display: flex; justify-content: space-between; align-items: center; margin-top: 4px;}
+        .ann-actions { display: flex; gap: 6px; }
+
+        /* CHECKBOX TARGET PENGUMUMAN */
+        .target-member-item { display: flex; align-items: center; justify-content: space-between; padding: 12px; background: var(--card-solid); border: 1px solid var(--border); border-radius: 12px; cursor: pointer; transition: 0.2s; }
+        .target-member-item:hover { border-color: var(--primary); }
+        .target-info { display: flex; align-items: center; gap: 10px; }
+        .target-avatar { width: 30px; height: 30px; border-radius: 50%; background: var(--primary-grad); color: white; display: flex; align-items: center; justify-content: center; font-size: 12px; font-weight: 800; flex-shrink: 0; }
+        .target-name { font-size: 13px; font-weight: 700; color: var(--text-main); }
+        .checkbox-custom { width: 20px; height: 20px; border-radius: 6px; border: 2px solid var(--border); display: flex; align-items: center; justify-content: center; color: transparent; transition: 0.2s; }
+        input[type="checkbox"]:checked + .checkbox-custom { background: var(--primary); border-color: var(--primary); color: white; }
         
         /* BREAKPOINT RESPONSIF */
         @media(max-width: 1024px) { .list-container { column-count: 2; } }
@@ -275,7 +341,8 @@
             body { padding-top: 66px; }
             .hero-card { padding: 24px 20px; flex-direction: column; align-items: flex-start; gap: 20px; } 
             .hero-header-left { width: 100%; }
-            .hero-stats { width: 100%; justify-content: flex-start; }
+            .hero-header-right { width: 100%; justify-content: space-between; }
+            .hero-stats { justify-content: flex-start; }
             .hero-title { font-size: 20px; } 
             
             .editor-footer { flex-direction: column; gap: 16px; align-items: flex-start; padding: 16px; } 
@@ -293,6 +360,9 @@
 <body>
 
     <div id="navbar-container"></div>
+    
+    <div class="floating-banner-wrap" id="bannerWrap"></div>
+    
     <div class="bg-glow one"></div><div class="bg-glow two"></div>
 
     <div class="wrapper">
@@ -309,10 +379,16 @@
                     <p class="hero-desc" id="uiRoomInfo"><span class="live-indicator"></span> Menghubungkan...</p>
                 </div>
             </div>
-            <div class="hero-stats" id="uiStats">
-                <div class="stat-pill">📝 Total: <span id="statTotal">0</span></div>
-                <div class="stat-pill">🕒 Draft: <span id="statDraft">0</span></div>
-                <div class="stat-pill">✅ Selesai: <span id="statDone">0</span></div>
+            
+            <div class="hero-header-right">
+                <button class="btn-mega" id="btnAnnouncement" onclick="openAnnouncementModal()" title="Papan Pengumuman Ruang">
+                    📢 <div class="unread-dot" id="annUnreadBadge"></div>
+                </button>
+                <div class="hero-stats" id="uiStats">
+                    <div class="stat-pill">📝 Total: <span id="statTotal">0</span></div>
+                    <div class="stat-pill">🕒 Draft: <span id="statDraft">0</span></div>
+                    <div class="stat-pill">✅ Selesai: <span id="statDone">0</span></div>
+                </div>
             </div>
         </div>
     </div>
@@ -394,9 +470,10 @@
         </div>
     </div>
 
-    <div class="info-modal-overlay" id="infoModal">
-        <div class="info-card">
+    <div class="modal-overlay" id="infoModal">
+        <div class="modal-card" style="max-width: 360px;">
             <h3>Informasi Script</h3>
+            <p style="margin-bottom: 20px;">Rincian lengkap dari dokumen ini.</p>
             <div class="info-row"><span class="info-label">Judul</span> <span class="info-value" id="infoTitle">-</span></div>
             <div class="info-row"><span class="info-label">Kategori</span> <span class="info-value" id="infoCat">-</span></div>
             <div class="info-row"><span class="info-label">Status</span> <span class="info-value" id="infoStatus">-</span></div>
@@ -408,14 +485,66 @@
         </div>
     </div>
 
+    <div class="modal-overlay" id="announcementModal">
+        <div class="modal-card">
+            <h3 style="margin-bottom: 6px;">Papan Pengumuman</h3>
+            <p id="annSubtitle">Riwayat dan arsip pesan penting dari Admin ruang.</p>
+            
+            <button class="btn-modal btn-confirm" id="btnCreateAnn" style="margin-bottom: 16px; display: none; width: 100%;" onclick="openCreateAnnouncementForm()">+ Buat Pengumuman Baru</button>
+            
+            <div class="list-container-scroll" id="announcementListContainer"></div>
+            
+            <button class="btn-modal btn-cancel" style="width: 100%; margin-top: 24px;" onclick="closeAnnouncementModal()">Tutup</button>
+        </div>
+    </div>
+
+    <div class="modal-overlay" id="formAnnouncementModal">
+        <div class="modal-card">
+            <h3 id="formAnnTitle">Buat Pengumuman</h3>
+            <p>Pesan akan langsung dikirimkan ke layar target anggota.</p>
+            
+            <div class="input-wrap" style="margin-bottom: 16px; display: block;">
+                <label style="display: block; font-size: 12px; font-weight: 800; color: var(--text-muted); margin-bottom: 8px;">Pesan Pengumuman</label>
+                <textarea class="modal-textarea" id="annMessageInput" placeholder="Ketik pesan Anda di sini..." maxlength="200" style="padding: 14px 16px;"></textarea>
+            </div>
+
+            <div class="input-wrap" style="margin-bottom: 16px; display: block;">
+                <label style="display: block; font-size: 12px; font-weight: 800; color: var(--text-muted); margin-bottom: 8px;">Tingkat Urgensi / Tipe</label>
+                <select class="modal-select" id="annTypeInput" style="padding: 14px 16px;">
+                    <option value="info">🔵 Informasi Umum</option>
+                    <option value="event">🎉 Acara / Event</option>
+                    <option value="warning">🟡 Peringatan / Deadline</option>
+                    <option value="urgent">🔴 Darurat / Penting</option>
+                </select>
+            </div>
+
+            <div class="input-wrap" style="margin-bottom: 16px; display: block;">
+                <label style="display: flex; justify-content: space-between; font-size: 12px; font-weight: 800; color: var(--text-muted); margin-bottom: 8px;">
+                    Target Anggota 
+                    <label style="cursor: pointer; display: flex; align-items: center; gap: 4px; font-weight: 700; color: var(--primary);">
+                        <input type="checkbox" id="checkAllTargets" style="display:none;" onchange="toggleSelectAllTargets(this)">
+                        <div class="checkbox-custom" style="width:16px; height:16px; border-radius:4px;"><svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="4"><polyline points="20 6 9 17 4 12"></polyline></svg></div>
+                        Pilih Semua
+                    </label>
+                </label>
+                <div class="list-container-scroll" id="annTargetList" style="max-height: 150px; background: var(--card-tint); border: 1px solid var(--border); border-radius: 14px; padding: 8px;">
+                    </div>
+            </div>
+
+            <div class="modal-actions">
+                <button class="btn-modal btn-cancel" onclick="closeCreateAnnouncementForm()">Batal</button>
+                <button class="btn-modal btn-confirm" onclick="saveAnnouncement()">Kirim Pengumuman</button>
+            </div>
+        </div>
+    </div>
+
     <script src="../navbar/navbar.js"></script>
     <script src="../js/pwa.js"></script>
 
     <script type="module">
         import { auth, db } from "../js/firebase.js";
         import { onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
-        // UPDATE 1: Hanya gunakan onSnapshot untuk Real-time Profile Listener (Bebas Lag & Cepat)
-        import { onSnapshot, collection, query, where, doc, setDoc, updateDoc, deleteDoc, deleteField } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
+        import { onSnapshot, collection, query, where, doc, setDoc, updateDoc, deleteDoc, deleteField, arrayUnion, arrayRemove } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
 
         // URL Params
         const urlParams = new URLSearchParams(window.location.search);
@@ -427,19 +556,20 @@
         window.roomData = null;
         window.scriptData = [];
         window.trashData = [];
+        window.globalAnnouncements = [];
         
-        // UPDATE 2: Variabel Global penyimpan Cache dan Listener Identitas Real-time
         window.userCache = {}; 
         window.userListeners = {}; 
         
         window.currentId = null;
         window.isLockedByOther = false;
+        window.currentEditAnnId = null;
         
-        window.isTrashView = false; // Mode Trash Toggle
+        window.isTrashView = false;
         window.currentFilter = 'all';
         window.currentSort = 'newest';
         window.currentPinned = false;
-        window.isRestored = false; // State status pulihan
+        window.isRestored = false;
         
         window.currentPage = 1;
         window.itemsPerPage = 12; 
@@ -469,6 +599,7 @@
                     currentUserUid = user.uid;
                     currentUserData.name = user.displayName || user.email.split('@')[0];
                     initRealtimeCollab();
+                    listenToAnnouncements();
                 } else {
                     window.location.replace("../login.html");
                 }
@@ -504,7 +635,7 @@
         // REALTIME LISTENER & TRASH SWEEPER
         // ==========================================
         function initRealtimeCollab() {
-            // 1. Data Ruang (Dengan Peningkatan Keamanan Kick)
+            // 1. Data Ruang
             onSnapshot(doc(db, "collab_boards", currentRoomId), (docSnap) => {
                 if (!docSnap.exists() || !docSnap.data().members.includes(currentUserUid)) {
                     alert("Akses Ditolak: Anda dikeluarkan dari ruang, atau ruang telah dihapus oleh Admin.");
@@ -513,12 +644,27 @@
                 window.roomData = docSnap.data();
                 document.getElementById('uiRoomName').innerText = window.roomData.name;
                 if(!window.isTrashView) document.getElementById('uiRoomInfo').innerHTML = `<span class="live-indicator"></span> Live • ${window.roomData.members.length} Anggota`;
+
+                // Daftarkan listener profil untuk SEMUA member di ruang (digunakan di target pengumuman)
+                window.roomData.members.forEach(uid => {
+                    if (!window.userListeners[uid]) {
+                        window.userListeners[uid] = onSnapshot(doc(db, "users", uid), (uDoc) => {
+                            window.userCache[uid] = uDoc.exists() ? uDoc.data() : { name: "Anonim" };
+                            
+                            if (document.getElementById('formAnnouncementModal').classList.contains('active')) {
+                                window.renderTargetCheckboxes();
+                            }
+                            if (!window.isTrashView) window.renderList();
+                        });
+                    }
+                });
+
             }, (error) => {
                 console.error("Error Akses Ruang:", error);
                 document.getElementById('listContainer').innerHTML = `<div class="empty-state" style="border-color: var(--danger); background: var(--danger-soft);"><div class="empty-state-icon" style="color: var(--danger);">🔒</div><div class="empty-state-text" style="color: var(--danger); font-weight: 700;">Akses Ruang Ditolak oleh Database.</div></div>`;
             });
 
-            // 2. Daftar Script Aktif & Implementasi Real-Time Name Sync Listener
+            // 2. Daftar Script Aktif
             const qScript = query(collection(db, "collab_scripts"), where("roomId", "==", currentRoomId));
             onSnapshot(qScript, (snapshot) => {
                 window.scriptData = snapshot.docs.map(d => ({ id: d.id, ...d.data() }));
@@ -529,13 +675,11 @@
                     if (item.lockedBy) allUids.add(item.lockedBy);
                 });
 
-                // UPDATE 3: Pasang Radar (onSnapshot) Dinamis ke Profil Anggota.
                 allUids.forEach(uid => {
                     if (!window.userListeners[uid]) {
                         window.userListeners[uid] = onSnapshot(doc(db, "users", uid), (uDoc) => {
                             window.userCache[uid] = uDoc.exists() ? uDoc.data() : { name: "Anonim" };
                             
-                            // Jika sedang ada naskah yang terbuka dan dikunci oleh pengguna yang ganti nama, segarkan notifikasi
                             if (window.currentId && window.isLockedByOther && !window.isTrashView) {
                                 const liveItem = window.scriptData.find(x => x.id === window.currentId);
                                 if (liveItem && liveItem.lockedBy === uid) {
@@ -543,14 +687,11 @@
                                     document.getElementById('lockBanner').innerHTML = `🔒 Sedang diedit oleh ${lockedByNameSync.split(' ')[0]}`;
                                 }
                             }
-                            
-                            // Segarkan tampilan daftar jika pengguna tidak berada di tampilan trash
                             if (!window.isTrashView) window.renderList();
                         });
                     }
                 });
                 
-                // Segarkan formulir editor jika naskah tersebut sedang terbuka dan diobservasi (*read-only*)
                 if (window.currentId && window.isLockedByOther && !window.isTrashView) {
                     const liveItem = window.scriptData.find(x => x.id === window.currentId);
                     if (liveItem) {
@@ -564,10 +705,9 @@
                 if(!window.isTrashView) window.renderList();
             }, (error) => {
                 console.error("Error Akses Script:", error);
-                document.getElementById('listContainer').innerHTML = `<div class="empty-state" style="border-color: var(--danger); background: var(--danger-soft);"><div class="empty-state-icon" style="color: var(--danger);">🔒</div><div class="empty-state-text" style="color: var(--danger); font-weight: 700;">Akses Naskah Ditolak oleh Database.</div></div>`;
             });
 
-            // 3. Daftar Trash & Auto Sweeper (Ditambah Sinkronisasi Nama Dinamis)
+            // 3. Daftar Trash
             const qTrash = query(collection(db, "collab_trash_scripts"), where("roomId", "==", currentRoomId));
             onSnapshot(qTrash, (snapshot) => {
                 window.trashData = snapshot.docs.map(d => ({ id: d.id, ...d.data() }));
@@ -593,7 +733,6 @@
             }, (error) => { console.error("Error Akses Trash:", error); });
         }
 
-        // Penghapus Otomatis (Client-side sweep 30 hari)
         function checkAndCleanTrash() {
             const now = Date.now();
             window.trashData.forEach(async (item) => {
@@ -602,6 +741,248 @@
                 }
             });
         }
+
+        // ==========================================
+        // SISTEM PENGUMUMAN (ANNOUNCEMENTS)
+        // ==========================================
+        function listenToAnnouncements() {
+            const q = query(collection(db, "collab_announcements"), where("roomId", "==", currentRoomId));
+            onSnapshot(q, (snapshot) => {
+                window.globalAnnouncements = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }))
+                                             .filter(a => a.targetUids && a.targetUids.includes(currentUserUid));
+                
+                updateAnnouncementBadge();
+                processBannerQueue();
+                
+                if(document.getElementById('announcementModal').classList.contains('active')) {
+                    window.renderAnnouncementList();
+                }
+            }, (error) => console.error("Error Announcement:", error));
+        }
+
+        function updateAnnouncementBadge() {
+            const unread = window.globalAnnouncements.filter(a => !a.readBy.includes(currentUserUid));
+            document.getElementById('annUnreadBadge').style.display = unread.length > 0 ? 'block' : 'none';
+        }
+
+        function processBannerQueue() {
+            const bannerWrap = document.getElementById('bannerWrap');
+            let unreadAnns = window.globalAnnouncements.filter(a => !a.readBy.includes(currentUserUid));
+            unreadAnns.sort((a, b) => b.updatedAt - a.updatedAt);
+            
+            if (unreadAnns.length > 0) {
+                const activeAnn = unreadAnns[0]; 
+                const roomName = window.roomData ? window.roomData.name : "Ruang Tim";
+                
+                let icon = 'ℹ️', cls = 'banner-info';
+                if (activeAnn.type === 'warning') { icon = '⚠️'; cls = 'banner-warning'; }
+                else if (activeAnn.type === 'urgent') { icon = '🚨'; cls = 'banner-urgent'; }
+                else if (activeAnn.type === 'event') { icon = '🎉'; cls = 'banner-event'; }
+                
+                const isUpdated = activeAnn.updatedAt > (activeAnn.createdAt + 5000); 
+
+                bannerWrap.innerHTML = `
+                    <div class="announcement-banner ${cls}">
+                        <div style="font-size: 24px; flex-shrink: 0;">${icon}</div>
+                        <div class="banner-content">
+                            <div class="banner-header">
+                                <span class="banner-room">${roomName}</span>
+                                <span>${isUpdated ? 'Pembaruan Info' : 'Pengumuman Baru'}</span>
+                            </div>
+                            <div class="banner-message">${activeAnn.message}</div>
+                        </div>
+                        <button class="btn-understand" onclick="markAnnouncementAsRead('${activeAnn.id}')">Mengerti</button>
+                    </div>
+                `;
+            } else {
+                bannerWrap.innerHTML = ''; 
+            }
+        }
+
+        window.markAnnouncementAsRead = async (annId) => {
+            try {
+                await updateDoc(doc(db, "collab_announcements", annId), {
+                    readBy: arrayUnion(currentUserUid)
+                });
+            } catch(e) { console.error("Gagal menyembunyikan banner:", e); }
+        };
+
+        window.openAnnouncementModal = () => {
+            const isOwner = window.roomData && window.roomData.ownerId === currentUserUid;
+            document.getElementById('btnCreateAnn').style.display = isOwner ? 'block' : 'none';
+            document.getElementById('annSubtitle').innerText = isOwner ? "Kelola informasi dan instruksi untuk anggota tim Anda." : "Riwayat pesan penting dari Admin ruang ini.";
+            
+            document.getElementById('announcementModal').classList.add('active');
+            window.renderAnnouncementList();
+        };
+
+        window.closeAnnouncementModal = () => document.getElementById('announcementModal').classList.remove('active');
+
+        window.renderAnnouncementList = () => {
+            const container = document.getElementById('announcementListContainer');
+            const isOwner = window.roomData && window.roomData.ownerId === currentUserUid;
+            
+            let anns = [...window.globalAnnouncements];
+            anns.sort((a, b) => b.updatedAt - a.updatedAt); 
+
+            if (anns.length === 0) {
+                container.innerHTML = `<div style="text-align: center; color: var(--text-muted); padding: 30px 10px; font-size: 13px;">Belum ada pengumuman di ruang ini.</div>`;
+                return;
+            }
+
+            const formatDate = (ms) => ms ? new Date(ms).toLocaleDateString('id-ID', { day: 'numeric', month: 'short', hour: '2-digit', minute:'2-digit' }) : '';
+
+            container.innerHTML = anns.map(ann => {
+                const isUnread = !ann.readBy.includes(currentUserUid);
+                let labelType = "Info", typeCls = "info";
+                if (ann.type === 'warning') { labelType = "Peringatan"; typeCls = "warning"; }
+                else if (ann.type === 'urgent') { labelType = "Mendesak"; typeCls = "urgent"; }
+                else if (ann.type === 'event') { labelType = "Acara"; typeCls = "event"; }
+
+                const totalTarget = Math.max(0, ann.targetUids.length - 1); 
+                const totalRead = Math.max(0, ann.readBy.length - 1);
+                const adminViewsHtml = isOwner ? `<span style="color: var(--primary);">👁️ ${totalRead}/${totalTarget} Dibaca</span>` : ``;
+                
+                const adminActionsHtml = isOwner ? `
+                    <button class="btn-icon admin" onclick="openCreateAnnouncementForm('${ann.id}')" title="Edit Pengumuman"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M12 20h9"></path><path d="M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4L16.5 3.5z"></path></svg></button>
+                    <button class="btn-icon kick" onclick="deleteAnnouncement('${ann.id}')" title="Tarik / Hapus Permanen"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg></button>
+                ` : ``;
+
+                return `
+                <div class="announcement-item ${isUnread ? 'unread' : ''}">
+                    <div class="ann-header">
+                        <span class="ann-type ${typeCls}">${labelType}</span>
+                        <span>${formatDate(ann.updatedAt)}</span>
+                    </div>
+                    <div class="ann-msg">${ann.message}</div>
+                    <div class="ann-meta">
+                        ${adminViewsHtml}
+                        <div class="ann-actions">${adminActionsHtml}</div>
+                    </div>
+                </div>`;
+            }).join('');
+        };
+
+        window.openCreateAnnouncementForm = (editId = null) => {
+            window.currentEditAnnId = editId;
+            document.getElementById('formAnnTitle').innerText = editId ? "Edit Pengumuman" : "Buat Pengumuman Baru";
+            
+            if (editId) {
+                const ann = window.globalAnnouncements.find(a => a.id === editId);
+                document.getElementById('annMessageInput').value = ann.message;
+                document.getElementById('annTypeInput').value = ann.type;
+                window.renderTargetCheckboxes(ann.targetUids);
+            } else {
+                document.getElementById('annMessageInput').value = "";
+                document.getElementById('annTypeInput').value = "info";
+                window.renderTargetCheckboxes([]);
+            }
+            
+            document.getElementById('formAnnouncementModal').classList.add('active');
+        };
+
+        window.closeCreateAnnouncementForm = () => {
+            window.currentEditAnnId = null;
+            document.getElementById('formAnnouncementModal').classList.remove('active');
+        };
+
+        window.renderTargetCheckboxes = (preselectedUids = []) => {
+            const container = document.getElementById('annTargetList');
+            if(!window.roomData) return;
+
+            const targets = window.roomData.members.filter(uid => uid !== currentUserUid);
+            
+            if (targets.length === 0) {
+                container.innerHTML = `<div style="text-align: center; color: var(--text-muted); font-size: 12px; padding: 10px;">Anda adalah satu-satunya anggota di ruang ini.</div>`;
+                document.getElementById('checkAllTargets').disabled = true;
+                return;
+            }
+            
+            document.getElementById('checkAllTargets').disabled = false;
+            document.getElementById('checkAllTargets').checked = false; 
+
+            container.innerHTML = targets.map(uid => {
+                const user = window.userCache[uid] || { name: "Memuat..." };
+                const displayName = user.name || user.displayName || "Anonim";
+                const isChecked = window.currentEditAnnId ? preselectedUids.includes(uid) : true;
+                
+                return `
+                <label class="target-member-item">
+                    <div class="target-info">
+                        <div class="target-avatar">${displayName.charAt(0).toUpperCase()}</div>
+                        <div class="target-name">${displayName}</div>
+                    </div>
+                    <label style="cursor: pointer;">
+                        <input type="checkbox" class="ann-target-checkbox" value="${uid}" style="display:none;" ${isChecked ? 'checked' : ''}>
+                        <div class="checkbox-custom"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="4"><polyline points="20 6 9 17 4 12"></polyline></svg></div>
+                    </label>
+                </label>`;
+            }).join('');
+            
+            window.evaluateSelectAllState();
+        };
+
+        window.toggleSelectAllTargets = (masterCheckbox) => {
+            const checkboxes = document.querySelectorAll('.ann-target-checkbox');
+            checkboxes.forEach(cb => cb.checked = masterCheckbox.checked);
+        };
+        
+        window.evaluateSelectAllState = () => {
+            const checkboxes = document.querySelectorAll('.ann-target-checkbox');
+            const master = document.getElementById('checkAllTargets');
+            if(checkboxes.length === 0) return;
+            const allChecked = Array.from(checkboxes).every(cb => cb.checked);
+            master.checked = allChecked;
+        };
+
+        document.getElementById('annTargetList').addEventListener('change', function(e) {
+            if(e.target.classList.contains('ann-target-checkbox')) window.evaluateSelectAllState();
+        });
+
+        window.saveAnnouncement = async () => {
+            const msg = document.getElementById('annMessageInput').value.trim();
+            const type = document.getElementById('annTypeInput').value;
+            
+            if (!msg) return alert("Pesan pengumuman tidak boleh kosong!");
+            
+            const checkboxes = document.querySelectorAll('.ann-target-checkbox:checked');
+            let targetUids = Array.from(checkboxes).map(cb => cb.value);
+            
+            if (targetUids.length === 0 && window.roomData.members.length > 1) {
+                return alert("Pilih minimal satu anggota untuk menerima pengumuman ini.");
+            }
+
+            targetUids.push(currentUserUid); 
+            const now = Date.now();
+            const payload = {
+                roomId: currentRoomId,
+                message: msg,
+                type: type,
+                targetUids: targetUids,
+                readBy: [currentUserUid], 
+                updatedAt: now
+            };
+
+            try {
+                if (window.currentEditAnnId) {
+                    await updateDoc(doc(db, "collab_announcements", window.currentEditAnnId), payload);
+                } else {
+                    payload.createdAt = now;
+                    payload.createdBy = currentUserUid;
+                    const newId = "cann_" + now + Math.random().toString(36).substr(2, 5);
+                    await setDoc(doc(db, "collab_announcements", newId), payload);
+                }
+                closeCreateAnnouncementForm();
+            } catch(e) {
+                alert("Gagal menyimpan pengumuman.");
+                console.error(e);
+            }
+        };
+
+        window.deleteAnnouncement = async (annId) => {
+            if(!confirm("Tarik dan hapus permanen pengumuman ini dari semua layar anggota?")) return;
+            try { await deleteDoc(doc(db, "collab_announcements", annId)); } catch(e) { alert("Gagal menghapus."); }
+        };
 
         // ==========================================
         // LOGIKA TRASH (SOFT DELETE, RESTORE, DESTROY)
@@ -614,16 +995,19 @@
             const uiInfo = document.getElementById('uiRoomInfo');
             const uiStats = document.getElementById('uiStats');
             const fab = document.getElementById('fabAdd');
+            const btnMega = document.getElementById('btnAnnouncement');
             
             if(window.isTrashView) {
                 heroCard.classList.add('trash-mode');
                 uiInfo.innerHTML = `🗑️ Menampilkan naskah yang dihapus. Lenyap otomatis dalam 30 hari.`;
                 uiStats.style.display = 'none';
+                btnMega.style.display = 'none';
                 fab.classList.add('hidden');
             } else {
                 heroCard.classList.remove('trash-mode');
                 uiInfo.innerHTML = `<span class="live-indicator"></span> Live • ${window.roomData ? window.roomData.members.length : 0} Anggota`;
                 uiStats.style.display = 'flex';
+                btnMega.style.display = 'flex';
                 fab.classList.remove('hidden');
             }
             window.renderList();
@@ -643,7 +1027,7 @@
             const trashPayload = {
                 roomId: currentRoomId,
                 deletedByUid: currentUserUid,
-                deletedByName: currentUserData.name, // Disimpan sebagai fallback Legacy
+                deletedByName: currentUserData.name,
                 originalId: item.id, 
                 title: item.title, 
                 content: item.content, 
@@ -677,7 +1061,7 @@
                 status: 'draft', 
                 channel: item.channel || 'Umum', 
                 pinned: false, 
-                isRestored: true, // Berikan indikator bahwa ini hasil pulihan
+                isRestored: true,
                 createdAt: item.originalCreatedAt || Date.now(),
                 updatedAt: Date.now(),
                 lockedBy: null,
@@ -725,7 +1109,6 @@
                     if (item.lockedBy && item.lockedBy !== currentUserUid) {
                         window.isLockedByOther = true;
                         
-                        // Menarik nama dinamis untuk spanduk pemberitahuan (Terhubung dengan data cache real-time)
                         const lockedByNameSync = (item.lockedBy && window.userCache[item.lockedBy]) ? (window.userCache[item.lockedBy].name || window.userCache[item.lockedBy].displayName || "Seseorang") : (item.lockedByName || "Seseorang");
                         
                         lockBanner.innerHTML = `🔒 Sedang diedit oleh ${lockedByNameSync.split(' ')[0]}`;
@@ -765,7 +1148,7 @@
         }
 
         window.closePopup = async function() {
-            clearTimeout(autoSaveTimeout); // PENTING: Mencegah bug simpan ganda otomatis
+            clearTimeout(autoSaveTimeout); 
             
             if (!window.isLockedByOther) {
                 const title = document.getElementById('inputTitle').value.trim();
@@ -813,14 +1196,12 @@
                 lockedByName: releaseLock ? null : currentUserData.name
             };
 
-            // Hapus lencana pemulihan secara aman menggunakan deleteField
             if (window.isRestored) {
                 payload.isRestored = true;
             } else {
                 payload.isRestored = deleteField();
             }
 
-            // PERBAIKAN: Tambahkan { merge: true } agar deleteField tidak diblokir Firebase
             try { 
                 await setDoc(doc(db, "collab_scripts", docId), payload, { merge: true }); 
             } catch(e) { 
@@ -833,7 +1214,6 @@
             clearTimeout(autoSaveTimeout);
             
             autoSaveTimeout = setTimeout(() => {
-                // Cegah auto-save berjalan jika popup sudah ditutup
                 if(!document.getElementById('editorPopup').classList.contains('active')) return;
                 
                 const curStatus = window.currentId ? (window.scriptData.find(x => x.id === window.currentId)?.status || 'draft') : 'draft';
@@ -848,7 +1228,7 @@
         
         window.saveScript = async function(status) { 
             if(window.isLockedByOther) return; 
-            clearTimeout(autoSaveTimeout); // PENTING: Mencegah tabrakan antara klik manual dan auto-save
+            clearTimeout(autoSaveTimeout); 
             window.isRestored = false; 
             
             await window.performSave(status, false, true); 
@@ -894,7 +1274,6 @@
             const words = text.trim() === '' ? 0 : text.trim().split(/\s+/).length; 
             const formatDate = (ms) => ms ? new Date(ms).toLocaleDateString('id-ID', { day: 'numeric', month: 'long', year: 'numeric', hour: '2-digit', minute:'2-digit' }) : '-'; 
             
-            // Mengambil sinkronisasi nama dinamis untuk penampil pop-up info
             const creatorNameSync = (item.uid && window.userCache[item.uid]) ? (window.userCache[item.uid].name || window.userCache[item.uid].displayName || "Anonim") : (item.creatorName || "Anonim");
             
             document.getElementById('infoTitle').innerText = item.title || 'Tanpa Judul'; 
@@ -915,7 +1294,6 @@
 
         function generateDynamicChannels() {
             let data = window.isTrashView ? window.trashData : window.scriptData;
-            
             let html = '';
             
             if (!window.isTrashView) {
@@ -1006,7 +1384,6 @@
             
             if (!window.isTrashView) {
                 paginatedData.forEach(item => {
-                    // Penyesuaian nama real-time (langsung memanfaatkan cache radar)
                     const creatorNameSync = (item.uid && window.userCache[item.uid]) ? (window.userCache[item.uid].name || window.userCache[item.uid].displayName || "Anonim") : (item.creatorName || 'Anonim');
                     const lockedByNameSync = (item.lockedBy && window.userCache[item.lockedBy]) ? (window.userCache[item.lockedBy].name || window.userCache[item.lockedBy].displayName || "Seseorang") : (item.lockedByName || "Seseorang");
 
@@ -1037,7 +1414,6 @@
                     let sisaHari = Math.ceil((item.expireAt - Date.now()) / (1000 * 60 * 60 * 24));
                     if(sisaHari < 0) sisaHari = 0;
                     
-                    // Penyesuaian nama real-time (Untuk item di tong sampah)
                     const deletedByNameSync = (item.deletedByUid && window.userCache[item.deletedByUid]) ? (window.userCache[item.deletedByUid].name || window.userCache[item.deletedByUid].displayName || "Anonim") : (item.deletedByName || "Anonim");
                     const originalCreatorNameSync = (item.originalUid && window.userCache[item.originalUid]) ? (window.userCache[item.originalUid].name || window.userCache[item.originalUid].displayName || "Anonim") : (item.originalCreatorName || "Anonim");
 
