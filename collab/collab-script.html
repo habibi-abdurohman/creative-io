@@ -72,32 +72,27 @@
         .hero-card.trash-mode { background: #475569; box-shadow: 0 10px 30px rgba(71, 85, 105, 0.2); }
         .hero-card::after { content: ""; position: absolute; width: 250px; height: 250px; background: rgba(255, 255, 255, 0.08); border-radius: 50%; top: -80px; right: -80px; pointer-events: none; }
         
-        .hero-top-wrap { display: flex; justify-content: space-between; align-items: flex-start; width: 100%; gap: 16px; position: relative; z-index: 1;}
-        .hero-header-left { display: flex; align-items: flex-start; gap: 16px; flex: 1; min-width: 200px; }
+        .hero-top-wrap { display: flex; justify-content: space-between; align-items: center; width: 100%; gap: 16px; position: relative; z-index: 1;}
+        .hero-header-left { display: flex; align-items: center; gap: 16px; flex: 1; min-width: 200px; }
         
-        .btn-back { 
-            width: 40px; height: 40px; border-radius: 12px; background: rgba(255,255,255,0.15); backdrop-filter: blur(8px); -webkit-backdrop-filter: blur(8px);
+        .btn-back, .btn-mega { 
+            width: 44px; height: 44px; border-radius: 14px; background: rgba(255,255,255,0.15); backdrop-filter: blur(8px); -webkit-backdrop-filter: blur(8px);
             display: flex; align-items: center; justify-content: center; color: white; text-decoration: none; border: none; font-size: 18px;
-            transition: all 0.2s ease; flex-shrink: 0; outline: none; border: 1px solid rgba(255,255,255,0.25); box-shadow: 0 4px 12px rgba(0,0,0,0.05); cursor: pointer; margin-top: 2px;
+            transition: all 0.2s ease; flex-shrink: 0; outline: none; border: 1px solid rgba(255,255,255,0.25); box-shadow: 0 4px 12px rgba(0,0,0,0.05); cursor: pointer;
         }
-        .btn-back:hover { background: rgba(255,255,255,0.25); transform: translateX(-2px); }
-        body.dark .hero-card.trash-mode .btn-back { background: rgba(15, 23, 42, 0.4); border-color: rgba(255,255,255,0.1); }
-        body.dark .hero-card.trash-mode .btn-back:hover { background: rgba(15, 23, 42, 0.6); }
+        .btn-back:hover, .btn-mega:hover { background: rgba(255,255,255,0.25); transform: translateY(-2px); }
+        .btn-back:hover { transform: translateX(-2px); }
+        
+        body.dark .hero-card.trash-mode .btn-back, body.dark .hero-card.trash-mode .btn-mega { background: rgba(15, 23, 42, 0.4); border-color: rgba(255,255,255,0.1); }
+        body.dark .hero-card.trash-mode .btn-back:hover, body.dark .hero-card.trash-mode .btn-mega:hover { background: rgba(15, 23, 42, 0.6); }
+        
+        .btn-mega { position: relative; }
+        .btn-mega .unread-dot { position: absolute; top: -3px; right: -3px; width: 12px; height: 12px; background: var(--danger); border-radius: 50%; border: 2px solid rgba(255,255,255,0.8); animation: pulseAlert 2s infinite; display: none; }
         
         .hero-text { display: flex; flex-direction: column; justify-content: center; min-width: 0; }
-        .hero-title { font-size: 24px; font-weight: 900; letter-spacing: -0.5px; line-height: 1.2; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; margin-bottom: 0; }
+        .hero-title { font-size: 24px; font-weight: 900; letter-spacing: -0.5px; line-height: 1.2; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; margin-bottom: 6px; }
+        .hero-desc { font-size: 13px; line-height: 1.4; opacity: 0.9; display: flex; align-items: center; gap: 8px; font-weight: 600; }
         
-        /* PENYEMPURNAAN META RUANG & PENGUMUMAN HERO CARD */
-        .room-meta-wrap { display: flex; align-items: center; gap: 8px; flex-wrap: wrap; margin-top: 8px; }
-        .meta-pill { display: inline-flex; align-items: center; gap: 6px; font-size: 13px; font-weight: 700; opacity: 0.9; white-space: nowrap; }
-        
-        .btn-ann-pill { cursor: pointer; transition: 0.2s; outline: none; background: rgba(255,255,255,0.15); color: white; border: 1px dashed rgba(255,255,255,0.4); position: relative; font-weight: 800; display: inline-flex; align-items: center; gap: 6px; font-size: 12px; padding: 4px 10px; border-radius: 20px; backdrop-filter: blur(8px); -webkit-backdrop-filter: blur(8px); }
-        .btn-ann-pill:hover { background: rgba(255,255,255,0.25); transform: translateY(-2px); box-shadow: 0 4px 12px rgba(0,0,0,0.1); border-style: solid; }
-        .btn-ann-pill .unread-dot { position: absolute; top: -2px; right: -2px; width: 10px; height: 10px; background: var(--danger); border-radius: 50%; border: 2px solid var(--primary); animation: pulseAlert 2s infinite; display: none; }
-        
-        body.dark .hero-card.trash-mode .btn-ann-pill { background: rgba(15, 23, 42, 0.4); border-color: rgba(255,255,255,0.1); }
-        body.dark .hero-card.trash-mode .btn-ann-pill:hover { background: rgba(15, 23, 42, 0.6); }
-
         .live-indicator { width: 8px; height: 8px; background: #10b981; border-radius: 50%; display: inline-block; animation: pulse 2s infinite; flex-shrink: 0; }
         
         .hero-stats-wrap { width: 100%; border-top: 1px dashed rgba(255,255,255,0.25); padding-top: 20px; position: relative; z-index: 1;}
@@ -408,7 +403,7 @@
         @media(max-width: 600px) { 
             body { padding-top: 76px; }
             .hero-card { padding: 24px 20px; gap: 16px;} 
-            .hero-top-wrap { flex-direction: row; flex-wrap: nowrap; align-items: flex-start; }
+            .hero-top-wrap { flex-direction: row; flex-wrap: nowrap; align-items: center; }
             .hero-header-left { min-width: 0; }
             .hero-title { font-size: 20px; } 
             
@@ -445,15 +440,12 @@
                     </a>
                     <div class="hero-text">
                         <h1 class="hero-title" id="uiRoomName">Memuat Ruang...</h1>
-                        <div class="room-meta-wrap">
-                            <div class="meta-pill" id="uiRoomInfo"><span class="live-indicator"></span> Menghubungkan...</div>
-                            <button class="btn-ann-pill" id="btnAnnouncement" onclick="openAnnouncementModal()">
-                                📢 Pengumuman
-                                <div class="unread-dot" id="annUnreadBadge"></div>
-                            </button>
-                        </div>
+                        <p class="hero-desc" id="uiRoomInfo"><span class="live-indicator"></span> Menghubungkan...</p>
                     </div>
                 </div>
+                <button class="btn-mega" id="btnAnnouncement" onclick="openAnnouncementModal()" title="Papan Pengumuman Ruang">
+                    📢 <div class="unread-dot" id="annUnreadBadge"></div>
+                </button>
             </div>
             
             <div class="hero-stats-wrap" id="uiStatsWrap">
@@ -1239,7 +1231,7 @@
                 heroCard.classList.remove('trash-mode');
                 uiInfo.innerHTML = `<span class="live-indicator"></span> Live • ${window.roomData ? window.roomData.members.length : 0} Anggota`;
                 uiStatsWrap.style.display = 'block';
-                btnAnn.style.display = 'inline-flex';
+                btnAnn.style.display = 'flex';
                 fab.classList.remove('hidden');
             }
             window.renderList();
