@@ -64,7 +64,7 @@
         .bg-glow.two { width: 320px; height: 320px; background: rgba(96, 165, 250, 0.15); bottom: 100px; right: -100px; }
         
         /* =========================================================
-           HEADER RUANG (HERO CARD) - DISAMAKAN DENGAN SCRIPT & IDEAS
+           HEADER RUANG (HERO CARD)
         ========================================================= */
         .hero-card { 
             background: var(--primary-grad); border-radius: 24px; padding: 28px 32px; color: white; 
@@ -323,18 +323,18 @@
         .save-btn:hover { transform: translateY(-2px); box-shadow: 0 8px 20px rgba(37,99,235,0.3); }
 
         /* =========================================================
-           MODAL UMUM & PENGUMUMAN (SERAGAM)
+           MODAL UMUM & PENGUMUMAN (SERAGAM DENGAN SCRIPT)
         ========================================================= */
         .modal-overlay { position: fixed; inset: 0; background: rgba(0,0,0,0.4); backdrop-filter: blur(4px); z-index: 999999; display: none; align-items: center; justify-content: center; padding: 20px; width: 100vw; height: 100vh; box-sizing: border-box; }
         .modal-overlay.active { display: flex; }
-        .modal-card { background: var(--card-solid); width: 100%; max-width: 420px; border-radius: var(--radius-card); padding: 24px; box-shadow: var(--shadow-flat); border: 1px solid var(--border); box-sizing: border-box; display: flex; flex-direction: column; max-height: 90vh; }
+        .modal-card { background: var(--card-solid); width: 100%; border-radius: var(--radius-card); padding: 24px; box-shadow: var(--shadow-flat); border: 1px solid var(--border); box-sizing: border-box; display: flex; flex-direction: column; max-height: 90vh; }
         .modal-card h3 { font-size: 18px; font-weight: 900; margin-bottom: 8px; color: var(--text-main); flex-shrink: 0; text-align: center;}
         .modal-card p { font-size: 13px; color: var(--text-muted); margin-bottom: 20px; line-height: 1.5; flex-shrink: 0; text-align: center;}
         
         .modal-input, .modal-select, .modal-textarea { width: 100%; padding: 14px 16px; border-radius: 14px; border: 1px solid var(--border); background: var(--card-tint); color: var(--text-main); font-size: 14px; font-weight: 600; outline: none; margin-bottom: 12px; transition: 0.2s; box-sizing: border-box; font-family: inherit; }
         .modal-textarea { resize: vertical; min-height: 120px; line-height: 1.5;}
         .modal-input:focus, .modal-select:focus, .modal-textarea:focus { border-color: var(--primary); box-shadow: 0 0 0 3px var(--primary-soft); background: var(--card-solid);}
-        .modal-select { appearance: none; }
+        .modal-select { appearance: none; cursor: pointer; }
         
         .modal-actions { display: flex; gap: 12px; margin-top: 8px; flex-shrink: 0; }
         .btn-modal { flex: 1; padding: 12px; border-radius: 12px; font-size: 13px; font-weight: 800; cursor: pointer; border: none; transition: 0.2s; outline: none; display: flex; justify-content: center; align-items: center; gap: 6px;}
@@ -347,37 +347,29 @@
         .info-label { color: var(--text-muted); font-weight: 600; flex-shrink: 0; }
         .info-value { font-weight: 800; text-align: right; word-break: break-word; max-width: 65%; color: var(--text-main); }
         
-        /* LIST PENGUMUMAN (SERAGAM) */
+        /* LIST PENGUMUMAN & INPUT GROUP (SERAGAM DENGAN SCRIPT) */
+        .input-group { text-align: left; margin-bottom: 16px; flex-shrink: 0; display: flex; flex-direction: column; }
+        .input-group > label { display: block; font-size: 12px; font-weight: 800; color: var(--text-muted); margin-bottom: 8px; }
+        .flex-label-row { display: flex; justify-content: space-between; align-items: flex-end; margin-bottom: 8px; }
+        .flex-label-row label { margin-bottom: 0; font-size: 12px; font-weight: 800; color: var(--text-muted); }
+        .flex-label-row .char-counter { margin: 0; font-size: 11px; font-weight: 700; color: var(--text-muted); text-align: right; }
+        .char-counter.limit { color: var(--danger); }
+        .input-group.flex-grow { flex: 1; display: flex; flex-direction: column; min-height: 240px; }
+        .input-group.flex-grow .modal-textarea { flex: 1; resize: none; margin-bottom: 0; }
+
         .list-container-scroll { 
-            overflow-y: auto; 
-            display: flex; 
-            flex-direction: column; 
-            gap: 12px; 
-            text-align: left; 
-            padding: 4px 8px 4px 4px; 
-            margin: -4px -8px -4px -4px; 
-            flex: 1; 
-            min-height: 50px; 
+            overflow-y: auto; display: flex; flex-direction: column; gap: 12px; text-align: left; 
+            padding: 4px 8px 12px 4px; margin: -4px -8px -12px -4px; flex: 1; min-height: 50px; 
         }
         
         .announcement-item { 
-            background: var(--card-solid); 
-            border: 1px solid var(--border); 
-            border-radius: 16px; 
-            padding: 16px; 
-            display: flex; 
-            flex-direction: column; 
-            gap: 10px; 
-            cursor: pointer; 
-            transition: transform 0.2s, box-shadow 0.2s, border-color 0.2s; 
-            position: relative; 
-            z-index: 1; 
+            background: var(--card-solid); border: 1px solid var(--border); border-radius: 16px; 
+            padding: 16px; display: flex; flex-direction: column; gap: 10px; cursor: pointer; 
+            transition: transform 0.2s, box-shadow 0.2s, border-color 0.2s; position: relative; z-index: 1; 
         }
         .announcement-item:hover { 
-            transform: translateY(-2px); 
-            box-shadow: 0 6px 20px rgba(0,0,0,0.06); 
-            border-color: var(--primary); 
-            z-index: 10; 
+            transform: translateY(-2px); box-shadow: 0 6px 20px rgba(0,0,0,0.06); 
+            border-color: var(--primary); z-index: 10; 
         }
         body.dark .announcement-item:hover { box-shadow: 0 6px 20px rgba(0,0,0,0.4); }
         .announcement-item.unread { border-left: 4px solid var(--primary); background: var(--primary-soft); }
@@ -393,30 +385,14 @@
         .ann-meta { font-size: 11px; color: var(--text-muted); font-weight: 600; display: flex; justify-content: flex-end; align-items: center; margin-top: 4px;}
         .ann-admin-indicator { color: var(--primary); display: flex; align-items: center; gap: 4px; background: var(--primary-soft); padding: 4px 8px; border-radius: 6px; }
 
-        .char-counter { font-size: 11px; font-weight: 700; color: var(--text-muted); text-align: right; margin-top: -8px; margin-bottom: 16px; }
-        .char-counter.limit { color: var(--danger); }
-
-        /* TARGET MEMBER CHECKBOX */
-        .target-member-item { 
-            display: flex; 
-            align-items: center; 
-            justify-content: space-between; 
-            padding: 12px; 
-            background: var(--card-solid); 
-            border: 1px solid var(--border); 
-            border-radius: 12px; 
-            cursor: pointer; 
-            transition: 0.2s; 
-            position: relative; 
-            z-index: 1; 
-        }
-        .target-member-item:hover { 
-            border-color: var(--primary); 
-            z-index: 10; 
-        }
-        .target-info { display: flex; align-items: center; gap: 10px; }
+        /* TARGET MEMBER CHECKBOX IDENTIK */
+        .target-list-box { background: var(--card-tint); border: 1px solid var(--border); border-radius: 14px; padding: 8px; display: flex; flex-direction: column; gap: 6px; max-height: 150px; overflow-y: auto; margin-top: 8px; }
+        .target-member-item { display: flex; align-items: center; justify-content: space-between; padding: 10px 12px; background: var(--card-solid); border: 1px solid var(--border); border-radius: 10px; cursor: pointer; transition: 0.2s; position: relative; z-index: 1; gap: 12px; }
+        .target-member-item:hover { border-color: var(--primary); z-index: 10; box-shadow: 0 2px 10px rgba(0,0,0,0.02); }
+        .target-info { display: flex; align-items: center; gap: 10px; flex: 1; min-width: 0; }
         .target-avatar { width: 30px; height: 30px; border-radius: 50%; background: var(--primary-grad); color: white; display: flex; align-items: center; justify-content: center; font-size: 12px; font-weight: 800; flex-shrink: 0; }
-        .target-name { font-size: 13px; font-weight: 700; color: var(--text-main); }
+        .target-name { font-size: 13px; font-weight: 700; color: var(--text-main); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+        .target-member-item .checkbox-wrap { flex-shrink: 0; display: flex; align-items: center; justify-content: center; cursor: pointer; margin: 0; }
         .checkbox-custom { width: 20px; height: 20px; border-radius: 6px; border: 2px solid var(--border); display: flex; align-items: center; justify-content: center; color: transparent; transition: 0.2s; }
         input[type="checkbox"]:checked + .checkbox-custom { background: var(--primary); border-color: var(--primary); color: white; }
 
@@ -433,7 +409,8 @@
         .btn-close-sp { background: var(--card-tint); border: 1px solid var(--border); color: var(--text-muted); width: 36px; height: 36px; border-radius: 12px; display: flex; align-items: center; justify-content: center; cursor: pointer; transition: 0.2s; outline: none; }
         .btn-close-sp:hover { background: var(--border); color: var(--text-main); }
 
-        .side-panel-body { flex: 1; overflow-y: auto; padding: 24px; display: flex; flex-direction: column; gap: 20px; }
+        .side-panel-body { flex: 1; overflow-y: auto; padding: 24px; display: flex; flex-direction: column; gap: 16px; }
+        #sidePanelEdit .input-group { margin-bottom: 0; }
         
         .sp-meta-top { display: flex; justify-content: space-between; align-items: center; font-size: 12px; font-weight: 700; color: var(--text-muted); }
         .sp-message { font-size: 15px; font-weight: 500; color: var(--text-main); line-height: 1.7; white-space: pre-wrap; word-break: break-word; }
@@ -445,7 +422,8 @@
         .btn-sp-action.danger { color: var(--danger); border-color: rgba(239, 68, 68, 0.3); background: rgba(239, 68, 68, 0.05); }
         .btn-sp-action.danger:hover { background: rgba(239, 68, 68, 0.15); }
 
-        .side-panel-footer { padding: 20px 24px; border-top: 1px solid var(--border); background: var(--card-solid); flex-shrink: 0; }
+        .side-panel-footer { padding: 16px 24px 24px; border-top: 1px solid var(--border); background: var(--card-solid); flex-shrink: 0; }
+        .side-panel-footer .modal-actions { margin-top: 0; border-top: none; padding-top: 0; }
         
         /* BREAKPOINT RESPONSIF */
         @media(max-width: 1024px) { .notes-list { column-count: 3; } }
@@ -572,34 +550,38 @@
     </div>
 
     <div class="modal-overlay" id="announcementModal">
-        <div class="modal-card">
+        <div class="modal-card" style="max-width: 480px;">
             <h3 style="margin-bottom: 6px;">Papan Pengumuman</h3>
             <p id="annSubtitle">Riwayat dan arsip pesan penting dari Admin ruang.</p>
             
-            <button class="btn-modal btn-confirm" id="btnCreateAnn" style="margin-bottom: 16px; display: none; width: 100%;" onclick="openCreateAnnouncementForm()">
+            <button class="btn-modal btn-confirm" id="btnCreateAnn" style="margin-bottom: 16px; display: none; width: 100%; border-radius: 14px;" onclick="openCreateAnnouncementForm()">
                 + Buat Pengumuman Baru
             </button>
             
             <div class="list-container-scroll" id="announcementListContainer"></div>
             
-            <button class="btn-modal btn-cancel" style="width: 100%; margin-top: 24px;" onclick="closeAnnouncementModal()">Tutup</button>
+            <div class="modal-actions" style="margin-top: 24px;">
+                <button class="btn-modal btn-cancel" onclick="closeAnnouncementModal()">Tutup</button>
+            </div>
         </div>
     </div>
 
     <div class="modal-overlay" id="formAnnouncementModal">
-        <div class="modal-card">
+        <div class="modal-card" style="max-width: 480px;">
             <h3 id="formAnnTitle">Buat Pengumuman</h3>
             <p>Pesan akan langsung dikirimkan ke layar target anggota.</p>
             
-            <div class="input-wrap" style="margin-bottom: 4px; display: block;">
-                <label style="display: block; font-size: 12px; font-weight: 800; color: var(--text-muted); margin-bottom: 8px;">Pesan Pengumuman</label>
-                <textarea class="modal-textarea" id="annMessageInput" placeholder="Ketik instruksi atau pengumuman detail di sini..." maxlength="3000" oninput="updateCharCount(this, 'createCharCount')"></textarea>
+            <div class="input-group">
+                <div class="flex-label-row">
+                    <label>Pesan Pengumuman</label>
+                    <div class="char-counter" id="createCharCount">0 / 3000</div>
+                </div>
+                <textarea class="modal-textarea" id="annMessageInput" placeholder="Ketik pesan Anda di sini..." maxlength="3000" oninput="updateCharCount(this, 'createCharCount')"></textarea>
             </div>
-            <div class="char-counter" id="createCharCount">0 / 3000</div>
 
-            <div class="input-wrap" style="margin-bottom: 16px; display: block;">
-                <label style="display: block; font-size: 12px; font-weight: 800; color: var(--text-muted); margin-bottom: 8px;">Tingkat Urgensi / Tipe</label>
-                <select class="modal-select" id="annTypeInput" style="padding: 14px 16px;">
+            <div class="input-group">
+                <label>Tingkat Urgensi / Tipe</label>
+                <select class="modal-select" id="annTypeInput">
                     <option value="info">🔵 Informasi Umum</option>
                     <option value="event">🎉 Acara / Event</option>
                     <option value="warning">🟡 Peringatan / Deadline</option>
@@ -607,19 +589,19 @@
                 </select>
             </div>
 
-            <div class="input-wrap" style="margin-bottom: 16px; display: block;">
-                <label style="display: flex; justify-content: space-between; font-size: 12px; font-weight: 800; color: var(--text-muted); margin-bottom: 8px;">
-                    Target Anggota 
-                    <label style="cursor: pointer; display: flex; align-items: center; gap: 4px; font-weight: 700; color: var(--primary);">
+            <div class="input-group" style="margin-bottom: 0;">
+                <div class="flex-label-row" style="align-items: center;">
+                    <label>Target Anggota</label>
+                    <label style="cursor: pointer; display: flex; align-items: center; gap: 4px; font-weight: 700; color: var(--primary); font-size: 12px; margin-bottom: 0;">
                         <input type="checkbox" id="checkAllTargetsCreate" style="display:none;" onchange="toggleSelectAllTargets(this, 'annTargetListCreate')">
-                        <div class="checkbox-custom" style="width:16px; height:16px; border-radius:4px;"><svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="4"><polyline points="20 6 9 17 4 12"></polyline></svg></div>
+                        <div class="checkbox-custom" style="width:16px; height:16px; border-radius:4px;"><svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><polyline points="20 6 9 17 4 12"></polyline></svg></div>
                         Pilih Semua
                     </label>
-                </label>
-                <div class="list-container-scroll" id="annTargetListCreate" style="max-height: 120px; background: var(--card-tint); border: 1px solid var(--border); border-radius: 14px;"></div>
+                </div>
+                <div class="target-list-box" id="annTargetListCreate"></div>
             </div>
 
-            <div class="modal-actions">
+            <div class="modal-actions" style="margin-top: 20px; padding-top: 20px; border-top: 1px dashed var(--border);">
                 <button class="btn-modal btn-cancel" onclick="closeCreateAnnouncementForm()">Batal</button>
                 <button class="btn-modal btn-confirm" onclick="saveAnnouncement()">Kirim Pengumuman</button>
             </div>
@@ -654,15 +636,17 @@
             </div>
 
             <div class="side-panel-body" id="sidePanelEdit" style="display:none;">
-                <div class="input-wrap" style="margin-bottom: 4px; display: block;">
-                    <label style="display: block; font-size: 12px; font-weight: 800; color: var(--text-muted); margin-bottom: 8px;">Pesan Pengumuman</label>
+                <div class="input-group flex-grow">
+                    <div class="flex-label-row">
+                        <label>Pesan Pengumuman</label>
+                        <div class="char-counter" id="inlineCharCount">0 / 3000</div>
+                    </div>
                     <textarea class="modal-textarea" id="inlineAnnMessageInput" maxlength="3000" oninput="updateCharCount(this, 'inlineCharCount')"></textarea>
                 </div>
-                <div class="char-counter" id="inlineCharCount">0 / 3000</div>
 
-                <div class="input-wrap" style="margin-bottom: 16px; display: block;">
-                    <label style="display: block; font-size: 12px; font-weight: 800; color: var(--text-muted); margin-bottom: 8px;">Tipe</label>
-                    <select class="modal-select" id="inlineAnnTypeInput" style="padding: 14px 16px;">
+                <div class="input-group">
+                    <label>Tipe</label>
+                    <select class="modal-select" id="inlineAnnTypeInput">
                         <option value="info">🔵 Informasi Umum</option>
                         <option value="event">🎉 Acara / Event</option>
                         <option value="warning">🟡 Peringatan / Deadline</option>
@@ -670,21 +654,21 @@
                     </select>
                 </div>
 
-                <div class="input-wrap" style="display: block;">
-                    <label style="display: flex; justify-content: space-between; font-size: 12px; font-weight: 800; color: var(--text-muted); margin-bottom: 8px;">
-                        Target 
-                        <label style="cursor: pointer; display: flex; align-items: center; gap: 4px; font-weight: 700; color: var(--primary);">
+                <div class="input-group">
+                    <div class="flex-label-row" style="align-items: center;">
+                        <label>Target Anggota</label>
+                        <label style="cursor: pointer; display: flex; align-items: center; gap: 4px; font-weight: 700; color: var(--primary); font-size: 12px; margin-bottom: 0;">
                             <input type="checkbox" id="checkAllTargetsInline" style="display:none;" onchange="toggleSelectAllTargets(this, 'annTargetListInline')">
-                            <div class="checkbox-custom" style="width:16px; height:16px; border-radius:4px;"><svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="4"><polyline points="20 6 9 17 4 12"></polyline></svg></div>
+                            <div class="checkbox-custom" style="width:16px; height:16px; border-radius:4px;"><svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><polyline points="20 6 9 17 4 12"></polyline></svg></div>
                             Pilih Semua
                         </label>
-                    </label>
-                    <div class="list-container-scroll" id="annTargetListInline" style="max-height: 150px; background: var(--card-tint); border: 1px solid var(--border); border-radius: 14px;"></div>
+                    </div>
+                    <div class="target-list-box" id="annTargetListInline"></div>
                 </div>
             </div>
             
             <div class="side-panel-footer" id="sidePanelEditFooter" style="display:none;">
-                <div class="modal-actions" style="margin-top:0;">
+                <div class="modal-actions">
                     <button class="btn-modal btn-cancel" onclick="toggleInlineEditAnn(false)">Batal</button>
                     <button class="btn-modal btn-confirm" onclick="saveInlineEditAnn()">Simpan Pembaruan</button>
                 </div>
@@ -904,13 +888,13 @@
         }
 
         // ==========================================
-        // SISTEM PENGUMUMAN IDENTIK collab-ideas.html
+        // SISTEM PENGUMUMAN IDENTIK
         // ==========================================
         function listenToAnnouncements() {
             const q = query(collection(db, "collab_announcements"), where("roomId", "==", currentRoomId));
             onSnapshot(q, (snapshot) => {
                 window.globalAnnouncements = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }))
-                                             .filter(a => a.targetUids && a.targetUids.includes(currentUserUid));
+                                                             .filter(a => a.targetUids && a.targetUids.includes(currentUserUid));
                 
                 updateAnnouncementBadge();
                 processBannerQueue();
@@ -986,7 +970,7 @@
         window.openAnnouncementModal = () => {
             const isOwner = window.roomData && window.roomData.ownerId === currentUserUid;
             document.getElementById('btnCreateAnn').style.display = isOwner ? 'block' : 'none';
-            document.getElementById('annSubtitle').innerText = isOwner ? "Kelola instruksi dan arsip penting untuk tim Anda." : "Riwayat pesan penting dari Admin ruang.";
+            document.getElementById('annSubtitle').innerText = isOwner ? "Kelola informasi dan instruksi untuk tim Anda." : "Riwayat pesan penting dari Admin ruang.";
             
             document.getElementById('announcementModal').classList.add('active');
             window.renderAnnouncementList();
@@ -1069,9 +1053,9 @@
                         <div class="target-avatar">${displayName.charAt(0).toUpperCase()}</div>
                         <div class="target-name">${displayName}</div>
                     </div>
-                    <label style="cursor: pointer;">
+                    <label class="checkbox-wrap">
                         <input type="checkbox" class="ann-target-checkbox ${chkClass}" value="${uid}" style="display:none;" ${isChecked ? 'checked' : ''} onchange="evaluateSelectAllState('${containerId}', '${masterCbId}', '${chkClass}')">
-                        <div class="checkbox-custom"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="4"><polyline points="20 6 9 17 4 12"></polyline></svg></div>
+                        <div class="checkbox-custom"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><polyline points="20 6 9 17 4 12"></polyline></svg></div>
                     </label>
                 </label>`;
             }).join('');
