@@ -14,7 +14,7 @@
         /* =========================================================
            CSS UTAMA DAN EDITOR IMMERSIVE
         ========================================================= */
-        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800;900&display=swap');
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap');
         * { margin: 0; padding: 0; box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
         *::-webkit-scrollbar { display: none; }
         :root { 
@@ -48,12 +48,12 @@
             --card-tint: #0f172a; 
             --border: #334155; 
             --text-main: #f8fafc; 
-            --text-muted: #cbd5e1; 
+            --text-muted: #94a3b8; 
             --shadow-flat: 0 10px 30px rgba(0, 0, 0, 0.4); 
             --danger-soft: rgba(239, 68, 68, 0.15);
             --event-soft: rgba(139, 92, 246, 0.15);
         }
-        body { font-family: 'Inter', system-ui, sans-serif; background: var(--bg-grad); color: var(--text-main); min-height: 100vh; padding: 76px 16px 100px 16px; }
+        body { font-family: 'Inter', system-ui, sans-serif; background: var(--bg-grad); color: var(--text-main); min-height: 100vh; padding: 86px 16px 100px 16px; overflow-x: hidden; }
         
         .wrapper { position: relative; z-index: 2; max-width: 1100px; margin: 0 auto; }
         .bg-glow { position: fixed; border-radius: 50%; filter: blur(90px); z-index: 0; opacity: 0.5; pointer-events: none; }
@@ -61,25 +61,27 @@
         .bg-glow.two { width: 320px; height: 320px; background: rgba(96, 165, 250, 0.15); bottom: 100px; right: -100px; }
 
         /* =========================================================
-           HEADER RUANG (HERO CARD)
+           HEADER RUANG (HERO CARD) - DIREVISI
         ========================================================= */
         .hero-card { 
-            background: var(--primary-grad); border-radius: var(--radius-card); padding: 32px; color: white; 
+            background: var(--primary-grad); border-radius: var(--radius-card); padding: 28px 32px; color: white; 
             position: relative; overflow: hidden; margin-bottom: 24px; box-shadow: 0 10px 30px rgba(37, 99, 235, 0.2); 
             transition: background 0.3s ease, box-shadow 0.3s ease; 
-            display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 24px;
+            display: flex; flex-direction: column; gap: 20px;
         }
         .hero-card.trash-mode { background: #475569; box-shadow: 0 10px 30px rgba(71, 85, 105, 0.2); }
         .hero-card::after { content: ""; position: absolute; width: 250px; height: 250px; background: rgba(255, 255, 255, 0.08); border-radius: 50%; top: -80px; right: -80px; pointer-events: none; }
         
-        .hero-header-left { display: flex; align-items: center; gap: 16px; flex: 1; min-width: 250px; position: relative; z-index: 1; }
+        .hero-top-wrap { display: flex; justify-content: space-between; align-items: center; width: 100%; gap: 16px; position: relative; z-index: 1;}
+        .hero-header-left { display: flex; align-items: center; gap: 16px; flex: 1; min-width: 200px; }
+        
         .btn-back, .btn-mega { 
             width: 44px; height: 44px; border-radius: 14px; background: rgba(255,255,255,0.15); backdrop-filter: blur(8px); -webkit-backdrop-filter: blur(8px);
             display: flex; align-items: center; justify-content: center; color: white; text-decoration: none; border: none; font-size: 18px;
             transition: all 0.2s ease; flex-shrink: 0; outline: none; border: 1px solid rgba(255,255,255,0.25); box-shadow: 0 4px 12px rgba(0,0,0,0.05); cursor: pointer;
         }
         .btn-back:hover, .btn-mega:hover { background: rgba(255,255,255,0.25); transform: translateY(-2px); }
-        .btn-back:hover { transform: translateX(-2px); } /* Override for back btn */
+        .btn-back:hover { transform: translateX(-2px); }
         
         body.dark .hero-card.trash-mode .btn-back, body.dark .hero-card.trash-mode .btn-mega { background: rgba(15, 23, 42, 0.4); border-color: rgba(255,255,255,0.1); }
         body.dark .hero-card.trash-mode .btn-back:hover, body.dark .hero-card.trash-mode .btn-mega:hover { background: rgba(15, 23, 42, 0.6); }
@@ -92,31 +94,36 @@
         .hero-desc { font-size: 13px; line-height: 1.4; opacity: 0.9; display: flex; align-items: center; gap: 8px; font-weight: 600; }
         
         .live-indicator { width: 8px; height: 8px; background: #10b981; border-radius: 50%; display: inline-block; animation: pulse 2s infinite; flex-shrink: 0; }
-        @keyframes pulse { 0% { transform: scale(0.95); box-shadow: 0 0 0 0 rgba(16, 185, 129, 0.7); } 70% { transform: scale(1); box-shadow: 0 0 0 6px rgba(16, 185, 129, 0); } 100% { transform: scale(0.95); box-shadow: 0 0 0 0 rgba(16, 185, 129, 0); } }
-        @keyframes pulseAlert { 0% { transform: scale(0.95); box-shadow: 0 0 0 0 rgba(239, 68, 68, 0.7); } 70% { transform: scale(1); box-shadow: 0 0 0 6px rgba(239, 68, 68, 0); } 100% { transform: scale(0.95); box-shadow: 0 0 0 0 rgba(239, 68, 68, 0); } }
-
-        .hero-header-right { display: flex; align-items: center; gap: 16px; position: relative; z-index: 1; flex-shrink: 0; max-width: 100%; }
+        
+        .hero-stats-wrap { width: 100%; border-top: 1px dashed rgba(255,255,255,0.25); padding-top: 20px; position: relative; z-index: 1;}
         .hero-stats { display: flex; gap: 10px; overflow-x: auto; scrollbar-width: none; max-width: 100%; padding-bottom: 4px; }
         .hero-stats::-webkit-scrollbar { display: none; }
         .stat-pill { display: flex; align-items: center; gap: 8px; background: rgba(255, 255, 255, 0.15); backdrop-filter: blur(10px); -webkit-backdrop-filter: blur(10px); border: 1px solid rgba(255, 255, 255, 0.2); padding: 8px 16px; border-radius: 20px; font-size: 12px; font-weight: 700; white-space: nowrap; }
         .stat-pill span { font-size: 16px; font-weight: 900; }
 
+        @keyframes pulse { 0% { transform: scale(0.95); box-shadow: 0 0 0 0 rgba(16, 185, 129, 0.7); } 70% { transform: scale(1); box-shadow: 0 0 0 6px rgba(16, 185, 129, 0); } 100% { transform: scale(0.95); box-shadow: 0 0 0 0 rgba(16, 185, 129, 0); } }
+        @keyframes pulseAlert { 0% { transform: scale(0.95); box-shadow: 0 0 0 0 rgba(239, 68, 68, 0.7); } 70% { transform: scale(1); box-shadow: 0 0 0 6px rgba(239, 68, 68, 0); } 100% { transform: scale(0.95); box-shadow: 0 0 0 0 rgba(239, 68, 68, 0); } }
+
         /* =========================================================
            BANNER PENGUMUMAN MENGAMBANG
         ========================================================= */
-        .floating-banner-wrap { position: fixed; top: 90px; left: 50%; transform: translateX(-50%); z-index: 99999; width: 92%; max-width: 700px; pointer-events: none; display: flex; flex-direction: column; gap: 12px; }
-        .announcement-banner { pointer-events: auto; background: rgba(255, 255, 255, 0.95); backdrop-filter: blur(16px); border: 1px solid var(--border); border-left: 5px solid var(--primary); border-radius: 16px; padding: 16px 20px; box-shadow: 0 12px 40px rgba(0,0,0,0.15); display: flex; justify-content: space-between; align-items: center; gap: 16px; animation: slideDown 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards; }
-        body.dark .announcement-banner { background: rgba(30, 41, 59, 0.95); box-shadow: 0 12px 40px rgba(0,0,0,0.6); border-color: var(--border); }
+        .floating-banner-wrap { position: fixed; top: 90px; left: 50%; transform: translateX(-50%); z-index: 99999; width: 92%; max-width: 600px; pointer-events: none; display: flex; flex-direction: column; gap: 12px; }
+        .announcement-banner { pointer-events: auto; background: rgba(255, 255, 255, 0.98); backdrop-filter: blur(16px); border: 1px solid var(--border); border-left: 5px solid var(--primary); border-radius: 16px; padding: 16px; box-shadow: 0 12px 40px rgba(0,0,0,0.12); display: flex; justify-content: space-between; align-items: center; gap: 16px; animation: slideDown 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards; }
+        body.dark .announcement-banner { background: rgba(30, 41, 59, 0.98); box-shadow: 0 12px 40px rgba(0,0,0,0.6); border-color: var(--border); }
         .banner-info { border-left-color: var(--primary); }
         .banner-warning { border-left-color: var(--warning); }
         .banner-urgent { border-left-color: var(--danger); }
         .banner-event { border-left-color: var(--event); }
-        .banner-content { display: flex; flex-direction: column; gap: 4px; flex: 1; }
+        .banner-content { display: flex; flex-direction: column; gap: 4px; flex: 1; min-width: 0; }
         .banner-header { display: flex; align-items: center; gap: 8px; font-size: 11px; font-weight: 800; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.5px; }
         .banner-room { color: var(--primary); background: var(--primary-soft); padding: 2px 8px; border-radius: 6px; }
-        .banner-message { font-size: 14px; font-weight: 600; color: var(--text-main); line-height: 1.5; }
-        .btn-understand { background: var(--primary); color: white; border: none; padding: 10px 16px; border-radius: 12px; font-size: 13px; font-weight: 800; cursor: pointer; flex-shrink: 0; outline: none; transition: 0.2s; white-space: nowrap; }
+        .banner-message { font-size: 13px; font-weight: 600; color: var(--text-main); line-height: 1.4; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+        
+        .banner-actions { display: flex; align-items: center; gap: 8px; flex-shrink: 0; }
+        .btn-understand { background: var(--primary); color: white; border: none; padding: 8px 14px; border-radius: 10px; font-size: 12px; font-weight: 800; cursor: pointer; outline: none; transition: 0.2s; white-space: nowrap; }
         .btn-understand:hover { transform: translateY(-2px); box-shadow: 0 4px 12px rgba(37, 99, 235, 0.3); }
+        .btn-banner-close { background: var(--card-tint); border: 1px solid var(--border); color: var(--text-muted); width: 32px; height: 32px; border-radius: 10px; display: flex; align-items: center; justify-content: center; cursor: pointer; transition: 0.2s; }
+        .btn-banner-close:hover { background: var(--border); color: var(--text-main); }
         @keyframes slideDown { 0% { opacity: 0; transform: translateY(-20px); } 100% { opacity: 1; transform: translateY(0); } }
         
         /* =========================================================
@@ -170,7 +177,7 @@
         .empty-state-icon { font-size: 42px; margin-bottom: 12px; opacity: 0.8; }
         .empty-state-text { font-size: 13px; color: var(--text-muted); line-height: 1.6; }
         
-        .card { break-inside: avoid; margin-bottom: 16px; background: var(--card-glass); backdrop-filter: blur(12px); border: 1px solid var(--border); border-radius: 20px; padding: 20px; box-shadow: var(--shadow-flat); transition: transform 0.2s, border-color 0.2s; position: relative; cursor: pointer; }
+        .card { break-inside: avoid; margin-bottom: 16px; background: var(--card-glass); backdrop-filter: blur(12px); border: 1px solid var(--border); border-radius: 20px; padding: 20px; box-shadow: var(--shadow-flat); transition: transform 0.2s, border-color 0.2s; position: relative; cursor: pointer; outline: none !important;}
         .card:hover { transform: translateY(-2px); border-color: #cbd5e1; }
         .card.pinned { border-left: 4px solid var(--warning); }
         .card.completed { opacity: 0.6; }
@@ -187,7 +194,8 @@
         .badge { padding: 4px 10px; border-radius: 8px; font-size: 11px; font-weight: 700; background: var(--card-tint); color: var(--text-muted); border: 1px solid var(--border); display: flex; align-items: center; gap: 4px; }
         .badge.ch { background: var(--primary-soft); color: var(--primary); border: none; }
         .badge.done { background: var(--success-soft); color: var(--success); border: none; }
-        .badge.lock { background: var(--warning); color: white; border: none; }
+        .badge.lock { background: var(--warning); color: white; border: none; animation: flash 1.5s infinite alternate; }
+        @keyframes flash { from { opacity: 0.7; } to { opacity: 1; } }
         .badge.deleted { background: var(--danger-soft); color: var(--danger); border: none; }
         .badge.restored { background: rgba(245, 158, 11, 0.1); color: var(--warning); border-color: rgba(245, 158, 11, 0.2); }
         
@@ -293,15 +301,15 @@
         .modal-overlay { position: fixed; inset: 0; background: rgba(0,0,0,0.4); backdrop-filter: blur(4px); z-index: 100001; display: none; align-items: center; justify-content: center; padding: 20px; width: 100vw; height: 100vh; box-sizing: border-box; }
         .modal-overlay.active { display: flex; }
         .modal-card { background: var(--card-solid); width: 100%; max-width: 420px; border-radius: var(--radius-card); padding: 24px; box-shadow: var(--shadow-flat); border: 1px solid var(--border); box-sizing: border-box; display: flex; flex-direction: column; max-height: 90vh; }
-        .modal-card h3 { font-size: 18px; font-weight: 900; margin-bottom: 8px; color: var(--text-main); flex-shrink: 0; text-align: center; }
-        .modal-card p { font-size: 13px; color: var(--text-muted); margin-bottom: 20px; line-height: 1.5; flex-shrink: 0; text-align: center; }
+        .modal-card h3 { font-size: 18px; font-weight: 900; margin-bottom: 8px; color: var(--text-main); flex-shrink: 0; }
+        .modal-card p { font-size: 13px; color: var(--text-muted); margin-bottom: 20px; line-height: 1.5; flex-shrink: 0; }
         
         .modal-input, .modal-select, .modal-textarea { width: 100%; padding: 14px 16px; border-radius: 14px; border: 1px solid var(--border); background: var(--card-tint); color: var(--text-main); font-size: 14px; font-weight: 600; outline: none; margin-bottom: 12px; transition: 0.2s; box-sizing: border-box; font-family: inherit; }
-        .modal-textarea { resize: vertical; min-height: 80px; }
-        .modal-input:focus, .modal-select:focus, .modal-textarea:focus { border-color: var(--primary); box-shadow: 0 0 0 3px var(--primary-soft); }
+        .modal-textarea { resize: vertical; min-height: 120px; line-height: 1.5; }
+        .modal-input:focus, .modal-select:focus, .modal-textarea:focus { border-color: var(--primary); box-shadow: 0 0 0 3px var(--primary-soft); background: var(--card-solid); }
         .modal-select { appearance: none; }
         .modal-actions { display: flex; gap: 12px; margin-top: 8px; flex-shrink: 0; }
-        .btn-modal { flex: 1; padding: 12px; border-radius: 12px; font-size: 13px; font-weight: 800; cursor: pointer; border: none; transition: 0.2s; outline: none; }
+        .btn-modal { flex: 1; padding: 12px; border-radius: 12px; font-size: 13px; font-weight: 800; cursor: pointer; border: none; transition: 0.2s; outline: none; display: flex; justify-content: center; align-items: center; gap: 6px; }
         .btn-cancel { background: var(--card-tint); color: var(--text-main); border: 1px solid var(--border); }
         .btn-cancel:hover { background: #e2e8f0; }
         body.dark .btn-cancel:hover { background: #334155; }
@@ -312,7 +320,7 @@
         .info-value { font-weight: 800; color: var(--text-main); text-align: right; max-width: 60%; word-break: break-word;}
         .btn-close-info { width: 100%; padding: 12px; margin-top: 20px; border: none; background: var(--card-tint); color: var(--text-main); font-weight: 800; border-radius: 12px; cursor: pointer; font-family: 'Inter', system-ui, sans-serif; outline: none;}
 
-        /* LIST PENGUMUMAN (DIREVISI) */
+        /* LIST PENGUMUMAN (DIREVISI SEPERTI collab-ideas.html) */
         .list-container-scroll { 
             overflow-y: auto; 
             display: flex; 
@@ -332,11 +340,11 @@
             padding: 16px; 
             display: flex; 
             flex-direction: column; 
-            gap: 8px; 
-            position: relative; 
-            cursor: pointer;
+            gap: 10px; 
+            cursor: pointer; 
             transition: transform 0.2s, box-shadow 0.2s, border-color 0.2s; 
-            z-index: 1;
+            position: relative; 
+            z-index: 1; 
         }
         .announcement-item:hover { 
             transform: translateY(-2px); 
@@ -348,16 +356,20 @@
         .announcement-item.unread { border-left: 4px solid var(--primary); background: var(--primary-soft); }
         
         .ann-header { display: flex; justify-content: space-between; align-items: center; font-size: 11px; font-weight: 800; color: var(--text-muted); }
-        .ann-type { padding: 4px 8px; border-radius: 6px; text-transform: uppercase; letter-spacing: 0.5px; }
+        .ann-type { padding: 4px 8px; border-radius: 6px; text-transform: uppercase; letter-spacing: 0.5px; display: inline-flex; align-items: center; gap: 4px; }
         .ann-type.info { background: rgba(37, 99, 235, 0.1); color: var(--primary); }
         .ann-type.warning { background: rgba(245, 158, 11, 0.1); color: var(--warning); }
         .ann-type.urgent { background: rgba(239, 68, 68, 0.1); color: var(--danger); }
         .ann-type.event { background: var(--event-soft); color: var(--event); }
-        .ann-msg { font-size: 13px; font-weight: 600; color: var(--text-main); line-height: 1.5; word-break: break-word; }
-        .ann-meta { font-size: 11px; color: var(--text-muted); font-weight: 600; display: flex; justify-content: space-between; align-items: center; margin-top: 4px;}
-        .ann-actions { display: flex; gap: 6px; }
+        
+        .ann-msg-clamp { font-size: 13px; font-weight: 600; color: var(--text-main); line-height: 1.5; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; text-overflow: ellipsis; }
+        .ann-meta { font-size: 11px; color: var(--text-muted); font-weight: 600; display: flex; justify-content: flex-end; align-items: center; margin-top: 4px;}
+        .ann-admin-indicator { color: var(--primary); display: flex; align-items: center; gap: 4px; background: var(--primary-soft); padding: 4px 8px; border-radius: 6px; }
 
-        /* CHECKBOX TARGET PENGUMUMAN (DIREVISI) */
+        .char-counter { font-size: 11px; font-weight: 700; color: var(--text-muted); text-align: right; margin-top: -8px; margin-bottom: 16px; }
+        .char-counter.limit { color: var(--danger); }
+
+        /* TARGET MEMBER CHECKBOX */
         .target-member-item { 
             display: flex; 
             align-items: center; 
@@ -380,15 +392,41 @@
         .target-name { font-size: 13px; font-weight: 700; color: var(--text-main); }
         .checkbox-custom { width: 20px; height: 20px; border-radius: 6px; border: 2px solid var(--border); display: flex; align-items: center; justify-content: center; color: transparent; transition: 0.2s; }
         input[type="checkbox"]:checked + .checkbox-custom { background: var(--primary); border-color: var(--primary); color: white; }
+
+        /* SIDE PANEL (DRAWER) UNTUK DETAIL & INLINE EDIT */
+        .side-panel-overlay { position: fixed; inset: 0; background: rgba(0,0,0,0.5); backdrop-filter: blur(4px); z-index: 100005; display: flex; justify-content: flex-end; opacity: 0; pointer-events: none; transition: opacity 0.3s ease; }
+        .side-panel-overlay.active { opacity: 1; pointer-events: auto; }
         
+        .side-panel { background: var(--card-solid); width: 100%; max-width: 480px; height: 100%; display: flex; flex-direction: column; transform: translateX(100%); transition: transform 0.35s cubic-bezier(0.165, 0.84, 0.44, 1); box-shadow: -10px 0 40px rgba(0,0,0,0.1); border-left: 1px solid var(--border); }
+        .side-panel-overlay.active .side-panel { transform: translateX(0); }
+        body.dark .side-panel { box-shadow: -10px 0 40px rgba(0,0,0,0.6); }
+
+        .side-panel-header { display: flex; justify-content: space-between; align-items: center; padding: 20px 24px; border-bottom: 1px solid var(--border); flex-shrink: 0; background: var(--card-solid); z-index: 10; }
+        .side-panel-header h3 { font-size: 18px; font-weight: 900; color: var(--text-main); }
+        .btn-close-sp { background: var(--card-tint); border: 1px solid var(--border); color: var(--text-muted); width: 36px; height: 36px; border-radius: 12px; display: flex; align-items: center; justify-content: center; cursor: pointer; transition: 0.2s; outline: none; }
+        .btn-close-sp:hover { background: var(--border); color: var(--text-main); }
+
+        .side-panel-body { flex: 1; overflow-y: auto; padding: 24px; display: flex; flex-direction: column; gap: 20px; }
+        
+        .sp-meta-top { display: flex; justify-content: space-between; align-items: center; font-size: 12px; font-weight: 700; color: var(--text-muted); }
+        .sp-message { font-size: 15px; font-weight: 500; color: var(--text-main); line-height: 1.7; white-space: pre-wrap; word-break: break-word; }
+        .sp-meta-bottom { display: flex; align-items: center; gap: 8px; font-size: 13px; font-weight: 700; color: var(--primary); margin-top: auto; padding-top: 24px; border-top: 1px dashed var(--border); }
+        
+        .sp-admin-actions { display: flex; gap: 12px; margin-top: 16px; }
+        .btn-sp-action { flex: 1; display: flex; align-items: center; justify-content: center; gap: 8px; padding: 12px; border-radius: 12px; font-size: 13px; font-weight: 800; cursor: pointer; border: 1px solid var(--border); background: var(--card-tint); color: var(--text-main); transition: 0.2s; outline: none; }
+        .btn-sp-action:hover { background: var(--border); }
+        .btn-sp-action.danger { color: var(--danger); border-color: rgba(239, 68, 68, 0.3); background: rgba(239, 68, 68, 0.05); }
+        .btn-sp-action.danger:hover { background: rgba(239, 68, 68, 0.15); }
+
+        .side-panel-footer { padding: 20px 24px; border-top: 1px solid var(--border); background: var(--card-solid); flex-shrink: 0; }
+
         /* BREAKPOINT RESPONSIF */
         @media(max-width: 1024px) { .list-container { column-count: 2; } }
         @media(max-width: 600px) { 
-            body { padding-top: 66px; }
-            .hero-card { padding: 24px 20px; flex-direction: column; align-items: flex-start; gap: 20px; } 
-            .hero-header-left { width: 100%; }
-            .hero-header-right { width: 100%; justify-content: space-between; }
-            .hero-stats { justify-content: flex-start; }
+            body { padding-top: 76px; }
+            .hero-card { padding: 24px 20px; gap: 16px;} 
+            .hero-top-wrap { flex-direction: row; flex-wrap: nowrap; align-items: center; }
+            .hero-header-left { min-width: 0; }
             .hero-title { font-size: 20px; } 
             
             .editor-footer { flex-direction: column; gap: 16px; align-items: flex-start; padding: 16px; } 
@@ -400,6 +438,7 @@
             .popup-overlay.reading-mode .editor-body { padding-top: 80px; }
             .editor-body { padding: 24px 16px 120px; }
             .header-left, .header-right { gap: 4px; }
+            .side-panel { max-width: 100%; border-left: none; }
         }
     </style>
 </head>
@@ -413,23 +452,27 @@
 
     <div class="wrapper">
         <div class="hero-card" id="heroCard">
-            <div class="hero-header-left">
-                <a href="collab-hub.html" class="btn-back" title="Kembali ke Lobi">
-                    <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
-                        <line x1="19" y1="12" x2="5" y2="12"></line>
-                        <polyline points="12 19 5 12 12 5"></polyline>
-                    </svg>
-                </a>
-                <div class="hero-text">
-                    <h1 class="hero-title" id="uiRoomName">Memuat Ruang...</h1>
-                    <p class="hero-desc" id="uiRoomInfo"><span class="live-indicator"></span> Menghubungkan...</p>
+            <!-- BARIS ATAS: Judul & Ikon Megafon -->
+            <div class="hero-top-wrap">
+                <div class="hero-header-left">
+                    <a href="collab-hub.html" class="btn-back" title="Kembali ke Lobi">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                            <line x1="19" y1="12" x2="5" y2="12"></line>
+                            <polyline points="12 19 5 12 12 5"></polyline>
+                        </svg>
+                    </a>
+                    <div class="hero-text">
+                        <h1 class="hero-title" id="uiRoomName">Memuat Ruang...</h1>
+                        <p class="hero-desc" id="uiRoomInfo"><span class="live-indicator"></span> Menghubungkan...</p>
+                    </div>
                 </div>
-            </div>
-            
-            <div class="hero-header-right">
                 <button class="btn-mega" id="btnAnnouncement" onclick="openAnnouncementModal()" title="Papan Pengumuman Ruang">
                     📢 <div class="unread-dot" id="annUnreadBadge"></div>
                 </button>
+            </div>
+            
+            <!-- BARIS BAWAH: Pil Statistik -->
+            <div class="hero-stats-wrap" id="uiStatsWrap">
                 <div class="hero-stats" id="uiStats">
                     <div class="stat-pill">📝 Total: <span id="statTotal">0</span></div>
                     <div class="stat-pill">🕒 Draft: <span id="statDraft">0</span></div>
@@ -460,6 +503,7 @@
         <button class="fab" id="fabAdd" onclick="openPopup()">+</button>
     </div>
 
+    <!-- POPUP EDITOR SCRIPT -->
     <div class="popup-overlay" id="editorPopup">
         <button class="fab-back" id="btnExitReadingMode" onclick="toggleReadingMode()" title="Kembali">
             <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
@@ -516,10 +560,11 @@
         </div>
     </div>
 
+    <!-- MODAL INFO SCRIPT -->
     <div class="modal-overlay" id="infoModal">
         <div class="modal-card" style="max-width: 360px;">
-            <h3>Informasi Script</h3>
-            <p style="margin-bottom: 20px;">Rincian lengkap dari dokumen ini.</p>
+            <h3 style="text-align: center;">Informasi Script</h3>
+            <p style="margin-bottom: 20px; text-align: center;">Rincian lengkap dari dokumen ini.</p>
             <div class="info-row"><span class="info-label">Judul</span> <span class="info-value" id="infoTitle">-</span></div>
             <div class="info-row"><span class="info-label">Kategori</span> <span class="info-value" id="infoCat">-</span></div>
             <div class="info-row"><span class="info-label">Status</span> <span class="info-value" id="infoStatus">-</span></div>
@@ -531,12 +576,15 @@
         </div>
     </div>
 
+    <!-- MODAL DAFTAR PENGUMUMAN -->
     <div class="modal-overlay" id="announcementModal">
         <div class="modal-card">
             <h3 style="margin-bottom: 6px;">Papan Pengumuman</h3>
             <p id="annSubtitle">Riwayat dan arsip pesan penting dari Admin ruang.</p>
             
-            <button class="btn-modal btn-confirm" id="btnCreateAnn" style="margin-bottom: 16px; display: none; width: 100%;" onclick="openCreateAnnouncementForm()">+ Buat Pengumuman Baru</button>
+            <button class="btn-modal btn-confirm" id="btnCreateAnn" style="margin-bottom: 16px; display: none; width: 100%;" onclick="openCreateAnnouncementForm()">
+                + Buat Pengumuman Baru
+            </button>
             
             <div class="list-container-scroll" id="announcementListContainer"></div>
             
@@ -544,15 +592,17 @@
         </div>
     </div>
 
+    <!-- MODAL FORM BUAT PENGUMUMAN BARU -->
     <div class="modal-overlay" id="formAnnouncementModal">
         <div class="modal-card">
             <h3 id="formAnnTitle">Buat Pengumuman</h3>
             <p>Pesan akan langsung dikirimkan ke layar target anggota.</p>
             
-            <div class="input-wrap" style="margin-bottom: 16px; display: block;">
+            <div class="input-wrap" style="margin-bottom: 4px; display: block;">
                 <label style="display: block; font-size: 12px; font-weight: 800; color: var(--text-muted); margin-bottom: 8px;">Pesan Pengumuman</label>
-                <textarea class="modal-textarea" id="annMessageInput" placeholder="Ketik pesan Anda di sini..." maxlength="200" style="padding: 14px 16px;"></textarea>
+                <textarea class="modal-textarea" id="annMessageInput" placeholder="Ketik instruksi atau pengumuman detail di sini..." maxlength="3000" oninput="updateCharCount(this, 'createCharCount')"></textarea>
             </div>
+            <div class="char-counter" id="createCharCount">0 / 3000</div>
 
             <div class="input-wrap" style="margin-bottom: 16px; display: block;">
                 <label style="display: block; font-size: 12px; font-weight: 800; color: var(--text-muted); margin-bottom: 8px;">Tingkat Urgensi / Tipe</label>
@@ -568,18 +618,86 @@
                 <label style="display: flex; justify-content: space-between; font-size: 12px; font-weight: 800; color: var(--text-muted); margin-bottom: 8px;">
                     Target Anggota 
                     <label style="cursor: pointer; display: flex; align-items: center; gap: 4px; font-weight: 700; color: var(--primary);">
-                        <input type="checkbox" id="checkAllTargets" style="display:none;" onchange="toggleSelectAllTargets(this)">
+                        <input type="checkbox" id="checkAllTargetsCreate" style="display:none;" onchange="toggleSelectAllTargets(this, 'annTargetListCreate')">
                         <div class="checkbox-custom" style="width:16px; height:16px; border-radius:4px;"><svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="4"><polyline points="20 6 9 17 4 12"></polyline></svg></div>
                         Pilih Semua
                     </label>
                 </label>
-                <div class="list-container-scroll" id="annTargetList" style="max-height: 150px; background: var(--card-tint); border: 1px solid var(--border); border-radius: 14px;">
-                </div>
+                <div class="list-container-scroll" id="annTargetListCreate" style="max-height: 120px; background: var(--card-tint); border: 1px solid var(--border); border-radius: 14px;"></div>
             </div>
 
             <div class="modal-actions">
                 <button class="btn-modal btn-cancel" onclick="closeCreateAnnouncementForm()">Batal</button>
                 <button class="btn-modal btn-confirm" onclick="saveAnnouncement()">Kirim Pengumuman</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- SIDE PANEL (DRAWER) UNTUK DETAIL & INLINE EDIT PENGUMUMAN -->
+    <div class="side-panel-overlay" id="annSidePanel">
+        <div class="side-panel">
+            <div class="side-panel-header">
+                <h3 id="spHeaderTitle">Detail Pengumuman</h3>
+                <button class="btn-close-sp" onclick="closeSidePanel()" title="Tutup Panel">
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
+                </button>
+            </div>
+            
+            <!-- VIEW MODE -->
+            <div class="side-panel-body" id="sidePanelDisplay">
+                <div class="sp-meta-top">
+                    <span class="ann-type" id="spTypeBadge"></span>
+                    <span id="spDate"></span>
+                </div>
+                <div class="sp-message" id="spMessage"></div>
+                <div class="sp-meta-bottom" id="spViews"></div>
+                
+                <div class="sp-admin-actions" id="spAdminActions" style="display:none;">
+                    <button class="btn-sp-action" onclick="toggleInlineEditAnn(true)">
+                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path></svg> Edit
+                    </button>
+                    <button class="btn-sp-action danger" onclick="deleteAnnouncementFromSp()">
+                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="3 6 5 6 21 6"></polyline><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path></svg> Hapus
+                    </button>
+                </div>
+            </div>
+
+            <!-- EDIT MODE (INLINE) -->
+            <div class="side-panel-body" id="sidePanelEdit" style="display:none;">
+                <div class="input-wrap" style="margin-bottom: 4px; display: block;">
+                    <label style="display: block; font-size: 12px; font-weight: 800; color: var(--text-muted); margin-bottom: 8px;">Pesan Pengumuman</label>
+                    <textarea class="modal-textarea" id="inlineAnnMessageInput" maxlength="3000" oninput="updateCharCount(this, 'inlineCharCount')"></textarea>
+                </div>
+                <div class="char-counter" id="inlineCharCount">0 / 3000</div>
+
+                <div class="input-wrap" style="margin-bottom: 16px; display: block;">
+                    <label style="display: block; font-size: 12px; font-weight: 800; color: var(--text-muted); margin-bottom: 8px;">Tipe</label>
+                    <select class="modal-select" id="inlineAnnTypeInput" style="padding: 14px 16px;">
+                        <option value="info">🔵 Informasi Umum</option>
+                        <option value="event">🎉 Acara / Event</option>
+                        <option value="warning">🟡 Peringatan / Deadline</option>
+                        <option value="urgent">🔴 Darurat / Penting</option>
+                    </select>
+                </div>
+
+                <div class="input-wrap" style="display: block;">
+                    <label style="display: flex; justify-content: space-between; font-size: 12px; font-weight: 800; color: var(--text-muted); margin-bottom: 8px;">
+                        Target 
+                        <label style="cursor: pointer; display: flex; align-items: center; gap: 4px; font-weight: 700; color: var(--primary);">
+                            <input type="checkbox" id="checkAllTargetsInline" style="display:none;" onchange="toggleSelectAllTargets(this, 'annTargetListInline')">
+                            <div class="checkbox-custom" style="width:16px; height:16px; border-radius:4px;"><svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="4"><polyline points="20 6 9 17 4 12"></polyline></svg></div>
+                            Pilih Semua
+                        </label>
+                    </label>
+                    <div class="list-container-scroll" id="annTargetListInline" style="max-height: 150px; background: var(--card-tint); border: 1px solid var(--border); border-radius: 14px;"></div>
+                </div>
+            </div>
+            
+            <div class="side-panel-footer" id="sidePanelEditFooter" style="display:none;">
+                <div class="modal-actions" style="margin-top:0;">
+                    <button class="btn-modal btn-cancel" onclick="toggleInlineEditAnn(false)">Batal</button>
+                    <button class="btn-modal btn-confirm" onclick="saveInlineEditAnn()">Simpan Pembaruan</button>
+                </div>
             </div>
         </div>
     </div>
@@ -592,11 +710,10 @@
         import { onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
         import { onSnapshot, collection, query, where, doc, setDoc, updateDoc, deleteDoc, deleteField, arrayUnion, arrayRemove } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
 
-        // URL Params
         const urlParams = new URLSearchParams(window.location.search);
         const currentRoomId = urlParams.get('id');
 
-        // State Kolaborasi & Editor
+        // State Global
         let currentUserUid = null;
         let currentUserData = { name: "Anonim" };
         window.roomData = null;
@@ -609,6 +726,8 @@
         
         window.currentId = null;
         window.isLockedByOther = false;
+        
+        window.currentViewAnnId = null; 
         window.currentEditAnnId = null;
         
         window.isTrashView = false;
@@ -626,9 +745,12 @@
         let historyDebounceTimeout = null;
         let isUndoingRedoing = false;
 
+        const svgEye = `<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path><circle cx="12" cy="12" r="3"></circle></svg>`;
+
         document.addEventListener('click', function(e) {
             if (!e.target.closest('.dropdown-wrap')) document.querySelectorAll('.dropdown-menu').forEach(m => m.classList.remove('active'));
             if (!e.target.closest('.category-wrapper')) document.getElementById('categorySuggestions')?.classList.remove('active');
+            if (e.target.classList.contains('side-panel-overlay')) closeSidePanel();
             const searchContainer = document.getElementById('searchContainer');
             if (searchContainer && searchContainer.classList.contains('expanded') && !searchContainer.contains(e.target)) window.closeSearch();
         });
@@ -678,10 +800,9 @@
         window.addEventListener('resize', () => { clearTimeout(window.resizeTimeout); window.resizeTimeout = setTimeout(window.updateItemsPerPage, 200); });
 
         // ==========================================
-        // REALTIME LISTENER & TRASH SWEEPER
+        // REALTIME LISTENER RUANG & SCRIPT
         // ==========================================
         function initRealtimeCollab() {
-            // 1. Data Ruang
             onSnapshot(doc(db, "collab_boards", currentRoomId), (docSnap) => {
                 if (!docSnap.exists() || !docSnap.data().members.includes(currentUserUid)) {
                     alert("Akses Ditolak: Anda dikeluarkan dari ruang, atau ruang telah dihapus oleh Admin.");
@@ -691,26 +812,24 @@
                 document.getElementById('uiRoomName').innerText = window.roomData.name;
                 if(!window.isTrashView) document.getElementById('uiRoomInfo').innerHTML = `<span class="live-indicator"></span> Live • ${window.roomData.members.length} Anggota`;
 
-                // Daftarkan listener profil untuk SEMUA member di ruang (digunakan di target pengumuman)
                 window.roomData.members.forEach(uid => {
                     if (!window.userListeners[uid]) {
                         window.userListeners[uid] = onSnapshot(doc(db, "users", uid), (uDoc) => {
                             window.userCache[uid] = uDoc.exists() ? uDoc.data() : { name: "Anonim" };
-                            
                             if (document.getElementById('formAnnouncementModal').classList.contains('active')) {
-                                window.renderTargetCheckboxes();
+                                window.renderTargetCheckboxes('annTargetListCreate');
+                            }
+                            if (document.getElementById('annSidePanel').classList.contains('active') && document.getElementById('sidePanelEdit').style.display !== 'none') {
+                                window.renderTargetCheckboxes('annTargetListInline', getPreselectedUidsForInline());
                             }
                             if (!window.isTrashView) window.renderList();
                         });
                     }
                 });
-
             }, (error) => {
-                console.error("Error Akses Ruang:", error);
                 document.getElementById('listContainer').innerHTML = `<div class="empty-state" style="border-color: var(--danger); background: var(--danger-soft);"><div class="empty-state-icon" style="color: var(--danger);">🔒</div><div class="empty-state-text" style="color: var(--danger); font-weight: 700;">Akses Ruang Ditolak oleh Database.</div></div>`;
             });
 
-            // 2. Daftar Script Aktif
             const qScript = query(collection(db, "collab_scripts"), where("roomId", "==", currentRoomId));
             onSnapshot(qScript, (snapshot) => {
                 window.scriptData = snapshot.docs.map(d => ({ id: d.id, ...d.data() }));
@@ -725,7 +844,6 @@
                     if (!window.userListeners[uid]) {
                         window.userListeners[uid] = onSnapshot(doc(db, "users", uid), (uDoc) => {
                             window.userCache[uid] = uDoc.exists() ? uDoc.data() : { name: "Anonim" };
-                            
                             if (window.currentId && window.isLockedByOther && !window.isTrashView) {
                                 const liveItem = window.scriptData.find(x => x.id === window.currentId);
                                 if (liveItem && liveItem.lockedBy === uid) {
@@ -747,13 +865,9 @@
                         window.autoResizeTitle(); window.autoResizeContent(); window.updateWordCount();
                     }
                 }
-                
                 if(!window.isTrashView) window.renderList();
-            }, (error) => {
-                console.error("Error Akses Script:", error);
             });
 
-            // 3. Daftar Trash
             const qTrash = query(collection(db, "collab_trash_scripts"), where("roomId", "==", currentRoomId));
             onSnapshot(qTrash, (snapshot) => {
                 window.trashData = snapshot.docs.map(d => ({ id: d.id, ...d.data() }));
@@ -776,7 +890,7 @@
 
                 if(window.isTrashView) window.renderList();
                 else generateDynamicChannels(); 
-            }, (error) => { console.error("Error Akses Trash:", error); });
+            });
         }
 
         function checkAndCleanTrash() {
@@ -789,7 +903,7 @@
         }
 
         // ==========================================
-        // SISTEM PENGUMUMAN (ANNOUNCEMENTS)
+        // SISTEM PENGUMUMAN IDENTIK collab-ideas.html
         // ==========================================
         function listenToAnnouncements() {
             const q = query(collection(db, "collab_announcements"), where("roomId", "==", currentRoomId));
@@ -803,7 +917,16 @@
                 if(document.getElementById('announcementModal').classList.contains('active')) {
                     window.renderAnnouncementList();
                 }
-            }, (error) => console.error("Error Announcement:", error));
+                
+                if (window.currentViewAnnId && document.getElementById('annSidePanel').classList.contains('active')) {
+                    const updatedAnn = window.globalAnnouncements.find(a => a.id === window.currentViewAnnId);
+                    if (updatedAnn && document.getElementById('sidePanelDisplay').style.display !== 'none') {
+                        renderSidePanelDisplay(updatedAnn);
+                    } else if (!updatedAnn) {
+                        closeSidePanel(); 
+                    }
+                }
+            });
         }
 
         function updateAnnouncementBadge() {
@@ -820,24 +943,28 @@
                 const activeAnn = unreadAnns[0]; 
                 const roomName = window.roomData ? window.roomData.name : "Ruang Tim";
                 
-                let icon = 'ℹ️', cls = 'banner-info';
-                if (activeAnn.type === 'warning') { icon = '⚠️'; cls = 'banner-warning'; }
-                else if (activeAnn.type === 'urgent') { icon = '🚨'; cls = 'banner-urgent'; }
-                else if (activeAnn.type === 'event') { icon = '🎉'; cls = 'banner-event'; }
+                let cls = 'banner-info';
+                if (activeAnn.type === 'warning') cls = 'banner-warning'; 
+                else if (activeAnn.type === 'urgent') cls = 'banner-urgent'; 
+                else if (activeAnn.type === 'event') cls = 'banner-event'; 
                 
                 const isUpdated = activeAnn.updatedAt > (activeAnn.createdAt + 5000); 
 
                 bannerWrap.innerHTML = `
                     <div class="announcement-banner ${cls}">
-                        <div style="font-size: 24px; flex-shrink: 0;">${icon}</div>
                         <div class="banner-content">
                             <div class="banner-header">
                                 <span class="banner-room">${roomName}</span>
                                 <span>${isUpdated ? 'Pembaruan Info' : 'Pengumuman Baru'}</span>
                             </div>
-                            <div class="banner-message">${activeAnn.message}</div>
+                            <div class="banner-message" title="${activeAnn.message.replace(/"/g, '&quot;')}">${activeAnn.message}</div>
                         </div>
-                        <button class="btn-understand" onclick="markAnnouncementAsRead('${activeAnn.id}')">Mengerti</button>
+                        <div class="banner-actions">
+                            <button class="btn-understand" onclick="openAndMarkRead('${activeAnn.id}')">Baca</button>
+                            <button class="btn-banner-close" onclick="markAnnouncementAsRead('${activeAnn.id}')" title="Tutup">
+                                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
+                            </button>
+                        </div>
                     </div>
                 `;
             } else {
@@ -846,17 +973,19 @@
         }
 
         window.markAnnouncementAsRead = async (annId) => {
-            try {
-                await updateDoc(doc(db, "collab_announcements", annId), {
-                    readBy: arrayUnion(currentUserUid)
-                });
-            } catch(e) { console.error("Gagal menyembunyikan banner:", e); }
+            try { await updateDoc(doc(db, "collab_announcements", annId), { readBy: arrayUnion(currentUserUid) }); } 
+            catch(e) { console.error("Gagal update status baca:", e); }
+        };
+
+        window.openAndMarkRead = async (annId) => {
+            await markAnnouncementAsRead(annId);
+            window.openAnnouncementDetail(annId);
         };
 
         window.openAnnouncementModal = () => {
             const isOwner = window.roomData && window.roomData.ownerId === currentUserUid;
-            document.getElementById('btnCreateAnn').style.display = isOwner ? 'block' : 'none';
-            document.getElementById('annSubtitle').innerText = isOwner ? "Kelola informasi dan instruksi untuk anggota tim Anda." : "Riwayat pesan penting dari Admin ruang ini.";
+            document.getElementById('btnCreateAnn').style.display = isOwner ? 'flex' : 'none';
+            document.getElementById('annSubtitle').innerText = isOwner ? "Kelola instruksi dan arsip penting untuk tim Anda." : "Riwayat pesan penting dari Admin ruang.";
             
             document.getElementById('announcementModal').classList.add('active');
             window.renderAnnouncementList();
@@ -867,7 +996,6 @@
         window.renderAnnouncementList = () => {
             const container = document.getElementById('announcementListContainer');
             const isOwner = window.roomData && window.roomData.ownerId === currentUserUid;
-            
             let anns = [...window.globalAnnouncements];
             anns.sort((a, b) => b.updatedAt - a.updatedAt); 
 
@@ -880,77 +1008,58 @@
 
             container.innerHTML = anns.map(ann => {
                 const isUnread = !ann.readBy.includes(currentUserUid);
-                let labelType = "Info", typeCls = "info";
-                if (ann.type === 'warning') { labelType = "Peringatan"; typeCls = "warning"; }
-                else if (ann.type === 'urgent') { labelType = "Mendesak"; typeCls = "urgent"; }
-                else if (ann.type === 'event') { labelType = "Acara"; typeCls = "event"; }
+                let labelType = "Info", typeCls = "info", iconType = "🔵";
+                if (ann.type === 'warning') { labelType = "Peringatan"; typeCls = "warning"; iconType = "🟡"; }
+                else if (ann.type === 'urgent') { labelType = "Mendesak"; typeCls = "urgent"; iconType = "🔴"; }
+                else if (ann.type === 'event') { labelType = "Acara"; typeCls = "event"; iconType = "🎉"; }
 
                 const totalTarget = Math.max(0, ann.targetUids.length - 1); 
                 const totalRead = Math.max(0, ann.readBy.length - 1);
-                const adminViewsHtml = isOwner ? `<span style="color: var(--primary);">👁️ ${totalRead}/${totalTarget} Dibaca</span>` : ``;
                 
-                const adminActionsHtml = isOwner ? `
-                    <button class="btn-icon admin" onclick="openCreateAnnouncementForm('${ann.id}')" title="Edit Pengumuman"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M12 20h9"></path><path d="M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4L16.5 3.5z"></path></svg></button>
-                    <button class="btn-icon kick" onclick="deleteAnnouncement('${ann.id}')" title="Tarik / Hapus Permanen"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg></button>
-                ` : ``;
-
+                const adminViewsHtml = isOwner ? `<div class="ann-admin-indicator">${svgEye} ${totalRead}/${totalTarget}</div>` : ``;
+                
                 return `
-                <div class="announcement-item ${isUnread ? 'unread' : ''}">
+                <div class="announcement-item ${isUnread ? 'unread' : ''}" onclick="openAnnouncementDetail('${ann.id}')">
                     <div class="ann-header">
-                        <span class="ann-type ${typeCls}">${labelType}</span>
+                        <span class="ann-type ${typeCls}">${iconType} ${labelType}</span>
                         <span>${formatDate(ann.updatedAt)}</span>
                     </div>
-                    <div class="ann-msg">${ann.message}</div>
+                    <div class="ann-msg-clamp">${ann.message}</div>
                     <div class="ann-meta">
                         ${adminViewsHtml}
-                        <div class="ann-actions">${adminActionsHtml}</div>
                     </div>
                 </div>`;
             }).join('');
         };
 
-        window.openCreateAnnouncementForm = (editId = null) => {
-            window.currentEditAnnId = editId;
-            document.getElementById('formAnnTitle').innerText = editId ? "Edit Pengumuman" : "Buat Pengumuman Baru";
-            
-            if (editId) {
-                const ann = window.globalAnnouncements.find(a => a.id === editId);
-                document.getElementById('annMessageInput').value = ann.message;
-                document.getElementById('annTypeInput').value = ann.type;
-                window.renderTargetCheckboxes(ann.targetUids);
-            } else {
-                document.getElementById('annMessageInput').value = "";
-                document.getElementById('annTypeInput').value = "info";
-                window.renderTargetCheckboxes([]);
-            }
-            
-            document.getElementById('formAnnouncementModal').classList.add('active');
+        window.updateCharCount = (textarea, counterId) => {
+            const len = textarea.value.length;
+            const counterEl = document.getElementById(counterId);
+            counterEl.innerText = `${len} / 3000`;
+            if (len >= 2900) counterEl.classList.add('limit');
+            else counterEl.classList.remove('limit');
         };
 
-        window.closeCreateAnnouncementForm = () => {
-            window.currentEditAnnId = null;
-            document.getElementById('formAnnouncementModal').classList.remove('active');
-        };
-
-        window.renderTargetCheckboxes = (preselectedUids = []) => {
-            const container = document.getElementById('annTargetList');
-            if(!window.roomData) return;
+        window.renderTargetCheckboxes = (containerId, preselectedUids = []) => {
+            const container = document.getElementById(containerId);
+            if(!window.roomData || !container) return;
 
             const targets = window.roomData.members.filter(uid => uid !== currentUserUid);
+            const masterCbId = containerId === 'annTargetListCreate' ? 'checkAllTargetsCreate' : 'checkAllTargetsInline';
+            const masterCb = document.getElementById(masterCbId);
             
             if (targets.length === 0) {
                 container.innerHTML = `<div style="text-align: center; color: var(--text-muted); font-size: 12px; padding: 10px;">Anda adalah satu-satunya anggota di ruang ini.</div>`;
-                document.getElementById('checkAllTargets').disabled = true;
-                return;
+                masterCb.disabled = true; return;
             }
             
-            document.getElementById('checkAllTargets').disabled = false;
-            document.getElementById('checkAllTargets').checked = false; 
+            masterCb.disabled = false; masterCb.checked = false; 
+            const chkClass = `chk-${containerId}`;
 
             container.innerHTML = targets.map(uid => {
                 const user = window.userCache[uid] || { name: "Memuat..." };
                 const displayName = user.name || user.displayName || "Anonim";
-                const isChecked = window.currentEditAnnId ? preselectedUids.includes(uid) : true;
+                const isChecked = preselectedUids.length > 0 ? preselectedUids.includes(uid) : true;
                 
                 return `
                 <label class="target-member-item">
@@ -959,31 +1068,37 @@
                         <div class="target-name">${displayName}</div>
                     </div>
                     <label style="cursor: pointer;">
-                        <input type="checkbox" class="ann-target-checkbox" value="${uid}" style="display:none;" ${isChecked ? 'checked' : ''}>
+                        <input type="checkbox" class="ann-target-checkbox ${chkClass}" value="${uid}" style="display:none;" ${isChecked ? 'checked' : ''} onchange="evaluateSelectAllState('${containerId}', '${masterCbId}', '${chkClass}')">
                         <div class="checkbox-custom"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="4"><polyline points="20 6 9 17 4 12"></polyline></svg></div>
                     </label>
                 </label>`;
             }).join('');
             
-            window.evaluateSelectAllState();
+            window.evaluateSelectAllState(containerId, masterCbId, chkClass);
         };
 
-        window.toggleSelectAllTargets = (masterCheckbox) => {
-            const checkboxes = document.querySelectorAll('.ann-target-checkbox');
+        window.toggleSelectAllTargets = (masterCheckbox, containerId) => {
+            const chkClass = `chk-${containerId}`;
+            const checkboxes = document.querySelectorAll(`.${chkClass}`);
             checkboxes.forEach(cb => cb.checked = masterCheckbox.checked);
         };
         
-        window.evaluateSelectAllState = () => {
-            const checkboxes = document.querySelectorAll('.ann-target-checkbox');
-            const master = document.getElementById('checkAllTargets');
+        window.evaluateSelectAllState = (containerId, masterCbId, chkClass) => {
+            const checkboxes = document.querySelectorAll(`.${chkClass}`);
+            const master = document.getElementById(masterCbId);
             if(checkboxes.length === 0) return;
-            const allChecked = Array.from(checkboxes).every(cb => cb.checked);
-            master.checked = allChecked;
+            master.checked = Array.from(checkboxes).every(cb => cb.checked);
         };
 
-        document.getElementById('annTargetList').addEventListener('change', function(e) {
-            if(e.target.classList.contains('ann-target-checkbox')) window.evaluateSelectAllState();
-        });
+        window.openCreateAnnouncementForm = () => {
+            document.getElementById('annMessageInput').value = "";
+            document.getElementById('annTypeInput').value = "info";
+            updateCharCount(document.getElementById('annMessageInput'), 'createCharCount');
+            window.renderTargetCheckboxes('annTargetListCreate', []);
+            document.getElementById('formAnnouncementModal').classList.add('active');
+        };
+        
+        window.closeCreateAnnouncementForm = () => document.getElementById('formAnnouncementModal').classList.remove('active');
 
         window.saveAnnouncement = async () => {
             const msg = document.getElementById('annMessageInput').value.trim();
@@ -991,47 +1106,135 @@
             
             if (!msg) return alert("Pesan pengumuman tidak boleh kosong!");
             
-            const checkboxes = document.querySelectorAll('.ann-target-checkbox:checked');
+            const checkboxes = document.querySelectorAll('.chk-annTargetListCreate:checked');
             let targetUids = Array.from(checkboxes).map(cb => cb.value);
             
-            if (targetUids.length === 0 && window.roomData.members.length > 1) {
-                return alert("Pilih minimal satu anggota untuk menerima pengumuman ini.");
-            }
+            if (targetUids.length === 0 && window.roomData.members.length > 1) { return alert("Pilih minimal satu anggota target."); }
 
-            targetUids.push(currentUserUid); 
+            targetUids.push(currentUserUid);
             const now = Date.now();
+            const newId = "cann_" + now + Math.random().toString(36).substr(2, 5);
             const payload = {
-                roomId: currentRoomId,
-                message: msg,
-                type: type,
-                targetUids: targetUids,
-                readBy: [currentUserUid], 
-                updatedAt: now
+                roomId: currentRoomId, message: msg, type: type, targetUids: targetUids,
+                readBy: [currentUserUid], updatedAt: now, createdAt: now, createdBy: currentUserUid
             };
 
             try {
-                if (window.currentEditAnnId) {
-                    await updateDoc(doc(db, "collab_announcements", window.currentEditAnnId), payload);
-                } else {
-                    payload.createdAt = now;
-                    payload.createdBy = currentUserUid;
-                    const newId = "cann_" + now + Math.random().toString(36).substr(2, 5);
-                    await setDoc(doc(db, "collab_announcements", newId), payload);
-                }
+                await setDoc(doc(db, "collab_announcements", newId), payload);
                 closeCreateAnnouncementForm();
-            } catch(e) {
-                alert("Gagal menyimpan pengumuman.");
-                console.error(e);
+            } catch(e) { console.error(e); alert("Gagal mengirim pengumuman."); }
+        };
+
+        window.openAnnouncementDetail = async (annId) => {
+            const ann = window.globalAnnouncements.find(a => a.id === annId);
+            if(!ann) return;
+            
+            if(!ann.readBy.includes(currentUserUid)) await markAnnouncementAsRead(annId);
+            
+            window.currentViewAnnId = annId;
+            renderSidePanelDisplay(ann);
+            toggleInlineEditAnn(false);
+            document.getElementById('annSidePanel').classList.add('active');
+        };
+
+        window.closeSidePanel = () => {
+            document.getElementById('annSidePanel').classList.remove('active');
+            window.currentViewAnnId = null;
+        };
+
+        function renderSidePanelDisplay(ann) {
+            const isOwner = window.roomData && window.roomData.ownerId === currentUserUid;
+            const formatDate = (ms) => new Date(ms).toLocaleDateString('id-ID', { weekday: 'long', day: 'numeric', month: 'long', hour: '2-digit', minute:'2-digit' });
+            
+            let labelType = "Info", typeCls = "info", iconType = "🔵";
+            if (ann.type === 'warning') { labelType = "Peringatan"; typeCls = "warning"; iconType = "🟡"; }
+            else if (ann.type === 'urgent') { labelType = "Mendesak"; typeCls = "urgent"; iconType = "🔴"; }
+            else if (ann.type === 'event') { labelType = "Acara"; typeCls = "event"; iconType = "🎉"; }
+            
+            document.getElementById('spTypeBadge').className = `ann-type ${typeCls}`;
+            document.getElementById('spTypeBadge').innerHTML = `${iconType} ${labelType}`;
+            document.getElementById('spDate').innerText = formatDate(ann.updatedAt);
+            document.getElementById('spMessage').innerText = ann.message;
+            
+            if (isOwner) {
+                const totalTarget = Math.max(0, ann.targetUids.length - 1); 
+                const totalRead = Math.max(0, ann.readBy.length - 1);
+                document.getElementById('spViews').innerHTML = `${svgEye} Dilihat oleh ${totalRead} dari ${totalTarget} anggota`;
+                document.getElementById('spViews').style.display = 'flex';
+                document.getElementById('spAdminActions').style.display = 'flex';
+            } else {
+                document.getElementById('spViews').style.display = 'none';
+                document.getElementById('spAdminActions').style.display = 'none';
+            }
+        }
+
+        window.toggleInlineEditAnn = (isEdit) => {
+            if(isEdit) {
+                const ann = window.globalAnnouncements.find(a => a.id === window.currentViewAnnId);
+                if(!ann) return;
+                
+                document.getElementById('spHeaderTitle').innerText = "Edit Pengumuman";
+                const txtInput = document.getElementById('inlineAnnMessageInput');
+                txtInput.value = ann.message;
+                updateCharCount(txtInput, 'inlineCharCount');
+                document.getElementById('inlineAnnTypeInput').value = ann.type;
+                window.renderTargetCheckboxes('annTargetListInline', ann.targetUids);
+                
+                document.getElementById('sidePanelDisplay').style.display = 'none';
+                document.getElementById('sidePanelEdit').style.display = 'flex';
+                document.getElementById('sidePanelEditFooter').style.display = 'block';
+            } else {
+                document.getElementById('spHeaderTitle').innerText = "Detail Pengumuman";
+                document.getElementById('sidePanelDisplay').style.display = 'flex';
+                document.getElementById('sidePanelEdit').style.display = 'none';
+                document.getElementById('sidePanelEditFooter').style.display = 'none';
             }
         };
 
-        window.deleteAnnouncement = async (annId) => {
+        function getPreselectedUidsForInline() {
+            const checkboxes = document.querySelectorAll('.chk-annTargetListInline');
+            return Array.from(checkboxes).filter(cb => cb.checked).map(cb => cb.value);
+        }
+
+        window.saveInlineEditAnn = async () => {
+            const annId = window.currentViewAnnId;
+            if(!annId) return;
+            
+            const msg = document.getElementById('inlineAnnMessageInput').value.trim();
+            const type = document.getElementById('inlineAnnTypeInput').value;
+            
+            if (!msg) return alert("Pesan pengumuman tidak boleh kosong!");
+            
+            const checkboxes = document.querySelectorAll('.chk-annTargetListInline:checked');
+            let targetUids = Array.from(checkboxes).map(cb => cb.value);
+            
+            if (targetUids.length === 0 && window.roomData.members.length > 1) { return alert("Pilih minimal satu anggota target."); }
+
+            targetUids.push(currentUserUid);
+            const payload = {
+                message: msg, type: type, targetUids: targetUids,
+                readBy: [currentUserUid],
+                updatedAt: Date.now()
+            };
+
+            try {
+                await updateDoc(doc(db, "collab_announcements", annId), payload);
+                toggleInlineEditAnn(false);
+            } catch(e) { console.error(e); alert("Gagal menyimpan pembaruan."); }
+        };
+
+        window.deleteAnnouncementFromSp = async () => {
+            const annId = window.currentViewAnnId;
+            if(!annId) return;
             if(!confirm("Tarik dan hapus permanen pengumuman ini dari semua layar anggota?")) return;
-            try { await deleteDoc(doc(db, "collab_announcements", annId)); } catch(e) { alert("Gagal menghapus."); }
+            try { 
+                await deleteDoc(doc(db, "collab_announcements", annId)); 
+                closeSidePanel(); 
+            } catch(e) { alert("Gagal menghapus."); }
         };
 
         // ==========================================
-        // LOGIKA TRASH (SOFT DELETE, RESTORE, DESTROY)
+        // LOGIKA TRASH (SOFT DELETE, RESTORE)
         // ==========================================
         window.toggleTrashView = function() {
             window.isTrashView = !window.isTrashView;
@@ -1039,20 +1242,20 @@
             
             const heroCard = document.getElementById('heroCard');
             const uiInfo = document.getElementById('uiRoomInfo');
-            const uiStats = document.getElementById('uiStats');
+            const uiStatsWrap = document.getElementById('uiStatsWrap');
             const fab = document.getElementById('fabAdd');
             const btnMega = document.getElementById('btnAnnouncement');
             
             if(window.isTrashView) {
                 heroCard.classList.add('trash-mode');
                 uiInfo.innerHTML = `🗑️ Menampilkan naskah yang dihapus. Lenyap otomatis dalam 30 hari.`;
-                uiStats.style.display = 'none';
+                uiStatsWrap.style.display = 'none';
                 btnMega.style.display = 'none';
                 fab.classList.add('hidden');
             } else {
                 heroCard.classList.remove('trash-mode');
                 uiInfo.innerHTML = `<span class="live-indicator"></span> Live • ${window.roomData ? window.roomData.members.length : 0} Anggota`;
-                uiStats.style.display = 'flex';
+                uiStatsWrap.style.display = 'block';
                 btnMega.style.display = 'flex';
                 fab.classList.remove('hidden');
             }
@@ -1123,14 +1326,11 @@
         window.hardDeleteScript = async function(trashId, event) {
             if(event) event.stopPropagation();
             if(!confirm("Hapus PERMANEN naskah ini? Tindakan ini tidak bisa dibatalkan bagi seluruh anggota tim.")) return;
-            
-            try {
-                await deleteDoc(doc(db, "collab_trash_scripts", trashId));
-            } catch(e) { console.error(e); alert("Gagal menghapus permanen."); }
+            try { await deleteDoc(doc(db, "collab_trash_scripts", trashId)); } catch(e) { console.error(e); alert("Gagal menghapus permanen."); }
         }
 
         // ==========================================
-        // LOGIKA LOCKING & EDITOR
+        // LOGIKA EDITOR & LOCKING
         // ==========================================
         window.openPopup = async function(id = null) {
             if(window.isTrashView) return; 
@@ -1154,7 +1354,6 @@
                     
                     if (item.lockedBy && item.lockedBy !== currentUserUid) {
                         window.isLockedByOther = true;
-                        
                         const lockedByNameSync = (item.lockedBy && window.userCache[item.lockedBy]) ? (window.userCache[item.lockedBy].name || window.userCache[item.lockedBy].displayName || "Seseorang") : (item.lockedByName || "Seseorang");
                         
                         lockBanner.innerHTML = `🔒 Sedang diedit oleh ${lockedByNameSync.split(' ')[0]}`;
@@ -1195,7 +1394,6 @@
 
         window.closePopup = async function() {
             clearTimeout(autoSaveTimeout); 
-            
             if (!window.isLockedByOther) {
                 const title = document.getElementById('inputTitle').value.trim();
                 const content = document.getElementById('inputContent').value.trim();
@@ -1242,17 +1440,11 @@
                 lockedByName: releaseLock ? null : currentUserData.name
             };
 
-            if (window.isRestored) {
-                payload.isRestored = true;
-            } else {
-                payload.isRestored = deleteField();
-            }
+            if (window.isRestored) payload.isRestored = true;
+            else payload.isRestored = deleteField();
 
-            try { 
-                await setDoc(doc(db, "collab_scripts", docId), payload, { merge: true }); 
-            } catch(e) { 
-                console.error("Gagal save:", e); 
-            }
+            try { await setDoc(doc(db, "collab_scripts", docId), payload, { merge: true }); } 
+            catch(e) { console.error("Gagal save:", e); }
         }
 
         window.triggerAutoSave = function() {
@@ -1276,16 +1468,14 @@
             if(window.isLockedByOther) return; 
             clearTimeout(autoSaveTimeout); 
             window.isRestored = false; 
-            
             await window.performSave(status, false, true); 
-            
             document.getElementById('editorPopup').classList.remove('active'); 
             window.currentId = null;
             window.isLockedByOther = false;
         }
 
         // ==========================================
-        // UI & TOOLS 
+        // UI, TEXT TOOLS, FILTER & PAGINATION
         // ==========================================
         window.openSearch = function(event) { if (event) event.stopPropagation(); document.getElementById('filterWrap').classList.add('searching'); document.getElementById('searchContainer').style.width = '100%'; document.getElementById('searchContainer').classList.add('expanded'); setTimeout(() => { document.getElementById('searchInput').focus(); }, 300); }
         window.closeSearch = function(event) { if (event) event.stopPropagation(); document.getElementById('searchContainer').style.width = '38px'; document.getElementById('searchContainer').classList.remove('expanded'); document.getElementById('filterWrap').classList.remove('searching'); const input = document.getElementById('searchInput'); if (input.value !== '') { input.value = ''; window.currentPage = 1; window.renderList(); } }
@@ -1438,7 +1628,7 @@
                     let restoredBadge = item.isRestored ? `<div class="badge restored">♻️ Dipulihkan</div>` : '';
 
                     html += `
-                    <div class="card ${item.pinned ? 'pinned' : ''} ${item.status === 'done' ? 'completed' : ''}" onclick="openPopup('${item.id}')">
+                    <div class="card ${item.pinned ? 'pinned' : ''} ${item.status === 'done' ? 'completed' : ''}" onclick="openPopup('${item.id}')" tabindex="0">
                         <div class="card-header">
                             <div class="card-title">${item.title}</div>
                             ${item.pinned ? '<div title="Disematkan" style="font-size:16px; flex-shrink:0;">📌</div>' : ''}
@@ -1467,7 +1657,7 @@
                     let authorBadge = `<div class="badge" style="background:transparent; border:1px solid var(--border); color:var(--text-muted);">👤 Asli: ${originalCreatorNameSync}</div>`;
 
                     html += `
-                    <div class="card trash-card">
+                    <div class="card trash-card" tabindex="0">
                         <div class="card-header" style="align-items: flex-start;">
                             <div style="display:flex; flex-direction:column; gap:8px;">
                                 <div class="card-title">${item.title}</div>
