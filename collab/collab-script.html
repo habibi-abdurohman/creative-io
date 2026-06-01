@@ -64,7 +64,8 @@
            HEADER RUANG (HERO CARD)
         ========================================================= */
         .hero-card { 
-            background: var(--primary-grad); border-radius: var(--radius-card); padding: 28px 32px; color: white; 
+            background: var(--primary-grad); border-radius: var(--radius-card); 
+            padding: 28px 32px 52px 32px; color: white; /* Penambahan bottom padding untuk overlap */
             position: relative; overflow: hidden; margin-bottom: 24px; box-shadow: 0 10px 30px rgba(37, 99, 235, 0.2); 
             transition: background 0.3s ease, box-shadow 0.3s ease; 
             display: flex; flex-direction: column; gap: 20px;
@@ -72,8 +73,9 @@
         .hero-card.trash-mode { background: #475569; box-shadow: 0 10px 30px rgba(71, 85, 105, 0.2); }
         .hero-card::after { content: ""; position: absolute; width: 250px; height: 250px; background: rgba(255, 255, 255, 0.08); border-radius: 50%; top: -80px; right: -80px; pointer-events: none; }
         
-        .hero-top-wrap { display: flex; justify-content: space-between; align-items: center; width: 100%; gap: 16px; position: relative; z-index: 1;}
-        .hero-header-left { display: flex; align-items: center; gap: 16px; flex: 1; min-width: 200px; }
+        .hero-top-wrap { display: flex; justify-content: space-between; align-items: flex-start; width: 100%; gap: 16px; position: relative; z-index: 1;}
+        .hero-header-left { display: flex; align-items: flex-start; gap: 16px; flex: 1; min-width: 0; }
+        .hero-right-actions { display: flex; align-items: center; gap: 12px; flex-shrink: 0; }
         
         .btn-back, .btn-mega { 
             width: 44px; height: 44px; border-radius: 14px; background: rgba(255,255,255,0.15); backdrop-filter: blur(8px); -webkit-backdrop-filter: blur(8px);
@@ -89,17 +91,21 @@
         .btn-mega { position: relative; }
         .btn-mega .unread-dot { position: absolute; top: -3px; right: -3px; width: 12px; height: 12px; background: var(--danger); border-radius: 50%; border: 2px solid rgba(255,255,255,0.8); animation: pulseAlert 2s infinite; display: none; }
         
-        .hero-text { display: flex; flex-direction: column; justify-content: center; min-width: 0; }
-        .hero-title { font-size: 24px; font-weight: 900; letter-spacing: -0.5px; line-height: 1.2; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; margin-bottom: 6px; }
-        .hero-desc { font-size: 13px; line-height: 1.4; opacity: 0.9; display: flex; align-items: center; gap: 8px; font-weight: 600; }
+        .hero-text { display: flex; flex-direction: column; justify-content: center; min-width: 0; margin-top: 4px; }
+        .hero-title { font-size: 26px; font-weight: 900; letter-spacing: -0.5px; line-height: 1.2; overflow: hidden; text-overflow: ellipsis; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; margin-bottom: 6px; }
+        .hero-desc { font-size: 13px; line-height: 1.4; opacity: 0.9; display: flex; align-items: center; gap: 8px; font-weight: 600; display: none; }
+        
+        /* AVATAR STACK UI */
+        .members-info { display: flex; align-items: center; gap: 10px; background: rgba(255, 255, 255, 0.15); padding: 6px 12px 6px 8px; border-radius: 20px; backdrop-filter: blur(8px); -webkit-backdrop-filter: blur(8px); border: 1px solid rgba(255, 255, 255, 0.2); cursor: pointer; transition: 0.2s;}
+        .members-info:hover { background: rgba(255, 255, 255, 0.25); }
+        body.dark .hero-card.trash-mode .members-info { background: rgba(15, 23, 42, 0.4); border-color: rgba(255,255,255,0.1); }
+        .avatar-group { display: flex; align-items: center; }
+        .avatar-circle { width: 30px; height: 30px; border-radius: 50%; background: var(--card-solid); color: var(--primary); display: flex; align-items: center; justify-content: center; font-size: 12px; font-weight: 800; border: 2px solid #3b82f6; margin-left: -10px; position: relative; z-index: 1; text-transform: uppercase; box-shadow: 0 2px 5px rgba(0,0,0,0.1);}
+        .avatar-circle:first-child { margin-left: 0; }
+        .avatar-circle.more { background: rgba(255, 255, 255, 0.2); color: white; border-color: rgba(255, 255, 255, 0.5); backdrop-filter: blur(4px);}
+        .member-text-wrap { display: flex; align-items: center; gap: 6px; font-size: 12px; font-weight: 700; color: white; white-space: nowrap; }
         
         .live-indicator { width: 8px; height: 8px; background: #10b981; border-radius: 50%; display: inline-block; animation: pulse 2s infinite; flex-shrink: 0; }
-        
-        .hero-stats-wrap { width: 100%; border-top: 1px dashed rgba(255,255,255,0.25); padding-top: 20px; position: relative; z-index: 1;}
-        .hero-stats { display: flex; gap: 10px; overflow-x: auto; scrollbar-width: none; max-width: 100%; padding-bottom: 4px; }
-        .hero-stats::-webkit-scrollbar { display: none; }
-        .stat-pill { display: flex; align-items: center; gap: 8px; background: rgba(255, 255, 255, 0.15); backdrop-filter: blur(10px); -webkit-backdrop-filter: blur(10px); border: 1px solid rgba(255, 255, 255, 0.2); padding: 8px 16px; border-radius: 20px; font-size: 12px; font-weight: 700; white-space: nowrap; }
-        .stat-pill span { font-size: 16px; font-weight: 900; }
 
         @keyframes pulse { 0% { transform: scale(0.95); box-shadow: 0 0 0 0 rgba(16, 185, 129, 0.7); } 70% { transform: scale(1); box-shadow: 0 0 0 6px rgba(16, 185, 129, 0); } 100% { transform: scale(0.95); box-shadow: 0 0 0 0 rgba(16, 185, 129, 0); } }
         @keyframes pulseAlert { 0% { transform: scale(0.95); box-shadow: 0 0 0 0 rgba(239, 68, 68, 0.7); } 70% { transform: scale(1); box-shadow: 0 0 0 6px rgba(239, 68, 68, 0); } 100% { transform: scale(0.95); box-shadow: 0 0 0 0 rgba(239, 68, 68, 0); } }
@@ -127,10 +133,11 @@
         @keyframes slideDown { 0% { opacity: 0; transform: translateY(-20px); } 100% { opacity: 1; transform: translateY(0); } }
         
         /* =========================================================
-           UI SEARCH BAR DAN FILTER
+           UI SEARCH BAR DAN FILTER (PULL-UP EFFECT)
         ========================================================= */
         .sticky-tools { 
-            position: sticky; top: 76px; z-index: 50; padding: 10px 16px; margin: 16px 0 24px 0; 
+            position: sticky; top: 76px; z-index: 50; padding: 10px 16px; 
+            margin: -40px 0 24px 0; /* Efek Tumpang Tindih / Pull-up */
             background: var(--sticky-bg); backdrop-filter: blur(16px); -webkit-backdrop-filter: blur(16px); 
             border: 1px solid var(--border); border-radius: 20px; 
             box-shadow: 0 12px 32px rgba(0, 0, 0, 0.05); transition: box-shadow 0.3s ease;
@@ -160,7 +167,7 @@
         .filters-wrapper { display: flex; align-items: center; gap: 8px; max-width: 2000px; opacity: 1; overflow: hidden; flex-shrink: 0; transition: max-width 0.3s cubic-bezier(0.4, 0, 0.2, 1), opacity 0.2s ease; }
         .sticky-tools-inner.searching .filters-wrapper { max-width: 0; opacity: 0; transition: max-width 0.3s cubic-bezier(0.4, 0, 0.2, 1), opacity 0.1s ease; }
 
-        .filter-btn { flex-shrink: 0; padding: 8px 14px; border-radius: 10px; background: var(--card-solid); border: 1px solid var(--border); font-size: 12px; font-weight: 700; color: var(--text-muted); cursor: pointer; transition: 0.2s; white-space: nowrap; outline: none; }
+        .filter-btn { flex-shrink: 0; padding: 8px 14px; border-radius: 10px; background: var(--card-solid); border: 1px solid var(--border); font-size: 13px; font-weight: 700; color: var(--text-muted); cursor: pointer; transition: 0.2s; white-space: nowrap; outline: none; }
         .filter-btn.active { background: var(--primary-soft); border-color: var(--primary); color: var(--primary); }
         .filter-btn.trash-btn { color: var(--danger); border-color: var(--danger-soft); background: var(--danger-soft); }
         .filter-btn.trash-btn.active { background: var(--danger); color: white; border-color: var(--danger); }
@@ -402,10 +409,10 @@
         @media(max-width: 1024px) { .list-container { column-count: 2; } }
         @media(max-width: 600px) { 
             body { padding-top: 76px; }
-            .hero-card { padding: 24px 20px; gap: 16px;} 
-            .hero-top-wrap { flex-direction: row; flex-wrap: nowrap; align-items: center; }
+            .hero-card { padding: 24px 20px 48px 20px; gap: 16px;} 
+            .hero-top-wrap { flex-direction: row; flex-wrap: nowrap; align-items: flex-start; }
             .hero-header-left { min-width: 0; }
-            .hero-title { font-size: 20px; } 
+            .hero-title { font-size: 22px; } 
             
             .editor-footer { flex-direction: column; gap: 16px; align-items: flex-start; padding: 16px; } 
             .footer-actions { width: 100%; } 
@@ -417,6 +424,9 @@
             .editor-body { padding: 24px 16px 120px; }
             .header-left, .header-right { gap: 4px; }
             .side-panel { max-width: 100%; border-left: none; }
+        }
+        @media(max-width: 480px) {
+            .member-text-wrap span { display: none; } /* Sembunyikan teks X Anggota jika layar terlalu sempit */
         }
     </style>
 </head>
@@ -440,25 +450,26 @@
                     </a>
                     <div class="hero-text">
                         <h1 class="hero-title" id="uiRoomName">Memuat Ruang...</h1>
-                        <p class="hero-desc" id="uiRoomInfo"><span class="live-indicator"></span> Menghubungkan...</p>
+                        <p class="hero-desc" id="uiRoomInfo" style="display:none;"></p>
                     </div>
                 </div>
-                <button class="btn-mega" id="btnAnnouncement" onclick="openAnnouncementModal()" title="Papan Pengumuman Ruang">
-                    📢 <div class="unread-dot" id="annUnreadBadge"></div>
-                </button>
-            </div>
-            
-            <div class="hero-stats-wrap" id="uiStatsWrap">
-                <div class="hero-stats" id="uiStats">
-                    <div class="stat-pill">📝 Total: <span id="statTotal">0</span></div>
-                    <div class="stat-pill">🕒 Draft: <span id="statDraft">0</span></div>
-                    <div class="stat-pill">✅ Selesai: <span id="statDone">0</span></div>
+                
+                <div class="hero-right-actions">
+                    <!-- Avatar Stack & Info Anggota -->
+                    <div class="members-info" id="uiMembersInfo" onclick="alert('Fitur daftar anggota tim lengkap bisa dikembangkan di sini.')" title="Lihat Anggota" style="display:none;">
+                        <!-- Konten Avatar Stack di-render oleh JS -->
+                    </div>
+
+                    <button class="btn-mega" id="btnAnnouncement" onclick="openAnnouncementModal()" title="Papan Pengumuman Ruang">
+                        📢 <div class="unread-dot" id="annUnreadBadge"></div>
+                    </button>
                 </div>
             </div>
         </div>
     </div>
 
-    <div class="wrapper" style="position: sticky; top: 76px; z-index: 50;">
+    <!-- Sticky Tools overlap dengan Hero Card -->
+    <div class="wrapper">
         <div class="sticky-tools">
             <div class="sticky-tools-inner" id="filterWrap">
                 <div class="search-expandable" id="searchContainer">
@@ -535,6 +546,7 @@
         </div>
     </div>
 
+    <!-- Modals (Info, Announcement) Tetap Sama -->
     <div class="modal-overlay" id="infoModal">
         <div class="modal-card" style="max-width: 360px;">
             <h3 style="text-align: center;">Informasi Script</h3>
@@ -775,6 +787,48 @@
         window.addEventListener('resize', () => { clearTimeout(window.resizeTimeout); window.resizeTimeout = setTimeout(window.updateItemsPerPage, 200); });
 
         // ==========================================
+        // RENDER AVATAR STACK
+        // ==========================================
+        window.renderAvatarStack = function() {
+            const infoEl = document.getElementById('uiMembersInfo');
+            if (!window.roomData || window.isTrashView) {
+                if(infoEl) infoEl.style.display = 'none';
+                return;
+            }
+            
+            const members = window.roomData.members || [];
+            const total = members.length;
+            if (total === 0) return;
+            
+            let avatarsHtml = '';
+            const maxDisplay = 3;
+            
+            for (let i = 0; i < Math.min(total, maxDisplay); i++) {
+                const uid = members[i];
+                const user = window.userCache[uid] || {};
+                const name = user.name || user.displayName || "A";
+                const initial = name.charAt(0).toUpperCase();
+                avatarsHtml += `<div class="avatar-circle" title="${name}">${initial}</div>`;
+            }
+            
+            if (total > maxDisplay) {
+                avatarsHtml += `<div class="avatar-circle more" title="+${total - maxDisplay} Lainnya">+${total - maxDisplay}</div>`;
+            }
+            
+            const liveDot = `<div class="live-indicator" style="box-shadow: 0 0 0 0 rgba(16, 185, 129, 0.7);"></div>`;
+            
+            const html = `
+                <div class="avatar-group">${avatarsHtml}</div>
+                <div class="member-text-wrap">${liveDot} <span>${total} Anggota</span></div>
+            `;
+            
+            if (infoEl) {
+                infoEl.innerHTML = html;
+                infoEl.style.display = 'flex';
+            }
+        };
+
+        // ==========================================
         // REALTIME LISTENER RUANG & SCRIPT
         // ==========================================
         function initRealtimeCollab() {
@@ -785,7 +839,8 @@
                 }
                 window.roomData = docSnap.data();
                 document.getElementById('uiRoomName').innerText = window.roomData.name;
-                if(!window.isTrashView) document.getElementById('uiRoomInfo').innerHTML = `<span class="live-indicator"></span> Live • ${window.roomData.members.length} Anggota`;
+                
+                if(!window.isTrashView) window.renderAvatarStack();
 
                 window.roomData.members.forEach(uid => {
                     if (!window.userListeners[uid]) {
@@ -797,7 +852,10 @@
                             if (document.getElementById('annSidePanel').classList.contains('active') && document.getElementById('sidePanelEdit').style.display !== 'none') {
                                 window.renderTargetCheckboxes('annTargetListInline', getPreselectedUidsForInline());
                             }
-                            if (!window.isTrashView) window.renderList();
+                            if (!window.isTrashView) {
+                                window.renderAvatarStack();
+                                window.renderList();
+                            }
                         });
                     }
                 });
@@ -1216,21 +1274,25 @@
             window.currentPage = 1;
             
             const heroCard = document.getElementById('heroCard');
+            const heroTitle = document.getElementById('uiRoomName');
             const uiInfo = document.getElementById('uiRoomInfo');
-            const uiStatsWrap = document.getElementById('uiStatsWrap');
             const fab = document.getElementById('fabAdd');
             const btnAnn = document.getElementById('btnAnnouncement');
+            const membersInfo = document.getElementById('uiMembersInfo');
             
             if(window.isTrashView) {
                 heroCard.classList.add('trash-mode');
-                uiInfo.innerHTML = `🗑️ Menampilkan naskah yang dihapus. Lenyap otomatis dalam 30 hari.`;
-                uiStatsWrap.style.display = 'none';
+                heroTitle.innerText = "🗑️ Tempat Sampah Tim";
+                uiInfo.innerHTML = `Menampilkan naskah yang dihapus. Lenyap otomatis dalam 30 hari.`;
+                uiInfo.style.display = 'block';
+                if(membersInfo) membersInfo.style.display = 'none';
                 btnAnn.style.display = 'none';
                 fab.classList.add('hidden');
             } else {
                 heroCard.classList.remove('trash-mode');
-                uiInfo.innerHTML = `<span class="live-indicator"></span> Live • ${window.roomData ? window.roomData.members.length : 0} Anggota`;
-                uiStatsWrap.style.display = 'block';
+                heroTitle.innerText = window.roomData ? window.roomData.name : "Memuat Ruang...";
+                uiInfo.style.display = 'none';
+                if(membersInfo) { membersInfo.style.display = 'flex'; window.renderAvatarStack(); }
                 btnAnn.style.display = 'flex';
                 fab.classList.remove('hidden');
             }
@@ -1508,17 +1570,24 @@
             let html = '';
             
             if (!window.isTrashView) {
+                const totalCount = data.length;
+                const draftCount = data.filter(x => x.status === 'draft').length;
+                const doneCount = data.filter(x => x.status === 'done').length;
                 const channels = [...new Set(data.map(item => item.channel).filter(c => c && c.trim() !== "Umum" && c.trim() !== ""))];
+                
                 html += `
-                    <button class="filter-btn ${window.currentFilter === 'all' ? 'active' : ''}" onclick="setFilter('all')">Semua</button>
-                    <button class="filter-btn ${window.currentFilter === 'draft' ? 'active' : ''}" onclick="setFilter('draft')">Draft</button>
-                    <button class="filter-btn ${window.currentFilter === 'done' ? 'active' : ''}" onclick="setFilter('done')">Selesai</button>
+                    <button class="filter-btn ${window.currentFilter === 'all' ? 'active' : ''}" onclick="setFilter('all')">Semua (${totalCount})</button>
+                    <button class="filter-btn ${window.currentFilter === 'draft' ? 'active' : ''}" onclick="setFilter('draft')">Draft (${draftCount})</button>
+                    <button class="filter-btn ${window.currentFilter === 'done' ? 'active' : ''}" onclick="setFilter('done')">Selesai (${doneCount})</button>
                     <div class="divider"></div>
                     <button class="filter-btn ${window.currentSort === 'newest' ? 'active' : ''}" onclick="setSort('newest')">🆕 Terbaru</button>
                     <button class="filter-btn ${window.currentSort === 'oldest' ? 'active' : ''}" onclick="setSort('oldest')">⏳ Terlama</button>
                     <div class="divider"></div>
                 `;
-                channels.forEach(ch => { html += `<button class="filter-btn ${window.currentFilter === ch ? 'active' : ''}" onclick="setFilter('${ch}')">📺 ${ch}</button>`; });
+                channels.forEach(ch => { 
+                    const chCount = data.filter(x => x.channel === ch).length;
+                    html += `<button class="filter-btn ${window.currentFilter === ch ? 'active' : ''}" onclick="setFilter('${ch}')">📺 ${ch} (${chCount})</button>`; 
+                });
                 html += `<div class="divider"></div>`;
             }
             
@@ -1545,10 +1614,6 @@
             generateDynamicChannels();
 
             if (!window.isTrashView) {
-                document.getElementById('statTotal').innerText = data.length;
-                document.getElementById('statDraft').innerText = data.filter(x => x.status === 'draft').length;
-                document.getElementById('statDone').innerText = data.filter(x => x.status === 'done').length;
-
                 data.sort((a, b) => {
                     if(a.pinned && !b.pinned) return -1;
                     if(!a.pinned && b.pinned) return 1;
