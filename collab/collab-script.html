@@ -61,7 +61,7 @@
         .bg-glow.two { width: 320px; height: 320px; background: rgba(96, 165, 250, 0.15); bottom: 100px; right: -100px; }
 
         /* =========================================================
-           HEADER RUANG (HERO CARD) BARU (LEBIH RINGKAS & RESPONSIF)
+           HEADER RUANG (HERO CARD)
         ========================================================= */
         .hero-card { 
             background: var(--primary-grad); border-radius: var(--radius-card); padding: 24px 32px; color: white; 
@@ -71,8 +71,7 @@
         .hero-card.trash-mode { background: #475569; box-shadow: 0 10px 30px rgba(71, 85, 105, 0.2); }
         .hero-card::after { content: ""; position: absolute; width: 250px; height: 250px; background: rgba(255, 255, 255, 0.08); border-radius: 50%; top: -80px; right: -80px; pointer-events: none; }
         
-        .hero-content-flex { display: flex; gap: 16px; align-items: center; justify-content: space-between; width: 100%; position: relative; z-index: 1;}
-        .hero-left { display: flex; gap: 16px; align-items: center; flex: 1; min-width: 0; }
+        .hero-content-flex { display: flex; flex-wrap: wrap; gap: 16px; align-items: center; width: 100%; position: relative; z-index: 1;}
         
         .btn-back, .btn-mega { 
             width: 44px; height: 44px; border-radius: 14px; background: rgba(255,255,255,0.15); backdrop-filter: blur(8px); -webkit-backdrop-filter: blur(8px);
@@ -81,6 +80,7 @@
         }
         .btn-back:hover, .btn-mega:hover { background: rgba(255,255,255,0.25); transform: translateY(-2px); }
         .btn-back:hover { transform: translateX(-2px); }
+        .btn-back { order: 1; }
         
         body.dark .hero-card.trash-mode .btn-back, body.dark .hero-card.trash-mode .btn-mega { background: rgba(15, 23, 42, 0.4); border-color: rgba(255,255,255,0.1); }
         body.dark .hero-card.trash-mode .btn-back:hover, body.dark .hero-card.trash-mode .btn-mega:hover { background: rgba(15, 23, 42, 0.6); }
@@ -89,19 +89,15 @@
         .btn-mega .unread-dot { position: absolute; top: -3px; right: -3px; width: 12px; height: 12px; background: var(--danger); border-radius: 50%; border: 2px solid rgba(255,255,255,0.8); animation: pulseAlert 2s infinite; display: none; }
         
         .hero-text { 
-            display: flex; flex-direction: column; justify-content: center; min-width: 0; cursor: pointer; 
-            padding: 8px 12px; border-radius: 14px; transition: background 0.2s; margin-left: -12px;
+            order: 2; flex: 1; min-width: 0; display: flex; align-items: center; gap: 8px; cursor: pointer; 
+            padding: 8px 12px; border-radius: 14px; transition: background 0.2s; background: transparent; margin-left: 0;
         }
         .hero-text:hover { background: rgba(255,255,255,0.15); }
         
-        .hero-title-wrap { display: flex; align-items: center; gap: 6px; margin-bottom: 4px; }
-        .hero-title { font-size: 22px; font-weight: 900; letter-spacing: -0.5px; line-height: 1.2; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
-        .hero-title-wrap svg { flex-shrink: 0; opacity: 0.8; }
-        .hero-desc { font-size: 13px; line-height: 1.4; opacity: 0.9; display: flex; align-items: center; gap: 8px; font-weight: 600; }
+        .hero-title { font-size: 22px; font-weight: 900; letter-spacing: -0.5px; line-height: 1.2; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; margin-bottom: 0; }
+        .hero-text svg { flex-shrink: 0; opacity: 0.8; }
         
-        .live-indicator { width: 8px; height: 8px; background: #10b981; border-radius: 50%; display: inline-block; animation: pulse 2s infinite; flex-shrink: 0; }
-        
-        .hero-right { display: flex; gap: 12px; align-items: center; flex-shrink: 0; }
+        .hero-right { order: 3; display: flex; gap: 12px; align-items: center; flex-shrink: 0; }
         
         /* FACEPILE CSS */
         .facepile-wrap { display: flex; align-items: center; cursor: pointer; transition: transform 0.2s; padding: 4px; border-radius: 20px;}
@@ -111,7 +107,6 @@
         .face-item.more { background: rgba(255,255,255,0.2); color: white; border-color: rgba(255,255,255,0.4); backdrop-filter: blur(4px); -webkit-backdrop-filter: blur(4px); }
         .face-online-dot { position: absolute; bottom: 0; right: 0; width: 10px; height: 10px; background: #10b981; border: 2px solid #3b82f6; border-radius: 50%; }
 
-        @keyframes pulse { 0% { transform: scale(0.95); box-shadow: 0 0 0 0 rgba(16, 185, 129, 0.7); } 70% { transform: scale(1); box-shadow: 0 0 0 6px rgba(16, 185, 129, 0); } 100% { transform: scale(0.95); box-shadow: 0 0 0 0 rgba(16, 185, 129, 0); } }
         @keyframes pulseAlert { 0% { transform: scale(0.95); box-shadow: 0 0 0 0 rgba(239, 68, 68, 0.7); } 70% { transform: scale(1); box-shadow: 0 0 0 6px rgba(239, 68, 68, 0); } 100% { transform: scale(0.95); box-shadow: 0 0 0 0 rgba(239, 68, 68, 0); } }
 
         /* =========================================================
@@ -172,22 +167,41 @@
 
         .filter-btn { display:flex; align-items:center; flex-shrink: 0; padding: 8px 14px; border-radius: 10px; background: var(--card-solid); border: 1px solid var(--border); font-size: 12px; font-weight: 700; color: var(--text-muted); cursor: pointer; transition: 0.2s; white-space: nowrap; outline: none; }
         .filter-btn.active { background: var(--primary-soft); border-color: var(--primary); color: var(--primary); }
+        
+        /* FIX BADGE HOVER CONTRAST */
+        .filter-badge { background: var(--border); color: var(--text-muted); padding: 2px 6px; border-radius: 20px; font-size: 10px; margin-left: 6px; font-weight: 800; transition: all 0.2s; }
+        body.dark .filter-badge { background: #334155; color: #94a3b8; }
+        .filter-btn:hover:not(.active) .filter-badge { background: var(--text-muted); color: var(--card-solid); }
+        body.dark .filter-btn:hover:not(.active) .filter-badge { background: #94a3b8; color: #1e293b; }
+        
+        .filter-btn.active .filter-badge { background: currentColor; color: var(--card-solid); opacity: 0.9; }
+        
         .filter-btn.trash-btn { color: var(--danger); border-color: var(--danger-soft); background: var(--card-solid); }
+        .filter-btn.trash-btn .filter-badge { background: rgba(239, 68, 68, 0.1); color: var(--danger); }
         .filter-btn.trash-btn.active { background: var(--danger); color: white; border-color: var(--danger); }
+        .filter-btn.trash-btn.active .filter-badge { background: var(--card-solid); color: var(--danger); }
         
         .divider { flex-shrink: 0; width: 1px; height: 18px; background: var(--border); margin: 0 2px; }
 
         /* =========================================================
-           UI KARTU & PAGINATION
+           UI KARTU (GRID, BUKAN MASONRY) & PAGINATION
         ========================================================= */
-        .list-container { column-count: 3; column-gap: 16px; margin-top: 10px; transition: opacity 0.2s; }
+        .list-container { 
+            display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px; 
+            margin-top: 10px; transition: opacity 0.2s; 
+        }
         
-        .empty-state { column-span: all; text-align: center; padding: 60px 20px; background: var(--card-glass); border: 1px dashed var(--border); border-radius: var(--radius-card); cursor: pointer; transition: 0.2s; }
+        .empty-state { grid-column: 1 / -1; text-align: center; padding: 60px 20px; background: var(--card-glass); border: 1px dashed var(--border); border-radius: var(--radius-card); cursor: pointer; transition: 0.2s; }
         .empty-state:hover { background: var(--card-tint); }
         .empty-state-icon { font-size: 42px; margin-bottom: 12px; opacity: 0.8; }
         .empty-state-text { font-size: 13px; color: var(--text-muted); line-height: 1.6; }
         
-        .card { break-inside: avoid; margin-bottom: 16px; background: var(--card-glass); backdrop-filter: blur(12px); border: 1px solid var(--border); border-radius: 20px; padding: 20px; box-shadow: var(--shadow-flat); transition: transform 0.2s, border-color 0.2s; position: relative; cursor: pointer; outline: none !important;}
+        .card { 
+            display: flex; flex-direction: column; height: 100%;
+            background: var(--card-glass); backdrop-filter: blur(12px); border: 1px solid var(--border); 
+            border-radius: 20px; padding: 20px; box-shadow: var(--shadow-flat); 
+            transition: transform 0.2s, border-color 0.2s; position: relative; cursor: pointer; outline: none !important;
+        }
         .card:hover { transform: translateY(-2px); border-color: #cbd5e1; }
         .card.pinned { border-left: 4px solid var(--warning); }
         .card.completed { opacity: 0.6; }
@@ -196,9 +210,19 @@
         .card.trash-card:hover { transform: none; border-color: var(--danger); }
         
         .card-header { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 8px; gap: 12px; }
-        .card-title { font-size: 16px; font-weight: 800; line-height: 1.4; color: var(--text-main); word-break: break-word; }
-        .card-preview { font-size: 13px; line-height: 1.6; color: var(--text-muted); display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; margin-bottom: 16px; word-break: break-word; }
-        .card-bottom { display: flex; justify-content: space-between; align-items: center; gap: 8px; flex-wrap: wrap;}
+        
+        /* POTONG JUDUL 1 BARIS */
+        .card-title { 
+            font-size: 16px; font-weight: 800; line-height: 1.4; color: var(--text-main); word-break: break-all;
+            display: -webkit-box; -webkit-line-clamp: 1; -webkit-box-orient: vertical; overflow: hidden; 
+        }
+        /* POTONG PREVIEW 2 BARIS */
+        .card-preview { 
+            font-size: 13px; line-height: 1.6; color: var(--text-muted); word-break: break-word;
+            display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; 
+            margin-bottom: 16px; flex: 1; /* Dorong card-bottom ke bawah */
+        }
+        .card-bottom { display: flex; justify-content: space-between; align-items: center; gap: 8px; flex-wrap: wrap; margin-top: auto;}
         
         .badges { display: flex; gap: 6px; flex-wrap: wrap; }
         .badge { padding: 4px 10px; border-radius: 8px; font-size: 11px; font-weight: 700; background: var(--card-tint); color: var(--text-muted); border: 1px solid var(--border); display: flex; align-items: center; gap: 4px; }
@@ -310,7 +334,8 @@
         ========================================================= */
         .modal-overlay { position: fixed; inset: 0; background: rgba(0,0,0,0.4); backdrop-filter: blur(4px); z-index: 100001; display: none; align-items: center; justify-content: center; padding: 20px; width: 100vw; height: 100vh; box-sizing: border-box; }
         .modal-overlay.active { display: flex; }
-        .modal-card { background: var(--card-solid); width: 100%; border-radius: var(--radius-card); padding: 24px; box-shadow: var(--shadow-flat); border: 1px solid var(--border); box-sizing: border-box; display: flex; flex-direction: column; max-height: 90vh; }
+        /* OVERFLOW Y AUTO: FIX TOMBOL TERPOTONG */
+        .modal-card { background: var(--card-solid); width: 100%; border-radius: var(--radius-card); padding: 24px; box-shadow: var(--shadow-flat); border: 1px solid var(--border); box-sizing: border-box; display: flex; flex-direction: column; max-height: 90vh; overflow-y: auto; }
         .modal-card h3 { font-size: 20px; font-weight: 900; margin-bottom: 8px; color: var(--text-main); flex-shrink: 0; }
         .modal-card p { font-size: 13px; color: var(--text-muted); margin-bottom: 20px; line-height: 1.5; flex-shrink: 0; }
         
@@ -318,7 +343,7 @@
         .modal-textarea { resize: vertical; min-height: 120px; line-height: 1.5; }
         .modal-input:focus, .modal-select:focus, .modal-textarea:focus { border-color: var(--primary); box-shadow: 0 0 0 3px var(--primary-soft); background: var(--card-solid); }
         .modal-select { appearance: none; cursor: pointer; }
-        .modal-actions { display: flex; gap: 12px; margin-top: 8px; flex-shrink: 0; }
+        .modal-actions { display: flex; gap: 12px; margin-top: 8px; flex-shrink: 0; margin-bottom: 0; }
         .btn-modal { flex: 1; padding: 12px; border-radius: 12px; font-size: 13px; font-weight: 800; cursor: pointer; border: none; transition: 0.2s; outline: none; display: flex; justify-content: center; align-items: center; gap: 6px; }
         .btn-cancel { background: var(--card-tint); color: var(--text-main); border: 1px solid var(--border); }
         .btn-cancel:hover { background: #e2e8f0; }
@@ -419,20 +444,21 @@
         .side-panel-footer .modal-actions { margin-top: 0; border-top: none; padding-top: 0; }
 
         /* BREAKPOINT RESPONSIF */
-        @media(max-width: 1024px) { .list-container { column-count: 2; } }
+        @media(max-width: 1024px) { .list-container { grid-template-columns: repeat(2, 1fr); } }
         @media(max-width: 600px) { 
             body { padding-top: 76px; }
             .hero-card { padding: 20px; } 
-            .hero-content-flex { flex-wrap: wrap; gap: 12px; }
-            .hero-right { order: 2; margin-left: auto; }
-            .hero-text { order: 3; width: 100%; flex: 0 0 100%; margin-left: 0; margin-top: 4px; border-radius: 16px; padding: 12px; background: rgba(255,255,255,0.08); border: 1px solid rgba(255,255,255,0.15); }
+            .hero-content-flex { gap: 12px; align-items: flex-start; }
+            .hero-right { order: 2; margin-left: auto; margin-top: 0; }
+            .hero-text { order: 3; flex: 0 0 100%; padding: 0; margin-left: 0; }
+            .hero-text:hover { background: transparent; }
             .hero-title { font-size: 20px; } 
             
             .editor-footer { flex-direction: column; gap: 16px; align-items: flex-start; padding: 16px; } 
             .footer-actions { width: 100%; } 
             .btn-action { flex: 1; text-align: center; } 
             .word-count { width: 100%; text-align: left; } 
-            .list-container { column-count: 1; }
+            .list-container { grid-template-columns: 1fr; }
             .fab-back { top: 16px; left: 16px; width: 48px; height: 48px; }
             .popup-overlay.reading-mode .editor-body { padding-top: 80px; }
             .editor-body { padding: 24px 16px 120px; }
@@ -452,15 +478,20 @@
     <div class="wrapper">
         <div class="hero-card" id="heroCard">
             <div class="hero-content-flex">
-                <div class="hero-left">
-                    <a href="collab-hub.html" class="btn-back" title="Kembali ke Lobi">
-                        <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
-                            <line x1="19" y1="12" x2="5" y2="12"></line>
-                            <polyline points="12 19 5 12 12 5"></polyline>
-                        </svg>
-                    </a>
-                </div>
+                <a href="collab-hub.html" class="btn-back" title="Kembali ke Lobi">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                        <line x1="19" y1="12" x2="5" y2="12"></line>
+                        <polyline points="12 19 5 12 12 5"></polyline>
+                    </svg>
+                </a>
                 
+                <div class="hero-text" onclick="openRoomInfoModal()" title="Lihat detail ruang">
+                    <div class="hero-title-wrap">
+                        <h1 class="hero-title" id="uiRoomName">Memuat Ruang...</h1>
+                        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"></polyline></svg>
+                    </div>
+                </div>
+
                 <div class="hero-right">
                     <div class="facepile-wrap" id="uiFacepile" onclick="openMemberListModal()" title="Daftar Anggota">
                         <!-- Tumpukan avatar akan dirender di sini via JS -->
@@ -469,14 +500,6 @@
                     <button class="btn-mega" id="btnAnnouncement" onclick="openAnnouncementModal()" title="Papan Pengumuman Ruang">
                         📢 <div class="unread-dot" id="annUnreadBadge"></div>
                     </button>
-                </div>
-                
-                <div class="hero-text" onclick="openRoomInfoModal()" title="Lihat detail ruang">
-                    <div class="hero-title-wrap">
-                        <h1 class="hero-title" id="uiRoomName">Memuat Ruang...</h1>
-                        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"></polyline></svg>
-                    </div>
-                    <p class="hero-desc" id="uiRoomInfo"><span class="live-indicator"></span> Menghubungkan...</p>
                 </div>
             </div>
         </div>
@@ -497,7 +520,7 @@
 
     <div class="wrapper">
         <div class="list-container" id="listContainer">
-            <div style="text-align: center; padding: 40px; color: var(--text-muted); column-span: all;">Memuat data...</div>
+            <div style="text-align: center; padding: 40px; color: var(--text-muted); grid-column: 1 / -1;">Memuat data...</div>
         </div>
         <div id="paginationContainer" class="pagination-container"></div>
         <button class="fab" id="fabAdd" onclick="openPopup()">+</button>
@@ -509,7 +532,6 @@
             <h3 style="text-align: center; margin-bottom: 4px;">Detail Ruang</h3>
             <p style="text-align: center; margin-bottom: 24px;">Informasi lengkap mengenai ruang kolaborasi ini.</p>
             <div class="info-row"><span class="info-label">Nama Ruang</span> <span class="info-value" id="riName">-</span></div>
-            <div class="info-row"><span class="info-label">Deskripsi</span> <span class="info-value" id="riDesc">-</span></div>
             <div class="info-row"><span class="info-label">Dibuat Oleh</span> <span class="info-value" id="riOwner">-</span></div>
             <div class="info-row"><span class="info-label">Tanggal Dibuat</span> <span class="info-value" id="riDate">-</span></div>
             <div class="info-row"><span class="info-label">Total Anggota</span> <span class="info-value" id="riMembers">-</span></div>
@@ -658,7 +680,7 @@
                 <div class="target-list-box" id="annTargetListCreate"></div>
             </div>
 
-            <div class="modal-actions" style="margin-top: 20px; padding-top: 20px; border-top: 1px dashed var(--border);">
+            <div class="modal-actions" style="margin-top: 16px; padding-top: 16px; border-top: 1px dashed var(--border);">
                 <button class="btn-modal btn-cancel" onclick="closeCreateAnnouncementForm()">Batal</button>
                 <button class="btn-modal btn-confirm" onclick="saveAnnouncement()">Kirim Pengumuman</button>
             </div>
@@ -845,8 +867,6 @@
                 window.roomData = docSnap.data();
                 document.getElementById('uiRoomName').innerText = window.roomData.name;
                 
-                if(!window.isTrashView) document.getElementById('uiRoomInfo').innerHTML = `<span class="live-indicator"></span> Sedang berjalan`;
-                
                 window.renderFacepile();
 
                 window.roomData.members.forEach(uid => {
@@ -989,7 +1009,6 @@
         window.openRoomInfoModal = function() {
             if(!window.roomData) return;
             document.getElementById('riName').innerText = window.roomData.name || '-';
-            document.getElementById('riDesc').innerText = window.roomData.description || 'Tidak ada deskripsi.';
             
             const ownerUid = window.roomData.ownerId;
             const ownerUser = window.userCache[ownerUid] || {};
@@ -1391,20 +1410,17 @@
             window.currentPage = 1;
             
             const heroCard = document.getElementById('heroCard');
-            const uiInfo = document.getElementById('uiRoomInfo');
             const fab = document.getElementById('fabAdd');
             const btnAnn = document.getElementById('btnAnnouncement');
             const uiFacepile = document.getElementById('uiFacepile');
             
             if(window.isTrashView) {
                 heroCard.classList.add('trash-mode');
-                uiInfo.innerHTML = `🗑️ Menampilkan naskah yang dihapus. Lenyap otomatis dalam 30 hari.`;
                 btnAnn.style.display = 'none';
                 uiFacepile.style.display = 'none';
                 fab.classList.add('hidden');
             } else {
                 heroCard.classList.remove('trash-mode');
-                uiInfo.innerHTML = `<span class="live-indicator"></span> Sedang berjalan`;
                 btnAnn.style.display = 'flex';
                 uiFacepile.style.display = 'flex';
                 fab.classList.remove('hidden');
@@ -1682,22 +1698,17 @@
             let data = window.isTrashView ? window.trashData : window.scriptData;
             let html = '';
             
+            const getBadge = (count) => `<span class="filter-badge">${count}</span>`;
+            
             if (!window.isTrashView) {
                 const total = data.length;
                 const draft = data.filter(x => x.status === 'draft').length;
                 const done = data.filter(x => x.status === 'done').length;
 
-                const getBadge = (count) => `<span style="background: var(--border); padding: 2px 6px; border-radius: 20px; font-size: 10px; margin-left: 6px; opacity: 0.8;">${count}</span>`;
-                const getBadgeActive = (count) => `<span style="background: currentColor; color: var(--card-solid); padding: 2px 6px; border-radius: 20px; font-size: 10px; margin-left: 6px; opacity: 0.9;">${count}</span>`;
-                
-                const bAll = window.currentFilter === 'all' ? getBadgeActive(total) : getBadge(total);
-                const bDraft = window.currentFilter === 'draft' ? getBadgeActive(draft) : getBadge(draft);
-                const bDone = window.currentFilter === 'done' ? getBadgeActive(done) : getBadge(done);
-
                 html += `
-                    <button class="filter-btn ${window.currentFilter === 'all' ? 'active' : ''}" onclick="setFilter('all')">Semua ${bAll}</button>
-                    <button class="filter-btn ${window.currentFilter === 'draft' ? 'active' : ''}" onclick="setFilter('draft')">Draft ${bDraft}</button>
-                    <button class="filter-btn ${window.currentFilter === 'done' ? 'active' : ''}" onclick="setFilter('done')">Selesai ${bDone}</button>
+                    <button class="filter-btn ${window.currentFilter === 'all' ? 'active' : ''}" onclick="setFilter('all')">Semua ${getBadge(total)}</button>
+                    <button class="filter-btn ${window.currentFilter === 'draft' ? 'active' : ''}" onclick="setFilter('draft')">Draft ${getBadge(draft)}</button>
+                    <button class="filter-btn ${window.currentFilter === 'done' ? 'active' : ''}" onclick="setFilter('done')">Selesai ${getBadge(done)}</button>
                     <div class="divider"></div>
                     <button class="filter-btn ${window.currentSort === 'newest' ? 'active' : ''}" onclick="setSort('newest')">🆕 Terbaru</button>
                     <button class="filter-btn ${window.currentSort === 'oldest' ? 'active' : ''}" onclick="setSort('oldest')">⏳ Terlama</button>
@@ -1707,19 +1718,14 @@
                 const channels = [...new Set(data.map(item => item.channel).filter(c => c && c.trim() !== "Umum" && c.trim() !== ""))];
                 channels.forEach(ch => { 
                     const chCount = data.filter(x => x.channel === ch).length;
-                    const bCh = window.currentFilter === ch ? getBadgeActive(chCount) : getBadge(chCount);
-                    html += `<button class="filter-btn ${window.currentFilter === ch ? 'active' : ''}" onclick="setFilter('${ch}')">📺 ${ch} ${bCh}</button>`; 
+                    html += `<button class="filter-btn ${window.currentFilter === ch ? 'active' : ''}" onclick="setFilter('${ch}')">📺 ${ch} ${getBadge(chCount)}</button>`; 
                 });
                 html += `<div class="divider"></div>`;
             }
             
             let trashActive = window.isTrashView ? 'active' : '';
             const tCount = window.trashData.length;
-            const bTrash = window.isTrashView 
-                ? `<span style="background: white; color: var(--danger); padding: 2px 6px; border-radius: 20px; font-size: 10px; margin-left: 6px;">${tCount}</span>` 
-                : `<span style="background: rgba(239, 68, 68, 0.2); padding: 2px 6px; border-radius: 20px; font-size: 10px; margin-left: 6px;">${tCount}</span>`;
-            
-            html += `<button class="filter-btn trash-btn ${trashActive}" onclick="toggleTrashView()">🗑️ Trash ${bTrash}</button>`;
+            html += `<button class="filter-btn trash-btn ${trashActive}" onclick="toggleTrashView()">🗑️ Trash ${getBadge(tCount)}</button>`;
             
             document.getElementById('dynamicFilters').innerHTML = html;
         }
