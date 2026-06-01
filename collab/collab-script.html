@@ -423,8 +423,16 @@
         .member-name-wrap { display: flex; flex-direction: column; flex: 1; min-width: 0; gap: 2px;}
         .member-name { font-size: 14px; font-weight: 700; color: var(--text-main); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
         .member-role { font-size: 10px; font-weight: 800; color: var(--primary); background: var(--primary-soft); padding: 2px 6px; border-radius: 6px; width: fit-content; text-transform: uppercase; letter-spacing: 0.5px;}
-        .btn-member-action { background: transparent; border: none; color: var(--text-muted); font-size: 18px; cursor: pointer; padding: 4px 8px; border-radius: 8px; transition: 0.2s; outline: none; display: flex; align-items: center; justify-content: center; }
-        .btn-member-action:hover { background: var(--card-tint); color: var(--text-main); }
+        
+        /* TOMBOL AKSI MANAJEMEN ANGGOTA */
+        .member-actions { display: flex; gap: 6px; flex-shrink: 0; }
+        .btn-icon-mng { width: 32px; height: 32px; border-radius: 10px; border: none; display: flex; align-items: center; justify-content: center; cursor: pointer; transition: 0.2s; outline: none;}
+        .btn-icon-mng.kick { background: var(--danger-soft); color: var(--danger); }
+        .btn-icon-mng.kick:hover { background: var(--danger); color: white; }
+        body.dark .btn-icon-mng.kick { color: #f87171; }
+        .btn-icon-mng.admin { background: var(--warning-soft); color: var(--warning); }
+        .btn-icon-mng.admin:hover { background: var(--warning); color: white; }
+        body.dark .btn-icon-mng.admin { color: #fbbf24; }
 
         /* SIDE PANEL (DRAWER) UNTUK DETAIL PENGUMUMAN */
         .side-panel-overlay { position: fixed; inset: 0; background: rgba(0,0,0,0.5); backdrop-filter: blur(4px); z-index: 100005; display: flex; justify-content: flex-end; opacity: 0; pointer-events: none; transition: opacity 0.3s ease; }
@@ -504,8 +512,7 @@
 
                 <div class="hero-right">
                     <div class="facepile-wrap" id="uiFacepile" onclick="openMemberListModal()" title="Daftar Anggota">
-                        <!-- Tumpukan avatar akan dirender di sini via JS -->
-                    </div>
+                        </div>
                     
                     <button class="btn-mega" id="btnAnnouncement" onclick="openAnnouncementModal()" title="Papan Pengumuman Ruang">
                         📢 <div class="unread-dot" id="annUnreadBadge"></div>
@@ -536,7 +543,6 @@
         <button class="fab" id="fabAdd" onclick="openPopup()">+</button>
     </div>
 
-    <!-- MODAL DETAIL RUANG -->
     <div class="modal-overlay" id="roomInfoModal">
         <div class="modal-card" style="max-width: 400px;">
             <h3 style="text-align: center; margin-bottom: 4px;">Detail Ruang</h3>
@@ -551,11 +557,10 @@
         </div>
     </div>
 
-    <!-- MODAL DAFTAR ANGGOTA -->
     <div class="modal-overlay" id="memberListModal">
         <div class="modal-card" style="max-width: 440px;">
-            <h3 style="text-align: center; margin-bottom: 4px;">Daftar Anggota</h3>
-            <p style="text-align: center; margin-bottom: 16px;">Kelola dan pantau anggota di ruang ini.</p>
+            <h3 style="text-align: center; margin-bottom: 4px;">Kelola Anggota</h3>
+            <p id="membersSubtitle" style="text-align: center; margin-bottom: 16px;">Melihat daftar anggota di dalam ruang.</p>
             <div class="list-container-scroll" id="memberListContainer" style="max-height: 50vh;"></div>
             <div class="modal-actions" style="margin-top: 16px;">
                 <button class="btn-modal btn-cancel" onclick="closeMemberListModal()">Tutup</button>
@@ -563,7 +568,6 @@
         </div>
     </div>
 
-    <!-- POPUP EDITOR SCRIPT -->
     <div class="popup-overlay" id="editorPopup">
         <button class="fab-back" id="btnExitReadingMode" onclick="toggleReadingMode()" title="Kembali">
             <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
@@ -620,7 +624,6 @@
         </div>
     </div>
 
-    <!-- MODAL INFO DOKUMEN -->
     <div class="modal-overlay" id="infoModal">
         <div class="modal-card" style="max-width: 360px;">
             <h3 style="text-align: center;">Informasi Script</h3>
@@ -636,7 +639,6 @@
         </div>
     </div>
 
-    <!-- MODAL PENGUMUMAN -->
     <div class="modal-overlay" id="announcementModal">
         <div class="modal-card" style="max-width: 480px;">
             <h3 style="margin-bottom: 6px; text-align: center;">Papan Pengumuman</h3>
@@ -654,7 +656,6 @@
         </div>
     </div>
 
-    <!-- MODAL FORM PENGUMUMAN -->
     <div class="modal-overlay" id="formAnnouncementModal">
         <div class="modal-card" style="max-width: 480px;">
             <h3 id="formAnnTitle" style="text-align: center;">Buat Pengumuman</h3>
@@ -697,7 +698,6 @@
         </div>
     </div>
 
-    <!-- SIDE PANEL DETAIL PENGUMUMAN -->
     <div class="side-panel-overlay" id="annSidePanel">
         <div class="side-panel">
             <div class="side-panel-header">
@@ -1041,6 +1041,11 @@
             const ownerId = window.roomData.ownerId;
             const amIAdmin = ownerId === currentUserUid;
             
+            const subtitle = document.getElementById('membersSubtitle');
+            if (subtitle) {
+                subtitle.innerText = amIAdmin ? "Anda memiliki kontrol penuh sebagai Admin." : "Melihat daftar anggota di dalam ruang.";
+            }
+
             let sortedMembers = [...members];
             sortedMembers.sort((a, b) => {
                 if(a === ownerId) return -1;
@@ -1054,13 +1059,22 @@
                 const name = user.name || user.displayName || "Anonim";
                 const initial = name.charAt(0).toUpperCase();
                 const isOnline = (uid === currentUserUid);
+                const isThisMemberAdmin = (uid === ownerId);
+                const isMe = (uid === currentUserUid);
+                
                 const onlineDot = isOnline ? `<div class="face-online-dot" style="bottom: -2px; right: -2px; border-color: var(--card-solid);"></div>` : ``;
                 
-                const roleBadge = (uid === ownerId) ? `<div class="member-role">Admin</div>` : ``;
-                
                 let actionBtn = ``;
-                if(amIAdmin && uid !== currentUserUid) {
-                    actionBtn = `<button class="btn-member-action" title="Kelola Anggota">⋮</button>`;
+                if(amIAdmin && !isMe) {
+                    actionBtn = `
+                    <div class="member-actions">
+                        <button class="btn-icon-mng admin" title="Jadikan Admin" onclick="window.transferAdmin('${currentRoomId}', '${uid}', '${name.replace(/'/g, "\\'")}')">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" style="width:16px; height:16px;"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon></svg>
+                        </button>
+                        <button class="btn-icon-mng kick" title="Keluarkan Anggota" onclick="window.kickMember('${currentRoomId}', '${uid}', '${name.replace(/'/g, "\\'")}')">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" style="width:16px; height:16px;"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
+                        </button>
+                    </div>`;
                 }
                 
                 html += `
@@ -1068,8 +1082,8 @@
                     <div class="member-info-left">
                         <div class="member-avatar">${initial}${onlineDot}</div>
                         <div class="member-name-wrap">
-                            <div class="member-name" title="${name.replace(/"/g, '&quot;')}">${name}</div>
-                            ${roleBadge}
+                            <div class="member-name" title="${name.replace(/"/g, '&quot;')}">${name} ${isMe ? '(Anda)' : ''}</div>
+                            <div class="member-role">${isThisMemberAdmin ? '👑 Admin' : 'Anggota'}</div>
                         </div>
                     </div>
                     ${actionBtn}
@@ -1079,7 +1093,22 @@
             container.innerHTML = html;
             document.getElementById('memberListModal').classList.add('active');
         }
+        
         window.closeMemberListModal = () => document.getElementById('memberListModal').classList.remove('active');
+
+        window.kickMember = async (roomId, targetUid, targetName) => {
+            if(!confirm(`Keluarkan ${targetName} dari ruang ini?`)) return;
+            try { 
+                await updateDoc(doc(db, "collab_boards", roomId), { members: arrayRemove(targetUid) }); 
+            } catch(e) { alert("Gagal mengeluarkan anggota."); }
+        };
+
+        window.transferAdmin = async (roomId, targetUid, targetName) => {
+            if(!confirm(`Yakin memindahkan hak Admin ke ${targetName}? Anda akan jadi anggota biasa dan kehilangan kontrol penuh atas ruang ini.`)) return;
+            try { 
+                await updateDoc(doc(db, "collab_boards", roomId), { ownerId: targetUid }); 
+            } catch(e) { alert("Gagal memindahkan hak akses."); }
+        };
 
         // ==========================================
         // SISTEM PENGUMUMAN IDENTIK
