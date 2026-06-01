@@ -14,9 +14,8 @@
         @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap');
         * { margin: 0; padding: 0; box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
         *::-webkit-scrollbar { display: none; }
-        :root { --bg-grad: linear-gradient(180deg, #f8fbff 0%, #eef4ff 100%); --card-glass: rgba(255, 255, 255, 0.9); --card-solid: #ffffff; --card-tint: #f1f5f9; --border: #e2e8f0; --text-main: #0f172a; --text-muted: #64748b; --primary: #2563eb; --primary-grad: linear-gradient(135deg, #3b82f6, #2563eb); --primary-soft: rgba(37, 99, 235, 0.1); --success: #16a34a; --danger: #ef4444; --warning: #f59e0b; --event: #8b5cf6; --event-soft: rgba(139, 92, 246, 0.1); --shadow-flat: 0 4px 20px rgba(0, 0, 0, 0.04); --radius-btn: 14px; --radius-card: 24px; }
+        :root { --bg-grad: linear-gradient(180deg, #f8fbff 0%, #eef4ff 100%); --card-glass: rgba(255, 255, 255, 0.9); --card-solid: #ffffff; --card-tint: #f1f5f9; --border: #e2e8f0; --text-main: #0f172a; --text-muted: #64748b; --primary: #2563eb; --primary-grad: linear-gradient(135deg, #3b82f6, #2563eb); --primary-soft: rgba(37, 99, 235, 0.1); --success: #16a34a; --danger: #ef4444; --danger-soft: rgba(239, 68, 68, 0.1); --warning: #f59e0b; --warning-soft: rgba(245, 158, 11, 0.1); --event: #8b5cf6; --event-soft: rgba(139, 92, 246, 0.1); --shadow-flat: 0 4px 20px rgba(0, 0, 0, 0.04); --radius-btn: 14px; --radius-card: 24px; }
         
-        /* PENYEMPURNAAN DARK MODE */
         body.dark { 
             --bg-grad: linear-gradient(180deg, #0f172a 0%, #1e293b 100%); 
             --card-glass: rgba(30, 41, 59, 0.9); 
@@ -28,6 +27,7 @@
             --primary-soft: rgba(59, 130, 246, 0.2); 
             --shadow-flat: 0 10px 30px rgba(0, 0, 0, 0.4); 
             --danger-soft: rgba(239, 68, 68, 0.15); 
+            --warning-soft: rgba(245, 158, 11, 0.15);
             --event-soft: rgba(139, 92, 246, 0.15);
         }
         
@@ -39,9 +39,7 @@
         
         .wrapper { position: relative; z-index: 2; max-width: 1200px; margin: 0 auto; width: 100%; display: flex; flex-direction: column; min-height: calc(100vh - 186px); }
         
-        /* =========================================================
-           HEADER RUANG (HERO CARD) - IDENTIK DENGAN SCRIPT
-        ========================================================= */
+        /* HEADER RUANG (HERO CARD) */
         .hero-card { 
             background: var(--primary-grad); border-radius: var(--radius-card); padding: 24px 32px; color: white; 
             position: relative; overflow: hidden; margin-bottom: 24px; box-shadow: 0 10px 30px rgba(37, 99, 235, 0.2); 
@@ -63,24 +61,17 @@
         .btn-mega { position: relative; }
         .btn-mega .unread-dot { position: absolute; top: -3px; right: -3px; width: 12px; height: 12px; background: var(--danger); border-radius: 50%; border: 2px solid rgba(255,255,255,0.8); animation: pulseAlert 2s infinite; display: none; }
         
-        /* HOVER/ACTIVE PADA JUDUL */
         .hero-text { 
             order: 2; flex: 1; min-width: 0; display: flex; flex-direction: column; cursor: pointer; 
-            padding: 8px 14px; border-radius: 12px; transition: background 0.2s ease; background: transparent; margin-left: -4px;
+            padding: 8px 14px; border-radius: 12px; transition: background 0.2s ease; background: transparent; margin-left: -4px; justify-content: center;
         }
         @media (hover: hover) {
             .hero-text:hover { background: rgba(255,255,255,0.15); }
         }
         .hero-text:active { background: rgba(255,255,255,0.25); }
         
-        /* ELLIPSIS PADA JUDUL */
-        .hero-title { font-size: 22px; font-weight: 900; letter-spacing: -0.5px; line-height: 1.2; width: 100%; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; margin-bottom: 4px; }
-        .hero-subtitle { font-size: 13px; font-weight: 600; color: rgba(255,255,255,0.8); display: flex; align-items: center; gap: 6px; }
+        .hero-title { font-size: 22px; font-weight: 900; letter-spacing: -0.5px; line-height: 1.2; width: 100%; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; margin-bottom: 0; }
 
-        .live-indicator { width: 8px; height: 8px; background: #10b981; border-radius: 50%; display: inline-block; animation: pulseLive 2s infinite; flex-shrink: 0; box-shadow: 0 0 0 0 rgba(16, 185, 129, 0.7); }
-        @keyframes pulseLive { 0% { transform: scale(0.95); box-shadow: 0 0 0 0 rgba(16, 185, 129, 0.7); } 70% { transform: scale(1); box-shadow: 0 0 0 6px rgba(16, 185, 129, 0); } 100% { transform: scale(0.95); box-shadow: 0 0 0 0 rgba(16, 185, 129, 0); } }
-
-        /* TOMBOL BUAT PAPAN (PRIMARY CTA) */
         .btn-add-board { 
             order: 3; background: #ffffff; color: #2563eb; border: none; padding: 12px 20px; border-radius: 14px; font-size: 13px; font-weight: 800; cursor: pointer; box-shadow: 0 4px 15px rgba(0,0,0,0.1); transition: 0.2s; display: flex; align-items: center; justify-content: center; gap: 8px; flex-shrink: 0; outline: none; height: 44px;
         }
@@ -89,7 +80,6 @@
 
         .hero-right { order: 4; display: flex; gap: 12px; align-items: center; flex-shrink: 0; }
         
-        /* FACEPILE CSS */
         .facepile-wrap { display: flex; align-items: center; cursor: pointer; transition: transform 0.2s; padding: 4px; border-radius: 20px;}
         .facepile-wrap:hover { transform: scale(1.05); }
         .face-item { width: 34px; height: 34px; border-radius: 50%; border: 2px solid #3b82f6; background: white; color: var(--primary); display: flex; align-items: center; justify-content: center; font-size: 13px; font-weight: 800; margin-left: -12px; position: relative; z-index: 1; box-shadow: 0 2px 8px rgba(0,0,0,0.1);}
@@ -137,7 +127,6 @@
         .board-actions { display: flex; align-items: center; gap: 8px; z-index: 10; flex-shrink: 0; }
         .counter { background: var(--primary-soft); color: var(--primary); padding: 6px 14px; border-radius: 20px; font-size: 12px; font-weight: 800; white-space: nowrap; border: 1px solid rgba(37, 99, 235, 0.1); }
         
-        /* TRASH BANNER */
         #trashContainer { margin-top: 40px; border-top: 1px solid var(--border); padding-top: 24px; display: none; }
         .trash-banner { background: rgba(245, 158, 11, 0.05); border: 1px dashed rgba(245, 158, 11, 0.4); border-radius: 16px; padding: 16px 24px; display: flex; justify-content: space-between; align-items: center; cursor: pointer; transition: 0.2s; width: 100%; outline: none; }
         .trash-banner:hover { background: rgba(245, 158, 11, 0.1); border-color: rgba(245, 158, 11, 0.6); }
@@ -192,7 +181,6 @@
         .idea-list-header { font-size: 14px; font-weight: 800; color: var(--text-muted); margin-bottom: 16px; padding-bottom: 12px; border-bottom: 1px dashed var(--border); display: flex; justify-content: space-between; align-items: center; width: 100%; box-sizing: border-box; }
         .board-view-body { flex: 1; width: 100%; box-sizing: border-box; display: flex; flex-direction: column; }
         
-        /* KARTU IDE KONTEN */
         .idea-item { background: var(--card-solid); border: 1px solid var(--border); border-radius: 16px; padding: 16px 20px; margin-bottom: 12px; box-shadow: var(--shadow-flat); width: 100%; box-sizing: border-box; min-width: 0; overflow: hidden; display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 16px; align-items: center; }
         .idea-left { display: flex; flex-direction: column; gap: 8px; min-width: 0; width: 100%; justify-self: start; }
         .idea-title { font-size: 15px; font-weight: 800; line-height: 1.4; color: var(--text-main); word-break: break-word; overflow-wrap: break-word; white-space: normal; }
@@ -223,7 +211,7 @@
         .idea-item.completed .link-box { filter: grayscale(100%); opacity: 0.8; }
         .empty-board { text-align: center; padding: 40px 20px; font-size: 13px; font-weight: 600; color: var(--text-muted); border: 1px dashed var(--border); border-radius: 20px; width: 100%; box-sizing: border-box; }
 
-        /* MODAL UMUM & INPUT KELOMPOK BARU */
+        /* MODAL UMUM */
         .modal-overlay { position: fixed; inset: 0; background: rgba(0,0,0,0.4); backdrop-filter: blur(4px); z-index: 100001; display: none; align-items: center; justify-content: center; padding: 20px; width: 100vw; height: 100vh; box-sizing: border-box; }
         .modal-overlay.active { display: flex; }
         .modal-card { background: var(--card-solid); width: 100%; max-width: 440px; border-radius: var(--radius-card); padding: 24px; box-shadow: var(--shadow-flat); border: 1px solid var(--border); box-sizing: border-box; display: flex; flex-direction: column; max-height: 90vh; overflow-y: auto; }
@@ -254,8 +242,16 @@
         .member-name-wrap { display: flex; flex-direction: column; flex: 1; min-width: 0; gap: 2px;}
         .member-name { font-size: 14px; font-weight: 700; color: var(--text-main); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
         .member-role { font-size: 10px; font-weight: 800; color: var(--primary); background: var(--primary-soft); padding: 2px 6px; border-radius: 6px; width: fit-content; text-transform: uppercase; letter-spacing: 0.5px;}
-        .btn-member-action { background: transparent; border: none; color: var(--text-muted); font-size: 18px; cursor: pointer; padding: 4px 8px; border-radius: 8px; transition: 0.2s; outline: none; display: flex; align-items: center; justify-content: center; }
-        .btn-member-action:hover { background: var(--card-tint); color: var(--text-main); }
+        
+        /* TOMBOL AKSI MANAJEMEN ANGGOTA */
+        .member-actions { display: flex; gap: 6px; flex-shrink: 0; }
+        .btn-icon-mng { width: 32px; height: 32px; border-radius: 10px; border: none; display: flex; align-items: center; justify-content: center; cursor: pointer; transition: 0.2s; outline: none;}
+        .btn-icon-mng.kick { background: var(--danger-soft); color: var(--danger); }
+        .btn-icon-mng.kick:hover { background: var(--danger); color: white; }
+        body.dark .btn-icon-mng.kick { color: #f87171; }
+        .btn-icon-mng.admin { background: var(--warning-soft); color: var(--warning); }
+        .btn-icon-mng.admin:hover { background: var(--warning); color: white; }
+        body.dark .btn-icon-mng.admin { color: #fbbf24; }
 
         /* SISTEM PENGUMUMAN */
         .input-group { text-align: left; margin-bottom: 16px; flex-shrink: 0; display: flex; flex-direction: column; }
@@ -374,7 +370,6 @@
             .hero-text { order: 3; flex: 0 0 100%; padding: 8px 12px; margin-left: -8px; }
             .hero-title { font-size: 20px; } 
             
-            /* Tampilan HP: Tombol Buat Papan 100% dari ruang */
             .btn-add-board { order: 4; flex: 0 0 100%; width: 100%; justify-content: center; padding: 14px 20px; font-size: 14px; } 
 
             .board-container { grid-template-columns: 1fr; } 
@@ -404,7 +399,6 @@
                 
                 <div class="hero-text" onclick="openRoomInfoModal()" title="Lihat detail ruang">
                     <h1 class="hero-title" id="uiRoomName">Memuat Ruang...</h1>
-                    <div class="hero-subtitle" id="uiRoomInfo"><span class="live-indicator"></span> Menghubungkan...</div>
                 </div>
 
                 <button class="btn-add-board" onclick="openAddBoardModal()">
@@ -442,8 +436,8 @@
 
     <div class="modal-overlay" id="memberListModal">
         <div class="modal-card" style="max-width: 440px;">
-            <h3 style="text-align: center; margin-bottom: 4px;">Daftar Anggota</h3>
-            <p style="text-align: center; margin-bottom: 16px;">Kelola dan pantau anggota di ruang ini.</p>
+            <h3 style="text-align: center; margin-bottom: 4px;">Kelola Anggota</h3>
+            <p id="membersSubtitle" style="text-align: center; margin-bottom: 16px;">Melihat daftar anggota di dalam ruang.</p>
             <div class="list-container-scroll" id="memberListContainer" style="max-height: 50vh;"></div>
             <div class="modal-actions" style="margin-top: 16px;">
                 <button class="btn-modal btn-cancel" onclick="closeMemberListModal()">Tutup</button>
@@ -753,9 +747,6 @@
             }
         });
 
-        /* =======================================================
-           LOGIKA UTAMA RUANG, FACEPILE, DAN INFO RUANG
-           ======================================================= */
         function initRealtimeCollab() {
             onSnapshot(doc(dbRef, "collab_boards", currentRoomId), (docSnap) => {
                 if (!docSnap.exists() || !docSnap.data().members.includes(currentUserUid)) {
@@ -766,7 +757,6 @@
                 window.roomData = docSnap.data();
                 
                 document.getElementById('uiRoomName').innerText = window.roomData.name;
-                document.getElementById('uiRoomInfo').innerHTML = `<span class="live-indicator"></span> Live • ${window.roomData.members.length} Anggota`;
                 
                 window.renderFacepile();
 
@@ -828,7 +818,6 @@
             });
         }
 
-        // FUNGSI FACEPILE
         window.renderFacepile = function() {
             const container = document.getElementById('uiFacepile');
             if(!container || !window.roomData) return;
@@ -869,7 +858,6 @@
             container.innerHTML = html;
         }
 
-        // MODAL DETAIL RUANG
         window.openRoomInfoModal = function() {
             if(!window.roomData) return;
             document.getElementById('riName').innerText = window.roomData.name || '-';
@@ -888,7 +876,7 @@
         }
         window.closeRoomInfoModal = () => document.getElementById('roomInfoModal').classList.remove('active');
 
-        // MODAL DAFTAR ANGGOTA
+        // DAFTAR ANGGOTA DISELARASKAN DENGAN COLLAB-HUB.HTML
         window.openMemberListModal = function() {
             if(!window.roomData) return;
             const container = document.getElementById('memberListContainer');
@@ -896,6 +884,8 @@
             const ownerId = window.roomData.ownerId;
             const amIAdmin = ownerId === currentUserUid;
             
+            document.getElementById('membersSubtitle').innerText = amIAdmin ? "Anda memiliki kontrol penuh sebagai Admin." : "Melihat daftar anggota di dalam ruang.";
+
             let sortedMembers = [...members];
             sortedMembers.sort((a, b) => {
                 if(a === ownerId) return -1;
@@ -909,13 +899,22 @@
                 const name = user.name || user.displayName || "Anonim";
                 const initial = name.charAt(0).toUpperCase();
                 const isOnline = (uid === currentUserUid);
+                const isThisMemberAdmin = (uid === ownerId);
+                const isMe = (uid === currentUserUid);
+                
                 const onlineDot = isOnline ? `<div class="face-online-dot" style="bottom: -2px; right: -2px; border-color: var(--card-solid);"></div>` : ``;
                 
-                const roleBadge = (uid === ownerId) ? `<div class="member-role">Admin</div>` : ``;
-                
                 let actionBtn = ``;
-                if(amIAdmin && uid !== currentUserUid) {
-                    actionBtn = `<button class="btn-member-action" title="Kelola Anggota">⋮</button>`;
+                if(amIAdmin && !isMe) {
+                    actionBtn = `
+                    <div class="member-actions">
+                        <button class="btn-icon-mng admin" title="Jadikan Admin" onclick="window.transferAdmin('${currentRoomId}', '${uid}', '${name.replace(/'/g, "\\'")}')">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" style="width:16px; height:16px;"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon></svg>
+                        </button>
+                        <button class="btn-icon-mng kick" title="Keluarkan Anggota" onclick="window.kickMember('${currentRoomId}', '${uid}', '${name.replace(/'/g, "\\'")}')">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" style="width:16px; height:16px;"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
+                        </button>
+                    </div>`;
                 }
                 
                 html += `
@@ -923,8 +922,8 @@
                     <div class="member-info-left">
                         <div class="member-avatar">${initial}${onlineDot}</div>
                         <div class="member-name-wrap">
-                            <div class="member-name" title="${name.replace(/"/g, '&quot;')}">${name}</div>
-                            ${roleBadge}
+                            <div class="member-name" title="${name.replace(/"/g, '&quot;')}">${name} ${isMe ? '(Anda)' : ''}</div>
+                            <div class="member-role">${isThisMemberAdmin ? '👑 Admin' : 'Anggota'}</div>
                         </div>
                     </div>
                     ${actionBtn}
@@ -936,6 +935,18 @@
         }
         window.closeMemberListModal = () => document.getElementById('memberListModal').classList.remove('active');
 
+        // LOGIKA KELUARKAN & PINDAH ADMIN DARI COLLAB-HUB.HTML
+        window.kickMember = async (roomId, targetUid, targetName) => {
+            if(!confirm(`Keluarkan ${targetName} dari ruang ini?`)) return;
+            try { await updateDoc(doc(dbRef, "collab_boards", roomId), { members: arrayRemove(targetUid) }); } 
+            catch(e) { alert("Gagal mengeluarkan anggota."); }
+        };
+
+        window.transferAdmin = async (roomId, targetUid, targetName) => {
+            if(!confirm(`Yakin memindahkan hak Admin ke ${targetName}? Anda akan jadi anggota biasa dan kehilangan kontrol penuh atas ruang ini.`)) return;
+            try { await updateDoc(doc(dbRef, "collab_boards", roomId), { ownerId: targetUid }); } 
+            catch(e) { alert("Gagal memindahkan hak akses."); }
+        };
 
         function processAndRender() {
             if (!window.roomData || !isIdeasLoaded) return;
@@ -959,9 +970,7 @@
             }
         }
 
-        /* =======================================================
-           SISTEM PENGUMUMAN
-           ======================================================= */
+        // SISTEM PENGUMUMAN (TETAP SAMA)
         function listenToAnnouncements() {
             const q = query(collection(dbRef, "collab_announcements"), where("roomId", "==", currentRoomId));
             onSnapshot(q, (snapshot) => {
@@ -1292,9 +1301,7 @@
             } catch(e) { alert("Gagal menghapus."); }
         };
 
-        /* =======================================================
-           UI WORKSPACE, RENDER PAPAN & KONTROL IDE
-           ======================================================= */
+        // UI WORKSPACE, RENDER PAPAN & KONTROL IDE (TETAP SAMA)
         window.renderWorkspace = function() {
             const container = document.getElementById("boardContainer");
             const trashContainer = document.getElementById("trashContainer");
