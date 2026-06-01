@@ -88,14 +88,18 @@
         .btn-mega { position: relative; }
         .btn-mega .unread-dot { position: absolute; top: -3px; right: -3px; width: 12px; height: 12px; background: var(--danger); border-radius: 50%; border: 2px solid rgba(255,255,255,0.8); animation: pulseAlert 2s infinite; display: none; }
         
+        /* EFEK HOVER/ACTIVE PADA JUDUL */
         .hero-text { 
-            order: 2; flex: 1; min-width: 0; display: flex; align-items: center; gap: 8px; cursor: pointer; 
-            padding: 8px 12px; border-radius: 14px; transition: background 0.2s; background: transparent; margin-left: 0;
+            order: 2; flex: 1; min-width: 0; display: flex; align-items: center; cursor: pointer; 
+            padding: 8px 14px; border-radius: 12px; transition: background 0.2s ease; background: transparent; margin-left: -4px;
         }
-        .hero-text:hover { background: rgba(255,255,255,0.15); }
+        @media (hover: hover) {
+            .hero-text:hover { background: rgba(255,255,255,0.15); }
+        }
+        .hero-text:active { background: rgba(255,255,255,0.25); }
         
-        .hero-title { font-size: 22px; font-weight: 900; letter-spacing: -0.5px; line-height: 1.2; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; margin-bottom: 0; }
-        .hero-text svg { flex-shrink: 0; opacity: 0.8; }
+        /* ELLIPSIS PADA JUDUL */
+        .hero-title { font-size: 22px; font-weight: 900; letter-spacing: -0.5px; line-height: 1.2; width: 100%; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; margin-bottom: 0; }
         
         .hero-right { order: 3; display: flex; gap: 12px; align-items: center; flex-shrink: 0; }
         
@@ -168,18 +172,26 @@
         .filter-btn { display:flex; align-items:center; flex-shrink: 0; padding: 8px 14px; border-radius: 10px; background: var(--card-solid); border: 1px solid var(--border); font-size: 12px; font-weight: 700; color: var(--text-muted); cursor: pointer; transition: 0.2s; white-space: nowrap; outline: none; }
         .filter-btn.active { background: var(--primary-soft); border-color: var(--primary); color: var(--primary); }
         
-        /* FIX BADGE HOVER CONTRAST */
+        /* =========================================================
+           FIX BADGE HOVER & ACTIVE CONTRAST 
+        ========================================================= */
         .filter-badge { background: var(--border); color: var(--text-muted); padding: 2px 6px; border-radius: 20px; font-size: 10px; margin-left: 6px; font-weight: 800; transition: all 0.2s; }
         body.dark .filter-badge { background: #334155; color: #94a3b8; }
+        
+        /* Saat Hover tapi Tidak Aktif */
         .filter-btn:hover:not(.active) .filter-badge { background: var(--text-muted); color: var(--card-solid); }
         body.dark .filter-btn:hover:not(.active) .filter-badge { background: #94a3b8; color: #1e293b; }
         
-        .filter-btn.active .filter-badge { background: currentColor; color: var(--card-solid); opacity: 0.9; }
+        /* Saat Tombol Aktif (Warna Pasti Terlihat) */
+        .filter-btn.active .filter-badge { background: var(--primary); color: #ffffff; }
         
+        /* Kasus Khusus Trash Button */
         .filter-btn.trash-btn { color: var(--danger); border-color: var(--danger-soft); background: var(--card-solid); }
         .filter-btn.trash-btn .filter-badge { background: rgba(239, 68, 68, 0.1); color: var(--danger); }
+        
+        /* Saat Tombol Trash Aktif */
         .filter-btn.trash-btn.active { background: var(--danger); color: white; border-color: var(--danger); }
-        .filter-btn.trash-btn.active .filter-badge { background: var(--card-solid); color: var(--danger); }
+        .filter-btn.trash-btn.active .filter-badge { background: #ffffff; color: var(--danger); }
         
         .divider { flex-shrink: 0; width: 1px; height: 18px; background: var(--border); margin: 0 2px; }
 
@@ -220,7 +232,7 @@
         .card-preview { 
             font-size: 13px; line-height: 1.6; color: var(--text-muted); word-break: break-word;
             display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; 
-            margin-bottom: 16px; flex: 1; /* Dorong card-bottom ke bawah */
+            margin-bottom: 16px; flex: 1; 
         }
         .card-bottom { display: flex; justify-content: space-between; align-items: center; gap: 8px; flex-wrap: wrap; margin-top: auto;}
         
@@ -450,8 +462,9 @@
             .hero-card { padding: 20px; } 
             .hero-content-flex { gap: 12px; align-items: flex-start; }
             .hero-right { order: 2; margin-left: auto; margin-top: 0; }
-            .hero-text { order: 3; flex: 0 0 100%; padding: 0; margin-left: 0; }
-            .hero-text:hover { background: transparent; }
+            
+            .hero-text { order: 3; flex: 0 0 100%; padding: 8px 12px; margin-left: -8px; }
+            
             .hero-title { font-size: 20px; } 
             
             .editor-footer { flex-direction: column; gap: 16px; align-items: flex-start; padding: 16px; } 
@@ -486,10 +499,7 @@
                 </a>
                 
                 <div class="hero-text" onclick="openRoomInfoModal()" title="Lihat detail ruang">
-                    <div class="hero-title-wrap">
-                        <h1 class="hero-title" id="uiRoomName">Memuat Ruang...</h1>
-                        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"></polyline></svg>
-                    </div>
+                    <h1 class="hero-title" id="uiRoomName">Memuat Ruang...</h1>
                 </div>
 
                 <div class="hero-right">
