@@ -92,7 +92,6 @@
         .btn-mega { position: relative; }
         .btn-mega .unread-dot { position: absolute; top: -3px; right: -3px; width: 12px; height: 12px; background: var(--danger); border-radius: 50%; border: 2px solid rgba(255,255,255,0.8); animation: pulseAlert 2s infinite; display: none; }
         
-        /* EFEK HOVER/ACTIVE PADA JUDUL */
         .hero-text { 
             order: 2; flex: 1; min-width: 0; display: flex; flex-direction: column; justify-content: center; cursor: pointer; 
             padding: 8px 14px; border-radius: 12px; transition: background 0.2s ease; background: transparent; margin-left: -4px;
@@ -108,13 +107,19 @@
 
         .hero-right { order: 3; display: flex; gap: 12px; align-items: center; flex-shrink: 0; }
         
-        /* Facepile UI */
+        /* Facepile UI & Presence Design */
         .facepile-wrap { display: flex; align-items: center; cursor: pointer; transition: transform 0.2s; padding: 4px; border-radius: 20px;}
         .facepile-wrap:hover { transform: scale(1.05); }
         .face-item { width: 34px; height: 34px; border-radius: 50%; border: 2px solid #3b82f6; background: white; color: var(--primary); display: flex; align-items: center; justify-content: center; font-size: 13px; font-weight: 800; margin-left: -12px; position: relative; z-index: 1; box-shadow: 0 2px 8px rgba(0,0,0,0.1);}
         .face-item:first-child { margin-left: 0; }
         .face-item.more { background: rgba(255,255,255,0.2); color: white; border-color: rgba(255,255,255,0.4); backdrop-filter: blur(4px); -webkit-backdrop-filter: blur(4px); }
-        .face-online-dot { position: absolute; bottom: 0; right: 0; width: 10px; height: 10px; background: #10b981; border: 2px solid #3b82f6; border-radius: 50%; }
+        
+        /* INDIKATOR STATUS AKTIF (PRESENCE) */
+        .face-online-dot { position: absolute; bottom: -2px; right: -2px; width: 14px; height: 14px; border-radius: 50%; z-index: 2; transition: background 0.3s ease; }
+        .face-item .face-online-dot { border: 3px solid #3b82f6; } /* Background biru hero */
+        .member-avatar .face-online-dot { border: 3px solid var(--card-solid); } /* Background putih/gelap modal */
+        .face-online-dot.active { background: #10b981; }
+        .face-online-dot.idle { background: #f59e0b; }
 
         @keyframes pulseAlert { 0% { transform: scale(0.95); box-shadow: 0 0 0 0 rgba(239, 68, 68, 0.7); } 70% { transform: scale(1); box-shadow: 0 0 0 6px rgba(239, 68, 68, 0); } 100% { transform: scale(0.95); box-shadow: 0 0 0 0 rgba(239, 68, 68, 0); } }
 
@@ -192,7 +197,6 @@
         }
         .sticky-tools-inner.searching .filters-wrapper { max-width: 0; opacity: 0; transition: max-width 0.3s cubic-bezier(0.4, 0, 0.2, 1), opacity 0.1s ease; }
         
-        /* FILTER BADGES ALIGNED WITH SCRIPT */
         .filter-btn { display:flex; align-items:center; flex-shrink: 0; padding: 8px 14px; border-radius: 10px; background: var(--card-solid); border: 1px solid var(--border); font-size: 12px; font-weight: 700; color: var(--text-muted); cursor: pointer; transition: 0.2s; white-space: nowrap; pointer-events: auto; outline: none; }
         .filter-btn.active { background: var(--primary-soft); border-color: var(--primary); color: var(--primary); }
         
@@ -351,7 +355,6 @@
         ========================================================= */
         .modal-overlay { position: fixed; inset: 0; background: rgba(0,0,0,0.4); backdrop-filter: blur(4px); z-index: 999999; display: none; align-items: center; justify-content: center; padding: 20px; width: 100vw; height: 100vh; box-sizing: border-box; }
         .modal-overlay.active { display: flex; }
-        /* OVERFLOW Y AUTO: FIX TOMBOL TERPOTONG */
         .modal-card { background: var(--card-solid); width: 100%; border-radius: var(--radius-card); padding: 24px; box-shadow: var(--shadow-flat); border: 1px solid var(--border); box-sizing: border-box; display: flex; flex-direction: column; max-height: 90vh; overflow-y: auto; }
         .modal-card h3 { font-size: 20px; font-weight: 900; margin-bottom: 8px; color: var(--text-main); flex-shrink: 0; text-align: center; }
         .modal-card p { font-size: 13px; color: var(--text-muted); margin-bottom: 20px; line-height: 1.5; flex-shrink: 0; text-align: center; }
@@ -410,7 +413,6 @@
         .ann-meta { font-size: 11px; color: var(--text-muted); font-weight: 600; display: flex; justify-content: flex-end; align-items: center; margin-top: 4px;}
         .ann-admin-indicator { color: var(--primary); display: flex; align-items: center; gap: 4px; background: var(--primary-soft); padding: 4px 8px; border-radius: 6px; }
 
-        /* LIST ANGGOTA CSS (MODAL) ALIGNED WITH SCRIPT */
         .member-item { display: flex; align-items: center; justify-content: space-between; padding: 12px; background: var(--card-solid); border: 1px solid var(--border); border-radius: 14px; margin-bottom: 8px; gap: 12px; transition: border-color 0.2s; }
         .member-item:hover { border-color: var(--primary); }
         .member-info-left { display: flex; align-items: center; gap: 12px; flex: 1; min-width: 0; }
@@ -428,7 +430,6 @@
         .btn-icon-mng.admin:hover { background: var(--warning); color: white; }
         body.dark .btn-icon-mng.admin { color: #fbbf24; }
 
-        /* TARGET MEMBER CHECKBOX IDENTIK */
         .target-list-box { background: var(--card-tint); border: 1px solid var(--border); border-radius: 14px; padding: 8px; display: flex; flex-direction: column; gap: 6px; max-height: 150px; overflow-y: auto; margin-top: 8px; }
         .target-member-item { display: flex; align-items: center; justify-content: space-between; padding: 10px 12px; background: var(--card-solid); border: 1px solid var(--border); border-radius: 10px; cursor: pointer; transition: 0.2s; position: relative; z-index: 1; gap: 12px; }
         .target-member-item:hover { border-color: var(--primary); z-index: 10; box-shadow: 0 2px 10px rgba(0,0,0,0.02); }
@@ -439,7 +440,6 @@
         .checkbox-custom { width: 20px; height: 20px; border-radius: 6px; border: 2px solid var(--border); display: flex; align-items: center; justify-content: center; color: transparent; transition: 0.2s; }
         input[type="checkbox"]:checked + .checkbox-custom { background: var(--primary); border-color: var(--primary); color: white; }
 
-        /* SIDE PANEL (DRAWER) UNTUK DETAIL & INLINE EDIT */
         .side-panel-overlay { position: fixed; inset: 0; background: rgba(0,0,0,0.5); backdrop-filter: blur(4px); z-index: 1000000; display: flex; justify-content: flex-end; opacity: 0; pointer-events: none; transition: opacity 0.3s ease; }
         .side-panel-overlay.active { opacity: 1; pointer-events: auto; }
         
@@ -475,7 +475,6 @@
             body { padding-top: 76px; }
             .hero-card { padding: 20px; } 
             
-            /* HERO RESPONSIVE ALIGNED WITH SCRIPT */
             .hero-content-flex { gap: 12px; align-items: flex-start; }
             .hero-right { order: 2; margin-left: auto; margin-top: 0; }
             .hero-text { order: 3; flex: 0 0 100%; padding: 8px 12px; margin-left: -8px; }
@@ -763,6 +762,7 @@
         window.notesData = [];
         window.trashData = [];
         window.globalAnnouncements = [];
+        window.presenceData = {}; 
         
         // Cache nama dinamis client-side & Registry Listener Profil
         window.userCache = {}; 
@@ -788,6 +788,12 @@
         window.historyIndex = -1;
         let historyDebounceTimeout = null;
         let isUndoingRedoing = false;
+        
+        // Logika Presence TIMEOUT
+        let presenceIdleTimeout = null;
+        let lastPresenceWrite = 0;
+        const PRESENCE_THROTTLE = 20000; // 20 detik
+        const IDLE_TIME = 60000; // 1 menit
 
         const svgEye = `<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path><circle cx="12" cy="12" r="3"></circle></svg>`;
 
@@ -820,6 +826,7 @@
                     currentUserUid = user.uid;
                     currentUserData.name = user.displayName || user.email.split('@')[0];
                     initRealtimeNotesCollab();
+                    initPresenceTracking();
                     listenToAnnouncements();
                 } else {
                     window.location.replace("../login.html");
@@ -893,6 +900,16 @@
                 console.error(error);
                 document.getElementById('notesList').innerHTML = `<div class="empty-state" style="border-color: var(--danger); background: var(--danger-soft);"><div class="empty-state-icon" style="color: var(--danger);">🔒</div><div class="empty-state-text" style="color: var(--danger); font-weight: 700;">Akses Ruang Ditolak Database.</div></div>`;
             });
+
+            // Listener Kehadiran (Presence)
+            onSnapshot(collection(db, "collab_boards", currentRoomId, "presence"), (snap) => {
+                window.presenceData = {};
+                snap.forEach(d => { window.presenceData[d.id] = d.data(); });
+                window.renderFacepile();
+                if (document.getElementById('memberListModal').classList.contains('active')) {
+                    window.openMemberListModal(); 
+                }
+            }, (error) => console.error(error));
 
             const qNotes = query(collection(db, "collab_notes"), where("roomId", "==", currentRoomId));
             onSnapshot(qNotes, (snapshot) => {
@@ -968,6 +985,59 @@
         }
 
         // ==========================================
+        // SISTEM PRESENCE (AKTIF & REHAT)
+        // ==========================================
+        window.setPresence = async function(status) {
+            if (!currentUserUid || !currentRoomId) return;
+            const presenceRef = doc(db, "collab_boards", currentRoomId, "presence", currentUserUid);
+            
+            if (status === 'offline') {
+                try { await deleteDoc(presenceRef); } catch(e){}
+                return;
+            }
+            
+            const now = Date.now();
+            // Throttling: Jika status aktif dan jarak dengan update terakhir kurang dari 20 dtk, jangan tembak Firebase lagi
+            if (status === 'active' && (now - lastPresenceWrite < PRESENCE_THROTTLE)) return;
+
+            lastPresenceWrite = now;
+            try {
+                await setDoc(presenceRef, {
+                    status: status,
+                    currentApp: 'Notes',
+                    lastActive: now
+                }, { merge: true });
+            } catch(e) { console.error("Presence error:", e); }
+        };
+
+        window.resetPresenceTimer = function() {
+            if (document.hidden) return; 
+            window.setPresence('active');
+            
+            clearTimeout(presenceIdleTimeout);
+            presenceIdleTimeout = setTimeout(() => {
+                window.setPresence('idle');
+            }, IDLE_TIME);
+        };
+
+        window.initPresenceTracking = function() {
+            ['mousemove', 'keydown', 'click', 'scroll', 'touchstart'].forEach(evt => {
+                window.addEventListener(evt, window.resetPresenceTimer, { passive: true });
+            });
+
+            document.addEventListener('visibilitychange', () => {
+                if (document.hidden) window.setPresence('idle');
+                else window.resetPresenceTimer();
+            });
+
+            window.addEventListener('beforeunload', () => {
+                window.setPresence('offline');
+            });
+
+            window.resetPresenceTimer();
+        };
+
+        // ==========================================
         // UI FACEPILE & MEMBER LIST PANEL MODAL
         // ==========================================
         window.renderFacepile = function() {
@@ -996,8 +1066,12 @@
                     const name = user.name || user.displayName || "Anonim";
                     const initial = name.charAt(0).toUpperCase();
                     
-                    const isOnline = (uid === currentUserUid); 
-                    const onlineDot = isOnline ? `<div class="face-online-dot"></div>` : ``;
+                    const pData = window.presenceData[uid];
+                    let onlineDot = '';
+                    if (pData) {
+                        onlineDot = `<div class="face-online-dot ${pData.status}"></div>`;
+                    }
+                    
                     html += `<div class="face-item" title="${name}">${initial}${onlineDot}</div>`;
                     shown++;
                 }
@@ -1052,11 +1126,20 @@
                 const user = window.userCache[uid] || { name: "Memuat..." };
                 const name = user.name || user.displayName || "Anonim";
                 const initial = name.charAt(0).toUpperCase();
-                const isOnline = (uid === currentUserUid);
                 const isThisMemberAdmin = (uid === ownerId);
                 const isMe = (uid === currentUserUid);
                 
-                const onlineDot = isOnline ? `<div class="face-online-dot" style="bottom: -2px; right: -2px; border-color: var(--card-solid);"></div>` : ``;
+                const pData = window.presenceData[uid];
+                let onlineDot = '';
+                let presenceTextHtml = '';
+
+                if (pData) {
+                    onlineDot = `<div class="face-online-dot ${pData.status}"></div>`;
+                    const isIdle = pData.status === 'idle';
+                    const textColor = isIdle ? '#f59e0b' : '#10b981';
+                    const textStr = isIdle ? `Rehat di ${pData.currentApp}` : `Aktif di ${pData.currentApp}`;
+                    presenceTextHtml = `<div style="font-size:10px; font-weight:800; color:${textColor};">${textStr}</div>`;
+                }
                 
                 let actionBtn = ``;
                 if(amIAdmin && !isMe) {
@@ -1077,7 +1160,10 @@
                         <div class="member-avatar">${initial}${onlineDot}</div>
                         <div class="member-name-wrap">
                             <div class="member-name" title="${name.replace(/"/g, '&quot;')}">${name} ${isMe ? '(Anda)' : ''}</div>
-                            <div class="member-role">${isThisMemberAdmin ? '👑 Admin' : 'Anggota'}</div>
+                            <div style="display:flex; align-items:center; gap:8px;">
+                                <div class="member-role">${isThisMemberAdmin ? '👑 Admin' : 'Anggota'}</div>
+                                ${presenceTextHtml}
+                            </div>
                         </div>
                     </div>
                     ${actionBtn}
