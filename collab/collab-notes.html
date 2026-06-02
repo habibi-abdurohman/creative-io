@@ -92,8 +92,9 @@
         .btn-mega { position: relative; }
         .btn-mega .unread-dot { position: absolute; top: -3px; right: -3px; width: 12px; height: 12px; background: var(--danger); border-radius: 50%; border: 2px solid rgba(255,255,255,0.8); animation: pulseAlert 2s infinite; display: none; }
         
+        /* REVISI: Layout .hero-text diubah agar tidak menabrak tombol kanan */
         .hero-text { 
-            order: 2; flex: 1; min-width: 0; display: flex; flex-direction: column; justify-content: center; cursor: pointer; 
+            order: 2; flex: 0 1 auto; margin-right: auto; min-width: 0; display: flex; flex-direction: column; justify-content: center; cursor: pointer; 
             padding: 8px 14px; border-radius: 12px; transition: background 0.2s ease; background: transparent; margin-left: -4px;
         }
         @media (hover: hover) {
@@ -114,12 +115,13 @@
         .face-item:first-child { margin-left: 0; }
         .face-item.more { background: rgba(255,255,255,0.2); color: white; border-color: rgba(255,255,255,0.4); backdrop-filter: blur(4px); -webkit-backdrop-filter: blur(4px); }
         
-        /* INDIKATOR STATUS AKTIF (PRESENCE) */
-        .face-online-dot { position: absolute; bottom: -2px; right: -2px; width: 14px; height: 14px; border-radius: 50%; z-index: 2; transition: background 0.3s ease; }
-        .face-item .face-online-dot { border: 3px solid #3b82f6; } /* Background biru hero */
-        .member-avatar .face-online-dot { border: 3px solid var(--card-solid); } /* Background putih/gelap modal */
-        .face-online-dot.active { background: #10b981; }
-        .face-online-dot.idle { background: #f59e0b; }
+        /* REVISI: INDIKATOR STATUS AKTIF (PRESENCE BINER DENGAN BORDER PUTIH) */
+        .face-online-dot { 
+            position: absolute; bottom: -2px; right: -2px; width: 14px; height: 14px; 
+            border-radius: 50%; z-index: 2; background: #10b981; 
+            border: 3px solid #ffffff; box-shadow: 0 2px 4px rgba(0,0,0,0.15); 
+        }
+        body.dark .face-online-dot { border-color: var(--card-solid); } /* Di dark mode akan otomatis menyesuaikan background card jika di luar area biru */
 
         @keyframes pulseAlert { 0% { transform: scale(0.95); box-shadow: 0 0 0 0 rgba(239, 68, 68, 0.7); } 70% { transform: scale(1); box-shadow: 0 0 0 6px rgba(239, 68, 68, 0); } 100% { transform: scale(0.95); box-shadow: 0 0 0 0 rgba(239, 68, 68, 0); } }
 
@@ -480,6 +482,9 @@
             .hero-text { order: 3; flex: 0 0 100%; padding: 8px 12px; margin-left: -8px; }
             .hero-title { font-size: 20px; } 
             
+            /* Menyesuaikan ukuran dot hijau di HP */
+            .face-online-dot { width: 12px; height: 12px; border-width: 2px; }
+
             .notes-list { column-count: 1; } 
             .note-card { padding: 16px; margin-bottom: 12px; } 
             .note-title { font-size: 15px; } 
@@ -789,11 +794,9 @@
         let historyDebounceTimeout = null;
         let isUndoingRedoing = false;
         
-        // Logika Presence TIMEOUT
-        let presenceIdleTimeout = null;
+        // Logika Presence Throttle
         let lastPresenceWrite = 0;
-        const PRESENCE_THROTTLE = 20000; // 20 detik
-        const IDLE_TIME = 60000; // 1 menit
+        const PRESENCE_THROTTLE = 60000; // Sinyal "masih aktif" dikirim maks 1 menit sekali untuk hemat kuota
 
         const svgEye = `<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path><circle cx="12" cy="12" r="3"></circle></svg>`;
 
@@ -985,56 +988,47 @@
         }
 
         // ==========================================
-        // SISTEM PRESENCE (AKTIF & REHAT)
+        // SISTEM PRESENCE BINER (HEMAT KUOTA)
         // ==========================================
-        window.setPresence = async function(status) {
+        window.setPresence = async function(isOnline) {
             if (!currentUserUid || !currentRoomId) return;
             const presenceRef = doc(db, "collab_boards", currentRoomId, "presence", currentUserUid);
             
-            if (status === 'offline') {
+            if (!isOnline) {
                 try { await deleteDoc(presenceRef); } catch(e){}
                 return;
             }
             
             const now = Date.now();
-            // Throttling: Jika status aktif dan jarak dengan update terakhir kurang dari 20 dtk, jangan tembak Firebase lagi
-            if (status === 'active' && (now - lastPresenceWrite < PRESENCE_THROTTLE)) return;
+            if (now - lastPresenceWrite < PRESENCE_THROTTLE) return;
 
             lastPresenceWrite = now;
             try {
-                await setDoc(presenceRef, {
-                    status: status,
-                    currentApp: 'Notes',
-                    lastActive: now
-                }, { merge: true });
+                // Hanya mengirim sinyal eksistensi biner untuk menghemat payload
+                await setDoc(presenceRef, { active: true, lastActive: now }, { merge: true });
             } catch(e) { console.error("Presence error:", e); }
         };
 
-        window.resetPresenceTimer = function() {
+        window.pulsePresence = function() {
             if (document.hidden) return; 
-            window.setPresence('active');
-            
-            clearTimeout(presenceIdleTimeout);
-            presenceIdleTimeout = setTimeout(() => {
-                window.setPresence('idle');
-            }, IDLE_TIME);
+            window.setPresence(true);
         };
 
         window.initPresenceTracking = function() {
             ['mousemove', 'keydown', 'click', 'scroll', 'touchstart'].forEach(evt => {
-                window.addEventListener(evt, window.resetPresenceTimer, { passive: true });
+                window.addEventListener(evt, window.pulsePresence, { passive: true });
             });
 
             document.addEventListener('visibilitychange', () => {
-                if (document.hidden) window.setPresence('idle');
-                else window.resetPresenceTimer();
+                if (document.hidden) window.setPresence(false);
+                else window.pulsePresence();
             });
 
             window.addEventListener('beforeunload', () => {
-                window.setPresence('offline');
+                window.setPresence(false);
             });
 
-            window.resetPresenceTimer();
+            window.setPresence(true);
         };
 
         // ==========================================
@@ -1067,10 +1061,7 @@
                     const initial = name.charAt(0).toUpperCase();
                     
                     const pData = window.presenceData[uid];
-                    let onlineDot = '';
-                    if (pData) {
-                        onlineDot = `<div class="face-online-dot ${pData.status}"></div>`;
-                    }
+                    let onlineDot = pData ? `<div class="face-online-dot"></div>` : '';
                     
                     html += `<div class="face-item" title="${name}">${initial}${onlineDot}</div>`;
                     shown++;
@@ -1130,16 +1121,7 @@
                 const isMe = (uid === currentUserUid);
                 
                 const pData = window.presenceData[uid];
-                let onlineDot = '';
-                let presenceTextHtml = '';
-
-                if (pData) {
-                    onlineDot = `<div class="face-online-dot ${pData.status}"></div>`;
-                    const isIdle = pData.status === 'idle';
-                    const textColor = isIdle ? '#f59e0b' : '#10b981';
-                    const textStr = isIdle ? `Rehat di ${pData.currentApp}` : `Aktif di ${pData.currentApp}`;
-                    presenceTextHtml = `<div style="font-size:10px; font-weight:800; color:${textColor};">${textStr}</div>`;
-                }
+                let onlineDot = pData ? `<div class="face-online-dot"></div>` : '';
                 
                 let actionBtn = ``;
                 if(amIAdmin && !isMe) {
@@ -1162,7 +1144,6 @@
                             <div class="member-name" title="${name.replace(/"/g, '&quot;')}">${name} ${isMe ? '(Anda)' : ''}</div>
                             <div style="display:flex; align-items:center; gap:8px;">
                                 <div class="member-role">${isThisMemberAdmin ? '👑 Admin' : 'Anggota'}</div>
-                                ${presenceTextHtml}
                             </div>
                         </div>
                     </div>
