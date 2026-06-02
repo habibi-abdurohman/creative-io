@@ -92,7 +92,6 @@
         .btn-mega { position: relative; }
         .btn-mega .unread-dot { position: absolute; top: -3px; right: -3px; width: 12px; height: 12px; background: var(--danger); border-radius: 50%; border: 2px solid rgba(255,255,255,0.8); animation: pulseAlert 2s infinite; display: none; }
         
-        /* REVISI: Layout .hero-text diubah agar tidak menabrak tombol kanan */
         .hero-text { 
             order: 2; flex: 0 1 auto; margin-right: auto; min-width: 0; display: flex; flex-direction: column; justify-content: center; cursor: pointer; 
             padding: 8px 14px; border-radius: 12px; transition: background 0.2s ease; background: transparent; margin-left: -4px;
@@ -108,20 +107,18 @@
 
         .hero-right { order: 3; display: flex; gap: 12px; align-items: center; flex-shrink: 0; }
         
-        /* Facepile UI & Presence Design */
         .facepile-wrap { display: flex; align-items: center; cursor: pointer; transition: transform 0.2s; padding: 4px; border-radius: 20px;}
         .facepile-wrap:hover { transform: scale(1.05); }
         .face-item { width: 34px; height: 34px; border-radius: 50%; border: 2px solid #3b82f6; background: white; color: var(--primary); display: flex; align-items: center; justify-content: center; font-size: 13px; font-weight: 800; margin-left: -12px; position: relative; z-index: 1; box-shadow: 0 2px 8px rgba(0,0,0,0.1);}
         .face-item:first-child { margin-left: 0; }
         .face-item.more { background: rgba(255,255,255,0.2); color: white; border-color: rgba(255,255,255,0.4); backdrop-filter: blur(4px); -webkit-backdrop-filter: blur(4px); }
         
-        /* REVISI: INDIKATOR STATUS AKTIF (PRESENCE BINER DENGAN BORDER PUTIH) */
         .face-online-dot { 
             position: absolute; bottom: -2px; right: -2px; width: 14px; height: 14px; 
             border-radius: 50%; z-index: 2; background: #10b981; 
             border: 3px solid #ffffff; box-shadow: 0 2px 4px rgba(0,0,0,0.15); 
         }
-        body.dark .face-online-dot { border-color: var(--card-solid); } /* Di dark mode akan otomatis menyesuaikan background card jika di luar area biru */
+        body.dark .face-online-dot { border-color: var(--card-solid); } 
 
         @keyframes pulseAlert { 0% { transform: scale(0.95); box-shadow: 0 0 0 0 rgba(239, 68, 68, 0.7); } 70% { transform: scale(1); box-shadow: 0 0 0 6px rgba(239, 68, 68, 0); } 100% { transform: scale(0.95); box-shadow: 0 0 0 0 rgba(239, 68, 68, 0); } }
 
@@ -794,9 +791,9 @@
         let historyDebounceTimeout = null;
         let isUndoingRedoing = false;
         
-        // Logika Presence Throttle
+        // Logika Presence Throttle Baru (Time-To-Live)
         let lastPresenceWrite = 0;
-        const PRESENCE_THROTTLE = 60000; // Sinyal "masih aktif" dikirim maks 1 menit sekali untuk hemat kuota
+        const PRESENCE_THROTTLE = 50000; // Dikirim tiap 50 detik ke Firestore
 
         const svgEye = `<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path><circle cx="12" cy="12" r="3"></circle></svg>`;
 
@@ -876,7 +873,7 @@
                 
                 window.renderFacepile();
                 if(document.getElementById('memberListModal').classList.contains('active')) {
-                    window.openMemberListModal();
+                    window.renderMemberList();
                 }
 
                 window.roomData.members.forEach(uid => {
@@ -886,7 +883,7 @@
                             
                             window.renderFacepile();
                             if(document.getElementById('memberListModal').classList.contains('active')) {
-                                window.openMemberListModal();
+                                window.renderMemberList();
                             }
 
                             if (document.getElementById('formAnnouncementModal').classList.contains('active')) {
@@ -910,7 +907,7 @@
                 snap.forEach(d => { window.presenceData[d.id] = d.data(); });
                 window.renderFacepile();
                 if (document.getElementById('memberListModal').classList.contains('active')) {
-                    window.openMemberListModal(); 
+                    window.renderMemberList(); 
                 }
             }, (error) => console.error(error));
 
@@ -988,7 +985,7 @@
         }
 
         // ==========================================
-        // SISTEM PRESENCE BINER (HEMAT KUOTA)
+        // SISTEM PRESENCE TTL BINER (REVISI)
         // ==========================================
         window.setPresence = async function(isOnline) {
             if (!currentUserUid || !currentRoomId) return;
@@ -1004,7 +1001,6 @@
 
             lastPresenceWrite = now;
             try {
-                // Hanya mengirim sinyal eksistensi biner untuk menghemat payload
                 await setDoc(presenceRef, { active: true, lastActive: now }, { merge: true });
             } catch(e) { console.error("Presence error:", e); }
         };
@@ -1020,14 +1016,30 @@
             });
 
             document.addEventListener('visibilitychange', () => {
-                if (document.hidden) window.setPresence(false);
-                else window.pulsePresence();
+                if (document.hidden) {
+                    window.setPresence(false);
+                } else {
+                    lastPresenceWrite = 0; // Reset agar langsung di-update
+                    window.pulsePresence();
+                }
             });
 
             window.addEventListener('beforeunload', () => {
                 window.setPresence(false);
             });
 
+            // Pulse otomatis bagi user yang hanya membaca (tanpa input)
+            setInterval(window.pulsePresence, 50000);
+
+            // Pembersih otomatis titik hijau yang kedaluwarsa (Time-To-Live check)
+            setInterval(() => {
+                window.renderFacepile();
+                if (document.getElementById('memberListModal').classList.contains('active')) {
+                    window.renderMemberList();
+                }
+            }, 30000);
+
+            lastPresenceWrite = 0;
             window.setPresence(true);
         };
 
@@ -1061,7 +1073,9 @@
                     const initial = name.charAt(0).toUpperCase();
                     
                     const pData = window.presenceData[uid];
-                    let onlineDot = pData ? `<div class="face-online-dot"></div>` : '';
+                    // Validasi TTL: hanya menyala jika waktu aktif kurang dari 90 detik (90000ms)
+                    const isOnline = pData && pData.lastActive && (Date.now() - pData.lastActive < 90000);
+                    let onlineDot = isOnline ? `<div class="face-online-dot"></div>` : '';
                     
                     html += `<div class="face-item" title="${name}">${initial}${onlineDot}</div>`;
                     shown++;
@@ -1093,7 +1107,7 @@
         }
         window.closeRoomInfoModal = () => document.getElementById('roomInfoModal').classList.remove('active');
 
-        window.openMemberListModal = function() {
+        window.renderMemberList = function() {
             if(!window.roomData) return;
             const container = document.getElementById('memberListContainer');
             const members = window.roomData.members || [];
@@ -1121,7 +1135,9 @@
                 const isMe = (uid === currentUserUid);
                 
                 const pData = window.presenceData[uid];
-                let onlineDot = pData ? `<div class="face-online-dot"></div>` : '';
+                // Validasi TTL: hanya menyala jika waktu aktif kurang dari 90 detik (90000ms)
+                const isOnline = pData && pData.lastActive && (Date.now() - pData.lastActive < 90000);
+                let onlineDot = isOnline ? `<div class="face-online-dot"></div>` : '';
                 
                 let actionBtn = ``;
                 if(amIAdmin && !isMe) {
@@ -1152,6 +1168,10 @@
             });
             
             container.innerHTML = html;
+        }
+
+        window.openMemberListModal = function() {
+            window.renderMemberList();
             document.getElementById('memberListModal').classList.add('active');
         }
         
