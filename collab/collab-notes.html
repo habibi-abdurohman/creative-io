@@ -1051,8 +1051,10 @@
             if(!container || !window.roomData) return;
             
             const members = window.roomData.members || [];
-            const isMobile = window.innerWidth <= 600;
-            const maxShow = isMobile ? 3 : 5;
+            
+            // REVISI: Responsivitas jumlah avatar (Ponsel & Tablet <= 1024px: 3, Laptop: 4)
+            const width = window.innerWidth;
+            const maxShow = width <= 1024 ? 3 : 4;
             
             let html = '';
             let shown = 0;
@@ -1073,17 +1075,19 @@
                     const initial = name.charAt(0).toUpperCase();
                     
                     const pData = window.presenceData[uid];
-                    // Validasi TTL: hanya menyala jika waktu aktif kurang dari 90 detik (90000ms)
                     const isOnline = pData && pData.lastActive && (Date.now() - pData.lastActive < 90000);
                     let onlineDot = isOnline ? `<div class="face-online-dot"></div>` : '';
                     
-                    html += `<div class="face-item" title="${name}">${initial}${onlineDot}</div>`;
+                    // REVISI: Z-index dinamis. Indeks 0 (Admin) mendapat z-index tertinggi (50), 
+                    // indeks 1 mendapat 49, dst. Sehingga Admin tidak tertimpa anggota.
+                    html += `<div class="face-item" title="${name}" style="z-index: ${50 - i};">${initial}${onlineDot}</div>`;
                     shown++;
                 }
             }
             
             if(members.length > shown) {
-                html += `<div class="face-item more" title="+${members.length - shown} Anggota lainnya">+${members.length - shown}</div>`;
+                // REVISI: Indikator plus (+) mendapat z-index 0 agar berada paling bawah
+                html += `<div class="face-item more" title="+${members.length - shown} Anggota lainnya" style="z-index: 0;">+${members.length - shown}</div>`;
             }
             
             container.innerHTML = html;
