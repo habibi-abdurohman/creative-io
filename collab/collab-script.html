@@ -3,39 +3,37 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
-    <title>Collab Notes - Creative.io</title>
+    <title>Collab Script - Creative.io</title>
     <link rel="icon" type="image/png" sizes="192x192" href="../assets/favicon-192x192.png">
     
-    <link rel="stylesheet" href="../navbar/navbar.css">
     <link rel="manifest" href="../manifest.json">
+    <link rel="stylesheet" href="../navbar/navbar.css">
     <meta name="theme-color" content="#3b82f6">
 
     <style>
         /* =========================================================
-           CSS UTAMA DAN EDITOR IMMERSIVE CATATAN KOLABORASI
+           CSS UTAMA DAN EDITOR IMMERSIVE
         ========================================================= */
         @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap');
         * { margin: 0; padding: 0; box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
         *::-webkit-scrollbar { display: none; }
         :root { 
             --bg-grad: linear-gradient(180deg, #f8fbff 0%, #eef4ff 100%); 
-            --sticky-bg: rgba(255, 255, 255, 0.75); 
-            --card-glass: rgba(255, 255, 255, 0.9); 
-            --card-solid: #ffffff; 
-            --card-tint: #f1f5f9; 
+            --sticky-bg: rgba(255, 255, 255, 0.75);
+            --card-glass: rgba(255, 255, 255, 0.9);
+            --card-solid: #ffffff;
+            --card-tint: #f1f5f9;
             --border: #e2e8f0; 
-            --paper-line: #e2e8f0; 
             --text-main: #0f172a; 
             --text-muted: #64748b; 
             --primary: #2563eb; 
-            --primary-grad: linear-gradient(135deg, #3b82f6, #2563eb);
+            --primary-grad: linear-gradient(135deg, #3b82f6, #2563eb); 
             --primary-soft: rgba(37, 99, 235, 0.1); 
-            --warning: #f59e0b; 
-            --warning-soft: rgba(245, 158, 11, 0.1);
             --success: #16a34a; 
-            --success-soft: rgba(22, 163, 74, 0.1);
+            --success-soft: rgba(22, 163, 74, 0.1); 
             --danger: #ef4444; 
-            --danger-soft: rgba(239, 68, 68, 0.1);
+            --danger-soft: rgba(239, 68, 68, 0.1); 
+            --warning: #f59e0b; 
             --event: #8b5cf6;
             --event-soft: rgba(139, 92, 246, 0.1);
             --shadow-flat: 0 4px 20px rgba(0, 0, 0, 0.04); 
@@ -44,28 +42,26 @@
         }
         body.dark { 
             --bg-grad: linear-gradient(180deg, #0f172a 0%, #1e293b 100%); 
-            --sticky-bg: rgba(30, 41, 59, 0.75); 
-            --card-glass: rgba(30, 41, 59, 0.9); 
+            --sticky-bg: rgba(30, 41, 59, 0.75);
+            --card-glass: rgba(30, 41, 59, 0.9);
             --card-solid: #1e293b; 
             --card-tint: #0f172a; 
             --border: #334155; 
-            --paper-line: rgba(255, 255, 255, 0.05); 
             --text-main: #f8fafc; 
             --text-muted: #94a3b8; 
-            --primary-soft: rgba(59, 130, 246, 0.2); 
-            --shadow-flat: 0 4px 20px rgba(0, 0, 0, 0.2); 
+            --shadow-flat: 0 10px 30px rgba(0, 0, 0, 0.4); 
             --danger-soft: rgba(239, 68, 68, 0.15);
             --event-soft: rgba(139, 92, 246, 0.15);
         }
-        body { font-family: 'Inter', system-ui, sans-serif; background: var(--bg-grad); color: var(--text-main); min-height: 100vh; padding: 86px 16px 100px 16px; transition: background 0.3s, color 0.3s; overflow-x: hidden; }
+        body { font-family: 'Inter', system-ui, sans-serif; background: var(--bg-grad); color: var(--text-main); min-height: 100vh; padding: 86px 16px 100px 16px; overflow-x: hidden; }
         
         .wrapper { position: relative; z-index: 2; max-width: 1100px; margin: 0 auto; }
         .bg-glow { position: fixed; border-radius: 50%; filter: blur(90px); z-index: 0; opacity: 0.5; pointer-events: none; }
         .bg-glow.one { width: 340px; height: 340px; background: rgba(59, 130, 246, 0.15); top: -50px; left: -100px; }
         .bg-glow.two { width: 320px; height: 320px; background: rgba(96, 165, 250, 0.15); bottom: 100px; right: -100px; }
-        
+
         /* =========================================================
-           HEADER RUANG (HERO CARD) & FACEPILE
+           HEADER RUANG (HERO CARD)
         ========================================================= */
         .hero-card { 
             background: var(--primary-grad); border-radius: var(--radius-card); padding: 24px 32px; color: white; 
@@ -92,9 +88,9 @@
         .btn-mega { position: relative; }
         .btn-mega .unread-dot { position: absolute; top: -3px; right: -3px; width: 12px; height: 12px; background: var(--danger); border-radius: 50%; border: 2px solid rgba(255,255,255,0.8); animation: pulseAlert 2s infinite; display: none; }
         
-        /* REVISI: Layout .hero-text diubah agar tidak menabrak tombol kanan */
+        /* REVISI: EFEK HOVER/ACTIVE PADA JUDUL DIUBAH AGAR TIDAK MENABRAK */
         .hero-text { 
-            order: 2; flex: 0 1 auto; margin-right: auto; min-width: 0; display: flex; flex-direction: column; justify-content: center; cursor: pointer; 
+            order: 2; flex: 0 1 auto; margin-right: auto; min-width: 0; display: flex; align-items: center; cursor: pointer; 
             padding: 8px 14px; border-radius: 12px; transition: background 0.2s ease; background: transparent; margin-left: -4px;
         }
         @media (hover: hover) {
@@ -103,12 +99,10 @@
         .hero-text:active { background: rgba(255,255,255,0.25); }
         
         .hero-title { font-size: 22px; font-weight: 900; letter-spacing: -0.5px; line-height: 1.2; width: 100%; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; margin-bottom: 0; }
-        .trash-indicator { font-size: 13px; line-height: 1.4; opacity: 0.9; align-items: center; gap: 8px; font-weight: 600; display: none; margin-top: 4px; margin-bottom: 0; }
-        .hero-card.trash-mode .trash-indicator { display: flex; }
-
+        
         .hero-right { order: 3; display: flex; gap: 12px; align-items: center; flex-shrink: 0; }
         
-        /* Facepile UI & Presence Design */
+        /* FACEPILE CSS & PRESENCE DESIGN */
         .facepile-wrap { display: flex; align-items: center; cursor: pointer; transition: transform 0.2s; padding: 4px; border-radius: 20px;}
         .facepile-wrap:hover { transform: scale(1.05); }
         .face-item { width: 34px; height: 34px; border-radius: 50%; border: 2px solid #3b82f6; background: white; color: var(--primary); display: flex; align-items: center; justify-content: center; font-size: 13px; font-weight: 800; margin-left: -12px; position: relative; z-index: 1; box-shadow: 0 2px 8px rgba(0,0,0,0.1);}
@@ -121,7 +115,7 @@
             border-radius: 50%; z-index: 2; background: #10b981; 
             border: 3px solid #ffffff; box-shadow: 0 2px 4px rgba(0,0,0,0.15); 
         }
-        body.dark .face-online-dot { border-color: var(--card-solid); } /* Di dark mode akan otomatis menyesuaikan background card jika di luar area biru */
+        body.dark .face-online-dot { border-color: var(--card-solid); }
 
         @keyframes pulseAlert { 0% { transform: scale(0.95); box-shadow: 0 0 0 0 rgba(239, 68, 68, 0.7); } 70% { transform: scale(1); box-shadow: 0 0 0 6px rgba(239, 68, 68, 0); } 100% { transform: scale(0.95); box-shadow: 0 0 0 0 rgba(239, 68, 68, 0); } }
 
@@ -146,7 +140,7 @@
         .btn-banner-close { background: var(--card-tint); border: 1px solid var(--border); color: var(--text-muted); width: 32px; height: 32px; border-radius: 10px; display: flex; align-items: center; justify-content: center; cursor: pointer; transition: 0.2s; }
         .btn-banner-close:hover { background: var(--border); color: var(--text-main); }
         @keyframes slideDown { 0% { opacity: 0; transform: translateY(-20px); } 100% { opacity: 1; transform: translateY(0); } }
-
+        
         /* =========================================================
            UI SEARCH BAR DAN FILTER
         ========================================================= */
@@ -154,122 +148,118 @@
             position: sticky; top: 76px; z-index: 50; padding: 10px 16px; margin: 16px 0 24px 0; 
             background: var(--sticky-bg); backdrop-filter: blur(16px); -webkit-backdrop-filter: blur(16px); 
             border: 1px solid var(--border); border-radius: 20px; 
-            box-shadow: 0 12px 32px rgba(0, 0, 0, 0.05); transition: box-shadow 0.3s ease;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.03); transition: box-shadow 0.3s ease;
         }
-        body.dark .sticky-tools { box-shadow: 0 12px 32px rgba(0, 0, 0, 0.4); }
+        body.dark .sticky-tools { box-shadow: 0 4px 20px rgba(0, 0, 0, 0.4); }
         
         .sticky-tools-inner { 
             position: relative; display: flex; align-items: center; 
             height: 38px; gap: 8px; max-width: 100%; margin: 0 auto; 
-            overflow-x: auto; scrollbar-width: none; transition: gap 0.3s cubic-bezier(0.4, 0, 0.2, 1); user-select: none; 
+            overflow-x: auto; scrollbar-width: none; transition: gap 0.3s cubic-bezier(0.4, 0, 0.2, 1); user-select: none;
         }
-        .sticky-tools-inner::-webkit-scrollbar { display: none; }
         .sticky-tools-inner.searching { gap: 0; overflow: hidden; }
 
-        .search-expandable { 
-            flex-shrink: 0; display: flex; align-items: center; background: var(--card-solid); 
-            border: 1px solid var(--border); border-radius: 12px; 
-            height: 38px; width: 38px; overflow: hidden; 
-            transition: width 0.3s cubic-bezier(0.4, 0, 0.2, 1), border-color 0.3s, box-shadow 0.3s; 
-            box-shadow: var(--shadow-flat);
-        }
+        .search-expandable { flex-shrink: 0; display: flex; align-items: center; background: var(--card-solid); border: 1px solid var(--border); border-radius: 12px; height: 38px; width: 38px; overflow: hidden; transition: width 0.3s cubic-bezier(0.4, 0, 0.2, 1), border-color 0.3s, box-shadow 0.3s; box-shadow: var(--shadow-flat); }
         body.dark .search-expandable { background: var(--card-solid); border-color: var(--border); }
         .search-expandable.expanded { border-color: var(--primary); }
         
-        .search-icon-btn, .close-search-btn { 
-            flex-shrink: 0; min-width: 38px; height: 38px; background: transparent; border: none; font-size: 14px; 
-            cursor: pointer; color: var(--text-muted); display: flex; align-items: center; justify-content: center; transition: 0.2s; outline: none;
-        }
+        .search-icon-btn, .close-search-btn { flex-shrink: 0; min-width: 38px; height: 38px; background: transparent; border: none; font-size: 14px; cursor: pointer; color: var(--text-muted); display: flex; align-items: center; justify-content: center; transition: 0.2s; outline: none; }
         .search-expandable.expanded .search-icon-btn { color: var(--primary); pointer-events: none; }
         
-        .search-expandable input { 
-            flex: 1; border: none; outline: none; background: transparent; font-size: 13px; 
-            color: var(--text-main); padding: 0 4px; opacity: 0; pointer-events: none; transition: opacity 0.2s 0.1s; 
-        }
+        .search-expandable input { flex: 1; border: none; outline: none; background: transparent; font-size: 13px; color: var(--text-main); padding: 0 4px; opacity: 0; pointer-events: none; transition: opacity 0.2s 0.1s; }
         .search-expandable.expanded input { opacity: 1; pointer-events: auto; }
-        
         .close-search-btn { opacity: 0; pointer-events: none; }
         .close-search-btn:hover { color: var(--danger); }
         .search-expandable.expanded .close-search-btn { opacity: 1; pointer-events: auto; }
         
-        .filters-wrapper {
-            display: flex; align-items: center; gap: 8px; 
-            max-width: 1200px; opacity: 1; overflow: hidden;
-            flex-shrink: 0; transition: max-width 0.3s cubic-bezier(0.4, 0, 0.2, 1), opacity 0.2s ease;
-        }
+        .filters-wrapper { display: flex; align-items: center; gap: 8px; max-width: 2000px; opacity: 1; overflow: hidden; flex-shrink: 0; transition: max-width 0.3s cubic-bezier(0.4, 0, 0.2, 1), opacity 0.2s ease; }
         .sticky-tools-inner.searching .filters-wrapper { max-width: 0; opacity: 0; transition: max-width 0.3s cubic-bezier(0.4, 0, 0.2, 1), opacity 0.1s ease; }
-        
-        .filter-btn { display:flex; align-items:center; flex-shrink: 0; padding: 8px 14px; border-radius: 10px; background: var(--card-solid); border: 1px solid var(--border); font-size: 12px; font-weight: 700; color: var(--text-muted); cursor: pointer; transition: 0.2s; white-space: nowrap; pointer-events: auto; outline: none; }
+
+        .filter-btn { display:flex; align-items:center; flex-shrink: 0; padding: 8px 14px; border-radius: 10px; background: var(--card-solid); border: 1px solid var(--border); font-size: 12px; font-weight: 700; color: var(--text-muted); cursor: pointer; transition: 0.2s; white-space: nowrap; outline: none; }
         .filter-btn.active { background: var(--primary-soft); border-color: var(--primary); color: var(--primary); }
         
+        /* =========================================================
+           FIX BADGE HOVER & ACTIVE CONTRAST 
+        ========================================================= */
         .filter-badge { background: var(--border); color: var(--text-muted); padding: 2px 6px; border-radius: 20px; font-size: 10px; margin-left: 6px; font-weight: 800; transition: all 0.2s; }
         body.dark .filter-badge { background: #334155; color: #94a3b8; }
         
+        /* Saat Hover tapi Tidak Aktif */
         .filter-btn:hover:not(.active) .filter-badge { background: var(--text-muted); color: var(--card-solid); }
         body.dark .filter-btn:hover:not(.active) .filter-badge { background: #94a3b8; color: #1e293b; }
         
+        /* Saat Tombol Aktif (Warna Pasti Terlihat) */
         .filter-btn.active .filter-badge { background: var(--primary); color: #ffffff; }
         
+        /* Kasus Khusus Trash Button */
         .filter-btn.trash-btn { color: var(--danger); border-color: var(--danger-soft); background: var(--card-solid); }
         .filter-btn.trash-btn .filter-badge { background: rgba(239, 68, 68, 0.1); color: var(--danger); }
-        .filter-btn.trash-btn.active { background: var(--danger); color: white; border-color: var(--danger); box-shadow: 0 4px 12px rgba(239, 64, 64, 0.2); }
+        
+        /* Saat Tombol Trash Aktif */
+        .filter-btn.trash-btn.active { background: var(--danger); color: white; border-color: var(--danger); }
         .filter-btn.trash-btn.active .filter-badge { background: #ffffff; color: var(--danger); }
         
         .divider { flex-shrink: 0; width: 1px; height: 18px; background: var(--border); margin: 0 2px; }
-        
+
         /* =========================================================
-           UI KARTU NOTES
+           UI KARTU (GRID, BUKAN MASONRY) & PAGINATION
         ========================================================= */
-        .notes-list { column-count: 4; column-gap: 16px; margin-top: 10px; transition: opacity 0.2s; }
+        .list-container { 
+            display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px; 
+            margin-top: 10px; transition: opacity 0.2s; 
+        }
         
-        .empty-state { column-span: all; text-align: center; padding: 60px 20px; background: var(--card-glass); border: 1px dashed var(--border); border-radius: 20px; cursor: pointer; transition: 0.2s; }
+        .empty-state { grid-column: 1 / -1; text-align: center; padding: 60px 20px; background: var(--card-glass); border: 1px dashed var(--border); border-radius: var(--radius-card); cursor: pointer; transition: 0.2s; }
         .empty-state:hover { background: var(--card-tint); }
         .empty-state-icon { font-size: 42px; margin-bottom: 12px; opacity: 0.8; }
         .empty-state-text { font-size: 13px; color: var(--text-muted); line-height: 1.6; }
         
-        .note-card { 
-            break-inside: avoid; margin-bottom: 16px; padding: 20px; 
-            border-radius: 20px; background: var(--card-glass); border: 1px solid var(--border); 
-            cursor: pointer; position: relative; overflow: hidden; box-shadow: var(--shadow-flat); 
-            transition: transform 0.2s, border-color 0.2s; 
-            background-image: linear-gradient(var(--paper-line) 1px, transparent 1px); 
-            background-size: 100% 28px; background-position: 0 12px; 
-            display: flex; flex-direction: column; gap: 12px;
-            outline: none !important;
+        .card { 
+            display: flex; flex-direction: column; height: 100%;
+            background: var(--card-glass); backdrop-filter: blur(12px); border: 1px solid var(--border); 
+            border-radius: 20px; padding: 20px; box-shadow: var(--shadow-flat); 
+            transition: transform 0.2s, border-color 0.2s; position: relative; cursor: pointer; outline: none !important;
         }
-        .note-card:hover { transform: translateY(-2px); border-color: #cbd5e1; }
-        .note-card.pinned { border-color: var(--warning); border-width: 2px; }
-        .note-card.trash-mode-card { border: 1px dashed var(--danger); background: var(--card-tint); cursor: default; background-image: none; }
-        .note-card.trash-mode-card:hover { transform: none; border-color: var(--danger); }
+        .card:hover { transform: translateY(-2px); border-color: #cbd5e1; }
+        .card.pinned { border-left: 4px solid var(--warning); }
+        .card.completed { opacity: 0.6; }
+        .card.completed .card-title { text-decoration: line-through; }
+        .card.trash-card { border: 1px dashed var(--danger); background: var(--card-tint); cursor: default; }
+        .card.trash-card:hover { transform: none; border-color: var(--danger); }
         
-        .note-header { display: flex; justify-content: space-between; align-items: flex-start; gap: 12px; position: relative; z-index: 2; }
-        .note-title-wrap { display: flex; flex-direction: column; gap: 8px; flex: 1; min-width: 0; }
-        .note-title { font-size: 16px; font-weight: 800; line-height: 1.4; color: var(--text-main); word-break: break-word; }
+        .card-header { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 8px; gap: 12px; }
         
-        .badges-container { display: flex; gap: 6px; flex-wrap: wrap; }
-        .badge { padding: 4px 8px; border-radius: 8px; font-size: 11px; font-weight: 700; background: var(--card-tint); color: var(--text-muted); border: 1px solid var(--border); display: flex; align-items: center; gap: 4px; line-height: 1.2; }
+        /* POTONG JUDUL 1 BARIS */
+        .card-title { 
+            font-size: 16px; font-weight: 800; line-height: 1.4; color: var(--text-main); word-break: break-all;
+            display: -webkit-box; -webkit-line-clamp: 1; -webkit-box-orient: vertical; overflow: hidden; 
+        }
+        /* POTONG PREVIEW 2 BARIS */
+        .card-preview { 
+            font-size: 13px; line-height: 1.6; color: var(--text-muted); word-break: break-word;
+            display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; 
+            margin-bottom: 16px; flex: 1; 
+        }
+        .card-bottom { display: flex; justify-content: space-between; align-items: center; gap: 8px; flex-wrap: wrap; margin-top: auto;}
+        
+        .badges { display: flex; gap: 6px; flex-wrap: wrap; }
+        .badge { padding: 4px 10px; border-radius: 8px; font-size: 11px; font-weight: 700; background: var(--card-tint); color: var(--text-muted); border: 1px solid var(--border); display: flex; align-items: center; gap: 4px; }
+        .badge.ch { background: var(--primary-soft); color: var(--primary); border: none; }
+        .badge.done { background: var(--success-soft); color: var(--success); border: none; }
         .badge.lock { background: var(--warning); color: white; border: none; animation: flash 1.5s infinite alternate; }
-        .badge.restored { background: rgba(245, 158, 11, 0.1); color: var(--warning); border-color: rgba(245, 158, 11, 0.2); }
-        .badge.user { background: transparent; }
-        .badge.danger { background: var(--danger-soft); color: var(--danger); border-color: var(--danger-soft); }
         @keyframes flash { from { opacity: 0.7; } to { opacity: 1; } }
-
-        .note-content { font-size: 13px; line-height: 28px; color: var(--text-muted); position: relative; z-index: 2; white-space: pre-wrap; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; word-break: break-word; }
+        .badge.deleted { background: var(--danger-soft); color: var(--danger); border: none; }
+        .badge.restored { background: rgba(245, 158, 11, 0.1); color: var(--warning); border-color: rgba(245, 158, 11, 0.2); }
         
-        .note-footer { display: flex; justify-content: space-between; align-items: flex-end; gap: 8px; margin-top: auto; padding-top: 12px; border-top: 1px dashed var(--border); position: relative; z-index: 2; }
-        .note-meta { display: flex; flex-direction: column; gap: 6px; }
-        .note-date { font-size: 11px; font-weight: 700; color: var(--text-muted); }
+        .card-actions { display: flex; gap: 8px; }
+        .btn-card-action { padding: 6px 12px; border-radius: 8px; font-size: 12px; font-weight: 800; border: none; cursor: pointer; transition: 0.2s; outline: none; display: flex; align-items: center; gap: 4px; }
+        .btn-card-action.restore { background: var(--success-soft); color: var(--success); }
+        .btn-card-action.restore:hover { background: var(--success); color: white; }
+        .btn-card-action.destroy { background: var(--danger-soft); color: var(--danger); border: 1px solid rgba(239, 68, 68, 0.2); }
+        .btn-card-action.destroy:hover { background: var(--danger); color: white; border-color: var(--danger); }
         
-        .btn-quick-del { width: 34px; height: 34px; border: none; background: transparent; color: var(--text-muted); font-size: 14px; cursor: pointer; border-radius: 8px; transition: 0.2s; outline: none; display: flex; align-items: center; justify-content: center; }
-        .btn-quick-del:hover { background: rgba(239, 68, 68, 0.1); color: var(--danger); }
-        
-        .btn-trash-action { padding: 6px 12px; border-radius: 8px; font-size: 12px; font-weight: 800; border: none; cursor: pointer; transition: 0.2s; outline: none; display: flex; align-items: center; justify-content: center; gap: 4px; }
-        .btn-trash-action.restore { background: var(--success-soft); color: var(--success); }
-        .btn-trash-action.restore:hover { background: var(--success); color: white; }
-
-        /* DESAIN PAGINATION */
         .pagination-container { display: flex; justify-content: center; align-items: center; gap: 8px; margin-top: 32px; padding-bottom: 24px; flex-wrap: wrap; column-span: all; }
-        .page-btn { min-width: 38px; height: 38px; padding: 0 12px; border-radius: 12px; border: 1px solid var(--border); background: var(--card-solid); color: var(--text-main); font-size: 14px; font-weight: 700; cursor: pointer; display: flex; justify-content: center; align-items: center; transition: all 0.2s; font-family: 'Inter', system-ui, sans-serif; outline: none; }
+        .page-btn { min-width: 38px; height: 38px; padding: 0 12px; border-radius: 12px; border: 1px solid var(--border); background: var(--card-solid); color: var(--text-main); font-size: 14px; font-weight: 700; cursor: pointer; display: flex; justify-content: center; align-items: center; transition: all 0.2s; outline: none; }
         .page-btn:hover:not(.disabled):not(.active) { background: var(--card-tint); }
         .page-btn.active { background: var(--primary); color: white; border-color: var(--primary); box-shadow: 0 4px 12px rgba(37, 99, 235, 0.2); }
         .page-btn.disabled { opacity: 0.4; pointer-events: none; }
@@ -278,106 +268,112 @@
         body.dark .page-btn { background: var(--card-solid, #1e293b); border-color: var(--border, #334155); color: var(--text-main, #f8fafc); }
         body.dark .page-btn.active { background: var(--primary); color: white; border-color: var(--primary); }
 
-        .fab { position: fixed; right: 24px; bottom: 24px; width: 56px; height: 56px; border: none; border-radius: 20px; background: var(--primary-grad); color: white; font-size: 28px; cursor: pointer; box-shadow: 0 10px 25px rgba(37, 99, 235, 0.3); z-index: 100; display: flex; align-items: center; justify-content: center; outline: none; transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1); }
+        .fab { position: fixed; right: 24px; bottom: 24px; width: 56px; height: 56px; border: none; border-radius: 20px; background: var(--primary-grad); color: white; font-size: 28px; cursor: pointer; box-shadow: 0 10px 25px rgba(37, 99, 235, 0.3); z-index: 100; display: flex; align-items: center; justify-content: center; outline: none; transition: transform 0.3s; }
         .fab.hidden { transform: scale(0); pointer-events: none; }
         
-        /* EDITOR IMMERSIVE CATATAN */
-        .editor { position: fixed; inset: 0; background: var(--bg-grad); z-index: 99999; display: none; flex-direction: column; width: 100vw; height: 100vh; }
-        .editor.active { display: flex; }
+        /* POPUP EDITOR */
+        .popup-overlay { position: fixed; inset: 0; background: var(--bg-grad); z-index: 99999; display: none; flex-direction: column; width: 100vw; height: 100vh; }
+        .popup-overlay.active { display: flex; }
         
-        .editor-header { 
-            display: flex; justify-content: space-between; align-items: center; 
-            height: 52px; padding: 0 16px; 
-            background: rgba(255, 255, 255, 0.85); backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px);
-            border-bottom: 1px solid var(--border); flex-shrink: 0; width: 100%; box-sizing: border-box;
-        }
+        .editor-header { display: flex; justify-content: space-between; align-items: center; height: 52px; padding: 0 16px; background: rgba(255, 255, 255, 0.85); backdrop-filter: blur(12px); border-bottom: 1px solid var(--border); z-index: 10; transition: all 0.3s ease; flex-shrink: 0; width: 100%; box-sizing: border-box; }
         body.dark .editor-header { background: rgba(15, 23, 42, 0.85); border-bottom: 1px solid var(--border, #334155); }
+        .header-left, .header-right { display: flex; align-items: center; gap: 8px; transition: opacity 0.2s; }
         
-        .editor-left, .editor-right { display: flex; align-items: center; gap: 8px; }
-        .auto-save { font-size: 11px; font-weight: 700; color: var(--text-muted); background: var(--card-tint); padding: 4px 10px; border-radius: 8px; opacity: 0; transition: 0.2s; white-space: nowrap; }
-        .auto-save.show { opacity: 1; }
+        .save-indicator { font-size: 11px; font-weight: 700; color: var(--text-muted); background: var(--card-tint); padding: 4px 10px; border-radius: 8px; opacity: 0; transition: 0.2s; white-space: nowrap;}
+        .save-indicator.show { opacity: 1; }
         
         .lock-banner { font-size: 11px; font-weight: 800; color: white; background: var(--danger); padding: 4px 10px; border-radius: 8px; display: none; white-space: nowrap; }
         .lock-banner.active { display: block; }
         body.dark .lock-banner { background: rgba(239, 68, 68, 0.8); border: 1px solid rgba(239, 68, 68, 0.4); }
 
-        .icon-btn { 
-            width: 34px; height: 34px; border: 1px solid var(--border); border-radius: 10px; 
-            background: var(--card-solid); color: var(--text-main); cursor: pointer; 
-            font-size: 15px; display: flex; align-items: center; justify-content: center; transition: 0.2s; outline: none;
-        }
-        .icon-btn:hover { background: var(--card-tint); }
-        .icon-btn.disabled { opacity: 0.35; pointer-events: none; }
-        .icon-btn.active-pin { background: var(--warning); border-color: var(--warning); color: white; }
+        .btn-icon { width: 34px; height: 34px; border: 1px solid var(--border); border-radius: 10px; background: var(--card-solid); color: var(--text-main); display: flex; align-items: center; justify-content: center; font-size: 15px; cursor: pointer; transition: all 0.2s; outline: none; }
+        .btn-icon:hover { background: var(--card-tint); }
+        .btn-icon.disabled { opacity: 0.35; pointer-events: none; }
+        .btn-icon.active-pin { background: var(--warning); border-color: var(--warning); color: white; }
+        .btn-icon.active-read { background: var(--primary-soft); border-color: var(--primary); color: var(--primary); }
         
-        body.dark .icon-btn { border-color: var(--border, #334155); background: var(--card-solid, #1e293b); color: var(--text-main, #f8fafc); }
-        body.dark .icon-btn.active-pin { background: var(--warning); border-color: var(--warning); color: white; }
+        body.dark .btn-icon { border-color: var(--border, #334155); background: var(--card-solid, #1e293b); color: var(--text-main, #f8fafc); }
+        body.dark .btn-icon.active-pin { border-color: var(--warning); background: var(--warning); color: white; }
+        body.dark .btn-icon.active-read { background: rgba(37, 99, 235, 0.2); border-color: var(--primary); color: #60a5fa; }
         
-        .editor-body { 
-            flex: 1; overflow-y: auto; 
-            padding: 40px 0 200px; 
-            scroll-padding-bottom: 120px; 
-            background-image: linear-gradient(var(--paper-line) 1px, transparent 1px); background-size: 100% 32px; background-position: 0 8px; background-attachment: local; 
-            box-sizing: border-box; width: 100%;
-        }
-        .editor-body.locked { opacity: 0.85; }
+        .editor-body { flex: 1; overflow-y: auto; padding: 32px 24px 150px; scroll-padding-bottom: 120px; max-width: 800px; margin: 0 auto; width: 100%; transition: padding 0.3s; box-sizing: border-box; }
+        .editor-body.locked { opacity: 0.8; }
         
-        .editor-container { max-width: 1000px; width: 100%; margin: 0 auto; position: relative; padding: 0 24px; display: block; box-sizing: border-box; }
+        .input-title { font-family: 'Inter', system-ui, sans-serif; width: 100%; border: none; outline: none; background: transparent; font-size: 24px; font-weight: 900; color: var(--text-main); margin-bottom: 8px; letter-spacing: -0.5px; transition: text-align 0.3s; resize: none; overflow: hidden; line-height: 1.4; box-sizing: border-box; }
+        .input-title::placeholder { color: var(--text-muted); opacity: 0.5; }
+        .input-title:disabled { color: var(--text-main); -webkit-text-fill-color: var(--text-main); opacity: 1; cursor: not-allowed; }
         
-        .title-input { 
-            width: 100%; border: none; outline: none; background: transparent; 
-            font-size: 32px; font-weight: 900; color: var(--text-main); 
-            margin-bottom: 24px; line-height: 1.3; 
-            resize: none; overflow: hidden; 
-            font-family: 'Inter', system-ui, sans-serif; box-sizing: border-box;
-        }
-        .title-input:disabled { color: var(--text-main); -webkit-text-fill-color: var(--text-main); opacity: 1; cursor: not-allowed; }
+        .category-wrapper { position: relative; width: 100%; margin-bottom: 32px; box-sizing: border-box; }
+        .input-category { width: 100%; border: none; outline: none; background: transparent; font-size: 14px; font-weight: 700; color: var(--primary); margin-bottom: 0; font-family: 'Inter', system-ui, sans-serif; box-sizing: border-box; }
+        .input-category::placeholder { color: var(--text-muted); font-weight: 600; opacity: 0.6; }
+        .input-category:disabled { color: var(--primary); -webkit-text-fill-color: var(--primary); opacity: 1; cursor: not-allowed; }
         
-        .content-input { 
-            width: 100%; min-height: 70vh; border: none; outline: none; 
-            resize: none; background: transparent; font-size: 16px; 
-            line-height: 32px; color: var(--text-main); 
-            overflow: hidden; 
-            display: block; 
-            font-family: 'Inter', system-ui, sans-serif; box-sizing: border-box;
-        }
-        .content-input:disabled { color: var(--text-main); -webkit-text-fill-color: var(--text-main); opacity: 1; cursor: not-allowed; }
+        .suggest-dropdown { position: absolute; top: 100%; left: 0; background: var(--card-solid); border: 1px solid var(--border); border-radius: 12px; padding: 6px; box-shadow: var(--shadow-flat); z-index: 100; min-width: 200px; max-height: 200px; overflow-y: auto; display: none; flex-direction: column; gap: 4px; margin-top: 8px; }
+        .suggest-dropdown.active { display: flex; }
+        .suggest-item { padding: 10px 14px; border-radius: 8px; font-size: 13px; font-weight: 700; color: var(--text-main); cursor: pointer; transition: 0.2s; text-align: left; background: transparent; border: none; font-family: 'Inter', system-ui, sans-serif; }
+        .suggest-item:hover { background: var(--primary-soft); color: var(--primary); }
+
+        .input-content { width: 100%; min-height: 50vh; border: none; outline: none; resize: none; overflow: hidden; background: transparent; font-size: 16px; line-height: 1.8; color: rgba(15, 23, 42, 0.85); letter-spacing: 0.2px; font-family: 'Inter', system-ui, sans-serif; box-sizing: border-box; }
+        body.dark .input-content { color: rgba(248, 250, 252, 0.85); }
+        .input-content::placeholder { color: var(--text-muted); opacity: 0.5; }
+        .input-content:disabled { color: rgba(15, 23, 42, 0.85); -webkit-text-fill-color: rgba(15, 23, 42, 0.85); opacity: 1; cursor: not-allowed; }
+        body.dark .input-content:disabled { color: rgba(248, 250, 252, 0.85); -webkit-text-fill-color: rgba(248, 250, 252, 0.85); }
         
-        .title-input::placeholder, .content-input::placeholder { color: var(--text-muted); opacity: 0.6; }
-        
-        .editor-footer { position: fixed; left: 0; right: 0; bottom: 0; background: var(--sticky-bg); backdrop-filter: blur(12px); border-top: 1px solid var(--border); padding: 14px 20px calc(14px + env(safe-area-inset-bottom)); display: flex; justify-content: space-between; align-items: center; z-index: 20; width: 100%; box-sizing: border-box; }
+        .editor-footer { width: 100%; flex-shrink: 0; background: rgba(255, 255, 255, 0.9); backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px); border-top: 1px solid var(--border); padding: 16px 24px calc(16px + env(safe-area-inset-bottom)); display: flex; justify-content: space-between; align-items: center; z-index: 20; transition: transform 0.3s ease; box-sizing: border-box; }
         body.dark .editor-footer { background: rgba(15, 23, 42, 0.9); }
-        
         .word-count { font-size: 12px; font-weight: 700; color: var(--text-muted); }
-        .save-btn { border: none; padding: 12px 28px; border-radius: 12px; background: var(--primary-grad); color: white; font-size: 13px; font-weight: 800; cursor: pointer; transition: 0.2s; box-shadow: 0 6px 16px rgba(37,99,235,0.2); outline: none; }
-        .save-btn:hover { transform: translateY(-2px); box-shadow: 0 8px 20px rgba(37,99,235,0.3); }
+        .footer-actions { display: flex; gap: 12px; }
+        .btn-action { padding: 12px 20px; border: none; border-radius: 12px; font-size: 13px; font-weight: 800; cursor: pointer; transition: 0.2s; outline: none; }
+        .btn-draft { background: var(--card-solid); border: 1px solid var(--border); color: var(--text-main); }
+        .btn-draft:hover { background: var(--card-tint); }
+        .btn-done { background: var(--primary-grad); color: white; }
+        
+        .dropdown-wrap { position: relative; }
+        .dropdown-menu { position: absolute; top: 42px; right: 0; background: var(--card-solid); border: 1px solid var(--border); border-radius: 16px; padding: 8px; display: none; flex-direction: column; gap: 4px; min-width: 180px; box-shadow: var(--shadow-flat); z-index: 1000; }
+        body.dark .dropdown-menu { border-color: var(--border, #334155); }
+        .dropdown-menu.active { display: flex; }
+        .dropdown-menu button { background: transparent; border: none; padding: 10px 14px; border-radius: 10px; font-size: 13px; font-weight: 700; color: var(--text-main); text-align: left; cursor: pointer; transition: 0.2s; font-family: 'Inter', system-ui, sans-serif; outline: none;}
+        .dropdown-menu button:hover { background: var(--bg-grad); }
+        
+        /* READING MODE */
+        .fab-back { position: fixed; top: 24px; left: 24px; width: 56px; height: 56px; border: 1px solid var(--border); border-radius: 20px; background: var(--card-solid); color: var(--text-main); cursor: pointer; box-shadow: var(--shadow-flat); z-index: 100000; display: none; align-items: center; justify-content: center; transition: transform 0.2s ease, box-shadow 0.2s ease; outline: none; }
+        body.dark .fab-back { box-shadow: 0 10px 25px rgba(0, 0, 0, 0.4); border-color: var(--border); }
+        .fab-back:hover { transform: translateY(-2px); box-shadow: 0 12px 30px rgba(0, 0, 0, 0.1); }
+        
+        .popup-overlay.reading-mode .fab-back { display: flex; }
+        .popup-overlay.reading-mode .editor-header { display: none; }
+        .popup-overlay.reading-mode .category-wrapper, .popup-overlay.reading-mode .editor-footer { display: none; }
+        .popup-overlay.reading-mode .editor-body { max-width: 700px; padding-top: 100px; padding-bottom: 150px; scroll-padding-bottom: 80px; }
+        .popup-overlay.reading-mode .input-title { text-align: center; font-size: 28px; margin-bottom: 24px; }
+        .popup-overlay.reading-mode .input-content { font-size: 18px; line-height: 2; }
 
         /* =========================================================
            MODAL UMUM & PENGUMUMAN
         ========================================================= */
-        .modal-overlay { position: fixed; inset: 0; background: rgba(0,0,0,0.4); backdrop-filter: blur(4px); z-index: 999999; display: none; align-items: center; justify-content: center; padding: 20px; width: 100vw; height: 100vh; box-sizing: border-box; }
+        .modal-overlay { position: fixed; inset: 0; background: rgba(0,0,0,0.4); backdrop-filter: blur(4px); z-index: 100001; display: none; align-items: center; justify-content: center; padding: 20px; width: 100vw; height: 100vh; box-sizing: border-box; }
         .modal-overlay.active { display: flex; }
+        /* OVERFLOW Y AUTO: FIX TOMBOL TERPOTONG */
         .modal-card { background: var(--card-solid); width: 100%; border-radius: var(--radius-card); padding: 24px; box-shadow: var(--shadow-flat); border: 1px solid var(--border); box-sizing: border-box; display: flex; flex-direction: column; max-height: 90vh; overflow-y: auto; }
-        .modal-card h3 { font-size: 20px; font-weight: 900; margin-bottom: 8px; color: var(--text-main); flex-shrink: 0; text-align: center; }
-        .modal-card p { font-size: 13px; color: var(--text-muted); margin-bottom: 20px; line-height: 1.5; flex-shrink: 0; text-align: center; }
+        .modal-card h3 { font-size: 20px; font-weight: 900; margin-bottom: 8px; color: var(--text-main); flex-shrink: 0; }
+        .modal-card p { font-size: 13px; color: var(--text-muted); margin-bottom: 20px; line-height: 1.5; flex-shrink: 0; }
         
         .modal-input, .modal-select, .modal-textarea { width: 100%; padding: 14px 16px; border-radius: 14px; border: 1px solid var(--border); background: var(--card-tint); color: var(--text-main); font-size: 14px; font-weight: 600; outline: none; margin-bottom: 12px; transition: 0.2s; box-sizing: border-box; font-family: inherit; }
         .modal-textarea { resize: vertical; min-height: 120px; line-height: 1.5; }
         .modal-input:focus, .modal-select:focus, .modal-textarea:focus { border-color: var(--primary); box-shadow: 0 0 0 3px var(--primary-soft); background: var(--card-solid); }
         .modal-select { appearance: none; cursor: pointer; }
-        
-        .modal-actions { display: flex; gap: 12px; margin-top: 8px; flex-shrink: 0; }
+        .modal-actions { display: flex; gap: 12px; margin-top: 8px; flex-shrink: 0; margin-bottom: 0; }
         .btn-modal { flex: 1; padding: 12px; border-radius: 12px; font-size: 13px; font-weight: 800; cursor: pointer; border: none; transition: 0.2s; outline: none; display: flex; justify-content: center; align-items: center; gap: 6px; }
         .btn-cancel { background: var(--card-tint); color: var(--text-main); border: 1px solid var(--border); }
         .btn-cancel:hover { background: #e2e8f0; }
         body.dark .btn-cancel:hover { background: #334155; }
         .btn-confirm { background: var(--primary-grad); color: white; }
-
+        
         .info-row { display: flex; justify-content: space-between; margin-bottom: 12px; font-size: 13px; gap: 12px; }
         .info-label { color: var(--text-muted); font-weight: 600; flex-shrink: 0; }
-        .info-value { font-weight: 800; color: var(--text-main); text-align: right; max-width: 60%; word-break: break-word; }
-        
-        /* LIST PENGUMUMAN & INPUT GROUP */
+        .info-value { font-weight: 800; color: var(--text-main); text-align: right; max-width: 60%; word-break: break-word;}
+        .btn-close-info { width: 100%; padding: 12px; margin-top: 20px; border: none; background: var(--card-tint); color: var(--text-main); font-weight: 800; border-radius: 12px; cursor: pointer; font-family: 'Inter', system-ui, sans-serif; outline: none;}
+
+        /* LIST PENGUMUMAN & TARGET MEMBER (IDENTIK) */
         .input-group { text-align: left; margin-bottom: 16px; flex-shrink: 0; display: flex; flex-direction: column; }
         .input-group > label { display: block; font-size: 12px; font-weight: 800; color: var(--text-muted); margin-bottom: 8px; }
         .flex-label-row { display: flex; justify-content: space-between; align-items: flex-end; margin-bottom: 8px; }
@@ -415,23 +411,6 @@
         .ann-meta { font-size: 11px; color: var(--text-muted); font-weight: 600; display: flex; justify-content: flex-end; align-items: center; margin-top: 4px;}
         .ann-admin-indicator { color: var(--primary); display: flex; align-items: center; gap: 4px; background: var(--primary-soft); padding: 4px 8px; border-radius: 6px; }
 
-        .member-item { display: flex; align-items: center; justify-content: space-between; padding: 12px; background: var(--card-solid); border: 1px solid var(--border); border-radius: 14px; margin-bottom: 8px; gap: 12px; transition: border-color 0.2s; }
-        .member-item:hover { border-color: var(--primary); }
-        .member-info-left { display: flex; align-items: center; gap: 12px; flex: 1; min-width: 0; }
-        .member-avatar { width: 36px; height: 36px; border-radius: 50%; background: var(--primary-grad); color: white; display: flex; align-items: center; justify-content: center; font-size: 14px; font-weight: 800; flex-shrink: 0; position: relative; }
-        .member-name-wrap { display: flex; flex-direction: column; flex: 1; min-width: 0; gap: 2px;}
-        .member-name { font-size: 14px; font-weight: 700; color: var(--text-main); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
-        .member-role { font-size: 10px; font-weight: 800; color: var(--primary); background: var(--primary-soft); padding: 2px 6px; border-radius: 6px; width: fit-content; text-transform: uppercase; letter-spacing: 0.5px;}
-        
-        .member-actions { display: flex; gap: 6px; flex-shrink: 0; }
-        .btn-icon-mng { width: 32px; height: 32px; border-radius: 10px; border: none; display: flex; align-items: center; justify-content: center; cursor: pointer; transition: 0.2s; outline: none;}
-        .btn-icon-mng.kick { background: var(--danger-soft); color: var(--danger); }
-        .btn-icon-mng.kick:hover { background: var(--danger); color: white; }
-        body.dark .btn-icon-mng.kick { color: #f87171; }
-        .btn-icon-mng.admin { background: var(--warning-soft); color: var(--warning); }
-        .btn-icon-mng.admin:hover { background: var(--warning); color: white; }
-        body.dark .btn-icon-mng.admin { color: #fbbf24; }
-
         .target-list-box { background: var(--card-tint); border: 1px solid var(--border); border-radius: 14px; padding: 8px; display: flex; flex-direction: column; gap: 6px; max-height: 150px; overflow-y: auto; margin-top: 8px; }
         .target-member-item { display: flex; align-items: center; justify-content: space-between; padding: 10px 12px; background: var(--card-solid); border: 1px solid var(--border); border-radius: 10px; cursor: pointer; transition: 0.2s; position: relative; z-index: 1; gap: 12px; }
         .target-member-item:hover { border-color: var(--primary); z-index: 10; box-shadow: 0 2px 10px rgba(0,0,0,0.02); }
@@ -442,7 +421,27 @@
         .checkbox-custom { width: 20px; height: 20px; border-radius: 6px; border: 2px solid var(--border); display: flex; align-items: center; justify-content: center; color: transparent; transition: 0.2s; }
         input[type="checkbox"]:checked + .checkbox-custom { background: var(--primary); border-color: var(--primary); color: white; }
 
-        .side-panel-overlay { position: fixed; inset: 0; background: rgba(0,0,0,0.5); backdrop-filter: blur(4px); z-index: 1000000; display: flex; justify-content: flex-end; opacity: 0; pointer-events: none; transition: opacity 0.3s ease; }
+        /* LIST ANGGOTA CSS (MODAL) */
+        .member-item { display: flex; align-items: center; justify-content: space-between; padding: 12px; background: var(--card-solid); border: 1px solid var(--border); border-radius: 14px; margin-bottom: 8px; gap: 12px; transition: border-color 0.2s; }
+        .member-item:hover { border-color: var(--primary); }
+        .member-info-left { display: flex; align-items: center; gap: 12px; flex: 1; min-width: 0; }
+        .member-avatar { width: 36px; height: 36px; border-radius: 50%; background: var(--primary-grad); color: white; display: flex; align-items: center; justify-content: center; font-size: 14px; font-weight: 800; flex-shrink: 0; position: relative; }
+        .member-name-wrap { display: flex; flex-direction: column; flex: 1; min-width: 0; gap: 2px;}
+        .member-name { font-size: 14px; font-weight: 700; color: var(--text-main); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+        .member-role { font-size: 10px; font-weight: 800; color: var(--primary); background: var(--primary-soft); padding: 2px 6px; border-radius: 6px; width: fit-content; text-transform: uppercase; letter-spacing: 0.5px;}
+        
+        /* TOMBOL AKSI MANAJEMEN ANGGOTA */
+        .member-actions { display: flex; gap: 6px; flex-shrink: 0; }
+        .btn-icon-mng { width: 32px; height: 32px; border-radius: 10px; border: none; display: flex; align-items: center; justify-content: center; cursor: pointer; transition: 0.2s; outline: none;}
+        .btn-icon-mng.kick { background: var(--danger-soft); color: var(--danger); }
+        .btn-icon-mng.kick:hover { background: var(--danger); color: white; }
+        body.dark .btn-icon-mng.kick { color: #f87171; }
+        .btn-icon-mng.admin { background: var(--warning-soft); color: var(--warning); }
+        .btn-icon-mng.admin:hover { background: var(--warning); color: white; }
+        body.dark .btn-icon-mng.admin { color: #fbbf24; }
+
+        /* SIDE PANEL (DRAWER) UNTUK DETAIL PENGUMUMAN */
+        .side-panel-overlay { position: fixed; inset: 0; background: rgba(0,0,0,0.5); backdrop-filter: blur(4px); z-index: 100005; display: flex; justify-content: flex-end; opacity: 0; pointer-events: none; transition: opacity 0.3s ease; }
         .side-panel-overlay.active { opacity: 1; pointer-events: auto; }
         
         .side-panel { background: var(--card-solid); width: 100%; max-width: 480px; height: 100%; display: flex; flex-direction: column; transform: translateX(100%); transition: transform 0.35s cubic-bezier(0.165, 0.84, 0.44, 1); box-shadow: -10px 0 40px rgba(0,0,0,0.1); border-left: 1px solid var(--border); }
@@ -455,7 +454,7 @@
         .btn-close-sp:hover { background: var(--border); color: var(--text-main); }
 
         .side-panel-body { flex: 1; overflow-y: auto; padding: 24px; display: flex; flex-direction: column; gap: 16px; }
-        #sidePanelEdit .input-group { margin-bottom: 0; }
+        #sidePanelEdit .input-group { margin-bottom: 0; } 
         
         .sp-meta-top { display: flex; justify-content: space-between; align-items: center; font-size: 12px; font-weight: 700; color: var(--text-muted); }
         .sp-message { font-size: 15px; font-weight: 500; color: var(--text-main); line-height: 1.7; white-space: pre-wrap; word-break: break-word; }
@@ -469,30 +468,31 @@
 
         .side-panel-footer { padding: 16px 24px 24px; border-top: 1px solid var(--border); background: var(--card-solid); flex-shrink: 0; }
         .side-panel-footer .modal-actions { margin-top: 0; border-top: none; padding-top: 0; }
-        
+
         /* BREAKPOINT RESPONSIF */
-        @media(max-width: 1024px) { .notes-list { column-count: 3; } }
-        @media(max-width: 768px) { .notes-list { column-count: 2; } }
+        @media(max-width: 1024px) { .list-container { grid-template-columns: repeat(2, 1fr); } }
         @media(max-width: 600px) { 
             body { padding-top: 76px; }
             .hero-card { padding: 20px; } 
-            
             .hero-content-flex { gap: 12px; align-items: flex-start; }
             .hero-right { order: 2; margin-left: auto; margin-top: 0; }
+            
             .hero-text { order: 3; flex: 0 0 100%; padding: 8px 12px; margin-left: -8px; }
+            
             .hero-title { font-size: 20px; } 
             
             /* Menyesuaikan ukuran dot hijau di HP */
             .face-online-dot { width: 12px; height: 12px; border-width: 2px; }
 
-            .notes-list { column-count: 1; } 
-            .note-card { padding: 16px; margin-bottom: 12px; } 
-            .note-title { font-size: 15px; } 
-            .note-content { font-size: 12px; line-height: 24px; } 
-            .editor-container { padding: 0 16px; }
-            .title-input { font-size: 26px; }
-            .editor-footer { padding: 12px 16px; flex-direction: column; gap: 12px; align-items: flex-start;}
-            .save-btn { width: 100%; padding: 12px; }
+            .editor-footer { flex-direction: column; gap: 16px; align-items: flex-start; padding: 16px; } 
+            .footer-actions { width: 100%; } 
+            .btn-action { flex: 1; text-align: center; } 
+            .word-count { width: 100%; text-align: left; } 
+            .list-container { grid-template-columns: 1fr; }
+            .fab-back { top: 16px; left: 16px; width: 48px; height: 48px; }
+            .popup-overlay.reading-mode .editor-body { padding-top: 80px; }
+            .editor-body { padding: 24px 16px 120px; }
+            .header-left, .header-right { gap: 4px; }
             .side-panel { max-width: 100%; border-left: none; }
         }
     </style>
@@ -517,40 +517,39 @@
                 
                 <div class="hero-text" onclick="openRoomInfoModal()" title="Lihat detail ruang">
                     <h1 class="hero-title" id="uiRoomName">Memuat Ruang...</h1>
-                    <p class="trash-indicator">🗑️ Menampilkan sampah ruang. Lenyap otomatis dalam 30 hari.</p>
                 </div>
 
-                <div class="hero-right" id="uiHeroRight">
+                <div class="hero-right">
                     <div class="facepile-wrap" id="uiFacepile" onclick="openMemberListModal()" title="Daftar Anggota">
-                    </div>
+                        </div>
+                    
                     <button class="btn-mega" id="btnAnnouncement" onclick="openAnnouncementModal()" title="Papan Pengumuman Ruang">
                         📢 <div class="unread-dot" id="annUnreadBadge"></div>
                     </button>
                 </div>
             </div>
         </div>
+    </div>
 
-        <div class="sticky-tools" id="stickyToolsBar">
+    <div class="wrapper" style="position: sticky; top: 76px; z-index: 50;">
+        <div class="sticky-tools">
             <div class="sticky-tools-inner" id="filterWrap">
-                
                 <div class="search-expandable" id="searchContainer">
-                    <button class="search-icon-btn" onclick="openSearch(event)" title="Cari Catatan">🔍</button>
-                    <input type="text" id="searchInput" placeholder="Cari catatan tim..." autocomplete="off" oninput="window.currentPage=1; window.renderNotes()">
+                    <button class="search-icon-btn" onclick="openSearch(event)" title="Cari Script">🔍</button>
+                    <input type="text" id="searchInput" placeholder="Cari naskah tim..." autocomplete="off" oninput="window.currentPage=1; renderList()">
                     <button class="close-search-btn" onclick="closeSearch(event)" title="Tutup Pencarian">✕</button>
                 </div>
-                
-                <div class="filters-wrapper" id="filterButtons"></div>
-
+                <div class="filters-wrapper" id="dynamicFilters"></div>
             </div>
         </div>
+    </div>
 
-        <div class="notes-list" id="notesList">
-            <div style="text-align: center; padding: 40px; color: var(--text-muted); column-span: all;">Memuat data...</div>
+    <div class="wrapper">
+        <div class="list-container" id="listContainer">
+            <div style="text-align: center; padding: 40px; color: var(--text-muted); grid-column: 1 / -1;">Memuat data...</div>
         </div>
-
         <div id="paginationContainer" class="pagination-container"></div>
-
-        <button class="fab" id="fabAdd" onclick="openEditor()">+</button>
+        <button class="fab" id="fabAdd" onclick="openPopup()">+</button>
     </div>
 
     <div class="modal-overlay" id="roomInfoModal">
@@ -571,61 +570,88 @@
         <div class="modal-card" style="max-width: 440px;">
             <h3 style="text-align: center; margin-bottom: 4px;">Kelola Anggota</h3>
             <p id="membersSubtitle" style="text-align: center; margin-bottom: 16px;">Melihat daftar anggota di dalam ruang.</p>
-            <div class="list-container-scroll" id="memberListContainer" style="max-height: 400px; overflow-y: auto;"></div>
-            <div class="modal-actions" style="margin-top: 20px;">
+            <div class="list-container-scroll" id="memberListContainer" style="max-height: 50vh;"></div>
+            <div class="modal-actions" style="margin-top: 16px;">
                 <button class="btn-modal btn-cancel" onclick="closeMemberListModal()">Tutup</button>
             </div>
         </div>
     </div>
 
-    <div class="editor" id="editor">
+    <div class="popup-overlay" id="editorPopup">
+        <button class="fab-back" id="btnExitReadingMode" onclick="toggleReadingMode()" title="Kembali">
+            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                <line x1="19" y1="12" x2="5" y2="12"></line>
+                <polyline points="12 19 5 12 12 5"></polyline>
+            </svg>
+        </button>
+
         <div class="editor-header">
-            <div class="editor-left">
-                <button class="icon-btn" onclick="closeEditor()">✕</button>
-                <button class="icon-btn disabled" id="btnUndo" onclick="handleUndo()" title="Undo (Ctrl+Z)">
+            <div class="header-left">
+                <button class="btn-icon" id="btnClosePopup" onclick="closePopup()" title="Tutup">✕</button>
+                <button class="btn-icon disabled" id="btnUndo" onclick="handleUndo()" title="Undo (Ctrl+Z)">
                     <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M3 7v6h6"></path><path d="M21 17a9 9 0 0 0-9-9 9 9 0 0 0-6 2.3L3 13"></path></svg>
                 </button>
-                <button class="icon-btn disabled" id="btnRedo" onclick="handleRedo()" title="Redo (Ctrl+Y)">
+                <button class="btn-icon disabled" id="btnRedo" onclick="handleRedo()" title="Redo (Ctrl+Y)">
                     <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M21 7v6h-6"></path><path d="M3 17a9 9 0 0 1 9-9 9 9 0 0 1 6 2.3l3 2.7"></path></svg>
                 </button>
-                <div class="auto-save" id="autoSaveStatus">Tersimpan ✓</div>
+                <div class="save-indicator" id="saveIndicator">Menyimpan...</div>
                 <div class="lock-banner" id="lockBanner">🔒 Read-Only</div>
             </div>
-            <div class="editor-right">
-                <button class="icon-btn" onclick="showInfo()" title="Info">ℹ️</button>
-                <button class="icon-btn" onclick="exportTXT()" title="Export .txt">📄</button>
-                <button class="icon-btn" onclick="togglePin()" id="pinBtn" title="Sematkan">📌</button>
-                <button class="icon-btn" id="btnTrash" onclick="softDeleteNote()" style="color:var(--danger);" title="Hapus ke Trash">🗑</button>
+            <div class="header-right">
+                <button class="btn-icon" onclick="togglePin()" id="btnPin" title="Sematkan">📌</button>
+                <button class="btn-icon" onclick="toggleReadingMode()" id="btnReadingMode" title="Mode Fokus">👁️</button>
+                <div class="dropdown-wrap">
+                    <button class="btn-icon" onclick="toggleDropdown(event, 'actionMenu')">⋮</button>
+                    <div class="dropdown-menu" id="actionMenu">
+                        <button onclick="showInfo()">ℹ️ Detail Info</button>
+                        <button onclick="copyContent()">📋 Salin Teks</button>
+                        <button onclick="exportTxt()">📄 Export .txt</button>
+                        <hr style="border: 0; border-top: 1px solid var(--border); margin: 4px 0;">
+                        <button id="btnDelete" onclick="softDeleteScript()" style="color: var(--danger);">🗑 Hapus ke Trash</button>
+                    </div>
+                </div>
             </div>
         </div>
-
+        
         <div class="editor-body" id="editorBody">
-            <div class="editor-container">
-                <textarea id="titleInput" class="title-input" placeholder="Judul catatan..." autocomplete="off" rows="1" spellcheck="false" oninput="autoResizeTitle(); markAsEdited(); triggerAutoSave(); triggerHistorySave()" onkeydown="if(event.key==='Enter'){event.preventDefault(); document.getElementById('contentInput').focus();}"></textarea>
-                
-                <textarea id="contentInput" class="content-input" placeholder="Mulai menulis secara leluasa..." autocomplete="off" oninput="autoResizeContent(); updateCounter(); markAsEdited(); triggerAutoSave(); triggerHistorySave()"></textarea>
+            <textarea id="inputTitle" class="input-title" placeholder="Judul Script..." autocomplete="off" spellcheck="false" rows="1" oninput="autoResizeTitle(); triggerAutoSave(); triggerHistorySave()" onkeydown="if(event.key==='Enter'){event.preventDefault(); document.getElementById('inputCategory').focus();}"></textarea>
+            
+            <div class="category-wrapper">
+                <input type="text" id="inputCategory" class="input-category" placeholder="Ketik Kategori (misal: YouTube, Tiktok)..." autocomplete="off" oninput="handleCategoryInput(); triggerHistorySave()" onfocus="showCategorySuggestions()">
+                <div class="suggest-dropdown" id="categorySuggestions"></div>
             </div>
+            
+            <textarea id="inputContent" class="input-content" placeholder="Mulai menulis naskah kolaborasi..." autocomplete="off" oninput="handleTyping(); autoResizeContent(); triggerHistorySave()"></textarea>
         </div>
-
+        
         <div class="editor-footer" id="editorFooter">
-            <div class="word-count" id="wordCounter">0 kata | 0 karakter</div>
-            <button class="save-btn" id="btnSaveMain" onclick="saveNote()">SIMPAN CATATAN</button>
+            <div class="word-count" id="wordCountDisplay">0 Kata • 0 Karakter</div>
+            <div class="footer-actions">
+                <button class="btn-action btn-draft" onclick="saveScript('draft')">Simpan Draft</button>
+                <button class="btn-action btn-done" onclick="saveScript('done')">Tandai Selesai</button>
+            </div>
         </div>
     </div>
 
     <div class="modal-overlay" id="infoModal">
         <div class="modal-card" style="max-width: 360px;">
-            <h3>Detail Catatan</h3>
-            <p style="margin-bottom: 20px;">Rincian lengkap dari dokumen ini.</p>
-            <div id="infoContent"></div>
-            <button class="btn-modal btn-cancel" style="width: 100%; margin-top: 20px;" onclick="document.getElementById('infoModal').classList.remove('active')">Tutup</button>
+            <h3 style="text-align: center;">Informasi Script</h3>
+            <p style="margin-bottom: 20px; text-align: center;">Rincian lengkap dari dokumen ini.</p>
+            <div class="info-row"><span class="info-label">Judul</span> <span class="info-value" id="infoTitle">-</span></div>
+            <div class="info-row"><span class="info-label">Kategori</span> <span class="info-value" id="infoCat">-</span></div>
+            <div class="info-row"><span class="info-label">Status</span> <span class="info-value" id="infoStatus">-</span></div>
+            <div class="info-row"><span class="info-label">Kreator Asli</span> <span class="info-value" id="infoCreator">-</span></div>
+            <div class="info-row"><span class="info-label">Jumlah Kata</span> <span class="info-value" id="infoWords">0</span></div>
+            <div class="info-row"><span class="info-label">Dibuat</span> <span class="info-value" id="infoCreated">-</span></div>
+            <div class="info-row"><span class="info-label">Diubah</span> <span class="info-value" id="infoUpdated">-</span></div>
+            <button class="btn-close-info" onclick="closeInfoModal()">Tutup</button>
         </div>
     </div>
 
     <div class="modal-overlay" id="announcementModal">
         <div class="modal-card" style="max-width: 480px;">
-            <h3 style="margin-bottom: 6px;">Papan Pengumuman</h3>
-            <p id="annSubtitle">Riwayat dan arsip pesan penting dari Admin ruang.</p>
+            <h3 style="margin-bottom: 6px; text-align: center;">Papan Pengumuman</h3>
+            <p id="annSubtitle" style="text-align: center;">Riwayat dan arsip pesan penting dari Admin ruang.</p>
             
             <button class="btn-modal btn-confirm" id="btnCreateAnn" style="margin-bottom: 16px; display: none; width: 100%; border-radius: 14px;" onclick="openCreateAnnouncementForm()">
                 + Buat Pengumuman Baru
@@ -641,8 +667,8 @@
 
     <div class="modal-overlay" id="formAnnouncementModal">
         <div class="modal-card" style="max-width: 480px;">
-            <h3 id="formAnnTitle">Buat Pengumuman</h3>
-            <p>Pesan akan langsung dikirimkan ke layar target anggota.</p>
+            <h3 id="formAnnTitle" style="text-align: center;">Buat Pengumuman</h3>
+            <p style="text-align: center;">Pesan akan langsung dikirimkan ke layar target anggota.</p>
             
             <div class="input-group">
                 <div class="flex-label-row">
@@ -674,7 +700,7 @@
                 <div class="target-list-box" id="annTargetListCreate"></div>
             </div>
 
-            <div class="modal-actions" style="margin-top: 20px; padding-top: 20px; border-top: 1px dashed var(--border);">
+            <div class="modal-actions" style="margin-top: 16px; padding-top: 16px; border-top: 1px dashed var(--border);">
                 <button class="btn-modal btn-cancel" onclick="closeCreateAnnouncementForm()">Batal</button>
                 <button class="btn-modal btn-confirm" onclick="saveAnnouncement()">Kirim Pengumuman</button>
             </div>
@@ -751,25 +777,24 @@
 
     <script src="../navbar/navbar.js"></script>
     <script src="../js/pwa.js"></script>
-    
+
     <script type="module">
         import { auth, db } from "../js/firebase.js";
         import { onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
-        import { onSnapshot, collection, query, where, doc, setDoc, deleteDoc, updateDoc, deleteField, arrayUnion, arrayRemove } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
+        import { onSnapshot, collection, query, where, doc, setDoc, updateDoc, deleteDoc, deleteField, arrayUnion, arrayRemove } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
 
         const urlParams = new URLSearchParams(window.location.search);
         const currentRoomId = urlParams.get('id');
 
-        // State Global Aplikasi
+        // State Global
         let currentUserUid = null;
         let currentUserData = { name: "Anonim" };
         window.roomData = null;
-        window.notesData = [];
+        window.scriptData = [];
         window.trashData = [];
         window.globalAnnouncements = [];
         window.presenceData = {}; 
         
-        // Cache nama dinamis client-side & Registry Listener Profil
         window.userCache = {}; 
         window.userListeners = {}; 
         
@@ -779,14 +804,14 @@
         window.currentViewAnnId = null; 
         window.currentEditAnnId = null;
         
-        window.isTrashView = false; 
+        window.isTrashView = false;
         window.currentFilter = 'all';
         window.currentSort = 'newest';
         window.currentPinned = false;
-        window.isRestored = false; 
+        window.isRestored = false;
         
         window.currentPage = 1;
-        window.itemsPerPage = 12;
+        window.itemsPerPage = 12; 
         
         let autoSaveTimeout = null;
         window.historyStack = [];
@@ -796,20 +821,13 @@
         
         // Logika Presence Throttle
         let lastPresenceWrite = 0;
-        const PRESENCE_THROTTLE = 60000; // Sinyal "masih aktif" dikirim maks 1 menit sekali untuk hemat kuota
+        const PRESENCE_THROTTLE = 60000;
 
         const svgEye = `<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path><circle cx="12" cy="12" r="3"></circle></svg>`;
 
-        const formatFullDate = (ms) => {
-            if(!ms) return '';
-            const d = new Date(ms);
-            const months = ['Jan', 'Feb', 'Mar', 'Apr', 'Mei', 'Jun', 'Jul', 'Ags', 'Sep', 'Okt', 'Nov', 'Des'];
-            const time = String(d.getHours()).padStart(2, '0') + ':' + String(d.getMinutes()).padStart(2, '0');
-            return `${d.getDate()} ${months[d.getMonth()]} ${d.getFullYear()} • ${time}`;
-        };
-
-        // Menutup panel / modal jika diklik di luar area
         document.addEventListener('click', function(e) {
+            if (!e.target.closest('.dropdown-wrap')) document.querySelectorAll('.dropdown-menu').forEach(m => m.classList.remove('active'));
+            if (!e.target.closest('.category-wrapper')) document.getElementById('categorySuggestions')?.classList.remove('active');
             if (e.target.classList.contains('side-panel-overlay')) closeSidePanel();
             if (e.target.id === 'roomInfoModal') window.closeRoomInfoModal();
             if (e.target.id === 'memberListModal') window.closeMemberListModal();
@@ -818,7 +836,7 @@
         });
 
         document.addEventListener('DOMContentLoaded', () => {
-            if (!currentRoomId) { alert("ID Ruang kolaborasi tidak ditemukan!"); window.location.replace("collab-hub.html"); return; }
+            if (!currentRoomId) { alert("ID Ruang tidak ditemukan!"); window.location.replace("collab-hub.html"); return; }
             if (localStorage.getItem("dashboard_theme") === "dark") document.body.classList.add("dark");
 
             window.updateItemsPerPage();
@@ -828,7 +846,7 @@
                 if (user) {
                     currentUserUid = user.uid;
                     currentUserData.name = user.displayName || user.email.split('@')[0];
-                    initRealtimeNotesCollab();
+                    initRealtimeCollab();
                     initPresenceTracking();
                     listenToAnnouncements();
                 } else {
@@ -839,7 +857,7 @@
 
         window.addEventListener('beforeunload', () => {
             if (window.currentId && !window.isLockedByOther) {
-                updateDoc(doc(db, "collab_notes", window.currentId), { lockedBy: null, lockedByName: null }).catch(()=>{});
+                updateDoc(doc(db, "collab_scripts", window.currentId), { lockedBy: null, lockedByName: null }).catch(()=>{});
             }
         });
 
@@ -856,16 +874,16 @@
 
         window.updateItemsPerPage = function() {
             const width = window.innerWidth;
-            let newLimit = 18;
-            if (width <= 600) newLimit = 12; else if (width <= 1024) newLimit = 16;
-            if (window.itemsPerPage !== newLimit) { window.itemsPerPage = newLimit; window.currentPage = 1; window.renderNotes(); window.renderFacepile(); }
+            let newLimit = 18; 
+            if (width <= 600) newLimit = 12; else if (width <= 1024) newLimit = 16; 
+            if (window.itemsPerPage !== newLimit) { window.itemsPerPage = newLimit; window.currentPage = 1; window.renderList(); window.renderFacepile(); }
         }
         window.addEventListener('resize', () => { clearTimeout(window.resizeTimeout); window.resizeTimeout = setTimeout(window.updateItemsPerPage, 200); });
 
         // ==========================================
         // ENGINES REAL-TIME & SINKRONISASI DATABASES
         // ==========================================
-        function initRealtimeNotesCollab() {
+        function initRealtimeCollab() {
             onSnapshot(doc(db, "collab_boards", currentRoomId), (docSnap) => {
                 if (!docSnap.exists() || !docSnap.data().members.includes(currentUserUid)) {
                     alert("Akses Ditolak: Anda dikeluarkan dari ruang, atau ruang telah dihapus oleh Admin.");
@@ -888,20 +906,19 @@
                             if(document.getElementById('memberListModal').classList.contains('active')) {
                                 window.openMemberListModal();
                             }
-
+                            
                             if (document.getElementById('formAnnouncementModal').classList.contains('active')) {
                                 window.renderTargetCheckboxes('annTargetListCreate');
                             }
                             if (document.getElementById('annSidePanel').classList.contains('active') && document.getElementById('sidePanelEdit').style.display !== 'none') {
                                 window.renderTargetCheckboxes('annTargetListInline', getPreselectedUidsForInline());
                             }
-                            if (!window.isTrashView) window.renderNotes();
+                            if (!window.isTrashView) window.renderList();
                         });
                     }
                 });
             }, (error) => {
-                console.error(error);
-                document.getElementById('notesList').innerHTML = `<div class="empty-state" style="border-color: var(--danger); background: var(--danger-soft);"><div class="empty-state-icon" style="color: var(--danger);">🔒</div><div class="empty-state-text" style="color: var(--danger); font-weight: 700;">Akses Ruang Ditolak Database.</div></div>`;
+                document.getElementById('listContainer').innerHTML = `<div class="empty-state" style="border-color: var(--danger); background: var(--danger-soft);"><div class="empty-state-icon" style="color: var(--danger);">🔒</div><div class="empty-state-text" style="color: var(--danger); font-weight: 700;">Akses Ruang Ditolak oleh Database.</div></div>`;
             });
 
             // Listener Kehadiran (Presence)
@@ -914,12 +931,12 @@
                 }
             }, (error) => console.error(error));
 
-            const qNotes = query(collection(db, "collab_notes"), where("roomId", "==", currentRoomId));
-            onSnapshot(qNotes, (snapshot) => {
-                window.notesData = snapshot.docs.map(d => ({ id: d.id, ...d.data() }));
+            const qScript = query(collection(db, "collab_scripts"), where("roomId", "==", currentRoomId));
+            onSnapshot(qScript, (snapshot) => {
+                window.scriptData = snapshot.docs.map(d => ({ id: d.id, ...d.data() }));
                 
                 let allUids = new Set();
-                window.notesData.forEach(item => {
+                window.scriptData.forEach(item => {
                     if (item.uid) allUids.add(item.uid);
                     if (item.lockedBy) allUids.add(item.lockedBy);
                 });
@@ -928,35 +945,34 @@
                     if (!window.userListeners[uid]) {
                         window.userListeners[uid] = onSnapshot(doc(db, "users", uid), (uDoc) => {
                             window.userCache[uid] = uDoc.exists() ? uDoc.data() : { name: "Anonim" };
-                            
                             if (window.currentId && window.isLockedByOther && !window.isTrashView) {
-                                const liveItem = window.notesData.find(x => x.id === window.currentId);
+                                const liveItem = window.scriptData.find(x => x.id === window.currentId);
                                 if (liveItem && liveItem.lockedBy === uid) {
                                     const lockedByNameSync = window.userCache[uid].name || window.userCache[uid].displayName || "Seseorang";
-                                    document.getElementById('lockBanner').innerText = `🔒 Sedang diedit oleh ${lockedByNameSync.split(' ')[0]}`;
+                                    document.getElementById('lockBanner').innerHTML = `🔒 Sedang diedit oleh ${lockedByNameSync.split(' ')[0]}`;
                                 }
                             }
-                            
-                            if (!window.isTrashView) window.renderNotes();
+                            if (!window.isTrashView) window.renderList();
                         });
                     }
                 });
                 
                 if (window.currentId && window.isLockedByOther && !window.isTrashView) {
-                    const liveItem = window.notesData.find(x => x.id === window.currentId);
+                    const liveItem = window.scriptData.find(x => x.id === window.currentId);
                     if (liveItem) {
-                        document.getElementById('titleInput').value = liveItem.title || '';
-                        document.getElementById('contentInput').value = liveItem.content || '';
-                        window.autoResizeTitle(); window.autoResizeContent(); window.updateCounter();
+                        document.getElementById('inputTitle').value = liveItem.title || '';
+                        document.getElementById('inputContent').value = liveItem.content || '';
+                        document.getElementById('inputCategory').value = liveItem.channel || '';
+                        window.autoResizeTitle(); window.autoResizeContent(); window.updateWordCount();
                     }
                 }
-                if(!window.isTrashView) window.renderNotes();
-            }, (error) => { console.error(error); });
+                if(!window.isTrashView) window.renderList();
+            });
 
-            const qTrash = query(collection(db, "collab_trash_notes"), where("roomId", "==", currentRoomId));
+            const qTrash = query(collection(db, "collab_trash_scripts"), where("roomId", "==", currentRoomId));
             onSnapshot(qTrash, (snapshot) => {
                 window.trashData = snapshot.docs.map(d => ({ id: d.id, ...d.data() }));
-                executeTrashSweeper(); 
+                checkAndCleanTrash(); 
                 
                 let allUids = new Set();
                 window.trashData.forEach(item => {
@@ -968,21 +984,21 @@
                     if (!window.userListeners[uid]) {
                         window.userListeners[uid] = onSnapshot(doc(db, "users", uid), (uDoc) => {
                             window.userCache[uid] = uDoc.exists() ? uDoc.data() : { name: "Anonim" };
-                            if (window.isTrashView) window.renderNotes();
+                            if (window.isTrashView) window.renderList();
                         });
                     }
                 });
 
-                if(window.isTrashView) window.renderNotes();
-                else window.renderFilterButtons();
-            }, (error) => { console.error(error); });
+                if(window.isTrashView) window.renderList();
+                else generateDynamicChannels(); 
+            });
         }
 
-        function executeTrashSweeper() {
+        function checkAndCleanTrash() {
             const now = Date.now();
             window.trashData.forEach(async (item) => {
-                if(item.expireAt && now > item.expireAt) {
-                    try { await deleteDoc(doc(db, "collab_trash_notes", item.id)); } catch(e){}
+                if (item.expireAt && now > item.expireAt) {
+                    try { await deleteDoc(doc(db, "collab_trash_scripts", item.id)); } catch(e){}
                 }
             });
         }
@@ -1030,9 +1046,9 @@
 
             window.setPresence(true);
         };
-
+        
         // ==========================================
-        // UI FACEPILE & MEMBER LIST PANEL MODAL
+        // UI FACEPILE & DETAIL RUANG MODALS
         // ==========================================
         window.renderFacepile = function() {
             const container = document.getElementById('uiFacepile');
@@ -1061,7 +1077,7 @@
                     const initial = name.charAt(0).toUpperCase();
                     
                     const pData = window.presenceData[uid];
-                    let onlineDot = pData ? `<div class="face-online-dot"></div>` : '';
+                    const onlineDot = pData ? `<div class="face-online-dot"></div>` : ``;
                     
                     html += `<div class="face-item" title="${name}">${initial}${onlineDot}</div>`;
                     shown++;
@@ -1121,7 +1137,7 @@
                 const isMe = (uid === currentUserUid);
                 
                 const pData = window.presenceData[uid];
-                let onlineDot = pData ? `<div class="face-online-dot"></div>` : '';
+                const onlineDot = pData ? `<div class="face-online-dot" style="border-color: var(--card-solid);"></div>` : ``;
                 
                 let actionBtn = ``;
                 if(amIAdmin && !isMe) {
@@ -1142,9 +1158,7 @@
                         <div class="member-avatar">${initial}${onlineDot}</div>
                         <div class="member-name-wrap">
                             <div class="member-name" title="${name.replace(/"/g, '&quot;')}">${name} ${isMe ? '(Anda)' : ''}</div>
-                            <div style="display:flex; align-items:center; gap:8px;">
-                                <div class="member-role">${isThisMemberAdmin ? '👑 Admin' : 'Anggota'}</div>
-                            </div>
+                            <div class="member-role">${isThisMemberAdmin ? '👑 Admin' : 'Anggota'}</div>
                         </div>
                     </div>
                     ${actionBtn}
@@ -1158,21 +1172,17 @@
         window.closeMemberListModal = () => document.getElementById('memberListModal').classList.remove('active');
 
         window.kickMember = async (roomId, targetUid, targetName) => {
-            if(!confirm(`Keluarkan ${targetName} dari ruang kolaborasi ini?`)) return;
-            try {
-                await updateDoc(doc(db, "collab_boards", roomId), {
-                    members: arrayRemove(targetUid)
-                });
-            } catch(e) { console.error(e); alert("Gagal mengeluarkan anggota."); }
+            if(!confirm(`Keluarkan ${targetName} dari ruang ini?`)) return;
+            try { 
+                await updateDoc(doc(db, "collab_boards", roomId), { members: arrayRemove(targetUid) }); 
+            } catch(e) { alert("Gagal mengeluarkan anggota."); }
         };
 
         window.transferAdmin = async (roomId, targetUid, targetName) => {
-            if(!confirm(`Jadikan ${targetName} sebagai Admin? Anda akan kehilangan hak Admin utama dan menjadi anggota biasa.`)) return;
-            try {
-                await updateDoc(doc(db, "collab_boards", roomId), {
-                    ownerId: targetUid
-                });
-            } catch(e) { console.error(e); alert("Gagal mengubah hak Admin."); }
+            if(!confirm(`Yakin memindahkan hak Admin ke ${targetName}? Anda akan jadi anggota biasa dan kehilangan kontrol penuh atas ruang ini.`)) return;
+            try { 
+                await updateDoc(doc(db, "collab_boards", roomId), { ownerId: targetUid }); 
+            } catch(e) { alert("Gagal memindahkan hak akses."); }
         };
 
         // ==========================================
@@ -1190,7 +1200,7 @@
                 if(document.getElementById('announcementModal').classList.contains('active')) {
                     window.renderAnnouncementList();
                 }
-
+                
                 if (window.currentViewAnnId && document.getElementById('annSidePanel').classList.contains('active')) {
                     const updatedAnn = window.globalAnnouncements.find(a => a.id === window.currentViewAnnId);
                     if (updatedAnn && document.getElementById('sidePanelDisplay').style.display !== 'none') {
@@ -1199,7 +1209,7 @@
                         closeSidePanel(); 
                     }
                 }
-            }, (error) => console.error("Error Announcement:", error));
+            });
         }
 
         function updateAnnouncementBadge() {
@@ -1257,7 +1267,7 @@
 
         window.openAnnouncementModal = () => {
             const isOwner = window.roomData && window.roomData.ownerId === currentUserUid;
-            document.getElementById('btnCreateAnn').style.display = isOwner ? 'block' : 'none';
+            document.getElementById('btnCreateAnn').style.display = isOwner ? 'flex' : 'none';
             document.getElementById('annSubtitle').innerText = isOwner ? "Kelola informasi dan instruksi untuk tim Anda." : "Riwayat pesan penting dari Admin ruang.";
             
             document.getElementById('announcementModal').classList.add('active');
@@ -1269,7 +1279,6 @@
         window.renderAnnouncementList = () => {
             const container = document.getElementById('announcementListContainer');
             const isOwner = window.roomData && window.roomData.ownerId === currentUserUid;
-            
             let anns = [...window.globalAnnouncements];
             anns.sort((a, b) => b.updatedAt - a.updatedAt); 
 
@@ -1291,7 +1300,7 @@
                 const totalRead = Math.max(0, ann.readBy.length - 1);
                 
                 const adminViewsHtml = isOwner ? `<div class="ann-admin-indicator">${svgEye} ${totalRead}/${totalTarget}</div>` : ``;
-
+                
                 return `
                 <div class="announcement-item ${isUnread ? 'unread' : ''}" onclick="openAnnouncementDetail('${ann.id}')">
                     <div class="ann-header">
@@ -1336,14 +1345,14 @@
                 const isChecked = preselectedUids.length > 0 ? preselectedUids.includes(uid) : true;
                 
                 return `
-                <label class="target-member-item">
+                <label class="target-member-item" title="${displayName.replace(/"/g, '&quot;')}">
                     <div class="target-info">
                         <div class="target-avatar">${displayName.charAt(0).toUpperCase()}</div>
                         <div class="target-name">${displayName}</div>
                     </div>
                     <label class="checkbox-wrap">
                         <input type="checkbox" class="ann-target-checkbox ${chkClass}" value="${uid}" style="display:none;" ${isChecked ? 'checked' : ''} onchange="evaluateSelectAllState('${containerId}', '${masterCbId}', '${chkClass}')">
-                        <div class="checkbox-custom"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><polyline points="20 6 9 17 4 12"></polyline></svg></div>
+                        <div class="checkbox-custom"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="4"><polyline points="20 6 9 17 4 12"></polyline></svg></div>
                     </label>
                 </label>`;
             }).join('');
@@ -1385,7 +1394,7 @@
             
             if (targetUids.length === 0 && window.roomData.members.length > 1) { return alert("Pilih minimal satu anggota target."); }
 
-            targetUids.push(currentUserUid); 
+            targetUids.push(currentUserUid);
             const now = Date.now();
             const newId = "cann_" + now + Math.random().toString(36).substr(2, 5);
             const payload = {
@@ -1508,7 +1517,7 @@
         };
 
         // ==========================================
-        // LOGIKA TRASH (PEMINDAHAN, RESTORE, MUSNAH)
+        // LOGIKA TRASH (SOFT DELETE, RESTORE)
         // ==========================================
         window.toggleTrashView = function() {
             window.isTrashView = !window.isTrashView;
@@ -1516,66 +1525,72 @@
             
             const heroCard = document.getElementById('heroCard');
             const fab = document.getElementById('fabAdd');
-            const uiHeroRight = document.getElementById('uiHeroRight');
+            const btnAnn = document.getElementById('btnAnnouncement');
+            const uiFacepile = document.getElementById('uiFacepile');
             
             if(window.isTrashView) {
                 heroCard.classList.add('trash-mode');
-                uiHeroRight.style.display = 'none';
+                btnAnn.style.display = 'none';
+                uiFacepile.style.display = 'none';
                 fab.classList.add('hidden');
             } else {
                 heroCard.classList.remove('trash-mode');
-                uiHeroRight.style.display = 'flex';
+                btnAnn.style.display = 'flex';
+                uiFacepile.style.display = 'flex';
                 fab.classList.remove('hidden');
             }
-            window.renderNotes();
+            window.renderList();
         }
 
-        window.softDeleteNote = async function(idOverride = null) {
-            const idToDelete = idOverride || window.currentId;
-            if(!idToDelete || window.isLockedByOther) return;
-            
-            if (!confirm('Pindahkan catatan ini ke tempat sampah tim? (Terhapus otomatis selamanya setelah 30 hari)')) return;
+        window.softDeleteScript = async function() {
+            if (!window.currentId || window.isLockedByOther) return;
+            document.getElementById('actionMenu').classList.remove('active');
+            if (!confirm('Pindahkan script ini ke tempat sampah tim? (Terhapus otomatis setelah 30 hari)')) return;
 
-            const item = window.notesData.find(x => x.id === idToDelete);
+            const item = window.scriptData.find(x => x.id === window.currentId);
             if(!item) return;
-
+            
             const now = Date.now();
-            const trashId = 'cntrash_' + now;
+            const trashId = 'ctrash_' + now;
 
             const trashPayload = {
                 roomId: currentRoomId,
                 deletedByUid: currentUserUid,
                 deletedByName: currentUserData.name,
-                originalId: item.id,
-                title: item.title,
-                content: item.content,
-                originalCreatorName: item.creatorName || "Anonim",
+                originalId: item.id, 
+                title: item.title, 
+                content: item.content, 
+                channel: item.channel,
+                originalCreatorName: item.creatorName,
                 originalUid: item.uid,
-                originalCreatedAt: item.createdAt || now,
-                deletedAt: now,
+                originalCreatedAt: item.createdAt,
+                deletedAt: now, 
                 expireAt: now + (30*24*60*60*1000)
             };
 
             try {
-                await setDoc(doc(db, "collab_trash_notes", trashId), trashPayload);
-                await deleteDoc(doc(db, "collab_notes", item.id));
-                if(!idOverride) window.closeEditor();
-            } catch (e) { console.error(e); alert("Gagal membuang catatan."); }
+                await setDoc(doc(db, "collab_trash_scripts", trashId), trashPayload);
+                await deleteDoc(doc(db, "collab_scripts", item.id));
+                document.getElementById('editorPopup').classList.remove('active');
+                window.currentId = null;
+            } catch (e) { console.error(e); alert("Gagal menghapus naskah."); }
         }
 
-        window.restoreTrashNote = async function(trashId, event) {
+        window.restoreScript = async function(trashId, event) {
             if(event) event.stopPropagation();
             const item = window.trashData.find(x => x.id === trashId);
             if(!item) return;
 
             const restorePayload = {
-                roomId: currentRoomId,
-                uid: item.originalUid || currentUserUid,
+                roomId: item.roomId,
+                uid: item.originalUid || currentUserUid, 
                 creatorName: item.originalCreatorName || currentUserData.name,
-                title: item.title,
+                title: item.title, 
                 content: item.content,
-                pinned: false,
-                isRestored: true, 
+                status: 'draft', 
+                channel: item.channel || 'Umum', 
+                pinned: false, 
+                isRestored: true,
                 createdAt: item.originalCreatedAt || Date.now(),
                 updatedAt: Date.now(),
                 lockedBy: null,
@@ -1583,114 +1598,112 @@
             };
 
             try {
-                await setDoc(doc(db, "collab_notes", item.originalId), restorePayload);
-                await deleteDoc(doc(db, "collab_trash_notes", trashId));
-            } catch(e) { console.error(e); alert("Gagal memulihkan catatan."); }
+                await setDoc(doc(db, "collab_scripts", item.originalId), restorePayload);
+                await deleteDoc(doc(db, "collab_trash_scripts", trashId));
+            } catch(e) { console.error(e); alert("Gagal memulihkan naskah."); }
         }
 
-        window.hardDeleteTrashNote = async function(trashId, event) {
+        window.hardDeleteScript = async function(trashId, event) {
             if(event) event.stopPropagation();
-            if(!confirm("Musnahkan catatan ini secara PERMANEN? Seluruh rekan tim Anda tidak akan bisa melihatnya lagi.")) return;
-            
-            try {
-                await deleteDoc(doc(db, "collab_trash_notes", trashId));
-            } catch(e) { console.error(e); alert("Gagal memusnahkan."); }
+            if(!confirm("Hapus PERMANEN naskah ini? Tindakan ini tidak bisa dibatalkan bagi seluruh anggota tim.")) return;
+            try { await deleteDoc(doc(db, "collab_trash_scripts", trashId)); } catch(e) { console.error(e); alert("Gagal menghapus permanen."); }
         }
 
         // ==========================================
-        // ENGINE LOCKING & SINKRONISASI TEXTAREA
+        // LOGIKA EDITOR & LOCKING
         // ==========================================
-        window.openEditor = async function(id = null) {
+        window.openPopup = async function(id = null) {
             if(window.isTrashView) return; 
-
-            document.getElementById('editor').classList.add('active');
-            const titleInput = document.getElementById('titleInput');
-            const contentInput = document.getElementById('contentInput');
+            
+            document.getElementById('editorPopup').classList.add('active');
+            const titleEl = document.getElementById('inputTitle');
+            const contentEl = document.getElementById('inputContent');
+            const catEl = document.getElementById('inputCategory');
             const lockBanner = document.getElementById('lockBanner');
             const editorFooter = document.getElementById('editorFooter');
             const editorBody = document.getElementById('editorBody');
-            const btnTrash = document.getElementById('btnTrash');
+            const btnDelete = document.getElementById('btnDelete');
 
             if (id) {
-                const item = window.notesData.find(x => x.id === id);
-                if(item) {
+                const item = window.scriptData.find(x => x.id === id);
+                if (item) {
                     window.currentId = item.id; 
                     window.currentPinned = item.pinned || false;
-                    window.isRestored = item.isRestored || false; 
-                    titleInput.value = item.title; contentInput.value = item.content;
+                    window.isRestored = item.isRestored || false;
+                    titleEl.value = item.title; contentEl.value = item.content; catEl.value = item.channel || '';
                     
                     if (item.lockedBy && item.lockedBy !== currentUserUid) {
                         window.isLockedByOther = true;
-                        
                         const lockedByNameSync = (item.lockedBy && window.userCache[item.lockedBy]) ? (window.userCache[item.lockedBy].name || window.userCache[item.lockedBy].displayName || "Seseorang") : (item.lockedByName || "Seseorang");
-
-                        lockBanner.innerText = `🔒 Sedang diedit oleh ${lockedByNameSync.split(' ')[0]}`;
+                        
+                        lockBanner.innerHTML = `🔒 Sedang diedit oleh ${lockedByNameSync.split(' ')[0]}`;
                         lockBanner.classList.add('active');
                         editorFooter.style.display = 'none';
                         editorBody.classList.add('locked');
-                        titleInput.disabled = true; contentInput.disabled = true;
-                        btnTrash.style.display = 'none';
+                        titleEl.disabled = true; contentEl.disabled = true; catEl.disabled = true;
+                        btnDelete.style.display = 'none';
                     } else {
                         window.isLockedByOther = false;
                         lockBanner.classList.remove('active');
                         editorFooter.style.display = 'flex';
                         editorBody.classList.remove('locked');
-                        titleInput.disabled = false; contentInput.disabled = false;
-                        btnTrash.style.display = 'block';
-                        
-                        await updateDoc(doc(db, "collab_notes", item.id), { lockedBy: currentUserUid, lockedByName: currentUserData.name });
+                        titleEl.disabled = false; contentEl.disabled = false; catEl.disabled = false;
+                        btnDelete.style.display = 'block';
+                        await updateDoc(doc(db, "collab_scripts", item.id), { lockedBy: currentUserUid, lockedByName: currentUserData.name });
                     }
                 }
             } else {
                 window.currentId = null; window.currentPinned = false; window.isLockedByOther = false; window.isRestored = false;
-                titleInput.value = ''; contentInput.value = '';
+                titleEl.value = ''; contentEl.value = ''; catEl.value = '';
                 lockBanner.classList.remove('active');
                 editorFooter.style.display = 'flex';
                 editorBody.classList.remove('locked');
-                titleInput.disabled = false; contentInput.disabled = false;
-                btnTrash.style.display = 'block';
+                titleEl.disabled = false; contentEl.disabled = false; catEl.disabled = false;
+                btnDelete.style.display = 'block';
             }
             
             setTimeout(() => { window.autoResizeTitle(); window.autoResizeContent(); }, 10);
-            
             window.historyStack = []; window.historyIndex = -1; window.updateUndoRedoButtons();
             if(!window.isLockedByOther) setTimeout(() => { window.saveHistoryState(); }, 50);
             
-            document.getElementById('autoSaveStatus').classList.remove('show');
-            updatePin(); window.updateCounter();
+            document.getElementById('saveIndicator').classList.remove('show');
+            document.getElementById('editorPopup').classList.remove('reading-mode');
+            document.getElementById('btnReadingMode').classList.remove('active-read');
+            updatePinButton(); window.updateWordCount();
         }
 
-        window.closeEditor = async function() {
+        window.closePopup = async function() {
             clearTimeout(autoSaveTimeout); 
-            
             if (!window.isLockedByOther) {
-                const title = document.getElementById('titleInput').value.trim();
-                const content = document.getElementById('contentInput').value.trim();
+                const title = document.getElementById('inputTitle').value.trim();
+                const content = document.getElementById('inputContent').value.trim();
                 
                 if(title || content) {
-                    await window.performSave(true, true); 
+                    const curStatus = window.currentId ? (window.scriptData.find(x => x.id === window.currentId)?.status || 'draft') : 'draft';
+                    await window.performSave(curStatus, true, true); 
                 } else if (window.currentId) {
-                    await updateDoc(doc(db, "collab_notes", window.currentId), { lockedBy: null, lockedByName: null });
+                    await updateDoc(doc(db, "collab_scripts", window.currentId), { lockedBy: null, lockedByName: null });
                 }
             }
-            
-            document.getElementById('editor').classList.remove('active');
+            document.getElementById('editorPopup').classList.remove('active', 'reading-mode');
             window.currentId = null;
             window.isLockedByOther = false;
         }
 
-        window.performSave = async function(isAuto = false, releaseLock = false) {
-            if(window.isLockedByOther) return;
+        window.performSave = async function(status, isAuto = false, releaseLock = false) {
+            if (window.isLockedByOther) return; 
 
-            const title = document.getElementById('titleInput').value.trim();
-            const content = document.getElementById('contentInput').value;
+            const title = document.getElementById('inputTitle').value.trim();
+            const content = document.getElementById('inputContent').value;
+            const channel = document.getElementById('inputCategory').value.trim() || 'Umum';
+            
             if (title === '' && content.trim() === '') return;
             
             const now = Date.now();
-            const docId = window.currentId || "cnote_" + now;
+            const docId = window.currentId || "cscript_" + now;
             window.currentId = docId;
 
-            const existingItem = window.notesData.find(x => x.id === docId);
+            const existingItem = window.scriptData.find(x => x.id === docId);
 
             const payload = {
                 roomId: currentRoomId,
@@ -1698,117 +1711,137 @@
                 creatorName: existingItem ? existingItem.creatorName : currentUserData.name,
                 title: title || 'Tanpa Judul', 
                 content: content,
-                pinned: window.currentPinned, 
+                status: status, 
+                channel: channel, 
+                pinned: window.currentPinned,
                 updatedAt: now,
                 createdAt: existingItem ? existingItem.createdAt : now,
                 lockedBy: releaseLock ? null : currentUserUid,
                 lockedByName: releaseLock ? null : currentUserData.name
             };
 
-            if (window.isRestored) {
-                payload.isRestored = true;
-            } else {
-                payload.isRestored = deleteField();
-            }
+            if (window.isRestored) payload.isRestored = true;
+            else payload.isRestored = deleteField();
 
-            try { 
-                await setDoc(doc(db, "collab_notes", docId), payload, { merge: true }); 
-            } catch (e) { 
-                console.error("Gagal menyimpan data ke Firebase:", e); 
-            }
+            try { await setDoc(doc(db, "collab_scripts", docId), payload, { merge: true }); } 
+            catch(e) { console.error("Gagal save:", e); }
         }
 
         window.triggerAutoSave = function() {
-            if(window.isLockedByOther) return;
+            if (window.isLockedByOther) return;
             clearTimeout(autoSaveTimeout);
+            
             autoSaveTimeout = setTimeout(() => {
-                if(!document.getElementById('editor').classList.contains('active')) return; 
-                window.performSave(true, false);
-                const indicator = document.getElementById('autoSaveStatus');
-                indicator.innerText = "Tersimpan ✓"; indicator.classList.add('show');
+                if(!document.getElementById('editorPopup').classList.contains('active')) return;
+                
+                const curStatus = window.currentId ? (window.scriptData.find(x => x.id === window.currentId)?.status || 'draft') : 'draft';
+                window.performSave(curStatus, true, false); 
+                
+                const indicator = document.getElementById('saveIndicator');
+                indicator.innerText = "Tersimpan ✓"; 
+                indicator.classList.add('show');
                 setTimeout(() => indicator.classList.remove('show'), 2000);
             }, 1000); 
         }
         
-        window.saveNote = function() { 
+        window.saveScript = async function(status) { 
             if(window.isLockedByOther) return; 
+            clearTimeout(autoSaveTimeout); 
             window.isRestored = false; 
-            window.closeEditor(); 
+            await window.performSave(status, false, true); 
+            document.getElementById('editorPopup').classList.remove('active'); 
+            window.currentId = null;
+            window.isLockedByOther = false;
         }
 
         // ==========================================
-        // UNDO / REDO / HISTORY STATE ENGINE
+        // UI TEXT TOOLS, FILTER & PAGINATION
         // ==========================================
+        window.openSearch = function(event) { if (event) event.stopPropagation(); document.getElementById('filterWrap').classList.add('searching'); document.getElementById('searchContainer').style.width = '100%'; document.getElementById('searchContainer').classList.add('expanded'); setTimeout(() => { document.getElementById('searchInput').focus(); }, 300); }
+        window.closeSearch = function(event) { if (event) event.stopPropagation(); document.getElementById('searchContainer').style.width = '38px'; document.getElementById('searchContainer').classList.remove('expanded'); document.getElementById('filterWrap').classList.remove('searching'); const input = document.getElementById('searchInput'); if (input.value !== '') { input.value = ''; window.currentPage = 1; window.renderList(); } }
+        window.showCategorySuggestions = function() { if(window.isLockedByOther) return; const inputVal = document.getElementById('inputCategory').value.toLowerCase(); const suggestBox = document.getElementById('categorySuggestions'); const channels = [...new Set(window.scriptData.map(item => item.channel).filter(c => c && c.trim() !== "Umum" && c.trim() !== ""))]; const filtered = channels.filter(ch => ch.toLowerCase().includes(inputVal)); if (filtered.length > 0) { suggestBox.innerHTML = filtered.map(ch => `<button type="button" class="suggest-item" onclick="selectCategory('${ch}')">📺 ${ch}</button>`).join(''); suggestBox.classList.add('active'); } else { suggestBox.classList.remove('active'); } }
+        window.handleCategoryInput = function() { window.triggerAutoSave(); window.showCategorySuggestions(); }
+        window.selectCategory = function(val) { document.getElementById('inputCategory').value = val; document.getElementById('categorySuggestions').classList.remove('active'); window.triggerAutoSave(); window.triggerHistorySave(); }
+        window.autoResizeTitle = function() { const titleEl = document.getElementById('inputTitle'); const parent = document.querySelector('.editor-body'); const scrollPos = parent.scrollTop; titleEl.style.height = 'auto'; titleEl.style.height = titleEl.scrollHeight + 'px'; titleEl.scrollTop = 0; parent.scrollTop = scrollPos; }
+        window.autoResizeContent = function() { const contentEl = document.getElementById('inputContent'); const parent = document.querySelector('.editor-body'); const scrollPos = parent.scrollTop; contentEl.style.height = 'auto'; contentEl.style.height = contentEl.scrollHeight + 'px'; contentEl.scrollTop = 0; parent.scrollTop = scrollPos; }
+
         window.updateUndoRedoButtons = function() { if(window.isLockedByOther) return; const btnUndo = document.getElementById('btnUndo'); const btnRedo = document.getElementById('btnRedo'); if (window.historyIndex > 0) btnUndo.classList.remove('disabled'); else btnUndo.classList.add('disabled'); if (window.historyIndex < window.historyStack.length - 1) btnRedo.classList.remove('disabled'); else btnRedo.classList.add('disabled'); }
-        window.saveHistoryState = function() { if (isUndoingRedoing || window.isLockedByOther) return; const title = document.getElementById('titleInput').value; const content = document.getElementById('contentInput').value; const currentState = { title, content }; if (window.historyIndex >= 0) { const lastState = window.historyStack[window.historyIndex]; if (lastState.title === title && lastState.content === content) return; } if (window.historyIndex < window.historyStack.length - 1) { window.historyStack = window.historyStack.slice(0, window.historyIndex + 1); } window.historyStack.push(currentState); if (window.historyStack.length > 50) { window.historyStack.shift(); } else { window.historyIndex++; } window.updateUndoRedoButtons(); }
+        window.saveHistoryState = function() { if (isUndoingRedoing || window.isLockedByOther) return; const title = document.getElementById('inputTitle').value; const content = document.getElementById('inputContent').value; const category = document.getElementById('inputCategory').value; const currentState = { title, content, category }; if (window.historyIndex >= 0) { const lastState = window.historyStack[window.historyIndex]; if (lastState.title === title && lastState.content === content && lastState.category === category) return; } if (window.historyIndex < window.historyStack.length - 1) { window.historyStack = window.historyStack.slice(0, window.historyIndex + 1); } window.historyStack.push(currentState); if (window.historyStack.length > 50) { window.historyStack.shift(); } else { window.historyIndex++; } window.updateUndoRedoButtons(); }
         window.triggerHistorySave = function() { if(window.isLockedByOther) return; clearTimeout(historyDebounceTimeout); historyDebounceTimeout = setTimeout(() => { window.saveHistoryState(); }, 800); }
-        window.handleUndo = function() { if (window.historyIndex > 0 && !window.isLockedByOther) { isUndoingRedoing = true; window.historyIndex--; const state = window.historyStack[window.historyIndex]; document.getElementById('titleInput').value = state.title; document.getElementById('contentInput').value = state.content; window.autoResizeTitle(); window.autoResizeContent(); window.updateCounter(); window.markAsEdited(); window.triggerAutoSave(); window.updateUndoRedoButtons(); setTimeout(() => { isUndoingRedoing = false; }, 50); } }
-        window.handleRedo = function() { if (window.historyIndex < window.historyStack.length - 1 && !window.isLockedByOther) { isUndoingRedoing = true; window.historyIndex++; const state = window.historyStack[window.historyIndex]; document.getElementById('titleInput').value = state.title; document.getElementById('contentInput').value = state.content; window.autoResizeTitle(); window.autoResizeContent(); window.updateCounter(); window.markAsEdited(); window.triggerAutoSave(); window.updateUndoRedoButtons(); setTimeout(() => { isUndoingRedoing = false; }, 50); } }
-        document.addEventListener('keydown', function(e) { if (!document.getElementById('editor').classList.contains('active') || window.isLockedByOther) return; if ((e.ctrlKey || e.metaKey) && e.key.toLowerCase() === 'z') { e.preventDefault(); if (e.shiftKey) { window.handleRedo(); } else { window.handleUndo(); } } if ((e.ctrlKey || e.metaKey) && e.key.toLowerCase() === 'y') { e.preventDefault(); window.handleRedo(); } });
+        window.handleUndo = function() { if (window.historyIndex > 0 && !window.isLockedByOther) { isUndoingRedoing = true; window.historyIndex--; const state = window.historyStack[window.historyIndex]; document.getElementById('inputTitle').value = state.title; document.getElementById('inputContent').value = state.content; document.getElementById('inputCategory').value = state.category; window.autoResizeTitle(); window.autoResizeContent(); window.updateWordCount(); window.triggerAutoSave(); window.updateUndoRedoButtons(); setTimeout(() => { isUndoingRedoing = false; }, 50); } }
+        window.handleRedo = function() { if (window.historyIndex < window.historyStack.length - 1 && !window.isLockedByOther) { isUndoingRedoing = true; window.historyIndex++; const state = window.historyStack[window.historyIndex]; document.getElementById('inputTitle').value = state.title; document.getElementById('inputContent').value = state.content; document.getElementById('inputCategory').value = state.category; window.autoResizeTitle(); window.autoResizeContent(); window.updateWordCount(); window.triggerAutoSave(); window.updateUndoRedoButtons(); setTimeout(() => { isUndoingRedoing = false; }, 50); } }
+        document.addEventListener('keydown', function(e) { if (!document.getElementById('editorPopup').classList.contains('active') || window.isLockedByOther) return; if ((e.ctrlKey || e.metaKey) && e.key.toLowerCase() === 'z') { e.preventDefault(); if (e.shiftKey) { window.handleRedo(); } else { window.handleUndo(); } } if ((e.ctrlKey || e.metaKey) && e.key.toLowerCase() === 'y') { e.preventDefault(); window.handleRedo(); } });
 
-        // ==========================================
-        // ELEMENT UTILITIES & UI LOGIC
-        // ==========================================
-        window.openSearch = function(event) { if (event) event.stopPropagation(); const wrap = document.getElementById('filterWrap'); const searchBox = document.getElementById('searchContainer'); wrap.scrollTo({left: 0, behavior: 'smooth'}); wrap.classList.add('searching'); searchBox.style.width = '100%'; searchBox.classList.add('expanded'); setTimeout(() => { document.getElementById('searchInput').focus(); }, 300); }
-        window.closeSearch = function(event) { if (event) event.stopPropagation(); const wrap = document.getElementById('filterWrap'); const searchBox = document.getElementById('searchContainer'); searchBox.style.width = '38px'; searchBox.classList.remove('expanded'); wrap.classList.remove('searching'); const input = document.getElementById('searchInput'); if (input.value !== '') { input.value = ''; window.currentPage = 1; window.renderNotes(); } }
+        window.togglePin = function() { if(window.isLockedByOther) return; window.currentPinned = !window.currentPinned; updatePinButton(); window.triggerAutoSave(); }
+        function updatePinButton() { const btn = document.getElementById('btnPin'); if (window.currentPinned) btn.classList.add('active-pin'); else btn.classList.remove('active-pin'); }
+        window.toggleReadingMode = function() { const popup = document.getElementById('editorPopup'); const btn = document.getElementById('btnReadingMode'); popup.classList.toggle('reading-mode'); if (popup.classList.contains('reading-mode')) btn.classList.add('active-read'); else btn.classList.remove('active-read'); setTimeout(() => { window.autoResizeTitle(); window.autoResizeContent(); }, 10); }
+        window.updateWordCount = function() { const text = document.getElementById('inputContent').value; const words = text.trim() === '' ? 0 : text.trim().split(/\s+/).length; document.getElementById('wordCountDisplay').innerHTML = `${words.toLocaleString('id-ID')} Kata • ${text.length.toLocaleString('id-ID')} Karakter`; }
+        window.handleTyping = function() { if(window.isLockedByOther) return; window.updateWordCount(); window.triggerAutoSave(); }
+        window.toggleDropdown = function(event, id) { event.stopPropagation(); const target = document.getElementById(id); const isCurrentlyActive = target.classList.contains('active'); document.querySelectorAll('.dropdown-menu').forEach(m => m.classList.remove('active')); if(!isCurrentlyActive) target.classList.add('active'); }
         
-        window.autoResizeTitle = function() { const el = document.getElementById('titleInput'); const parent = document.querySelector('.editor-body'); const scrollPos = parent.scrollTop; el.style.height = 'auto'; el.style.height = el.scrollHeight + 'px'; el.scrollTop = 0; parent.scrollTop = scrollPos; }
-        window.autoResizeContent = function() { const el = document.getElementById('contentInput'); const parent = document.querySelector('.editor-body'); const scrollPos = parent.scrollTop; el.style.height = 'auto'; el.style.height = el.scrollHeight + 'px'; el.scrollTop = 0; parent.scrollTop = scrollPos; }
-        window.markAsEdited = function() { if (window.isRestored) window.isRestored = false; }
-        window.togglePin = function() { if(window.isLockedByOther) return; window.currentPinned = !window.currentPinned; updatePin(); window.triggerAutoSave(); }
-        function updatePin() { 
-            const btn = document.getElementById('pinBtn');
-            if (window.currentPinned) btn.classList.add('active-pin'); 
-            else btn.classList.remove('active-pin'); 
-        }
-        window.updateCounter = function() { const text = document.getElementById('contentInput').value; const words = text.trim() === '' ? 0 : text.trim().split(/\s+/).length; document.getElementById('wordCounter').innerHTML = `${words.toLocaleString('id-ID')} kata | ${text.length.toLocaleString('id-ID')} karakter`; }
+        window.copyContent = function() { const text = document.getElementById('inputTitle').value + '\n\n' + document.getElementById('inputContent').value; navigator.clipboard.writeText(text).then(() => alert('Script disalin!')); document.getElementById('actionMenu').classList.remove('active'); }
+        window.exportTxt = function() { const text = document.getElementById('inputContent').value; if(!text) return alert("Script kosong."); const blob = new Blob([text], { type: 'text/plain' }); const link = document.createElement('a'); link.href = URL.createObjectURL(blob); link.download = (document.getElementById('inputTitle').value || 'Script_Kolaborasi') + '.txt'; link.click(); document.getElementById('actionMenu').classList.remove('active'); }
         
-        window.exportTXT = function() { const text = document.getElementById('contentInput').value; if(!text) return alert("Catatan kosong."); const blob = new Blob([text], { type: 'text/plain' }); const link = document.createElement('a'); link.href = URL.createObjectURL(blob); link.download = (document.getElementById('titleInput').value || 'Collab_Notes') + '.txt'; link.click(); }
         window.showInfo = function() { 
-            if(!window.currentId) return alert("Catatan belum disimpan."); 
-            const item = window.notesData.find(x => x.id === window.currentId); 
+            if(!window.currentId) return alert("Belum disimpan."); 
+            const item = window.scriptData.find(x => x.id === window.currentId); 
             if(!item) return; 
-            const text = document.getElementById('contentInput').value; 
+            const text = document.getElementById('inputContent').value; 
             const words = text.trim() === '' ? 0 : text.trim().split(/\s+/).length; 
+            const formatDate = (ms) => ms ? new Date(ms).toLocaleDateString('id-ID', { day: 'numeric', month: 'long', year: 'numeric', hour: '2-digit', minute:'2-digit' }) : '-'; 
             
             const creatorNameSync = (item.uid && window.userCache[item.uid]) ? (window.userCache[item.uid].name || window.userCache[item.uid].displayName || "Anonim") : (item.creatorName || "Anonim");
-
-            document.getElementById('infoContent').innerHTML = `
-                <div class="info-row"><span class="info-label">Judul</span> <span class="info-value">${item.title || 'Tanpa Judul'}</span></div>
-                <div class="info-row"><span class="info-label">Kreator Asli</span> <span class="info-value">${creatorNameSync}</span></div>
-                <div class="info-row"><span class="info-label">Jumlah Kata</span> <span class="info-value">${words.toLocaleString('id-ID')}</span></div>
-                <div class="info-row"><span class="info-label">Karakter</span> <span class="info-value">${text.length.toLocaleString('id-ID')}</span></div>
-                <div class="info-row"><span class="info-label">Dibuat</span> <span class="info-value">${formatFullDate(item.createdAt)}</span></div>
-                <div class="info-row"><span class="info-label">Diubah</span> <span class="info-value">${formatFullDate(item.updatedAt)}</span></div>
-            `; 
+            
+            document.getElementById('infoTitle').innerText = item.title || 'Tanpa Judul'; 
+            document.getElementById('infoCat').innerText = item.channel || 'Umum'; 
+            document.getElementById('infoStatus').innerText = item.status === 'done' ? 'Selesai' : 'Draft'; 
+            document.getElementById('infoCreator').innerText = creatorNameSync; 
+            document.getElementById('infoWords').innerText = words.toLocaleString('id-ID'); 
+            document.getElementById('infoCreated').innerText = formatDate(item.createdAt); 
+            document.getElementById('infoUpdated').innerText = formatDate(item.updatedAt); 
+            document.getElementById('actionMenu').classList.remove('active'); 
             document.getElementById('infoModal').classList.add('active'); 
         }
+        window.closeInfoModal = function() { document.getElementById('infoModal').classList.remove('active'); }
         
-        window.setFilter = function(type, el) { window.currentFilter = type; window.currentPage = 1; window.renderNotes(); }
-        window.setSort = function(type) { window.currentSort = type; window.currentPage = 1; window.renderNotes(); }
-        window.changePage = function(page) { window.currentPage = page; window.renderNotes(); window.scrollTo({ top: 0, behavior: 'smooth' }); }
+        window.setFilter = function(type) { window.currentFilter = type; window.currentPage = 1; window.renderList(); }
+        window.setSort = function(type) { window.currentSort = type; window.currentPage = 1; window.renderList(); }
+        window.changePage = function(page) { window.currentPage = page; window.renderList(); window.scrollTo({ top: 0, behavior: 'smooth' }); }
 
-        window.renderFilterButtons = function() {
-            let allCount = window.notesData.length;
-            let pinnedCount = window.notesData.filter(x => x.pinned).length;
-            let trashCount = window.trashData.length;
-
-            const getBadge = (count) => `<span class="filter-badge">${count}</span>`;
-
+        function generateDynamicChannels() {
+            let data = window.isTrashView ? window.trashData : window.scriptData;
             let html = '';
-            if(!window.isTrashView) {
+            
+            const getBadge = (count) => `<span class="filter-badge">${count}</span>`;
+            
+            if (!window.isTrashView) {
+                const total = data.length;
+                const draft = data.filter(x => x.status === 'draft').length;
+                const done = data.filter(x => x.status === 'done').length;
+
                 html += `
-                    <button class="filter-btn ${window.currentFilter === 'all' ? 'active' : ''}" onclick="setFilter('all', this)">Semua ${getBadge(allCount)}</button>
-                    <button class="filter-btn ${window.currentFilter === 'pinned' ? 'active' : ''}" onclick="setFilter('pinned', this)">📌 Pinned ${getBadge(pinnedCount)}</button>
+                    <button class="filter-btn ${window.currentFilter === 'all' ? 'active' : ''}" onclick="setFilter('all')">Semua ${getBadge(total)}</button>
+                    <button class="filter-btn ${window.currentFilter === 'draft' ? 'active' : ''}" onclick="setFilter('draft')">Draft ${getBadge(draft)}</button>
+                    <button class="filter-btn ${window.currentFilter === 'done' ? 'active' : ''}" onclick="setFilter('done')">Selesai ${getBadge(done)}</button>
                     <div class="divider"></div>
-                    <button class="filter-btn ${window.currentSort === 'newest' ? 'active' : ''}" onclick="setSort('newest')">Terbaru</button>
-                    <button class="filter-btn ${window.currentSort === 'oldest' ? 'active' : ''}" onclick="setSort('oldest')">Terlama</button>
+                    <button class="filter-btn ${window.currentSort === 'newest' ? 'active' : ''}" onclick="setSort('newest')">🆕 Terbaru</button>
+                    <button class="filter-btn ${window.currentSort === 'oldest' ? 'active' : ''}" onclick="setSort('oldest')">⏳ Terlama</button>
                     <div class="divider"></div>
                 `;
+                
+                const channels = [...new Set(data.map(item => item.channel).filter(c => c && c.trim() !== "Umum" && c.trim() !== ""))];
+                channels.forEach(ch => { 
+                    const chCount = data.filter(x => x.channel === ch).length;
+                    html += `<button class="filter-btn ${window.currentFilter === ch ? 'active' : ''}" onclick="setFilter('${ch}')">📺 ${ch} ${getBadge(chCount)}</button>`; 
+                });
+                html += `<div class="divider"></div>`;
             }
+            
             let trashActive = window.isTrashView ? 'active' : '';
-            html += `<button class="filter-btn trash-btn ${trashActive}" onclick="toggleTrashView()">🗑️ Trash ${getBadge(trashCount)}</button>`;
-            document.getElementById('filterButtons').innerHTML = html;
+            const tCount = window.trashData.length;
+            html += `<button class="filter-btn trash-btn ${trashActive}" onclick="toggleTrashView()">🗑️ Trash ${getBadge(tCount)}</button>`;
+            
+            document.getElementById('dynamicFilters').innerHTML = html;
         }
 
         window.renderPagination = function(totalPages) {
@@ -1820,19 +1853,14 @@
             container.innerHTML = html;
         }
 
-        // ==========================================
-        // RENDERING UTAMA GRID KARTU (MASONRY)
-        // ==========================================
-        window.renderNotes = function() {
-            const listContainer = document.getElementById('notesList');
+        window.renderList = function() {
+            const listContainer = document.getElementById('listContainer');
             const keyword = document.getElementById('searchInput').value.toLowerCase();
             
-            let data = window.isTrashView ? [...window.trashData] : [...window.notesData];
-            window.renderFilterButtons();
+            let data = window.isTrashView ? [...window.trashData] : [...window.scriptData]; 
+            generateDynamicChannels();
 
-            if(!window.isTrashView) {
-                if(window.currentFilter === 'pinned') data = data.filter(x => x.pinned);
-
+            if (!window.isTrashView) {
                 data.sort((a, b) => {
                     if(a.pinned && !b.pinned) return -1;
                     if(!a.pinned && b.pinned) return 1;
@@ -1843,9 +1871,11 @@
                 data = data.filter(item => {
                     const title = item.title ? item.title.toLowerCase() : "";
                     const content = item.content ? item.content.toLowerCase() : "";
-                    return title.includes(keyword) || content.includes(keyword);
+                    const match = title.includes(keyword) || content.includes(keyword);
+                    if (window.currentFilter === 'all') return match;
+                    if (window.currentFilter === 'draft' || window.currentFilter === 'done') return match && item.status === window.currentFilter;
+                    return match && item.channel === window.currentFilter;
                 });
-
             } else {
                 data.sort((a, b) => (b.deletedAt || 0) - (a.deletedAt || 0));
                 data = data.filter(item => {
@@ -1860,55 +1890,49 @@
             if (totalPages > 0 && window.currentPage > totalPages) window.currentPage = totalPages; else if (totalPages === 0) window.currentPage = 1;
 
             if (totalItems === 0) {
-                if(window.isTrashView) {
-                    listContainer.innerHTML = `<div class="empty-state"><div class="empty-state-icon">✨</div><div class="empty-state-text">Tempat sampah ruang kolaborasi ini bersih.</div></div>`;
+                if (window.isTrashView) {
+                    listContainer.innerHTML = `<div class="empty-state"><div class="empty-state-icon">✨</div><div class="empty-state-text">Tempat sampah bersih.</div></div>`;
                 } else {
-                    listContainer.innerHTML = `<div class="empty-state" onclick="openEditor()"><div class="empty-state-icon">📄</div><div class="empty-state-text">Belum ada catatan tim di ruang ini.<br>Ketuk di sini untuk mulai mencatat bersama.</div></div>`;
+                    listContainer.innerHTML = `<div class="empty-state" onclick="openPopup()"><div class="empty-state-icon">📄</div><div class="empty-state-text">Ruang kolaborasi ini masih kosong.<br>Ketuk di sini untuk mulai menulis naskah tim.</div></div>`;
                 }
                 document.getElementById('paginationContainer').innerHTML = '';
                 return;
             }
-
+            
             const startIndex = (window.currentPage - 1) * window.itemsPerPage;
             const endIndex = startIndex + window.itemsPerPage;
             const paginatedData = data.slice(startIndex, endIndex);
 
             let html = '';
             
-            if(!window.isTrashView) {
-                // TAMPILKAN CATATAN AKTIF TIM
+            if (!window.isTrashView) {
                 paginatedData.forEach(item => {
                     const creatorNameSync = (item.uid && window.userCache[item.uid]) ? (window.userCache[item.uid].name || window.userCache[item.uid].displayName || "Anonim") : (item.creatorName || 'Anonim');
                     const lockedByNameSync = (item.lockedBy && window.userCache[item.lockedBy]) ? (window.userCache[item.lockedBy].name || window.userCache[item.lockedBy].displayName || "Seseorang") : (item.lockedByName || "Seseorang");
 
-                    const cardClass = `note-card ${item.pinned ? 'pinned' : ''}`;
-                    let lockBadge = item.lockedBy ? `<div class="badge lock">🔒 Editan ${lockedByNameSync.split(' ')[0]}</div>` : '';
-                    let restoredBadge = item.isRestored ? `<div class="badge restored">♻️ Pulih</div>` : '';
+                    let lockBadgeHTML = item.lockedBy ? `<div class="badge lock">🔒 ${lockedByNameSync.split(' ')[0]}</div>` : '';
+                    let authorBadgeHTML = `<div class="badge" style="background:transparent; border:1px solid var(--border); color:var(--text-muted);">👤 ${creatorNameSync}</div>`;
+                    let restoredBadge = item.isRestored ? `<div class="badge restored">♻️ Dipulihkan</div>` : '';
 
                     html += `
-                    <div class="${cardClass}" onclick="openEditor('${item.id}')" tabindex="0">
-                        <div class="note-header">
-                            <div class="note-title-wrap">
-                                <div class="note-title" title="${item.title}">${item.title}</div>
-                                <div class="badges-container">
-                                    ${restoredBadge}
-                                    ${lockBadge}
-                                </div>
-                            </div>
+                    <div class="card ${item.pinned ? 'pinned' : ''} ${item.status === 'done' ? 'completed' : ''}" onclick="openPopup('${item.id}')" tabindex="0">
+                        <div class="card-header">
+                            <div class="card-title">${item.title}</div>
                             ${item.pinned ? '<div title="Disematkan" style="font-size:16px; flex-shrink:0;">📌</div>' : ''}
                         </div>
-                        <div class="note-content">${item.content || '<em>Kosong...</em>'}</div>
-                        <div class="note-footer">
-                            <div class="note-meta">
-                                <div class="badge user" style="border:none; padding:0; font-size:12px; color:var(--primary);">👤 ${creatorNameSync}</div>
-                                <div class="note-date">${formatFullDate(item.updatedAt)}</div>
+                        <div class="card-preview">${item.content || '<em>Belum ada isi script...</em>'}</div>
+                        <div class="card-bottom">
+                            <div class="badges">
+                                ${restoredBadge}
+                                <div class="badge ch">${item.channel || 'Umum'}</div>
+                                <div class="badge ${item.status === 'done' ? 'done' : ''}">${item.status === 'draft' ? 'Draft' : 'Selesai'}</div>
+                                ${authorBadgeHTML}
+                                ${lockBadgeHTML}
                             </div>
-                            <button class="btn-quick-del" onclick="event.stopPropagation(); softDeleteNote('${item.id}')" title="Hapus ke Trash">🗑️</button>
                         </div>
                     </div>`;
                 });
             } else {
-                // TAMPILKAN SAMPAH (TRASH) TIM
                 paginatedData.forEach(item => {
                     let sisaHari = Math.ceil((item.expireAt - Date.now()) / (1000 * 60 * 60 * 24));
                     if(sisaHari < 0) sisaHari = 0;
@@ -1916,27 +1940,30 @@
                     const deletedByNameSync = (item.deletedByUid && window.userCache[item.deletedByUid]) ? (window.userCache[item.deletedByUid].name || window.userCache[item.deletedByUid].displayName || "Anonim") : (item.deletedByName || "Anonim");
                     const originalCreatorNameSync = (item.originalUid && window.userCache[item.originalUid]) ? (window.userCache[item.originalUid].name || window.userCache[item.originalUid].displayName || "Anonim") : (item.originalCreatorName || "Anonim");
 
-                    let delBadge = `<div class="badge danger">🗑️ Dihapus: ${deletedByNameSync.split(' ')[0]}</div>`;
-                    let originalBadge = `<div class="badge user">👤 Asli: ${originalCreatorNameSync.split(' ')[0]}</div>`;
+                    let delInfo = `<div class="badge deleted" title="Dihapus oleh ${deletedByNameSync}">🗑️ ${deletedByNameSync.split(' ')[0]}</div>`;
+                    let authorBadge = `<div class="badge" style="background:transparent; border:1px solid var(--border); color:var(--text-muted);">👤 Asli: ${originalCreatorNameSync}</div>`;
 
                     html += `
-                    <div class="note-card trash-mode-card" tabindex="0">
-                        <div class="note-header">
-                            <div class="note-title-wrap" style="gap: 6px;">
-                                <div class="note-title" title="${item.title}">${item.title}</div>
-                                <div class="badge danger" style="width: fit-content; padding: 4px 8px; border:none;">⏳ Lenyap: ${sisaHari} Hari</div>
+                    <div class="card trash-card" tabindex="0">
+                        <div class="card-header" style="align-items: flex-start;">
+                            <div style="display:flex; flex-direction:column; gap:8px;">
+                                <div class="card-title">${item.title}</div>
+                                <div class="badge" style="color:var(--danger); background:var(--danger-soft); border-color:var(--danger-soft); width: fit-content; padding: 4px 8px;">⏳ Lenyap: ${sisaHari} Hari</div>
                             </div>
-                            <button class="btn-quick-del" style="color:var(--danger); background:var(--danger-soft); border:1px solid rgba(239, 68, 68, 0.2); flex-shrink:0;" onclick="hardDeleteTrashNote('${item.id}', event)" title="Hapus Permanen">🗑️</button>
+                            <button class="btn-card-action destroy" style="padding: 8px; width: 34px; height: 34px; justify-content: center; flex-shrink:0;" onclick="hardDeleteScript('${item.id}', event)" title="Hapus Permanen">🗑️</button>
                         </div>
-                        <div class="note-content" style="margin-top: 8px; margin-bottom: 8px;">${item.content || '<em>Kosong...</em>'}</div>
-                        <div class="note-footer" style="align-items: center; border-top: 1px dashed var(--border); padding-top: 12px; margin-top: auto;">
-                            <div class="badges-container" style="flex:1;">${delBadge}${originalBadge}</div>
-                            <button class="btn-trash-action restore" style="width: auto; padding: 6px 12px;" onclick="restoreTrashNote('${item.id}', event)">♻️ Pulihkan</button>
+                        <div class="card-preview" style="margin-bottom: 12px;">${item.content || '<em>Naskah kosong</em>'}</div>
+                        <div class="card-bottom" style="margin-top: 12px; border-top: 1px dashed var(--border); padding-top: 12px;">
+                            <div class="badges">
+                                ${delInfo}
+                                ${authorBadge}
+                            </div>
+                            <button class="btn-card-action restore" onclick="restoreScript('${item.id}', event)">♻️ Pulihkan</button>
                         </div>
                     </div>`;
                 });
             }
-
+            
             listContainer.innerHTML = html;
             window.renderPagination(totalPages);
         }
