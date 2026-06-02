@@ -705,7 +705,7 @@
         window.currentEditAnnId = null;
         
         let lastPresenceWrite = 0;
-        const PRESENCE_THROTTLE = 60000;
+        const PRESENCE_THROTTLE = 50000;
         
         const COLLAB_TRASH_BOARD_ID = "board_pulihan_collab";
 
@@ -877,14 +877,27 @@
             });
 
             document.addEventListener('visibilitychange', () => {
-                if (document.hidden) window.setPresence(false);
-                else window.pulsePresence();
+                if (document.hidden) {
+                    window.setPresence(false);
+                } else {
+                    lastPresenceWrite = 0; // Reset agar langsung di-update
+                    window.pulsePresence();
+                }
             });
 
             window.addEventListener('beforeunload', () => {
                 window.setPresence(false);
             });
+            setInterval(window.pulsePresence, 50000);
 
+            setInterval(() => {
+                window.renderFacepile();
+                if (document.getElementById('memberListModal').classList.contains('active')) {
+                    window.openMemberListModal();
+                }
+            }, 30000);
+
+            lastPresenceWrite = 0;
             window.setPresence(true);
         };
 
@@ -893,8 +906,10 @@
             if(!container || !window.roomData) return;
             
             const members = window.roomData.members || [];
-            const isMobile = window.innerWidth <= 600;
-            const maxShow = isMobile ? 3 : 5;
+            
+            // Responsivitas jumlah avatar (Ponsel & Tablet <= 1024px: 3, Laptop: 4)
+            const width = window.innerWidth;
+            const maxShow = width <= 1024 ? 3 : 4;
             
             let html = '';
             let shown = 0;
@@ -915,15 +930,19 @@
                     const initial = name.charAt(0).toUpperCase();
                     
                     const pData = window.presenceData[uid];
-                    const onlineDot = pData ? `<div class="face-online-dot"></div>` : ``;
+                    // Validasi TTL
+                    const isOnline = pData && pData.lastActive && (Date.now() - pData.lastActive < 90000);
+                    let onlineDot = isOnline ? `<div class="face-online-dot"></div>` : '';
                     
-                    html += `<div class="face-item" title="${name}">${initial}${onlineDot}</div>`;
+                    // Z-index dinamis agar Admin tidak tertimpa
+                    html += `<div class="face-item" title="${name}" style="z-index: ${50 - i};">${initial}${onlineDot}</div>`;
                     shown++;
                 }
             }
             
             if(members.length > shown) {
-                html += `<div class="face-item more" title="+${members.length - shown} Anggota lainnya">+${members.length - shown}</div>`;
+                // Indikator plus (+) mendapat z-index 0
+                html += `<div class="face-item more" title="+${members.length - shown} Anggota lainnya" style="z-index: 0;">+${members.length - shown}</div>`;
             }
             
             container.innerHTML = html;
@@ -973,7 +992,8 @@
                 const isMe = (uid === currentUserUid);
                 
                 const pData = window.presenceData[uid];
-                const onlineDot = pData ? `<div class="face-online-dot" style="border-color: var(--card-solid);"></div>` : ``;
+                const isOnline = pData && pData.lastActive && (Date.now() - pData.lastActive < 90000);
+                const onlineDot = isOnline ? `<div class="face-online-dot" style="border-color: var(--card-solid);"></div>` : ``;
                 
                 let actionBtn = ``;
                 if(amIAdmin && !isMe) {
