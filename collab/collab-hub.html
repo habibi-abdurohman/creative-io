@@ -193,23 +193,24 @@
         .info-label { color: var(--text-muted); font-weight: 600; flex-shrink: 0; }
         .info-value { font-weight: 800; color: var(--text-main); text-align: right; word-break: break-all; }
         
-        /* DAFTAR MEMBER KELOLA */
-        .member-item { display: flex; align-items: center; justify-content: space-between; padding: 12px; background: var(--card-tint); border-radius: 14px; border: 1px solid var(--border); gap: 12px;}
-        .member-info { display: flex; align-items: center; gap: 12px; flex: 1; min-width: 0; }
-        .member-avatar { width: 34px; height: 34px; border-radius: 50%; background: var(--primary-grad); color: white; display: flex; align-items: center; justify-content: center; font-size: 13px; font-weight: 800; text-transform: uppercase; flex-shrink: 0; }
-        .member-details { display: flex; flex-direction: column; gap: 2px; flex: 1; min-width: 0; }
-        .member-name { font-size: 13px; font-weight: 700; color: var(--text-main); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; width: 100%; max-width: none; }
-        .member-role { font-size: 11px; font-weight: 600; color: var(--text-muted); }
-        .member-actions { display: flex; gap: 6px; flex-shrink: 0; }
+        /* LIST ANGGOTA CSS (MODAL) - REVISI PENYELARASAN */
+        .member-item { display: flex; align-items: center; justify-content: space-between; padding: 12px; background: var(--card-solid); border: 1px solid var(--border); border-radius: 14px; margin-bottom: 8px; gap: 12px; transition: border-color 0.2s; }
+        .member-item:hover { border-color: var(--primary); }
+        .member-info-left { display: flex; align-items: center; gap: 12px; flex: 1; min-width: 0; }
+        .member-avatar { width: 36px; height: 36px; border-radius: 50%; background: var(--primary-grad); color: white; display: flex; align-items: center; justify-content: center; font-size: 14px; font-weight: 800; flex-shrink: 0; position: relative; }
+        .member-name-wrap { display: flex; flex-direction: column; flex: 1; min-width: 0; gap: 2px;}
+        .member-name { font-size: 14px; font-weight: 700; color: var(--text-main); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+        .member-role { font-size: 10px; font-weight: 800; color: var(--primary); background: var(--primary-soft); padding: 2px 6px; border-radius: 6px; width: fit-content; text-transform: uppercase; letter-spacing: 0.5px;}
         
-        .btn-icon { width: 32px; height: 32px; border-radius: 10px; border: none; display: flex; align-items: center; justify-content: center; cursor: pointer; transition: 0.2s; }
-        .btn-icon svg { width: 16px; height: 16px; stroke-width: 2.5; }
-        .btn-icon.kick { background: var(--danger-soft); color: var(--danger); }
-        .btn-icon.kick:hover { background: var(--danger); color: white; }
-        body.dark .btn-icon.kick { color: #f87171; }
-        .btn-icon.admin { background: var(--warning-soft); color: var(--warning); }
-        .btn-icon.admin:hover { background: var(--warning); color: white; }
-        body.dark .btn-icon.admin { color: #fbbf24; }
+        /* TOMBOL AKSI MANAJEMEN ANGGOTA */
+        .member-actions { display: flex; gap: 6px; flex-shrink: 0; }
+        .btn-icon-mng { width: 32px; height: 32px; border-radius: 10px; border: none; display: flex; align-items: center; justify-content: center; cursor: pointer; transition: 0.2s; outline: none;}
+        .btn-icon-mng.kick { background: var(--danger-soft); color: var(--danger); }
+        .btn-icon-mng.kick:hover { background: var(--danger); color: white; }
+        body.dark .btn-icon-mng.kick { color: #f87171; }
+        .btn-icon-mng.admin { background: var(--warning-soft); color: var(--warning); }
+        .btn-icon-mng.admin:hover { background: var(--warning); color: white; }
+        body.dark .btn-icon-mng.admin { color: #fbbf24; }
 
         /* SIDE PANEL (DRAWER) UNTUK DETAIL & INLINE EDIT PENGUMUMAN */
         .side-panel-overlay { position: fixed; inset: 0; background: rgba(0,0,0,0.5); backdrop-filter: blur(4px); z-index: 1000000; display: flex; justify-content: flex-end; opacity: 0; pointer-events: none; transition: opacity 0.3s ease; }
@@ -286,7 +287,6 @@
         <div class="board-container" id="collabContainer"></div>
     </div>
 
-    <!-- MODAL BUAT RUANG -->
     <div class="modal-overlay" id="createModal">
         <div class="modal-card center-text">
             <h3>Buat Ruang Tim</h3>
@@ -310,7 +310,6 @@
         </div>
     </div>
 
-    <!-- MODAL EDIT RUANG -->
     <div class="modal-overlay" id="editRoomModal">
         <div class="modal-card center-text">
             <h3>Ubah Nama Ruang</h3>
@@ -326,7 +325,6 @@
         </div>
     </div>
 
-    <!-- MODAL SUKSES BUAT RUANG -->
     <div class="modal-overlay" id="successModal">
         <div class="modal-card center-text">
             <h3>Ruang Berhasil Dibuat!</h3>
@@ -338,7 +336,6 @@
         </div>
     </div>
 
-    <!-- MODAL GABUNG RUANG -->
     <div class="modal-overlay" id="joinModal">
         <div class="modal-card center-text">
             <h3>Gabung ke Ruang</h3>
@@ -353,20 +350,19 @@
         </div>
     </div>
 
-    <!-- MODAL INFO RUANG -->
     <div class="modal-overlay" id="infoRoomModal">
         <div class="modal-card">
             <h3 style="margin-bottom: 24px; text-align: center;">Informasi Ruang</h3>
             <div class="info-row"><span class="info-label">Nama Proyek</span> <span class="info-value" id="infoRoomName">-</span></div>
             <div class="info-row"><span class="info-label">Status Anda</span> <span class="info-value" id="infoRoomRole">-</span></div>
-            <div class="info-row" id="rowRenamedAt" style="display: none;"><span class="info-label">Terakhir Diubah</span> <span class="info-value" id="infoRoomRenamedAt" style="font-weight: 600; font-size: 12px;">-</span></div>
+            <div class="info-row" id="rowRenamedAt" style="display: none;"><span class="info-label">Terakhir Diubah</span> <span class="info-value" id="infoRoomRenamedAt">-</span></div>
             <div class="info-row" id="rowRenamedBy" style="display: none; margin-bottom: 20px;"><span class="info-label">Diubah Oleh</span> <span class="info-value" id="infoRoomRenamedBy">-</span></div>
             <div class="info-row" style="margin-top: 8px;">
                 <span class="info-label">Kode Invite</span> 
                 <div style="display: flex; align-items: center; gap: 8px;">
-                    <span class="info-value" id="infoRoomCode" style="color: var(--primary); letter-spacing: 1px;">-</span>
-                    <button class="btn-icon admin" id="btnRefreshCode" style="display: none;" title="Perbarui Kode Invite (Admin)">
-                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><polyline points="23 4 23 10 17 10"></polyline><polyline points="1 20 1 14 7 14"></polyline><path d="M3.51 9a9 9 0 0 1 14.85-3.36L23 10M1 14l4.64 4.36A9 9 0 0 0 20.49 15"></path></svg>
+                    <span class="info-value" id="infoRoomCode" style="color: var(--primary); letter-spacing: 1px; cursor: pointer; transition: 0.2s;" onclick="copyInviteCode(this)" title="Klik untuk Salin Kode"></span>
+                    <button class="btn-icon-mng admin" id="btnRefreshCode" style="display: none;" title="Perbarui Kode Invite (Admin)">
+                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" style="width:16px; height:16px;"><polyline points="23 4 23 10 17 10"></polyline><polyline points="1 20 1 14 7 14"></polyline><path d="M3.51 9a9 9 0 0 1 14.85-3.36L23 10M1 14l4.64 4.36A9 9 0 0 0 20.49 15"></path></svg>
                     </button>
                 </div>
             </div>
@@ -376,7 +372,6 @@
         </div>
     </div>
 
-    <!-- MODAL MEMBER RUANG -->
     <div class="modal-overlay" id="membersModal">
         <div class="modal-card">
             <h3 style="margin-bottom: 6px; text-align: center;">Kelola Anggota</h3>
@@ -388,7 +383,6 @@
         </div>
     </div>
 
-    <!-- MODAL DAFTAR PENGUMUMAN RUANG -->
     <div class="modal-overlay" id="announcementModal">
         <div class="modal-card" style="max-width: 480px;">
             <h3 style="margin-bottom: 6px; text-align: center;">Papan Pengumuman</h3>
@@ -406,7 +400,6 @@
         </div>
     </div>
 
-    <!-- MODAL FORM BUAT PENGUMUMAN BARU -->
     <div class="modal-overlay" id="formAnnouncementModal">
         <div class="modal-card" style="max-width: 480px;">
             <h3 id="formAnnTitle" style="text-align: center;">Buat Pengumuman</h3>
@@ -449,7 +442,6 @@
         </div>
     </div>
 
-    <!-- SIDE PANEL (DRAWER) UNTUK DETAIL & INLINE EDIT PENGUMUMAN -->
     <div class="side-panel-overlay" id="annSidePanel">
         <div class="side-panel">
             <div class="side-panel-header">
@@ -459,7 +451,6 @@
                 </button>
             </div>
             
-            <!-- VIEW MODE -->
             <div class="side-panel-body" id="sidePanelDisplay">
                 <div class="sp-meta-top">
                     <span class="ann-type" id="spTypeBadge"></span>
@@ -478,9 +469,7 @@
                 </div>
             </div>
 
-            <!-- EDIT MODE (INLINE) -->
             <div class="side-panel-body" id="sidePanelEdit" style="display:none;">
-                <!-- FLEX-GROW diterapkan di sini agar memakan seluruh ruang kosong -->
                 <div class="input-group flex-grow">
                     <div class="flex-label-row">
                         <label>Pesan Pengumuman</label>
@@ -738,6 +727,27 @@
                 `;
             }).join('');
         }
+
+        // ==========================================
+        // FITUR CLICK-TO-COPY KODE INVITE
+        // ==========================================
+        window.copyInviteCode = (element) => {
+            const originalText = element.getAttribute('data-code');
+            if (!originalText || element.innerText === "Tersalin!") return;
+            
+            navigator.clipboard.writeText(originalText).then(() => {
+                element.innerText = "Tersalin!";
+                element.style.color = "var(--success)";
+                element.style.letterSpacing = "normal";
+                setTimeout(() => {
+                    element.innerText = originalText;
+                    element.style.color = "var(--primary)";
+                    element.style.letterSpacing = "1px";
+                }, 1500);
+            }).catch(err => {
+                console.error("Gagal menyalin: ", err);
+            });
+        };
 
         // ==========================================
         // FITUR PENGUMUMAN UX KONSISTEN
@@ -1091,7 +1101,11 @@
             if(!room) return;
             document.getElementById('infoRoomName').innerText = room.name;
             document.getElementById('infoRoomRole').innerText = room.ownerId === currentUserUid ? "Pembuat Ruang (Admin)" : "Anggota Tim";
-            document.getElementById('infoRoomCode').innerText = room.inviteCode;
+            
+            const codeEl = document.getElementById('infoRoomCode');
+            codeEl.innerText = room.inviteCode;
+            codeEl.setAttribute('data-code', room.inviteCode);
+            
             const formatDate = (ms) => ms ? new Date(ms).toLocaleDateString('id-ID', { day: 'numeric', month: 'short', year: 'numeric', hour: '2-digit', minute:'2-digit' }) : '-';
             
             const rowRenamedAt = document.getElementById('rowRenamedAt'), rowRenamedBy = document.getElementById('rowRenamedBy');
@@ -1113,12 +1127,19 @@
         window.refreshInviteCode = async (roomId) => {
             if(!confirm("Buat kode invite baru? Kode lama akan hangus.")) return;
             const newCode = Math.random().toString(36).substring(2, 8).toUpperCase();
-            try { await updateDoc(doc(dbRef, "collab_boards", roomId), { inviteCode: newCode }); document.getElementById('infoRoomCode').innerText = newCode; alert("Berhasil!"); } 
+            try { 
+                await updateDoc(doc(dbRef, "collab_boards", roomId), { inviteCode: newCode }); 
+                const codeEl = document.getElementById('infoRoomCode');
+                codeEl.innerText = newCode; 
+                codeEl.setAttribute('data-code', newCode);
+                alert("Berhasil!"); 
+            } 
             catch(e) { alert("Gagal memperbarui kode."); }
         };
 
         window.openMembersModal = (roomId) => { window.currentViewedRoomId = roomId; document.getElementById('membersModal').classList.add('active'); window.renderMembersList(roomId); };
         window.closeMembersModal = () => { window.currentViewedRoomId = null; document.getElementById('membersModal').classList.remove('active'); };
+        
         window.renderMembersList = (roomId) => {
             const room = window.collabRooms.find(r => r.id === roomId);
             const container = document.getElementById('membersListContainer');
@@ -1135,16 +1156,16 @@
                 if (isOwner && !isMe) {
                     actionHtml = `
                     <div class="member-actions">
-                        <button class="btn-icon admin" title="Jadikan Admin" onclick="window.transferAdmin('${roomId}', '${uid}', '${displayName.replace(/'/g, "\\'")}')"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon></svg></button>
-                        <button class="btn-icon kick" title="Keluarkan Anggota" onclick="window.kickMember('${roomId}', '${uid}', '${displayName.replace(/'/g, "\\'")}')"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg></button>
+                        <button class="btn-icon-mng admin" title="Jadikan Admin" onclick="window.transferAdmin('${roomId}', '${uid}', '${displayName.replace(/'/g, "\\'")}')"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" style="width:16px; height:16px;"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon></svg></button>
+                        <button class="btn-icon-mng kick" title="Keluarkan Anggota" onclick="window.kickMember('${roomId}', '${uid}', '${displayName.replace(/'/g, "\\'")}')"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" style="width:16px; height:16px;"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg></button>
                     </div>`;
                 }
                 return `
-                <div class="member-item" title="${displayName.replace(/"/g, '&quot;')}">
-                    <div class="member-info">
+                <div class="member-item">
+                    <div class="member-info-left">
                         <div class="member-avatar">${displayName.charAt(0).toUpperCase()}</div>
-                        <div class="member-details">
-                            <div class="member-name">${displayName} ${isMe ? '(Anda)' : ''}</div>
+                        <div class="member-name-wrap">
+                            <div class="member-name" title="${displayName.replace(/"/g, '&quot;')}">${displayName} ${isMe ? '(Anda)' : ''}</div>
                             <div class="member-role">${isThisMemberAdmin ? '👑 Admin' : 'Anggota'}</div>
                         </div>
                     </div>
@@ -1152,6 +1173,7 @@
                 </div>`;
             }).join('');
         };
+        
         window.kickMember = async (roomId, targetUid, targetName) => {
             if(!confirm(`Keluarkan ${targetName} dari ruang ini?`)) return;
             try { await updateDoc(doc(dbRef, "collab_boards", roomId), { members: arrayRemove(targetUid) }); } 
