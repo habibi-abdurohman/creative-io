@@ -31,6 +31,7 @@
             --primary-grad: linear-gradient(135deg, #3b82f6, #2563eb);
             --primary-soft: rgba(37, 99, 235, 0.1); 
             --warning: #f59e0b; 
+            --warning-soft: rgba(245, 158, 11, 0.1);
             --success: #16a34a; 
             --success-soft: rgba(22, 163, 74, 0.1);
             --danger: #ef4444; 
@@ -39,7 +40,7 @@
             --event-soft: rgba(139, 92, 246, 0.1);
             --shadow-flat: 0 4px 20px rgba(0, 0, 0, 0.04); 
             --radius-btn: 14px; 
-            --radius-card: 20px; 
+            --radius-card: 24px; 
         }
         body.dark { 
             --bg-grad: linear-gradient(180deg, #0f172a 0%, #1e293b 100%); 
@@ -67,16 +68,14 @@
            HEADER RUANG (HERO CARD) & FACEPILE
         ========================================================= */
         .hero-card { 
-            background: var(--primary-grad); border-radius: 24px; padding: 28px 32px; color: white; 
+            background: var(--primary-grad); border-radius: var(--radius-card); padding: 24px 32px; color: white; 
             position: relative; overflow: hidden; margin-bottom: 24px; box-shadow: 0 10px 30px rgba(37, 99, 235, 0.2); 
             transition: background 0.3s ease, box-shadow 0.3s ease; 
-            display: flex; flex-direction: column; justify-content: center; min-height: 110px;
         }
         .hero-card.trash-mode { background: #475569; box-shadow: 0 10px 30px rgba(71, 85, 105, 0.2); }
         .hero-card::after { content: ""; position: absolute; width: 250px; height: 250px; background: rgba(255, 255, 255, 0.08); border-radius: 50%; top: -80px; right: -80px; pointer-events: none; }
         
-        .hero-top-wrap { display: flex; justify-content: space-between; align-items: center; width: 100%; gap: 16px; position: relative; z-index: 1;}
-        .hero-header-left { display: flex; align-items: center; gap: 16px; flex: 1; min-width: 200px; }
+        .hero-content-flex { display: flex; flex-wrap: wrap; gap: 16px; align-items: center; width: 100%; position: relative; z-index: 1;}
         
         .btn-back, .btn-mega { 
             width: 44px; height: 44px; border-radius: 14px; background: rgba(255,255,255,0.15); backdrop-filter: blur(8px); -webkit-backdrop-filter: blur(8px);
@@ -85,6 +84,7 @@
         }
         .btn-back:hover, .btn-mega:hover { background: rgba(255,255,255,0.25); transform: translateY(-2px); }
         .btn-back:hover { transform: translateX(-2px); }
+        .btn-back { order: 1; }
         
         body.dark .hero-card.trash-mode .btn-back, body.dark .hero-card.trash-mode .btn-mega { background: rgba(15, 23, 42, 0.4); border-color: rgba(255,255,255,0.1); }
         body.dark .hero-card.trash-mode .btn-back:hover, body.dark .hero-card.trash-mode .btn-mega:hover { background: rgba(15, 23, 42, 0.6); }
@@ -92,20 +92,29 @@
         .btn-mega { position: relative; }
         .btn-mega .unread-dot { position: absolute; top: -3px; right: -3px; width: 12px; height: 12px; background: var(--danger); border-radius: 50%; border: 2px solid rgba(255,255,255,0.8); animation: pulseAlert 2s infinite; display: none; }
         
-        .hero-text { display: flex; flex-direction: column; justify-content: center; min-width: 0; cursor: pointer; border-radius: 12px; transition: 0.2s; padding: 4px; margin-left: -4px; }
-        .hero-text:hover { background: rgba(255,255,255,0.1); }
-        .hero-title { font-size: 24px; font-weight: 900; letter-spacing: -0.5px; line-height: 1.2; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; margin-bottom: 2px; }
-        .trash-indicator { font-size: 13px; line-height: 1.4; opacity: 0.9; display: flex; align-items: center; gap: 8px; font-weight: 600; display: none; margin-top: 4px; }
+        /* EFEK HOVER/ACTIVE PADA JUDUL */
+        .hero-text { 
+            order: 2; flex: 1; min-width: 0; display: flex; flex-direction: column; justify-content: center; cursor: pointer; 
+            padding: 8px 14px; border-radius: 12px; transition: background 0.2s ease; background: transparent; margin-left: -4px;
+        }
+        @media (hover: hover) {
+            .hero-text:hover { background: rgba(255,255,255,0.15); }
+        }
+        .hero-text:active { background: rgba(255,255,255,0.25); }
+        
+        .hero-title { font-size: 22px; font-weight: 900; letter-spacing: -0.5px; line-height: 1.2; width: 100%; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; margin-bottom: 0; }
+        .trash-indicator { font-size: 13px; line-height: 1.4; opacity: 0.9; align-items: center; gap: 8px; font-weight: 600; display: none; margin-top: 4px; margin-bottom: 0; }
         .hero-card.trash-mode .trash-indicator { display: flex; }
+
+        .hero-right { order: 3; display: flex; gap: 12px; align-items: center; flex-shrink: 0; }
         
         /* Facepile UI */
-        .hero-header-right { display: flex; align-items: center; gap: 12px; flex-shrink: 0; }
-        .facepile-wrap { display: flex; align-items: center; cursor: pointer; transition: transform 0.2s; }
+        .facepile-wrap { display: flex; align-items: center; cursor: pointer; transition: transform 0.2s; padding: 4px; border-radius: 20px;}
         .facepile-wrap:hover { transform: scale(1.05); }
-        .facepile-avatar { width: 36px; height: 36px; border-radius: 50%; background: var(--card-solid); color: var(--primary); font-weight: 800; font-size: 14px; display: flex; align-items: center; justify-content: center; border: 2px solid var(--primary); margin-left: -10px; position: relative; box-shadow: 0 2px 8px rgba(0,0,0,0.1); z-index: 1; transition: 0.2s; }
-        .facepile-avatar:first-child { margin-left: 0; }
-        .facepile-more { width: 36px; height: 36px; border-radius: 50%; background: rgba(255,255,255,0.2); color: white; font-weight: 700; font-size: 12px; display: flex; align-items: center; justify-content: center; border: 2px solid rgba(255,255,255,0.5); margin-left: -10px; z-index: 0; backdrop-filter: blur(4px); }
-        body.dark .facepile-avatar { background: var(--card-solid); border-color: var(--primary); }
+        .face-item { width: 34px; height: 34px; border-radius: 50%; border: 2px solid #3b82f6; background: white; color: var(--primary); display: flex; align-items: center; justify-content: center; font-size: 13px; font-weight: 800; margin-left: -12px; position: relative; z-index: 1; box-shadow: 0 2px 8px rgba(0,0,0,0.1);}
+        .face-item:first-child { margin-left: 0; }
+        .face-item.more { background: rgba(255,255,255,0.2); color: white; border-color: rgba(255,255,255,0.4); backdrop-filter: blur(4px); -webkit-backdrop-filter: blur(4px); }
+        .face-online-dot { position: absolute; bottom: 0; right: 0; width: 10px; height: 10px; background: #10b981; border: 2px solid #3b82f6; border-radius: 50%; }
 
         @keyframes pulseAlert { 0% { transform: scale(0.95); box-shadow: 0 0 0 0 rgba(239, 68, 68, 0.7); } 70% { transform: scale(1); box-shadow: 0 0 0 6px rgba(239, 68, 68, 0); } 100% { transform: scale(0.95); box-shadow: 0 0 0 0 rgba(239, 68, 68, 0); } }
 
@@ -183,11 +192,22 @@
         }
         .sticky-tools-inner.searching .filters-wrapper { max-width: 0; opacity: 0; transition: max-width 0.3s cubic-bezier(0.4, 0, 0.2, 1), opacity 0.1s ease; }
         
-        .filter-btn { flex-shrink: 0; padding: 8px 14px; border-radius: 10px; background: var(--card-solid); border: 1px solid var(--border); font-size: 12px; font-weight: 700; color: var(--text-muted); cursor: pointer; transition: 0.2s; white-space: nowrap; pointer-events: auto; outline: none; }
-        .filter-btn:hover { background: var(--card-tint); }
+        /* FILTER BADGES ALIGNED WITH SCRIPT */
+        .filter-btn { display:flex; align-items:center; flex-shrink: 0; padding: 8px 14px; border-radius: 10px; background: var(--card-solid); border: 1px solid var(--border); font-size: 12px; font-weight: 700; color: var(--text-muted); cursor: pointer; transition: 0.2s; white-space: nowrap; pointer-events: auto; outline: none; }
         .filter-btn.active { background: var(--primary-soft); border-color: var(--primary); color: var(--primary); }
-        .filter-btn.trash-toggle-btn { color: var(--danger); border-color: var(--danger-soft); background: var(--danger-soft); }
-        .filter-btn.trash-toggle-btn.active { background: var(--danger); color: white; border-color: var(--danger); box-shadow: 0 4px 12px rgba(239, 64, 64, 0.2); }
+        
+        .filter-badge { background: var(--border); color: var(--text-muted); padding: 2px 6px; border-radius: 20px; font-size: 10px; margin-left: 6px; font-weight: 800; transition: all 0.2s; }
+        body.dark .filter-badge { background: #334155; color: #94a3b8; }
+        
+        .filter-btn:hover:not(.active) .filter-badge { background: var(--text-muted); color: var(--card-solid); }
+        body.dark .filter-btn:hover:not(.active) .filter-badge { background: #94a3b8; color: #1e293b; }
+        
+        .filter-btn.active .filter-badge { background: var(--primary); color: #ffffff; }
+        
+        .filter-btn.trash-btn { color: var(--danger); border-color: var(--danger-soft); background: var(--card-solid); }
+        .filter-btn.trash-btn .filter-badge { background: rgba(239, 68, 68, 0.1); color: var(--danger); }
+        .filter-btn.trash-btn.active { background: var(--danger); color: white; border-color: var(--danger); box-shadow: 0 4px 12px rgba(239, 64, 64, 0.2); }
+        .filter-btn.trash-btn.active .filter-badge { background: #ffffff; color: var(--danger); }
         
         .divider { flex-shrink: 0; width: 1px; height: 18px; background: var(--border); margin: 0 2px; }
         
@@ -196,14 +216,14 @@
         ========================================================= */
         .notes-list { column-count: 4; column-gap: 16px; margin-top: 10px; transition: opacity 0.2s; }
         
-        .empty-state { column-span: all; text-align: center; padding: 60px 20px; background: var(--card-glass); border: 1px dashed var(--border); border-radius: var(--radius-card); cursor: pointer; transition: 0.2s; }
+        .empty-state { column-span: all; text-align: center; padding: 60px 20px; background: var(--card-glass); border: 1px dashed var(--border); border-radius: 20px; cursor: pointer; transition: 0.2s; }
         .empty-state:hover { background: var(--card-tint); }
         .empty-state-icon { font-size: 42px; margin-bottom: 12px; opacity: 0.8; }
         .empty-state-text { font-size: 13px; color: var(--text-muted); line-height: 1.6; }
         
         .note-card { 
             break-inside: avoid; margin-bottom: 16px; padding: 20px; 
-            border-radius: var(--radius-card); background: var(--card-glass); border: 1px solid var(--border); 
+            border-radius: 20px; background: var(--card-glass); border: 1px solid var(--border); 
             cursor: pointer; position: relative; overflow: hidden; box-shadow: var(--shadow-flat); 
             transition: transform 0.2s, border-color 0.2s; 
             background-image: linear-gradient(var(--paper-line) 1px, transparent 1px); 
@@ -331,17 +351,18 @@
         ========================================================= */
         .modal-overlay { position: fixed; inset: 0; background: rgba(0,0,0,0.4); backdrop-filter: blur(4px); z-index: 999999; display: none; align-items: center; justify-content: center; padding: 20px; width: 100vw; height: 100vh; box-sizing: border-box; }
         .modal-overlay.active { display: flex; }
-        .modal-card { background: var(--card-solid); width: 100%; border-radius: var(--radius-card); padding: 24px; box-shadow: var(--shadow-flat); border: 1px solid var(--border); box-sizing: border-box; display: flex; flex-direction: column; max-height: 90vh; }
-        .modal-card h3 { font-size: 18px; font-weight: 900; margin-bottom: 8px; color: var(--text-main); flex-shrink: 0; text-align: center;}
-        .modal-card p { font-size: 13px; color: var(--text-muted); margin-bottom: 20px; line-height: 1.5; flex-shrink: 0; text-align: center;}
+        /* OVERFLOW Y AUTO: FIX TOMBOL TERPOTONG */
+        .modal-card { background: var(--card-solid); width: 100%; border-radius: var(--radius-card); padding: 24px; box-shadow: var(--shadow-flat); border: 1px solid var(--border); box-sizing: border-box; display: flex; flex-direction: column; max-height: 90vh; overflow-y: auto; }
+        .modal-card h3 { font-size: 20px; font-weight: 900; margin-bottom: 8px; color: var(--text-main); flex-shrink: 0; text-align: center; }
+        .modal-card p { font-size: 13px; color: var(--text-muted); margin-bottom: 20px; line-height: 1.5; flex-shrink: 0; text-align: center; }
         
         .modal-input, .modal-select, .modal-textarea { width: 100%; padding: 14px 16px; border-radius: 14px; border: 1px solid var(--border); background: var(--card-tint); color: var(--text-main); font-size: 14px; font-weight: 600; outline: none; margin-bottom: 12px; transition: 0.2s; box-sizing: border-box; font-family: inherit; }
-        .modal-textarea { resize: vertical; min-height: 120px; line-height: 1.5;}
-        .modal-input:focus, .modal-select:focus, .modal-textarea:focus { border-color: var(--primary); box-shadow: 0 0 0 3px var(--primary-soft); background: var(--card-solid);}
+        .modal-textarea { resize: vertical; min-height: 120px; line-height: 1.5; }
+        .modal-input:focus, .modal-select:focus, .modal-textarea:focus { border-color: var(--primary); box-shadow: 0 0 0 3px var(--primary-soft); background: var(--card-solid); }
         .modal-select { appearance: none; cursor: pointer; }
         
         .modal-actions { display: flex; gap: 12px; margin-top: 8px; flex-shrink: 0; }
-        .btn-modal { flex: 1; padding: 12px; border-radius: 12px; font-size: 13px; font-weight: 800; cursor: pointer; border: none; transition: 0.2s; outline: none; display: flex; justify-content: center; align-items: center; gap: 6px;}
+        .btn-modal { flex: 1; padding: 12px; border-radius: 12px; font-size: 13px; font-weight: 800; cursor: pointer; border: none; transition: 0.2s; outline: none; display: flex; justify-content: center; align-items: center; gap: 6px; }
         .btn-cancel { background: var(--card-tint); color: var(--text-main); border: 1px solid var(--border); }
         .btn-cancel:hover { background: #e2e8f0; }
         body.dark .btn-cancel:hover { background: #334155; }
@@ -349,7 +370,7 @@
 
         .info-row { display: flex; justify-content: space-between; margin-bottom: 12px; font-size: 13px; gap: 12px; }
         .info-label { color: var(--text-muted); font-weight: 600; flex-shrink: 0; }
-        .info-value { font-weight: 800; text-align: right; word-break: break-word; max-width: 65%; color: var(--text-main); }
+        .info-value { font-weight: 800; color: var(--text-main); text-align: right; max-width: 60%; word-break: break-word; }
         
         /* LIST PENGUMUMAN & INPUT GROUP */
         .input-group { text-align: left; margin-bottom: 16px; flex-shrink: 0; display: flex; flex-direction: column; }
@@ -388,6 +409,24 @@
         .ann-msg-clamp { font-size: 13px; font-weight: 600; color: var(--text-main); line-height: 1.5; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; text-overflow: ellipsis; }
         .ann-meta { font-size: 11px; color: var(--text-muted); font-weight: 600; display: flex; justify-content: flex-end; align-items: center; margin-top: 4px;}
         .ann-admin-indicator { color: var(--primary); display: flex; align-items: center; gap: 4px; background: var(--primary-soft); padding: 4px 8px; border-radius: 6px; }
+
+        /* LIST ANGGOTA CSS (MODAL) ALIGNED WITH SCRIPT */
+        .member-item { display: flex; align-items: center; justify-content: space-between; padding: 12px; background: var(--card-solid); border: 1px solid var(--border); border-radius: 14px; margin-bottom: 8px; gap: 12px; transition: border-color 0.2s; }
+        .member-item:hover { border-color: var(--primary); }
+        .member-info-left { display: flex; align-items: center; gap: 12px; flex: 1; min-width: 0; }
+        .member-avatar { width: 36px; height: 36px; border-radius: 50%; background: var(--primary-grad); color: white; display: flex; align-items: center; justify-content: center; font-size: 14px; font-weight: 800; flex-shrink: 0; position: relative; }
+        .member-name-wrap { display: flex; flex-direction: column; flex: 1; min-width: 0; gap: 2px;}
+        .member-name { font-size: 14px; font-weight: 700; color: var(--text-main); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+        .member-role { font-size: 10px; font-weight: 800; color: var(--primary); background: var(--primary-soft); padding: 2px 6px; border-radius: 6px; width: fit-content; text-transform: uppercase; letter-spacing: 0.5px;}
+        
+        .member-actions { display: flex; gap: 6px; flex-shrink: 0; }
+        .btn-icon-mng { width: 32px; height: 32px; border-radius: 10px; border: none; display: flex; align-items: center; justify-content: center; cursor: pointer; transition: 0.2s; outline: none;}
+        .btn-icon-mng.kick { background: var(--danger-soft); color: var(--danger); }
+        .btn-icon-mng.kick:hover { background: var(--danger); color: white; }
+        body.dark .btn-icon-mng.kick { color: #f87171; }
+        .btn-icon-mng.admin { background: var(--warning-soft); color: var(--warning); }
+        .btn-icon-mng.admin:hover { background: var(--warning); color: white; }
+        body.dark .btn-icon-mng.admin { color: #fbbf24; }
 
         /* TARGET MEMBER CHECKBOX IDENTIK */
         .target-list-box { background: var(--card-tint); border: 1px solid var(--border); border-radius: 14px; padding: 8px; display: flex; flex-direction: column; gap: 6px; max-height: 150px; overflow-y: auto; margin-top: 8px; }
@@ -434,9 +473,12 @@
         @media(max-width: 768px) { .notes-list { column-count: 2; } }
         @media(max-width: 600px) { 
             body { padding-top: 76px; }
-            .hero-card { padding: 24px 20px; gap: 16px;} 
-            .hero-top-wrap { flex-direction: row; flex-wrap: nowrap; align-items: center; }
-            .hero-header-left { min-width: 0; }
+            .hero-card { padding: 20px; } 
+            
+            /* HERO RESPONSIVE ALIGNED WITH SCRIPT */
+            .hero-content-flex { gap: 12px; align-items: flex-start; }
+            .hero-right { order: 2; margin-left: auto; margin-top: 0; }
+            .hero-text { order: 3; flex: 0 0 100%; padding: 8px 12px; margin-left: -8px; }
             .hero-title { font-size: 20px; } 
             
             .notes-list { column-count: 1; } 
@@ -461,23 +503,22 @@
 
     <div class="wrapper">
         <div class="hero-card" id="heroCard">
-            <div class="hero-top-wrap">
-                <div class="hero-header-left">
-                    <a href="collab-hub.html" class="btn-back" title="Kembali ke Lobi">
-                        <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
-                            <line x1="19" y1="12" x2="5" y2="12"></line>
-                            <polyline points="12 19 5 12 12 5"></polyline>
-                        </svg>
-                    </a>
-                    <div class="hero-text" onclick="openMemberList()" title="Lihat Info Ruang">
-                        <h1 class="hero-title" id="uiRoomName">Memuat Ruang...</h1>
-                        <p class="trash-indicator">🗑️ Menampilkan sampah ruang. Lenyap otomatis dalam 30 hari.</p>
-                    </div>
-                </div>
+            <div class="hero-content-flex">
+                <a href="collab-hub.html" class="btn-back" title="Kembali ke Lobi">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                        <line x1="19" y1="12" x2="5" y2="12"></line>
+                        <polyline points="12 19 5 12 12 5"></polyline>
+                    </svg>
+                </a>
                 
-                <div class="hero-header-right" id="uiHeroRight">
-                    <div class="facepile-wrap" id="uiFacepile" onclick="openMemberList()" title="Daftar Anggota">
-                        </div>
+                <div class="hero-text" onclick="openRoomInfoModal()" title="Lihat detail ruang">
+                    <h1 class="hero-title" id="uiRoomName">Memuat Ruang...</h1>
+                    <p class="trash-indicator">🗑️ Menampilkan sampah ruang. Lenyap otomatis dalam 30 hari.</p>
+                </div>
+
+                <div class="hero-right" id="uiHeroRight">
+                    <div class="facepile-wrap" id="uiFacepile" onclick="openMemberListModal()" title="Daftar Anggota">
+                    </div>
                     <button class="btn-mega" id="btnAnnouncement" onclick="openAnnouncementModal()" title="Papan Pengumuman Ruang">
                         📢 <div class="unread-dot" id="annUnreadBadge"></div>
                     </button>
@@ -508,13 +549,27 @@
         <button class="fab" id="fabAdd" onclick="openEditor()">+</button>
     </div>
 
+    <div class="modal-overlay" id="roomInfoModal">
+        <div class="modal-card" style="max-width: 400px;">
+            <h3 style="text-align: center; margin-bottom: 4px;">Detail Ruang</h3>
+            <p style="text-align: center; margin-bottom: 24px;">Informasi lengkap mengenai ruang kolaborasi ini.</p>
+            <div class="info-row"><span class="info-label">Nama Ruang</span> <span class="info-value" id="riName">-</span></div>
+            <div class="info-row"><span class="info-label">Dibuat Oleh</span> <span class="info-value" id="riOwner">-</span></div>
+            <div class="info-row"><span class="info-label">Tanggal Dibuat</span> <span class="info-value" id="riDate">-</span></div>
+            <div class="info-row"><span class="info-label">Total Anggota</span> <span class="info-value" id="riMembers">-</span></div>
+            <div class="modal-actions" style="margin-top: 24px;">
+                <button class="btn-modal btn-cancel" onclick="closeRoomInfoModal()">Tutup</button>
+            </div>
+        </div>
+    </div>
+
     <div class="modal-overlay" id="memberListModal">
         <div class="modal-card" style="max-width: 440px;">
-            <h3 style="margin-bottom: 6px;">Daftar Anggota</h3>
-            <p style="margin-bottom: 20px;">Anggota yang tergabung dalam ruang kolaborasi ini.</p>
+            <h3 style="text-align: center; margin-bottom: 4px;">Kelola Anggota</h3>
+            <p id="membersSubtitle" style="text-align: center; margin-bottom: 16px;">Melihat daftar anggota di dalam ruang.</p>
             <div class="list-container-scroll" id="memberListContainer" style="max-height: 400px; overflow-y: auto;"></div>
             <div class="modal-actions" style="margin-top: 20px;">
-                <button class="btn-modal btn-cancel" onclick="closeMemberList()">Tutup</button>
+                <button class="btn-modal btn-cancel" onclick="closeMemberListModal()">Tutup</button>
             </div>
         </div>
     </div>
@@ -747,7 +802,8 @@
         // Menutup panel / modal jika diklik di luar area
         document.addEventListener('click', function(e) {
             if (e.target.classList.contains('side-panel-overlay')) closeSidePanel();
-            if (e.target.id === 'memberListModal') window.closeMemberList();
+            if (e.target.id === 'roomInfoModal') window.closeRoomInfoModal();
+            if (e.target.id === 'memberListModal') window.closeMemberListModal();
             const searchContainer = document.getElementById('searchContainer');
             if (searchContainer && searchContainer.classList.contains('expanded') && !searchContainer.contains(e.target)) window.closeSearch();
         });
@@ -792,7 +848,7 @@
             const width = window.innerWidth;
             let newLimit = 18;
             if (width <= 600) newLimit = 12; else if (width <= 1024) newLimit = 16;
-            if (window.itemsPerPage !== newLimit) { window.itemsPerPage = newLimit; window.currentPage = 1; window.renderNotes(); }
+            if (window.itemsPerPage !== newLimit) { window.itemsPerPage = newLimit; window.currentPage = 1; window.renderNotes(); window.renderFacepile(); }
         }
         window.addEventListener('resize', () => { clearTimeout(window.resizeTimeout); window.resizeTimeout = setTimeout(window.updateItemsPerPage, 200); });
 
@@ -810,7 +866,7 @@
                 
                 window.renderFacepile();
                 if(document.getElementById('memberListModal').classList.contains('active')) {
-                    window.renderMemberList();
+                    window.openMemberListModal();
                 }
 
                 window.roomData.members.forEach(uid => {
@@ -820,7 +876,7 @@
                             
                             window.renderFacepile();
                             if(document.getElementById('memberListModal').classList.contains('active')) {
-                                window.renderMemberList();
+                                window.openMemberListModal();
                             }
 
                             if (document.getElementById('formAnnouncementModal').classList.contains('active')) {
@@ -915,78 +971,139 @@
         // UI FACEPILE & MEMBER LIST PANEL MODAL
         // ==========================================
         window.renderFacepile = function() {
-            const fpContainer = document.getElementById('uiFacepile');
-            if(!fpContainer || !window.roomData) return;
+            const container = document.getElementById('uiFacepile');
+            if(!container || !window.roomData) return;
+            
             const members = window.roomData.members || [];
-            const maxShow = 3;
+            const isMobile = window.innerWidth <= 600;
+            const maxShow = isMobile ? 3 : 5;
+            
             let html = '';
-            for(let i=0; i<Math.min(members.length, maxShow); i++) {
-                const uid = members[i];
-                const user = window.userCache[uid] || {name: "..."};
-                const initial = (user.name || user.displayName || "?").charAt(0).toUpperCase();
-                html += `<div class="facepile-avatar">${initial}</div>`;
+            let shown = 0;
+            
+            const ownerId = window.roomData.ownerId;
+            let sortedMembers = [...members];
+            sortedMembers.sort((a, b) => {
+                if(a === ownerId) return -1;
+                if(b === ownerId) return 1;
+                return 0;
+            });
+
+            for(let i=0; i<sortedMembers.length; i++) {
+                if(i < maxShow) {
+                    const uid = sortedMembers[i];
+                    const user = window.userCache[uid] || { name: "?" };
+                    const name = user.name || user.displayName || "Anonim";
+                    const initial = name.charAt(0).toUpperCase();
+                    
+                    const isOnline = (uid === currentUserUid); 
+                    const onlineDot = isOnline ? `<div class="face-online-dot"></div>` : ``;
+                    html += `<div class="face-item" title="${name}">${initial}${onlineDot}</div>`;
+                    shown++;
+                }
             }
-            if(members.length > maxShow) {
-                html += `<div class="facepile-more">+${members.length - maxShow}</div>`;
+            
+            if(members.length > shown) {
+                html += `<div class="face-item more" title="+${members.length - shown} Anggota lainnya">+${members.length - shown}</div>`;
             }
-            fpContainer.innerHTML = html;
-        };
+            
+            container.innerHTML = html;
+        }
 
-        window.openMemberList = () => {
-            document.getElementById('memberListModal').classList.add('active');
-            window.renderMemberList();
-        };
-
-        window.closeMemberList = () => document.getElementById('memberListModal').classList.remove('active');
-
-        window.renderMemberList = () => {
-            const container = document.getElementById('memberListContainer');
+        window.openRoomInfoModal = function() {
             if(!window.roomData) return;
-            const isOwner = window.roomData.ownerId === currentUserUid;
+            document.getElementById('riName').innerText = window.roomData.name || '-';
+            
+            const ownerUid = window.roomData.ownerId;
+            const ownerUser = window.userCache[ownerUid] || {};
+            const ownerName = ownerUser.name || ownerUser.displayName || 'Anonim';
+            document.getElementById('riOwner').innerText = ownerName;
+            
+            const ms = window.roomData.createdAt;
+            document.getElementById('riDate').innerText = ms ? new Date(ms).toLocaleDateString('id-ID', {day:'numeric', month:'long', year:'numeric'}) : '-';
+            
+            document.getElementById('riMembers').innerText = (window.roomData.members ? window.roomData.members.length : 0) + ' Anggota';
+            
+            document.getElementById('roomInfoModal').classList.add('active');
+        }
+        window.closeRoomInfoModal = () => document.getElementById('roomInfoModal').classList.remove('active');
 
-            container.innerHTML = window.roomData.members.map(uid => {
-                const user = window.userCache[uid] || {name: "Memuat..."};
+        window.openMemberListModal = function() {
+            if(!window.roomData) return;
+            const container = document.getElementById('memberListContainer');
+            const members = window.roomData.members || [];
+            const ownerId = window.roomData.ownerId;
+            const amIAdmin = ownerId === currentUserUid;
+            
+            const subtitle = document.getElementById('membersSubtitle');
+            if (subtitle) {
+                subtitle.innerText = amIAdmin ? "Anda memiliki kontrol penuh sebagai Admin." : "Melihat daftar anggota di dalam ruang.";
+            }
+
+            let sortedMembers = [...members];
+            sortedMembers.sort((a, b) => {
+                if(a === ownerId) return -1;
+                if(b === ownerId) return 1;
+                return 0;
+            });
+            
+            let html = '';
+            sortedMembers.forEach(uid => {
+                const user = window.userCache[uid] || { name: "Memuat..." };
                 const name = user.name || user.displayName || "Anonim";
-                const isUserOwner = window.roomData.ownerId === uid;
-                const roleBadge = isUserOwner ? `<span class="badge" style="background:var(--warning);color:white;border:none;">Admin</span>` : `<span class="badge">Anggota</span>`;
-
-                let actionHtml = '';
-                if(isOwner && !isUserOwner) {
-                    actionHtml = `
-                    <div style="display:flex; gap:8px; margin-top:10px;">
-                        <button class="btn-sp-action" style="padding:8px 12px; font-size:11px;" onclick="transferOwnership('${uid}')">Jadikan Admin</button>
-                        <button class="btn-sp-action danger" style="padding:8px 12px; font-size:11px;" onclick="kickMember('${uid}')">Keluarkan</button>
+                const initial = name.charAt(0).toUpperCase();
+                const isOnline = (uid === currentUserUid);
+                const isThisMemberAdmin = (uid === ownerId);
+                const isMe = (uid === currentUserUid);
+                
+                const onlineDot = isOnline ? `<div class="face-online-dot" style="bottom: -2px; right: -2px; border-color: var(--card-solid);"></div>` : ``;
+                
+                let actionBtn = ``;
+                if(amIAdmin && !isMe) {
+                    actionBtn = `
+                    <div class="member-actions">
+                        <button class="btn-icon-mng admin" title="Jadikan Admin" onclick="window.transferAdmin('${currentRoomId}', '${uid}', '${name.replace(/'/g, "\\'")}')">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" style="width:16px; height:16px;"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon></svg>
+                        </button>
+                        <button class="btn-icon-mng kick" title="Keluarkan Anggota" onclick="window.kickMember('${currentRoomId}', '${uid}', '${name.replace(/'/g, "\\'")}')">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" style="width:16px; height:16px;"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
+                        </button>
                     </div>`;
                 }
-
-                return `
-                <div class="announcement-item" style="cursor:default; margin-bottom:10px; padding:12px 16px;">
-                    <div style="display:flex; justify-content:space-between; align-items:center;">
-                        <div style="display:flex; align-items:center; gap:12px;">
-                            <div class="target-avatar">${name.charAt(0).toUpperCase()}</div>
-                            <div style="font-size:13px; font-weight:700; color:var(--text-main);">${name} ${uid === currentUserUid ? '(Anda)' : ''}</div>
+                
+                html += `
+                <div class="member-item">
+                    <div class="member-info-left">
+                        <div class="member-avatar">${initial}${onlineDot}</div>
+                        <div class="member-name-wrap">
+                            <div class="member-name" title="${name.replace(/"/g, '&quot;')}">${name} ${isMe ? '(Anda)' : ''}</div>
+                            <div class="member-role">${isThisMemberAdmin ? '👑 Admin' : 'Anggota'}</div>
                         </div>
-                        ${roleBadge}
                     </div>
-                    ${actionHtml}
+                    ${actionBtn}
                 </div>`;
-            }).join('');
-        };
+            });
+            
+            container.innerHTML = html;
+            document.getElementById('memberListModal').classList.add('active');
+        }
+        
+        window.closeMemberListModal = () => document.getElementById('memberListModal').classList.remove('active');
 
-        window.kickMember = async (uid) => {
-            if(!confirm("Keluarkan anggota ini dari ruang kolaborasi?")) return;
+        window.kickMember = async (roomId, targetUid, targetName) => {
+            if(!confirm(`Keluarkan ${targetName} dari ruang kolaborasi ini?`)) return;
             try {
-                await updateDoc(doc(db, "collab_boards", currentRoomId), {
-                    members: arrayRemove(uid)
+                await updateDoc(doc(db, "collab_boards", roomId), {
+                    members: arrayRemove(targetUid)
                 });
             } catch(e) { console.error(e); alert("Gagal mengeluarkan anggota."); }
         };
 
-        window.transferOwnership = async (uid) => {
-            if(!confirm("Jadikan anggota ini sebagai Admin? Anda akan kehilangan hak Admin utama.")) return;
+        window.transferAdmin = async (roomId, targetUid, targetName) => {
+            if(!confirm(`Jadikan ${targetName} sebagai Admin? Anda akan kehilangan hak Admin utama dan menjadi anggota biasa.`)) return;
             try {
-                await updateDoc(doc(db, "collab_boards", currentRoomId), {
-                    ownerId: uid
+                await updateDoc(doc(db, "collab_boards", roomId), {
+                    ownerId: targetUid
                 });
             } catch(e) { console.error(e); alert("Gagal mengubah hak Admin."); }
         };
@@ -1609,11 +1726,13 @@
             let pinnedCount = window.notesData.filter(x => x.pinned).length;
             let trashCount = window.trashData.length;
 
+            const getBadge = (count) => `<span class="filter-badge">${count}</span>`;
+
             let html = '';
             if(!window.isTrashView) {
                 html += `
-                    <button class="filter-btn ${window.currentFilter === 'all' ? 'active' : ''}" onclick="setFilter('all', this)">Semua (${allCount})</button>
-                    <button class="filter-btn ${window.currentFilter === 'pinned' ? 'active' : ''}" onclick="setFilter('pinned', this)">📌 Pinned (${pinnedCount})</button>
+                    <button class="filter-btn ${window.currentFilter === 'all' ? 'active' : ''}" onclick="setFilter('all', this)">Semua ${getBadge(allCount)}</button>
+                    <button class="filter-btn ${window.currentFilter === 'pinned' ? 'active' : ''}" onclick="setFilter('pinned', this)">📌 Pinned ${getBadge(pinnedCount)}</button>
                     <div class="divider"></div>
                     <button class="filter-btn ${window.currentSort === 'newest' ? 'active' : ''}" onclick="setSort('newest')">Terbaru</button>
                     <button class="filter-btn ${window.currentSort === 'oldest' ? 'active' : ''}" onclick="setSort('oldest')">Terlama</button>
@@ -1621,7 +1740,7 @@
                 `;
             }
             let trashActive = window.isTrashView ? 'active' : '';
-            html += `<button class="filter-btn trash-toggle-btn ${trashActive}" onclick="toggleTrashView()">🗑️ Trash (${trashCount})</button>`;
+            html += `<button class="filter-btn trash-btn ${trashActive}" onclick="toggleTrashView()">🗑️ Trash ${getBadge(trashCount)}</button>`;
             document.getElementById('filterButtons').innerHTML = html;
         }
 
