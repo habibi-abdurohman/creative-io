@@ -1,8 +1,3 @@
-// =========================================================
-// NAVBAR.JS - PUSAT ROUTING & SINKRONISASI USER GLOBAL
-// =========================================================
-
-// FIX: Pengecekan folder kini mendukung '/pages/' dan '/collab/' agar rootPath tidak patah
 const isInsideSubfolder = window.location.pathname.includes('/pages/') || window.location.pathname.includes('/collab/');
 const rootPath = isInsideSubfolder ? '../' : './';
 
@@ -16,14 +11,13 @@ document.addEventListener("DOMContentLoaded", () => {
         .then(html => {
             const processedHtml = html
                 .replace(/href="pages\//g, `href="${rootPath}pages/`)
-                .replace(/href="collab\//g, `href="${rootPath}collab/`) // FIX: Auto-routing folder collab
+                .replace(/href="collab\//g, `href="${rootPath}collab/`)
                 .replace(/href="profil.html"/g, `href="${rootPath}profil.html"`);
                 
             navbarContainer.innerHTML = processedHtml;
             initNavbarUI(); 
-            syncGlobalUserData(); // Panggil sinkronisasi Firebase otomatis
+            syncGlobalUserData();
             
-            // TAMBAHAN FIX PWA: Munculkan tombol install jika PWA event sudah ditangkap
             if (typeof window.showPwaButton === 'function') {
                 window.showPwaButton();
             }
@@ -77,7 +71,6 @@ window.toggleProfileMenu = function() {
     document.getElementById("profileDropdown").classList.toggle("active");
 };
 
-// FIX: Penyesuaian Active State Halaman ditambahkan collab-hub
 function setActiveMenu() {
     const page = window.location.pathname.split("/").pop() || "dashboard.html";
     const menus = {
@@ -86,7 +79,7 @@ function setActiveMenu() {
         "script.html": "nav-script", 
         "notes.html": "nav-notes",
         "calculator.html": "nav-calculator", 
-        "collab-hub.html": "nav-collab", // PENDAFTARAN MENU KOLABORASI
+        "collab-hub.html": "nav-collab",
         "trash.html": "nav-trash"
     };
     if (menus[page]) {
@@ -94,7 +87,6 @@ function setActiveMenu() {
     }
 }
 
-// FIX: Sistem Sinkronisasi User Global ke Firestore Database
 async function syncGlobalUserData() {
     try {
         const { auth, db } = await import(rootPath + 'js/firebase.js'); // Import db
