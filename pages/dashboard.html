@@ -63,7 +63,7 @@
         .bg-glow.one { width: 340px; height: 340px; background: rgba(59, 130, 246, 0.15); top: -50px; left: -100px; }
         .bg-glow.two { width: 320px; height: 320px; background: rgba(96, 165, 250, 0.15); bottom: 100px; right: -100px; }
 
-        .wrapper { position: relative; z-index: 2; max-width: 1000px; width: 100%; margin: 0 auto; display: flex; flex-direction: column; gap: 32px; }
+        .wrapper { position: relative; z-index: 2; max-width: 1200px; width: 100%; margin: 0 auto; display: flex; flex-direction: column; gap: 32px; }
 
         /* =========================================================
            HEADER (CLEAN & FOKUS)
@@ -138,8 +138,10 @@
             font-size: 13px; font-weight: 800; color: white; 
             margin-left: -14px; position: relative; box-shadow: 0 4px 10px rgba(0,0,0,0.1);
         }
-        .mock-face:first-child { margin-left: 0; background: #f59e0b; z-index: 4; }
-        .mock-face:nth-child(2) { background: #3b82f6; z-index: 3; }
+        .mock-face:first-child { margin-left: 0; background: #f59e0b; z-index: 6; } /* Paling depan */
+        .mock-face:nth-child(2) { background: #3b82f6; z-index: 5; }
+        .mock-face:nth-child(3) { background: #10b981; z-index: 4; } /* Avatar Ke-3: Warna Hijau */
+        .mock-face:nth-child(4) { background: #ef4444; z-index: 3; } /* Avatar Ke-4: Warna Merah */
         .mock-face.more { background: rgba(0,0,0,0.25); backdrop-filter: blur(8px); z-index: 2; border-color: rgba(255,255,255,0.2); }
         
         /* Animasi Denyut Hijau (Real-time indicator) */
@@ -273,12 +275,14 @@
             <div class="collab-actions">
                 <!-- Ilustrasi Mockup Avatar Bohongan -->
                 <div class="mockup-facepile" title="Ruang Kolaborasi Aktif">
-                    <div class="mock-face">A<div class="live-dot"></div></div>
+                    <div class="mock-face">H<div class="live-dot"></div></div>
                     <div class="mock-face">K</div>
-                    <div class="mock-face more">+5</div>
+                    <div class="mock-face">R</div>
+                    <div class="mock-face">D</div>
+                    <div class="mock-face more">+12</div>
                 </div>
                 
-                <a href="./collab-hub.html" class="btn-collab">
+                <a href="../collab/collab-hub.html" class="btn-collab">
                     Masuk Ruangan ➔
                 </a>
             </div>
