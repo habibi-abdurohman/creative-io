@@ -31,7 +31,6 @@
             --primary-grad: linear-gradient(135deg, #3b82f6, #2563eb);
             --primary-soft: rgba(37, 99, 235, 0.1);
             --success: #16a34a;
-            --success-soft: rgba(22, 163, 74, 0.1);
             --event: #8b5cf6;
             --event-soft: rgba(139, 92, 246, 0.1);
             --shadow-flat: 0 4px 20px rgba(0, 0, 0, 0.04);
@@ -49,7 +48,6 @@
             --text-muted: #94a3b8;
             --primary-soft: rgba(59, 130, 246, 0.2);
             --shadow-flat: 0 10px 30px rgba(0, 0, 0, 0.4);
-            --success-soft: rgba(22, 163, 74, 0.15);
             --event-soft: rgba(139, 92, 246, 0.15);
         }
 
@@ -68,104 +66,69 @@
         .bg-glow.one { width: 340px; height: 340px; background: rgba(59, 130, 246, 0.15); top: -50px; left: -100px; }
         .bg-glow.two { width: 320px; height: 320px; background: rgba(96, 165, 250, 0.15); bottom: 100px; right: -100px; }
 
-        .wrapper { position: relative; z-index: 2; max-width: 1200px; width: 100%; margin: 0 auto; display: flex; flex-direction: column; gap: 24px; }
+        .wrapper { position: relative; z-index: 2; max-width: 1000px; width: 100%; margin: 0 auto; display: flex; flex-direction: column; gap: 32px; }
 
         /* =========================================================
-           HEADER DASHBOARD MINIMALIS
+           HEADER (CLEAN & FOKUS)
         ========================================================= */
-        .dash-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px; flex-wrap: wrap; gap: 16px; }
-        .header-left { display: flex; flex-direction: column; gap: 4px; }
+        .dash-header { display: flex; flex-direction: column; gap: 6px; padding: 10px 0 16px 0; }
         .dash-badge { display: inline-flex; align-items: center; gap: 6px; font-size: 11px; font-weight: 800; color: var(--primary); background: var(--primary-soft); padding: 4px 10px; border-radius: 8px; width: fit-content; text-transform: uppercase; letter-spacing: 0.5px; }
-        .hero-title { font-size: 28px; font-weight: 900; letter-spacing: -0.5px; color: var(--text-main); margin: 0; }
+        .hero-title { font-size: 32px; font-weight: 900; letter-spacing: -0.5px; color: var(--text-main); margin: 0; }
+        .hero-subtitle { font-size: 14px; font-weight: 500; color: var(--text-muted); }
+
+        /* =========================================================
+           LAUNCHER GRID (BENTO STYLE)
+        ========================================================= */
+        .launcher-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 16px; }
         
-        .header-right { position: relative; }
-        .btn-create-new { background: var(--primary-grad); color: white; border: none; padding: 12px 20px; border-radius: 14px; font-size: 14px; font-weight: 800; cursor: pointer; box-shadow: 0 4px 15px rgba(37, 99, 235, 0.3); transition: 0.2s; display: flex; align-items: center; gap: 8px; outline: none; }
-        .btn-create-new:hover { transform: translateY(-2px); box-shadow: 0 6px 20px rgba(37, 99, 235, 0.4); }
-
-        /* DROPDOWN BUAT BARU */
-        .create-dropdown { position: absolute; top: 100%; right: 0; margin-top: 8px; background: var(--card-solid); border: 1px solid var(--border); border-radius: 16px; padding: 8px; display: none; flex-direction: column; gap: 4px; min-width: 200px; box-shadow: var(--shadow-flat); z-index: 100; }
-        body.dark .create-dropdown { box-shadow: 0 10px 40px rgba(0,0,0,0.5); }
-        .create-dropdown.active { display: flex; animation: slideDown 0.2s ease forwards; }
-        .create-item { display: flex; align-items: center; gap: 12px; padding: 10px 12px; border-radius: 10px; font-size: 13px; font-weight: 700; color: var(--text-main); transition: 0.2s; }
-        .create-item:hover { background: var(--card-tint); }
-        .create-item .icon { font-size: 16px; display: flex; align-items: center; justify-content: center; width: 28px; height: 28px; background: var(--card-solid); border: 1px solid var(--border); border-radius: 8px; }
-
-        @keyframes slideDown { from { opacity: 0; transform: translateY(-10px); } to { opacity: 1; transform: translateY(0); } }
-
-        /* =========================================================
-           GRID LAYOUT (ASYMMETRICAL)
-        ========================================================= */
-        .dashboard-grid { display: grid; grid-template-columns: 1fr; gap: 24px; align-items: start; }
-        .col-main { display: flex; flex-direction: column; gap: 24px; min-width: 0; }
-        .col-side { display: flex; flex-direction: column; gap: 24px; min-width: 0; }
-
-        /* =========================================================
-           QUICK ACTIONS
-        ========================================================= */
-        .quick-actions { display: grid; grid-template-columns: repeat(4, 1fr); gap: 12px; }
-        .action-card { background: var(--card-glass); backdrop-filter: blur(12px); border: 1px solid var(--border); border-radius: 16px; padding: 16px; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 10px; text-align: center; transition: 0.2s; box-shadow: var(--shadow-flat); cursor: pointer; outline: none; }
-        .action-card:hover { transform: translateY(-4px); border-color: var(--primary); box-shadow: 0 10px 25px var(--primary-soft); }
-        body.dark .action-card:hover { box-shadow: 0 10px 25px rgba(0,0,0,0.3); }
-        .action-icon { font-size: 24px; }
-        .action-label { font-size: 13px; font-weight: 800; color: var(--text-main); }
-
-        /* =========================================================
-           WIDGET KONTINER UMUM
-        ========================================================= */
-        .widget-box { background: var(--card-glass); backdrop-filter: blur(12px); border: 1px solid var(--border); border-radius: 24px; padding: 24px; box-shadow: var(--shadow-flat); display: flex; flex-direction: column; gap: 16px; }
-        .widget-header { display: flex; justify-content: space-between; align-items: center; }
-        .widget-title { font-size: 16px; font-weight: 900; color: var(--text-main); }
-        .widget-link { font-size: 13px; font-weight: 800; color: var(--primary); transition: 0.2s; }
-        .widget-link:hover { text-decoration: underline; }
-
-        /* =========================================================
-           RECENT ACTIVITY (AKTIVITAS TERAKHIR)
-        ========================================================= */
-        .recent-list { display: flex; flex-direction: column; gap: 12px; }
-        .recent-card { display: flex; align-items: center; gap: 16px; padding: 16px; background: var(--card-solid); border: 1px solid var(--border); border-radius: 16px; transition: 0.2s; cursor: pointer; }
-        .recent-card:hover { border-color: var(--primary); transform: translateX(4px); }
-        .recent-icon { width: 40px; height: 40px; border-radius: 12px; background: var(--primary-soft); color: var(--primary); display: flex; align-items: center; justify-content: center; font-size: 18px; flex-shrink: 0; }
-        .recent-info { display: flex; flex-direction: column; gap: 4px; flex: 1; min-width: 0; }
-        .recent-title { font-size: 14px; font-weight: 800; color: var(--text-main); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
-        .recent-meta { font-size: 12px; font-weight: 600; color: var(--text-muted); display: flex; align-items: center; gap: 8px; }
-        .recent-meta span { display: inline-block; width: 4px; height: 4px; border-radius: 50%; background: var(--border); }
+        /* Core Cards */
+        .launcher-card { background: var(--card-glass); backdrop-filter: blur(12px); border: 1px solid var(--border); border-radius: var(--radius-card); padding: 24px; display: flex; flex-direction: column; gap: 20px; transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1); box-shadow: var(--shadow-flat); position: relative; overflow: hidden; outline: none; cursor: pointer; }
+        .launcher-card:hover { border-color: var(--primary); transform: translateY(-4px); box-shadow: 0 12px 30px var(--primary-soft); }
+        body.dark .launcher-card:hover { box-shadow: 0 12px 30px rgba(0,0,0,0.4); }
         
-        .empty-recent { text-align: center; padding: 32px 16px; color: var(--text-muted); font-size: 13px; font-weight: 600; border: 1px dashed var(--border); border-radius: 16px; }
-
-        /* =========================================================
-           COLLAB HUB WIDGET
-        ========================================================= */
-        .collab-banner { background: var(--event-soft); border: 1px solid rgba(139, 92, 246, 0.2); border-radius: 16px; padding: 20px; display: flex; flex-direction: column; gap: 12px; position: relative; overflow: hidden; }
-        .collab-banner::after { content: "🤝"; position: absolute; font-size: 80px; opacity: 0.05; right: -10px; bottom: -20px; pointer-events: none; }
-        .collab-banner h4 { font-size: 15px; font-weight: 800; color: var(--event); z-index: 1; margin-bottom: 2px; }
-        .collab-banner p { font-size: 13px; font-weight: 600; color: var(--text-main); line-height: 1.5; z-index: 1; opacity: 0.9; }
-        .btn-collab { display: inline-flex; align-items: center; justify-content: center; padding: 10px 16px; background: var(--event); color: white; border-radius: 10px; font-size: 13px; font-weight: 800; z-index: 1; transition: 0.2s; width: fit-content; }
-        .btn-collab:hover { box-shadow: 0 4px 15px rgba(139, 92, 246, 0.3); transform: translateY(-2px); }
-
-        /* =========================================================
-           STATS OVERVIEW COMPACT
-        ========================================================= */
-        .stats-compact { display: flex; flex-direction: column; gap: 12px; }
-        .stat-row { display: flex; justify-content: space-between; align-items: center; padding: 12px 16px; background: var(--card-solid); border: 1px solid var(--border); border-radius: 14px; }
-        .stat-label { display: flex; align-items: center; gap: 10px; font-size: 13px; font-weight: 700; color: var(--text-muted); }
-        .stat-val { font-size: 18px; font-weight: 900; color: var(--text-main); }
+        .card-top { display: flex; align-items: flex-start; justify-content: space-between; gap: 12px; }
+        .card-icon { width: 56px; height: 56px; border-radius: 18px; background: var(--primary-soft); color: var(--primary); display: flex; align-items: center; justify-content: center; font-size: 26px; flex-shrink: 0; }
         
+        /* Stats Badge terintegrasi di navigasi */
+        .card-stat-badge { font-size: 11px; font-weight: 800; color: var(--text-muted); background: var(--card-tint); padding: 6px 12px; border-radius: 20px; display: flex; align-items: center; gap: 6px; transition: 0.2s; border: 1px solid var(--border); }
+        .launcher-card:hover .card-stat-badge { background: var(--primary-soft); color: var(--primary); border-color: transparent; }
+        
+        .card-content h3 { font-size: 18px; font-weight: 900; color: var(--text-main); margin-bottom: 6px; }
+        .card-content p { font-size: 13px; font-weight: 500; color: var(--text-muted); line-height: 1.5; }
+
+        /* Collab Hub Card (Special Styling) */
+        .launcher-card.collab { border-color: rgba(139, 92, 246, 0.3); background: var(--card-solid); }
+        .launcher-card.collab:hover { border-color: var(--event); box-shadow: 0 12px 30px var(--event-soft); }
+        .launcher-card.collab .card-icon { background: var(--event-soft); color: var(--event); }
+        .launcher-card.collab .card-stat-badge { background: var(--event-soft); color: var(--event); border: none; }
+
+        /* =========================================================
+           UTILITIES GRID (Secondary Tools)
+        ========================================================= */
+        .section-divider { display: flex; align-items: center; gap: 12px; margin: 8px 0; }
+        .section-divider::after { content: ''; flex: 1; height: 1px; background: var(--border); }
+        .section-divider span { font-size: 12px; font-weight: 800; color: var(--text-muted); text-transform: uppercase; letter-spacing: 1px; }
+
+        .utility-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 16px; }
+        
+        .utility-card { background: var(--card-solid); border: 1px solid var(--border); border-radius: 16px; padding: 16px; display: flex; align-items: center; gap: 16px; transition: 0.2s; cursor: pointer; outline: none; }
+        .utility-card:hover { border-color: #cbd5e1; transform: translateY(-2px); }
+        body.dark .utility-card:hover { border-color: #475569; }
+        
+        .utility-icon { width: 40px; height: 40px; border-radius: 12px; background: var(--card-tint); display: flex; align-items: center; justify-content: center; font-size: 18px; border: 1px solid var(--border); }
+        .utility-content h4 { font-size: 14px; font-weight: 800; color: var(--text-main); margin-bottom: 2px; }
+        .utility-content p { font-size: 11px; font-weight: 600; color: var(--text-muted); }
+        .utility-stat { margin-left: auto; font-size: 12px; font-weight: 800; color: var(--text-muted); background: var(--card-tint); padding: 4px 8px; border-radius: 8px; }
+
+        /* Shimmer Loading Effect */
         .loading-pulse { animation: pulse 1.5s infinite; opacity: 0.5; color: var(--text-muted) !important; }
         @keyframes pulse { 0% { opacity: 0.3; } 50% { opacity: 0.7; } 100% { opacity: 0.3; } }
 
-        /* =========================================================
-           RESPONSIVITAS
-        ========================================================= */
-        @media(min-width: 1024px) {
-            .dashboard-grid { grid-template-columns: 2fr 1fr; gap: 32px; }
-        }
-
-        @media(max-width: 768px) {
-            .quick-actions { grid-template-columns: repeat(2, 1fr); }
-            .dash-header { flex-direction: column; align-items: flex-start; }
-            .header-right { width: 100%; }
-            .btn-create-new { width: 100%; justify-content: center; }
-            .create-dropdown { width: 100%; right: 0; }
+        @media(max-width: 600px) {
+            .wrapper { padding-top: 10px; }
+            .hero-title { font-size: 26px; }
+            .launcher-grid { grid-template-columns: 1fr; }
+            .utility-grid { grid-template-columns: 1fr; }
         }
     </style>
 </head>
@@ -177,92 +140,90 @@
     <main class="wrapper" id="dashboardContent">
         
         <header class="dash-header">
-            <div class="header-left">
-                <div class="dash-badge">⚡ Workspace Aktif</div>
-                <h1 class="hero-title" id="welcomeText">Halo, Kreator 👋</h1>
-            </div>
-            
-            <div class="header-right">
-                <button class="btn-create-new" onclick="toggleCreateMenu(event)">
-                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="5" x2="12" y2="19"></line><line x1="5" y1="12" x2="19" y2="12"></line></svg>
-                    Buat Baru
-                </button>
-                <div class="create-dropdown" id="createMenu">
-                    <a href="./script.html" class="create-item"><div class="icon">📝</div> Script Baru</a>
-                    <a href="./ideas.html" class="create-item"><div class="icon">📋</div> Ide Konten Baru</a>
-                    <a href="./notes.html" class="create-item"><div class="icon">📌</div> Catatan Cepat</a>
-                    <div style="height: 1px; background: var(--border); margin: 4px 0;"></div>
-                    <a href="./collab-hub.html" class="create-item"><div class="icon" style="color: var(--event);">🤝</div> Ruang Kolaborasi</a>
-                </div>
-            </div>
+            <div class="dash-badge">⚡ Workspace Aktif</div>
+            <h1 class="hero-title" id="welcomeText">Halo, Kreator 👋</h1>
+            <p class="hero-subtitle">Pilih alat produktivitas untuk mulai bekerja.</p>
         </header>
 
-        <div class="dashboard-grid">
+        <!-- KELOMPOK FITUR UTAMA -->
+        <div class="launcher-grid">
             
-            <div class="col-main">
-                
-                <div class="quick-actions">
-                    <a href="./script.html" class="action-card">
-                        <div class="action-icon">📝</div>
-                        <div class="action-label">Script Writer</div>
-                    </a>
-                    <a href="./ideas.html" class="action-card">
-                        <div class="action-icon">📋</div>
-                        <div class="action-label">Idea Board</div>
-                    </a>
-                    <a href="./notes.html" class="action-card">
-                        <div class="action-icon">📌</div>
-                        <div class="action-label">Notes</div>
-                    </a>
-                    <a href="./calculator.html" class="action-card">
-                        <div class="action-icon">🧮</div>
-                        <div class="action-label">Calculator</div>
-                    </a>
-                </div>
-
-                <div class="widget-box">
-                    <div class="widget-header">
-                        <h2 class="widget-title">Aktivitas Terakhir</h2>
-                        <a href="./script.html" class="widget-link">Lihat Semua Script</a>
-                    </div>
-                    <div class="recent-list" id="recentListContainer">
-                        <div class="empty-recent loading-pulse">Memuat riwayat...</div>
+            <a href="./script.html" class="launcher-card">
+                <div class="card-top">
+                    <div class="card-icon">📝</div>
+                    <div class="card-stat-badge">
+                        <span id="statScript" class="loading-pulse">...</span> Script
                     </div>
                 </div>
+                <div class="card-content">
+                    <h3>Script Writer</h3>
+                    <p>Ruang kerja untuk menyusun, mengedit, dan memanajemen naskah konten Anda.</p>
+                </div>
+            </a>
 
-            </div>
-
-            <div class="col-side">
-                
-                <div class="widget-box" style="padding: 0; border: none; background: transparent; box-shadow: none;">
-                    <div class="collab-banner">
-                        <h4>Ruang Kolaborasi Tim</h4>
-                        <p>Kelola ide, naskah, dan komunikasi tim dalam satu ekosistem yang tersinkronisasi secara real-time.</p>
-                        <a href="./collab-hub.html" class="btn-collab">Masuk Collab Hub ➔</a>
+            <a href="./ideas.html" class="launcher-card">
+                <div class="card-top">
+                    <div class="card-icon">📋</div>
+                    <div class="card-stat-badge">
+                        <span id="statIdeas" class="loading-pulse">...</span> Ide
                     </div>
                 </div>
+                <div class="card-content">
+                    <h3>Idea Board</h3>
+                    <p>Bank data untuk menyimpan referensi tautan konten dan kerangka awal ide.</p>
+                </div>
+            </a>
 
-                <div class="widget-box">
-                    <div class="widget-header">
-                        <h2 class="widget-title">Ikhtisar Produktivitas</h2>
-                    </div>
-                    <div class="stats-compact">
-                        <div class="stat-row">
-                            <div class="stat-label">📝 Total Script</div>
-                            <div class="stat-val loading-pulse" id="totalScript">0</div>
-                        </div>
-                        <div class="stat-row">
-                            <div class="stat-label">📋 Bank Ide Konten</div>
-                            <div class="stat-val loading-pulse" id="totalIdeas">0</div>
-                        </div>
-                        <div class="stat-row">
-                            <div class="stat-label">📌 Catatan Tersimpan</div>
-                            <div class="stat-val loading-pulse" id="totalNotes">0</div>
-                        </div>
+            <a href="./notes.html" class="launcher-card">
+                <div class="card-top">
+                    <div class="card-icon">📌</div>
+                    <div class="card-stat-badge">
+                        <span id="statNotes" class="loading-pulse">...</span> Catatan
                     </div>
                 </div>
+                <div class="card-content">
+                    <h3>Quick Notes</h3>
+                    <p>Buku catatan cepat tanpa format rumit untuk menangkap inspirasi spontan.</p>
+                </div>
+            </a>
 
-            </div>
+            <a href="./collab-hub.html" class="launcher-card collab">
+                <div class="card-top">
+                    <div class="card-icon">🤝</div>
+                    <div class="card-stat-badge">Real-time</div>
+                </div>
+                <div class="card-content">
+                    <h3>Collab Hub</h3>
+                    <p>Ruang kolaborasi tim. Kelola draf bersama, naskah tim, dan komunikasi dalam satu tempat.</p>
+                </div>
+            </a>
+
+        </div>
+
+        <div class="section-divider">
+            <span>Utilitas Lainnya</span>
+        </div>
+
+        <!-- KELOMPOK UTILITAS -->
+        <div class="utility-grid">
+            <a href="./calculator.html" class="utility-card">
+                <div class="utility-icon">🧮</div>
+                <div class="utility-content">
+                    <h4>Kalkulator</h4>
+                    <p>Simulasi matematis.</p>
+                </div>
+            </a>
+
+            <a href="./trash.html" class="utility-card">
+                <div class="utility-icon">🗑️</div>
+                <div class="utility-content">
+                    <h4>Tempat Sampah</h4>
+                    <p>Pemulihan data.</p>
+                </div>
+                <div class="utility-stat">
+                    <span id="statTrash" class="loading-pulse">-</span> Item
+                </div>
+            </a>
         </div>
 
     </main>
@@ -273,7 +234,7 @@
     <script type="module">
         import { auth, db } from "../js/firebase.js";
         import { onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
-        import { collection, query, where, getCountFromServer, getDocs, orderBy, limit } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
+        import { collection, query, where, getCountFromServer } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
 
         const USE_FIREBASE = true;
 
@@ -281,106 +242,56 @@
             document.body.classList.add("dark");
         }
 
-        // Toggle Menu Buat Baru
-        window.toggleCreateMenu = function(e) {
-            e.stopPropagation();
-            document.getElementById('createMenu').classList.toggle('active');
-        };
-        
-        document.addEventListener('click', function(e) {
-            const menu = document.getElementById('createMenu');
-            if(menu && menu.classList.contains('active') && !e.target.closest('.header-right')) {
-                menu.classList.remove('active');
-            }
-        });
-
-        // Format waktu (Time Ago)
-        function timeAgo(ms) {
-            const diff = Math.floor((Date.now() - ms) / 1000);
-            if (diff < 60) return 'Baru saja';
-            if (diff < 3600) return `${Math.floor(diff / 60)} menit lalu`;
-            if (diff < 86400) return `${Math.floor(diff / 3600)} jam lalu`;
-            return `${Math.floor(diff / 86400)} hari lalu`;
-        }
-
-        async function fetchDashboardData(uid) {
+        async function fetchDashboardStats(uid) {
             try {
                 if (USE_FIREBASE) {
-                    // 1. Fetch Stats Count
                     const qScript = query(collection(db, "creative_script"), where("uid", "==", uid));
                     const qIdeas = query(collection(db, "creative_ideas"), where("uid", "==", uid));
                     const qNotes = query(collection(db, "creative_notes_v2"), where("uid", "==", uid));
+                    const qTrash = query(collection(db, "creative_trash"), where("uid", "==", uid));
 
-                    const [snapScript, snapIdeas, snapNotes] = await Promise.all([
-                        getCountFromServer(qScript), getCountFromServer(qIdeas), getCountFromServer(qNotes)
+                    const [snapScript, snapIdeas, snapNotes, snapTrash] = await Promise.all([
+                        getCountFromServer(qScript),
+                        getCountFromServer(qIdeas),
+                        getCountFromServer(qNotes),
+                        getCountFromServer(qTrash)
                     ]);
 
-                    updateStatsUI(snapScript.data().count, snapIdeas.data().count, snapNotes.data().count);
-
-                    // 2. Fetch Recent Scripts (Aktivitas Terakhir)
-                    const qRecent = query(collection(db, "creative_script"), where("uid", "==", uid), orderBy("updatedAt", "desc"), limit(4));
-                    const recentDocs = await getDocs(qRecent);
-                    
-                    const recentItems = [];
-                    recentDocs.forEach(doc => { recentItems.push({ id: doc.id, ...doc.data() }); });
-                    renderRecentList(recentItems);
-
+                    updateStatsUI(
+                        snapScript.data().count, 
+                        snapIdeas.data().count, 
+                        snapNotes.data().count, 
+                        snapTrash.data().count
+                    );
                 } else {
                     const countLocal = (key) => (JSON.parse(localStorage.getItem(key)) || []).length;
-                    updateStatsUI(countLocal('creative_script'), countLocal('creative_ideas'), countLocal('creative_notes_v2'));
-                    
-                    // Mock local recent
-                    let localScripts = JSON.parse(localStorage.getItem('creative_script')) || [];
-                    localScripts.sort((a, b) => b.updatedAt - a.updatedAt);
-                    renderRecentList(localScripts.slice(0, 4));
+                    updateStatsUI(countLocal('creative_script'), countLocal('creative_ideas'), countLocal('creative_notes_v2'), countLocal('creative_trash'));
                 }
             } catch (error) {
-                console.error("Gagal menarik data dashboard:", error);
-                updateStatsUI("-", "-", "-");
-                document.getElementById('recentListContainer').innerHTML = `<div class="empty-recent" style="color: var(--danger); border-color: var(--danger-soft);">Gagal memuat aktivitas.</div>`;
+                console.error("Gagal menarik statistik:", error);
+                updateStatsUI("?", "?", "?", "?");
             }
         }
 
-        function updateStatsUI(sCount, iCount, nCount) {
+        function updateStatsUI(sCount, iCount, nCount, tCount) {
             const setStat = (id, val) => {
                 const el = document.getElementById(id);
-                if(el) { el.innerText = val; el.classList.remove("loading-pulse"); }
+                if(el) { 
+                    el.innerText = val; 
+                    el.classList.remove("loading-pulse"); 
+                }
             };
-            setStat("totalScript", sCount);
-            setStat("totalIdeas", iCount);
-            setStat("totalNotes", nCount);
-        }
-
-        function renderRecentList(items) {
-            const container = document.getElementById('recentListContainer');
-            if (items.length === 0) {
-                container.innerHTML = `<div class="empty-recent">Belum ada riwayat aktivitas. Mulai menulis naskah pertama Anda!</div>`;
-                return;
-            }
-
-            let html = '';
-            items.forEach(item => {
-                const statusLabel = item.status === 'done' ? 'Selesai' : 'Draft';
-                html += `
-                <a href="./script.html" class="recent-card">
-                    <div class="recent-icon">📝</div>
-                    <div class="recent-info">
-                        <div class="recent-title">${item.title || 'Tanpa Judul'}</div>
-                        <div class="recent-meta">
-                            ${statusLabel} <span></span> ${timeAgo(item.updatedAt)} 
-                            ${item.channel && item.channel !== 'Umum' ? `<span></span> ${item.channel}` : ''}
-                        </div>
-                    </div>
-                </a>`;
-            });
-            container.innerHTML = html;
+            setStat("statScript", sCount);
+            setStat("statIdeas", iCount);
+            setStat("statNotes", nCount);
+            setStat("statTrash", tCount);
         }
 
         if (USE_FIREBASE) {
             onAuthStateChanged(auth, async (user) => {
                 if (user) {
                     document.getElementById("welcomeText").innerText = `Halo, ${(user.displayName || "Kreator").split(' ')[0]} 👋`;
-                    fetchDashboardData(user.uid);
+                    fetchDashboardStats(user.uid);
                 } else {
                     window.location.replace("../login.html");
                 }
