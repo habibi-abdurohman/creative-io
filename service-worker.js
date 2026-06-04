@@ -3,7 +3,8 @@ const ASSETS = [
     './',
     './index.html',
     './login.html',
-    './assets/logo.png',
+    './assets/logo-192.png', // Diperbaiki dari logo.png
+    './assets/logo-512.png', // Tambahkan juga ini
     './js/firebase.js',
     './js/pwa.js',
     './navbar/navbar.css',
