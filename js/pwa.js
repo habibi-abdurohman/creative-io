@@ -1,4 +1,4 @@
-const isSubfolder = window.location.pathname.includes('/pages/');
+const isSubfolder = window.location.pathname.includes('/pages/') || window.location.pathname.includes('/collab/');
 const rootPrefix = isSubfolder ? '../' : './';
 
 if ('serviceWorker' in navigator) {
