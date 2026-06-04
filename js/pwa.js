@@ -14,8 +14,9 @@ window.deferredPrompt = null;
 window.addEventListener('beforeinstallprompt', (e) => {
     e.preventDefault();
     window.deferredPrompt = e;
+    alert("SYSTEM: PWA Siap Diinstal di HP Anda!");
+    
     console.log("PWA: Status Installable Terdeteksi!");
-
     showPwaButton();
 });
 
