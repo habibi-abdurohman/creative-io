@@ -1,4 +1,4 @@
-const CACHE_NAME = 'creative-io-v3';
+const CACHE_NAME = 'creative-io-v4';
 const ASSETS = [
     './',
     './index.html',
