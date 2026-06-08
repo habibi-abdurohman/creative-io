@@ -166,7 +166,7 @@
 
         .island-scroll {
             display: flex; align-items: center; gap: 6px; width: 100%; overflow-x: auto; 
-            scrollbar-width: none; -webkit-overflow-scrolling: touch; cursor: grab;
+            scrollbar-width: none; -webkit-overflow-scrolling: touch; cursor: grab; border-radius: 100px;
         }
         .island-scroll:active { cursor: grabbing; }
         .island-scroll::-webkit-scrollbar { display: none; }
@@ -205,13 +205,17 @@
         .control-island.searching .filter-module { max-width: 0; opacity: 0; margin: 0; padding: 0; gap: 0; pointer-events: none; overflow: hidden; }
 
         .filter-btn { 
-            flex-shrink: 0; display: flex; align-items: center; gap: 8px; padding: 10px 16px; border-radius: var(--radius-pill); 
-            background: transparent; border: none; font-size: 13px; font-weight: 700; color: var(--text-muted); 
-            cursor: pointer; transition: all 0.2s; white-space: nowrap; font-family: inherit; outline: none;
+            height: 38px;
+            padding: 0 16px; 
+            border-radius: 100px;
+            display: flex; align-items: center; gap: 8px;
+            background: transparent; border: none; 
+            font-size: 13px; font-weight: 700; color: var(--text-muted); 
+            cursor: pointer; transition: all 0.2s; white-space: nowrap; outline: none; flex-shrink: 0;
         }
         .filter-btn:hover { background: var(--card-tint); color: var(--text-main); }
         .filter-btn:active { transform: scale(0.95); }
-        .filter-btn.active { background: var(--primary); color: white; box-shadow: 0 4px 12px rgba(37, 99, 235, 0.25); }
+        .filter-btn.active { background: var(--primary) !important; color: white !important; box-shadow: none !important; }
         
         .filter-badge {
             background: var(--border); color: var(--text-main); padding: 2px 8px; border-radius: 12px; font-size: 11px; font-weight: 800; transition: 0.2s; margin-left: 2px;
