@@ -13,6 +13,7 @@ const USE_FIREBASE = true;
 if (USE_FIREBASE) {
     onAuthStateChanged(auth, (user) => {
         if (user) {
+
             if (isPublicPage && currentPage !== 'index.html') {
                 window.location.replace(rootPath + 'pages/dashboard.html');
             }

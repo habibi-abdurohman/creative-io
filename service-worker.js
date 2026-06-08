@@ -1,10 +1,10 @@
-const CACHE_NAME = 'creative-io-v4';
+const CACHE_NAME = 'creative-io-v3';
 const ASSETS = [
     './',
     './index.html',
     './login.html',
-    './assets/logo-192.png', // Diperbaiki dari logo.png
-    './assets/logo-512.png', // Tambahkan juga ini
+    './assets/logo-192.png',
+    './assets/logo-512.png',
     './js/firebase.js',
     './js/pwa.js',
     './navbar/navbar.css',

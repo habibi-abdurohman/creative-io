@@ -1,6 +1,3 @@
-/* =========================================================
-   ADAPTASI BODY (UKURAN LEBIH KECIL)
-========================================================= */
 body {
     padding-top: 52px;
 }
@@ -9,9 +6,6 @@ body.sidebar-open {
     overflow: hidden;
 }
 
-/* =========================================================
-   NAVBAR UTAMA
-========================================================= */
 .navbar {
     position: fixed;
     top: 0;
@@ -37,12 +31,9 @@ body.dark .navbar {
 .nav-left, .nav-right {
     display: flex;
     align-items: center;
-    gap: 8px;
+    gap: 10px;
 }
 
-/* =========================================================
-   TOMBOL MINIMALIS & AVATAR
-========================================================= */
 .menu-btn,
 .theme-btn {
     width: 34px;
@@ -91,23 +82,25 @@ body.dark .menu-btn:hover, body.dark .theme-btn:hover, body.dark .profile-btn:ho
     background: var(--bg, #0f172a);
 }
 
-/* BRANDING LOGO */
-.logo {
-    font-size: 18px;
+.nav-title {
+    font-size: 16px;
     font-weight: 800;
-    letter-spacing: -0.5px;
+    letter-spacing: -0.3px;
     color: var(--text, #0f172a);
-}
-body.dark .logo {
-    color: #ffffff;
-}
-.logo span {
-    color: #2563eb;
+    display: flex;
+    align-items: center;
+    gap: 6px;
 }
 
-/* =========================================================
-   AVATAR SYSTEM
-========================================================= */
+body.dark .nav-title {
+    color: #ffffff;
+}
+
+.nav-title-icon {
+    font-size: 18px;
+    opacity: 0.9;
+}
+
 .avatar, .profile-avatar {
     width: 100%;
     height: 100%;
@@ -136,9 +129,6 @@ body.dark .logo {
     overflow: hidden;
 }
 
-/* =========================================================
-   DROPDOWN PROFIL
-========================================================= */
 .profile-wrap {
     position: relative;
 }
@@ -195,7 +185,6 @@ body.dark .profile-name {
     white-space: nowrap;
 }
 
-/* DROPDOWN MENU */
 .profile-menu {
     display: flex;
     flex-direction: column;
@@ -244,9 +233,6 @@ body.dark .logout-btn:hover {
     background: rgba(239, 68, 68, 0.1);
 }
 
-/* =========================================================
-   SIDEBAR & OVERLAY
-========================================================= */
 .sidebar {
     position: fixed;
     top: 52px;
@@ -294,13 +280,10 @@ body.dark .sidebar {
     transition: background 0.2s, color 0.2s;
 }
 
-/* =========================================================
-   KUNCI ALIGNMENT: Lebar Ikon Tetap (Fixed Width)
-========================================================= */
 .nav-icon {
     display: inline-block;
-    width: 22px; /* Memaksa semua ikon menempati ruang yang sama */
-    text-align: center; /* Ikon selalu di tengah ruangnya */
+    width: 22px; 
+    text-align: center; 
     font-size: 16px;
     flex-shrink: 0;
 }
@@ -342,9 +325,6 @@ body.dark .sidebar-menu a.active {
     pointer-events: auto;
 }
 
-/* =========================================================
-   DESAIN TOMBOL PWA (PREMIUM LOOK)
-========================================================= */
 .sidebar-footer {
     margin-top: auto;
     padding: 16px;
