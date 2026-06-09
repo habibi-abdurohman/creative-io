@@ -213,7 +213,7 @@
         .card { 
             display: flex; flex-direction: column; height: 100%; 
             background: var(--card-glass); backdrop-filter: blur(12px); border: 1px solid var(--border); 
-            border-radius: var(--radius-card); padding: 20px; 
+            border-radius: var(--radius-card); padding: 16px; 
             box-shadow: var(--shadow-flat); transition: transform 0.2s, box-shadow 0.2s, border-color 0.2s; 
             cursor: pointer; 
         }
@@ -236,10 +236,10 @@
             font-size: 13px; color: var(--text-muted); 
             line-height: 24px; height: 48px; 
             display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; 
-            margin-bottom: 16px; word-break: break-word;
+            margin-bottom: 8px; word-break: break-word;
         }
         
-        .card-bottom { display: flex; justify-content: space-between; align-items: center; margin-top: auto; border-top: 1px dashed var(--border); padding-top: 12px; }
+        .card-bottom { display: flex; justify-content: space-between; align-items: center; margin-top: auto; border-top: none; padding-top: 8px; }
         
         .badges { display: flex; gap: 6px; flex-wrap: wrap; }
         .badge { padding: 4px 10px; border-radius: 8px; font-size: 11px; font-weight: 700; background: var(--card-tint); color: var(--text-muted); border: 1px solid var(--border); }
