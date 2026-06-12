@@ -395,6 +395,42 @@
             .idea-right { grid-column: 2 / 3; grid-row: 1; justify-self: end; align-self: start; }
             .badge-group { grid-column: 1 / -1; grid-row: 2; width: fit-content; max-width: 100%; justify-self: start; }
             .idea-middle { grid-column: 1 / -1; grid-row: 3; width: 100%; }
+
+            .idea-item.trash-item {
+                display: flex;
+                flex-direction: column;
+            }
+            .trash-item-header {
+                display: grid;
+                grid-template-columns: 1fr auto;
+                gap: 12px 8px;
+            }
+            .trash-item-title-wrap {
+                display: contents;
+            }
+            .trash-item-title {
+                grid-column: 1 / 2;
+                grid-row: 1;
+                align-self: center;
+                margin-top: 0 !important;
+            }
+            .trash-item-actions {
+                grid-column: 2 / 3;
+                grid-row: 1;
+                margin-top: 0 !important;
+            }
+            .trash-item-badges {
+                grid-column: 1 / -1;
+                grid-row: 2;
+                display: grid;
+                grid-template-columns: 1fr 1fr;
+                gap: 8px;
+                width: 100%;
+            }
+            .trash-item-badges .badge {
+                width: 100%;
+                justify-content: flex-start;
+            }
         }
 
         @media(max-width: 600px) { 
