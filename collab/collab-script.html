@@ -108,7 +108,8 @@
             font-family: system-ui, -apple-system, sans-serif;
             font-weight: 800;
             text-transform: uppercase;
-            line-height: 1;
+            line-height: normal; 
+            padding: 0;      
             flex-shrink: 0;
             position: relative;
         }
@@ -123,6 +124,7 @@
             z-index: 1; 
             box-shadow: 0 2px 8px rgba(0,0,0,0.1);
         }
+
         .face-item:first-child { margin-left: 0; }
         .face-item.more { 
             background: rgba(255,255,255,0.2) !important; 
@@ -621,13 +623,10 @@
             width: 24px; 
             height: 24px; 
             border-radius: 50%; 
-            border: 2px solid var(--card-solid);
+            border: 2px solid var(--card-solid); 
             font-size: 11px; 
             margin-left: -8px; 
             box-shadow: 0 2px 4px rgba(0,0,0,0.05);
-            
-            /* PERBAIKAN POSISI HURUF */
-            padding-bottom: 1px;
         }
         .mini-face:first-child { margin-left: 0; }
         .mini-face.creator { z-index: 3; }
@@ -638,7 +637,6 @@
             border-color: var(--card-solid); 
             z-index: 1; 
             font-size: 10px; 
-            padding-bottom: 0;
         }
         body.dark .mini-face.more { background: #334155 !important; color: #f8fafc; }
     </style>
