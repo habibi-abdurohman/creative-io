@@ -113,7 +113,10 @@
         .face-online-dot { 
             position: absolute; bottom: -2px; right: -2px; width: 14px; height: 14px; 
             border-radius: 50%; z-index: 2; background: #10b981; 
-            border: 3px solid #ffffff !important; box-shadow: 0 3px 8px rgba(0, 0, 0, 0.35) !important; 
+            border: 3px solid #ffffff !important;
+            box-shadow: 
+                0 0 0 1px rgba(0, 0, 0, 0.08),
+                0 0 6px rgba(0, 0, 0, 0.4) !important;
         }
         body.dark .face-online-dot { border-color: var(--card-solid); }
 
