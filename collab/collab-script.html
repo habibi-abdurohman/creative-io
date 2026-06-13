@@ -106,14 +106,16 @@
         .face-item, .member-avatar, .target-avatar, .mini-face {
             background: linear-gradient(135deg, #3b82f6, #8b5cf6) !important;
             color: #ffffff;
-            display: flex;
-            align-items: center;
-            justify-content: center;
+            display: grid;
+            place-items: center;
             font-family: system-ui, -apple-system, sans-serif;
             font-weight: 800;
             text-transform: uppercase;
-            line-height: normal; 
-            padding: 0;      
+            line-height: 0; 
+            padding: 0;
+            margin: 0;
+            letter-spacing: 0;
+            box-sizing: border-box;
             flex-shrink: 0;
             position: relative;
         }
@@ -128,7 +130,6 @@
             z-index: 1; 
             box-shadow: 0 2px 8px rgba(0,0,0,0.1);
         }
-
         .face-item:first-child { margin-left: 0; }
         .face-item.more { 
             background: rgba(255,255,255,0.2) !important; 
