@@ -112,14 +112,9 @@
             font-family: system-ui, -apple-system, sans-serif;
             font-weight: 800;
             text-transform: uppercase;
-            line-height: 1; 
-            padding: 0;
-            margin: 0;
-            box-sizing: border-box;
+            line-height: 1; /* Standar tipografi */
             flex-shrink: 0;
             position: relative;
-            transform: translateZ(0); 
-            -webkit-font-smoothing: antialiased;
         }
 
         .face-item { 
@@ -630,10 +625,9 @@
             width: 24px; 
             height: 24px; 
             border-radius: 50%; 
-            border: 2px solid var(--card-solid); 
-            font-size: 11px; 
+            font-size: 12px; 
             margin-left: -8px; 
-            box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+            box-shadow: 0 0 0 2px var(--card-solid), 0 2px 4px rgba(0,0,0,0.05);
         }
         .mini-face:first-child { margin-left: 0; }
         .mini-face.creator { z-index: 3; }
@@ -641,7 +635,6 @@
         .mini-face.more { 
             background: var(--border) !important; 
             color: var(--text-main); 
-            border-color: var(--card-solid); 
             z-index: 1; 
             font-size: 10px; 
         }
