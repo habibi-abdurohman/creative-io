@@ -127,6 +127,15 @@ body.dark .nav-title {
     object-fit: cover;
 }
 
+.avatar-container {
+    position: relative;
+    width: 48px;
+    height: 48px;
+    border-radius: 50%;
+    overflow: hidden;
+    flex-shrink: 0;
+}
+
 .profile-wrap {
     position: relative;
 }
