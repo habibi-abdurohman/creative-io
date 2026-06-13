@@ -106,18 +106,20 @@
         .face-item, .member-avatar, .target-avatar, .mini-face {
             background: linear-gradient(135deg, #3b82f6, #8b5cf6) !important;
             color: #ffffff;
-            display: grid;
-            place-items: center;
+            display: flex;
+            align-items: center;
+            justify-content: center;
             font-family: system-ui, -apple-system, sans-serif;
             font-weight: 800;
             text-transform: uppercase;
-            line-height: 0; 
+            line-height: 1;
             padding: 0;
             margin: 0;
-            letter-spacing: 0;
             box-sizing: border-box;
             flex-shrink: 0;
             position: relative;
+            transform: translateZ(0); 
+            -webkit-font-smoothing: antialiased;
         }
 
         .face-item { 
