@@ -1,15 +1,12 @@
 import { auth } from './firebase.js';
-
-const firebaseAuthUrl = "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
-
 import { 
     signInWithEmailAndPassword, 
     createUserWithEmailAndPassword, 
     updateProfile, 
     signOut, 
     onAuthStateChanged,
-    sendPasswordResetEmail
-} from firebaseAuthUrl;
+    sendPasswordResetEmail 
+} from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
 
 export const loginUser = async (email, password) => {
     return await signInWithEmailAndPassword(auth, email, password);
