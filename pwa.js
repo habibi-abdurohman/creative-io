@@ -18,7 +18,6 @@ window.addEventListener('beforeinstallprompt', (e) => {
     window.showPwaButton();
 });
 
-// PERBAIKAN: Pastikan fungsi ini diekspos ke window agar bisa dieksekusi ulang oleh navbar.js
 window.showPwaButton = function() {
     const installContainer = document.getElementById('pwaInstallContainer');
     if (window.deferredPrompt && installContainer) {

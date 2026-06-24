@@ -25,7 +25,6 @@ const ASSETS = [
 self.addEventListener('install', (event) => {
     event.waitUntil(
         caches.open(CACHE_NAME).then((cache) => {
-            // KUNCI: Menggunakan pemetaan senyap agar kegagalan satu file tidak merusak instalasi
             return Promise.all(
                 ASSETS.map(url => {
                     return cache.add(url).catch(err => console.warn('Gagal menyimpan cache:', url, err));
@@ -54,7 +53,6 @@ self.addEventListener('fetch', (event) => {
     
     event.respondWith(
         caches.match(event.request).then((response) => {
-            // Strategi: Utamakan Cache, ambil dari network jika tidak ada (Cache First)
             return response || fetch(event.request).then((networkResponse) => {
                 return networkResponse;
             }).catch(() => {
