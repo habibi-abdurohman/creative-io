@@ -158,13 +158,15 @@
 
         /* 1. Base Kartu */
         .sc-card {
-            position: relative; /* Ditambahkan untuk efek watermark */
-            overflow: hidden;   /* Menjaga watermark tidak keluar batas */
+            position: relative; 
+            overflow: hidden;   
             border-radius: 24px; 
             padding: 24px;
-            display: flex; flex-direction: column; 
+            display: flex; 
+            flex-direction: column; 
             justify-content: space-between; 
-            height: 170px; 
+            gap: 20px; /* Memberikan jarak bernapas yang natural antar konten */
+            min-height: 180px; /* Memastikan kartu bisa memanjang secara natural jika teksnya panjang */
             text-align: left; 
             cursor: default;
             transition: transform 0.3s ease;
@@ -173,20 +175,6 @@
         
         /* Pastikan teks berada di atas efek watermark */
         .sc-card > * { position: relative; z-index: 1; }
-
-        /* 2. Variasi Visual: Watermark Icon Tipis di Latar Belakang */
-        .sc-card::after {
-            position: absolute;
-            right: -10px;
-            bottom: -20px;
-            font-size: 110px; /* Ukuran raksasa */
-            opacity: 0.04;    /* Sangat tipis agar tidak mengganggu keterbacaan */
-            pointer-events: none;
-            z-index: 0;
-        }
-        .sc-card:nth-child(1)::after { content: '📝'; }
-        .sc-card:nth-child(2)::after { content: '🤝'; opacity: 0.08; } /* Agak diterangkan sedikit karena background biru */
-        .sc-card:nth-child(3)::after { content: '💳'; }
 
         /* 3. Efek Glassmorphism (Blur Natural) */
         .card-blur {
@@ -301,21 +289,24 @@
                 background: linear-gradient(180deg, rgba(255,255,255,1) 0%, rgba(255,255,255,0.95) 40%, rgba(255,255,255,0) 75%);
             }
 
-            /* MENGUBAH GRID MENJADI BLOCK UNTUK HIERARKI SPACING (Dipertahankan) */
+            /* 1. PERBAIKAN TOTAL: Menghilangkan padding kiri-kanan dari container utama */
             .hero-container { 
                 display: block; 
-                padding-top: 50px; 
-                padding-bottom: 50px; 
+                padding: 50px 0; /* Atas-Bawah 50px, Kiri-Kanan 0px (Menempel ke tepi layar) */
             }
             
-            /* RITME HIERARKI VISUAL YANG BARU (Dipertahankan) */
-            .logo { margin-bottom: 24px; } /* Jarak dekat */
-            .hero-title { font-size: 38px; margin-bottom: 16px; } /* Judul ke sub */
-            .hero-subtitle { margin-bottom: 36px; font-size: 15px; line-height: 1.6; } /* Sub ke CTA */
-            .actions { gap: 12px; margin-bottom: 60px; } /* CTA dan Carousel (jarak sangat jauh) */
+            /* 2. Memindahkan padding ke teks agar teks tetap rapi dan tidak menyentuh layar */
+            .hero-left {
+                padding: 0 24px;
+            }
+
+            .logo { margin-bottom: 24px; } 
+            .hero-title { font-size: 38px; margin-bottom: 16px; } 
+            .hero-subtitle { margin-bottom: 36px; font-size: 15px; line-height: 1.6; } 
+            .actions { gap: 12px; margin-bottom: 60px; } 
             .btn-main { width: 100%; }
             
-            /* CAROUSEL TEMBUS LAYAR (EDGE-TO-EDGE SEJATI) */
+            /* 3. CAROUSEL KINI BEBAS (Tanpa Trik Margin Aneh) */
             .hero-right {
                 display: flex;
                 flex-direction: row;
@@ -327,28 +318,24 @@
                 -ms-overflow-style: none; 
                 scrollbar-width: none; 
                 
-                /* PERBAIKAN UTAMA: Menarik paksa kontainer ke ujung kiri dan kanan layar */
-                width: auto;
-                margin-left: -24px;
-                margin-right: -24px;
+                /* Karena container utama sudah 0 padding, carousel otomatis selebar layar penuh */
+                width: 100%; 
                 
-                /* Mengembalikan posisi kartu agar sejajar dengan teks */
+                /* Jarak awal untuk kartu pertama dan jarak akhir untuk kartu terakhir */
                 padding-left: 24px; 
-                
-                /* Hilangkan bantalan kanan agar kartu terakhir benar-benar menyentuh tepi layar */
-                padding-right: 0px; 
+                padding-right: 24px; 
                 
                 scroll-padding-left: 24px;
             }
             .hero-right::-webkit-scrollbar { display: none; }
 
             .sc-card {
-                min-width: 76vw; /* Ukuran paling ideal untuk edge-to-edge sejati */
+                min-width: 76vw; 
                 scroll-snap-align: start; 
             }
             .sc-card:hover { transform: none; } 
             
-            /* Indikator Carousel (Dipertahankan) */
+            /* Indikator Carousel */
             .carousel-indicators {
                 display: flex;
                 justify-content: center;
