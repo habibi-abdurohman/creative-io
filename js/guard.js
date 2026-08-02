@@ -14,7 +14,7 @@ if (USE_FIREBASE) {
     onAuthStateChanged(auth, (user) => {
         if (user) {
             if (currentPage === 'login.html' || currentPage === 'register.html' || currentPage === 'forgot-password.html') {
-                window.location.replace(rootPath + 'pages/dashboard.html');
+                window.location.replace(rootPath + 'app.html');
             }
         } else {
             if (!isPublicPage) {
