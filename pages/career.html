@@ -299,6 +299,17 @@
     </dialog>
     <div class="toast-stack" id="toastStack" popover="manual" aria-live="polite"></div>
     <div class="sr-only" id="liveRegion" aria-live="polite"></div>
+    <script>
+        setTimeout(() => {
+            const bootScreen = document.getElementById('bootState');
+            const appContent = document.getElementById('appContent');
+            if (bootScreen && !bootScreen.hidden) {
+                bootScreen.hidden = true;
+                appContent.hidden = false;
+                alert("Peringatan: Sistem lambat atau gagal terhubung ke database. Cek console browser untuk melihat error.");
+            }
+        }, 5000);
+    </script>
     <script src="../navbar/navbar.js"></script>
     <script src="../js/pwa.js"></script>
     <script type="module">
