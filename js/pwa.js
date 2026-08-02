@@ -1,9 +1,7 @@
 (() => {
     'use strict';
-
     const isSubfolder = window.location.pathname.includes('/pages/') || window.location.pathname.includes('/collab/');
     const rootPrefix = isSubfolder ? '../' : './';
-
     if ('serviceWorker' in navigator) {
         window.addEventListener('load', () => {
             navigator.serviceWorker.register(rootPrefix + 'service-worker.js')
@@ -13,7 +11,6 @@
     }
     window.deferredPrompt = null;
     let installCompleted = false;
-
     function isAppStandalone() {
         return window.matchMedia('(display-mode: standalone)').matches || window.navigator.standalone === true;
     }
