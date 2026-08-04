@@ -2,11 +2,33 @@
     'use strict';
     const isSubfolder = window.location.pathname.includes('/pages/') || window.location.pathname.includes('/collab/');
     const rootPrefix = isSubfolder ? '../' : './';
-    if ('serviceWorker' in navigator) {
-        window.addEventListener('load', () => {
-            navigator.serviceWorker.register(rootPrefix + 'service-worker.js')
-                .then(registration => console.log('PWA: Service Worker berhasil didaftarkan.', registration.scope))
-                .catch(error => console.error('PWA: Service Worker gagal didaftarkan.', error));
+    if (
+        'serviceWorker' in navigator &&
+        window.top === window
+    ) {
+        window.addEventListener('load', async () => {
+            try {
+                let registration =
+                    await navigator.serviceWorker
+                        .getRegistration();
+                if (!registration) {
+                    registration =
+                        await navigator.serviceWorker
+                            .register(
+                                rootPrefix +
+                                'service-worker.js'
+                            );
+                }
+                console.log(
+                    'PWA: Service Worker berhasil didaftarkan.',
+                    registration.scope
+                );
+            } catch (error) {
+                console.error(
+                    'PWA: Service Worker gagal didaftarkan.',
+                    error
+                );
+            }
         });
     }
     window.deferredPrompt = null;
@@ -91,7 +113,6 @@
             setInstallButtonContent(installButton, 'manual');
             return;
         }
-
         hideInstallButton();
     };
     function notifyEmbeddedPages() {
