@@ -1,4 +1,4 @@
-const CACHE_NAME = 'creative-io-v16';
+const CACHE_NAME = 'creative-io-v18';
 const MUSIC_STREAM_PREFIX = new URL(self.registration.scope).pathname.replace(/\/?$/, '/') + '__creative_music_stream__/';
 const musicStreamEntries = new Map();
 const MAX_MUSIC_STREAM_ENTRIES = 40;
