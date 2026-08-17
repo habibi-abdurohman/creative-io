@@ -1,11 +1,27 @@
-const CACHE_NAME = 'creative-io-v18';
+const CACHE_PREFIX = 'creative-io-static-';
+const CACHE_NAME = CACHE_PREFIX + 'v20';
+const NAVIGATION_FETCH_TIMEOUT_MS = 8000;
+const PRECACHE_FETCH_TIMEOUT_MS = 15000;
+const SCOPE_URL = new URL(self.registration.scope);
 const MUSIC_STREAM_PREFIX = new URL(self.registration.scope).pathname.replace(/\/?$/, '/') + '__creative_music_stream__/';
 const musicStreamEntries = new Map();
 const MAX_MUSIC_STREAM_ENTRIES = 40;
-const ASSETS = [
+const CORE_ASSETS = [
     'index.html',
     'app.html',
     'login.html',
+    'manifest.json',
+    'assets/favicon-192x192.png',
+    'assets/logo-192.png',
+    'assets/logo-512.png',
+    'js/firebase.js',
+    'js/auth.js',
+    'js/pwa.js',
+    'navbar/navbar.css',
+    'navbar/navbar.html',
+    'navbar/navbar.js'
+];
+const OPTIONAL_ASSETS = [
     'register.html',
     'forgot-password.html',
     'profil.html',
@@ -15,19 +31,100 @@ const ASSETS = [
     'pages/notes.html',
     'pages/career.html',
     'pages/music.html',
+    'pages/wallet.html',
     'pages/calculator.html',
     'pages/trash.html',
+    'pages/todolist.html',
     'collab/collab-hub.html',
-    'assets/logo-192.png',
-    'assets/logo-512.png',
-    'js/firebase.js',
-    'js/auth.js',
-    'js/career.js',
-    'js/pwa.js',
-    'navbar/navbar.css',
-    'navbar/navbar.html',
-    'navbar/navbar.js'
+    'collab/collab-script.html',
+    'collab/collab-notes.html',
+    'collab/collab-ideas.html',
+    'js/career.js'
 ];
+const PRECACHE_ASSETS = [...CORE_ASSETS, ...OPTIONAL_ASSETS];
+const scopedUrl = (path) => new URL(path, SCOPE_URL).href;
+const PRECACHE_PATHS = new Set(
+    PRECACHE_ASSETS.map((path) => new URL(scopedUrl(path)).pathname)
+);
+const OFFLINE_FALLBACK_URL = scopedUrl('index.html');
+function cacheKeyFor(request) {
+    const url = new URL(typeof request === 'string' ? request : request.url);
+    if (PRECACHE_PATHS.has(url.pathname)) {
+        url.search = '';
+        url.hash = '';
+        return url.href;
+    }
+    return request;
+}
+function isCacheableResponse(response) {
+    if (!response || !response.ok || response.status !== 200) return false;
+    if (!['basic', 'default'].includes(response.type)) return false;
+
+    const cacheControl = response.headers.get('Cache-Control') || '';
+    return !/(?:^|,)\s*(?:no-store|private)\b/i.test(cacheControl);
+}
+async function fetchCompleteResponseWithTimeout(request, timeoutMs) {
+    if (typeof AbortController === 'undefined') {
+        let timeoutId = 0;
+        const timeoutPromise = new Promise((resolve, reject) => {
+            timeoutId = setTimeout(
+                () => reject(new Error('Batas waktu permintaan terlampaui.')),
+                timeoutMs
+            );
+        });
+        try {
+            const response = await Promise.race([
+                fetch(request),
+                timeoutPromise
+            ]);
+            await Promise.race([
+                response.clone().arrayBuffer(),
+                timeoutPromise
+            ]);
+            return response;
+        } finally {
+            clearTimeout(timeoutId);
+        }
+    }
+    const controller = new AbortController();
+    const timeoutId = setTimeout(
+        () => controller.abort(),
+        timeoutMs
+    );
+    try {
+        const response = await fetch(request, {
+            signal: controller.signal
+        });
+        await response.clone().arrayBuffer();
+        return response;
+    } finally {
+        clearTimeout(timeoutId);
+    }
+}
+async function fetchAndCache(cache, url, required) {
+    try {
+        const request = new Request(url, {
+            cache: 'reload',
+            credentials: 'same-origin'
+        });
+        const response = await fetchCompleteResponseWithTimeout(
+            request,
+            PRECACHE_FETCH_TIMEOUT_MS
+        );
+        if (!isCacheableResponse(response)) {
+            throw new Error('Respons tidak dapat disimpan (' + response.status + ').');
+        }
+        await cache.put(cacheKeyFor(request), response);
+    } catch (error) {
+        if (required) throw error;
+        console.warn('PWA: Aset opsional tidak dapat dipra-cache:', url, error);
+    }
+}
+async function precacheAppShell() {
+    const cache = await caches.open(CACHE_NAME);
+    await Promise.all(CORE_ASSETS.map((path) => fetchAndCache(cache, scopedUrl(path), true)));
+    await Promise.all(OPTIONAL_ASSETS.map((path) => fetchAndCache(cache, scopedUrl(path), false)));
+}
 function replyToMessage(event, payload) {
     const port = event.ports && event.ports[0];
     if (port) port.postMessage(payload);
@@ -39,6 +136,11 @@ async function notifyMusicClient(clientId, payload) {
 }
 self.addEventListener('message', (event) => {
     const data = event.data || {};
+    if (data.type === 'PWA_ACTIVATE_UPDATE') {
+        event.waitUntil(self.skipWaiting());
+        replyToMessage(event, { ok: true });
+        return;
+    }
     if (data.type === 'MUSIC_CLAIM_CLIENTS') {
         event.waitUntil(self.clients.claim().then(() => replyToMessage(event, { ok: true })));
         return;
@@ -102,7 +204,15 @@ function copyMusicResponseHeaders(upstream, entry, requestRange) {
     return headers;
 }
 async function streamDriveMusic(event, url) {
-    const streamKey = decodeURIComponent(url.pathname.slice(MUSIC_STREAM_PREFIX.length)).split('/')[0];
+    let streamKey = '';
+    try {
+        streamKey = decodeURIComponent(url.pathname.slice(MUSIC_STREAM_PREFIX.length)).split('/')[0];
+    } catch {
+        return new Response('Alamat streaming tidak valid.', {
+            status: 400,
+            headers: { 'Cache-Control': 'no-store' }
+        });
+    }
     const entry = musicStreamEntries.get(streamKey);
     if (!entry) {
         await notifyMusicClient(event.clientId, { type: 'MUSIC_DRIVE_STREAM_ERROR', reason: 'SESSION_MISSING' });
@@ -141,18 +251,7 @@ async function streamDriveMusic(event, url) {
     }
 }
 self.addEventListener('install', (event) => {
-    event.waitUntil(
-        Promise.all([
-            caches.open(CACHE_NAME).then((cache) => {
-                return Promise.all(
-                    ASSETS.map(url => {
-                        return cache.add(url).catch(err => console.warn('Gagal menyimpan cache:', url, err));
-                    })
-                );
-            }),
-            self.skipWaiting()
-        ])
-    );
+    event.waitUntil(precacheAppShell());
 });
 self.addEventListener('activate', (event) => {
     event.waitUntil(
@@ -160,7 +259,10 @@ self.addEventListener('activate', (event) => {
             caches.keys().then(keys => {
                 return Promise.all(
                     keys.map(key => {
-                        if (key !== CACHE_NAME) return caches.delete(key);
+                        if (key.startsWith(CACHE_PREFIX) && key !== CACHE_NAME) {
+                            return caches.delete(key);
+                        }
+                        return false;
                     })
                 );
             }),
@@ -168,22 +270,70 @@ self.addEventListener('activate', (event) => {
         ])
     );
 });
+async function fetchNavigationWithTimeout(request) {
+    return fetchCompleteResponseWithTimeout(
+        request,
+        NAVIGATION_FETCH_TIMEOUT_MS
+    );
+}
+function networkFirstNavigation(event) {
+    const request = event.request;
+    const cachePromise = caches.open(CACHE_NAME);
+    const networkPromise = fetchNavigationWithTimeout(request);
+    event.waitUntil(
+        networkPromise
+            .then(async response => {
+                if (!isCacheableResponse(response)) return;
+                const cache = await cachePromise;
+                await cache.put(cacheKeyFor(request), response.clone());
+            })
+            .catch(error => {
+                console.warn('PWA: Navigasi tidak dapat diperbarui di cache.', error);
+            })
+    );
+    return networkPromise.catch(async () => {
+        const cache = await cachePromise;
+        const cachedPage = await cache.match(cacheKeyFor(request));
+        if (cachedPage) return cachedPage;
+        const fallback = await cache.match(OFFLINE_FALLBACK_URL);
+        if (fallback) return fallback;
+        return new Response('Creative.io sedang offline dan halaman ini belum tersimpan.', {
+            status: 503,
+            statusText: 'Offline',
+            headers: { 'Content-Type': 'text/plain; charset=utf-8' }
+        });
+    });
+}
+function staleWhileRevalidate(event) {
+    const request = event.request;
+    const cacheKey = cacheKeyFor(request);
+    const cachePromise = caches.open(CACHE_NAME);
+    const cachedResponsePromise = cachePromise.then((cache) => cache.match(cacheKey));
+    const networkResponsePromise = fetch(request).then(async (response) => {
+        if (isCacheableResponse(response)) {
+            const cache = await cachePromise;
+            await cache.put(cacheKey, response.clone());
+        }
+        return response;
+    });
+    event.waitUntil(networkResponsePromise.then(() => undefined).catch(() => undefined));
+    return cachedResponsePromise.then((cachedResponse) => cachedResponse || networkResponsePromise);
+}
 self.addEventListener('fetch', (event) => {
     const requestUrl = new URL(event.request.url);
     if (requestUrl.origin === self.location.origin && requestUrl.pathname.startsWith(MUSIC_STREAM_PREFIX)) {
         event.respondWith(streamDriveMusic(event, requestUrl));
         return;
     }
-    if (!event.request.url.startsWith(self.location.origin)) return;
-    event.respondWith(
-        caches.match(event.request, { ignoreSearch: true }).then((response) => {
-            return response || fetch(event.request).then((networkResponse) => {
-                return networkResponse;
-            }).catch(() => {
-                if (event.request.mode === 'navigate') {
-                    return caches.match('index.html');
-                }
-            });
-        })
-    );
+    if (requestUrl.origin !== self.location.origin || event.request.method !== 'GET') return;
+    if (event.request.headers.has('Range')) return;
+    if (event.request.cache === 'only-if-cached' && event.request.mode !== 'same-origin') return;
+    if (event.request.mode === 'navigate') {
+        event.respondWith(networkFirstNavigation(event));
+        return;
+    }
+    const staticDestinations = new Set(['style', 'script', 'image', 'font', 'manifest']);
+    const isPrecachedPath = PRECACHE_PATHS.has(requestUrl.pathname);
+    if (!isPrecachedPath && !staticDestinations.has(event.request.destination)) return;
+    event.respondWith(staleWhileRevalidate(event));
 });
