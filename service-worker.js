@@ -1,5 +1,5 @@
 const CACHE_PREFIX = 'creative-io-static-';
-const CACHE_NAME = CACHE_PREFIX + 'v20';
+const CACHE_NAME = CACHE_PREFIX + 'v21';
 const NAVIGATION_FETCH_TIMEOUT_MS = 8000;
 const PRECACHE_FETCH_TIMEOUT_MS = 15000;
 const SCOPE_URL = new URL(self.registration.scope);
@@ -46,6 +46,19 @@ const scopedUrl = (path) => new URL(path, SCOPE_URL).href;
 const PRECACHE_PATHS = new Set(
     PRECACHE_ASSETS.map((path) => new URL(scopedUrl(path)).pathname)
 );
+const NETWORK_FIRST_ASSET_PATHS = new Set([
+    new URL(
+        scopedUrl('navbar/navbar.js')
+    ).pathname,
+
+    new URL(
+        scopedUrl('navbar/navbar.html')
+    ).pathname,
+
+    new URL(
+        scopedUrl('navbar/navbar.css')
+    ).pathname
+]);
 const OFFLINE_FALLBACK_URL = scopedUrl('index.html');
 function cacheKeyFor(request) {
     const url = new URL(typeof request === 'string' ? request : request.url);
@@ -59,7 +72,6 @@ function cacheKeyFor(request) {
 function isCacheableResponse(response) {
     if (!response || !response.ok || response.status !== 200) return false;
     if (!['basic', 'default'].includes(response.type)) return false;
-
     const cacheControl = response.headers.get('Cache-Control') || '';
     return !/(?:^|,)\s*(?:no-store|private)\b/i.test(cacheControl);
 }
@@ -295,14 +307,60 @@ function networkFirstNavigation(event) {
         const cache = await cachePromise;
         const cachedPage = await cache.match(cacheKeyFor(request));
         if (cachedPage) return cachedPage;
+
         const fallback = await cache.match(OFFLINE_FALLBACK_URL);
         if (fallback) return fallback;
+
         return new Response('Creative.io sedang offline dan halaman ini belum tersimpan.', {
             status: 503,
             statusText: 'Offline',
             headers: { 'Content-Type': 'text/plain; charset=utf-8' }
         });
     });
+}
+async function networkFirstStaticAsset(event) {
+    const request =
+        event.request;
+    const cache =
+        await caches.open(
+            CACHE_NAME
+        );
+    const cacheKey =
+        cacheKeyFor(request);
+    try {
+        const networkRequest =
+            new Request(
+                request,
+                {
+                    cache: 'reload'
+                }
+            );
+        const response =
+            await fetchCompleteResponseWithTimeout(
+                networkRequest,
+                NAVIGATION_FETCH_TIMEOUT_MS
+            );
+        if (
+            isCacheableResponse(
+                response
+            )
+        ) {
+            await cache.put(
+                cacheKey,
+                response.clone()
+            );
+        }
+        return response;
+    } catch (error) {
+        const cached =
+            await cache.match(
+                cacheKey
+            );
+        if (cached) {
+            return cached;
+        }
+        throw error;
+    }
 }
 function staleWhileRevalidate(event) {
     const request = event.request;
@@ -328,11 +386,34 @@ self.addEventListener('fetch', (event) => {
     if (requestUrl.origin !== self.location.origin || event.request.method !== 'GET') return;
     if (event.request.headers.has('Range')) return;
     if (event.request.cache === 'only-if-cached' && event.request.mode !== 'same-origin') return;
-    if (event.request.mode === 'navigate') {
-        event.respondWith(networkFirstNavigation(event));
+    if (
+    event.request.mode ===
+        'navigate'
+    ) {
+        event.respondWith(
+            networkFirstNavigation(event)
+        );
         return;
     }
-    const staticDestinations = new Set(['style', 'script', 'image', 'font', 'manifest']);
+    if (
+        NETWORK_FIRST_ASSET_PATHS.has(
+            requestUrl.pathname
+        )
+    ) {
+        event.respondWith(
+            networkFirstStaticAsset(event)
+        );
+
+        return;
+    }
+    const staticDestinations =
+        new Set([
+            'style',
+            'script',
+            'image',
+            'font',
+            'manifest'
+        ]);
     const isPrecachedPath = PRECACHE_PATHS.has(requestUrl.pathname);
     if (!isPrecachedPath && !staticDestinations.has(event.request.destination)) return;
     event.respondWith(staleWhileRevalidate(event));
