@@ -46,19 +46,6 @@ const scopedUrl = (path) => new URL(path, SCOPE_URL).href;
 const PRECACHE_PATHS = new Set(
     PRECACHE_ASSETS.map((path) => new URL(scopedUrl(path)).pathname)
 );
-const NETWORK_FIRST_ASSET_PATHS = new Set([
-    new URL(
-        scopedUrl('navbar/navbar.js')
-    ).pathname,
-
-    new URL(
-        scopedUrl('navbar/navbar.html')
-    ).pathname,
-
-    new URL(
-        scopedUrl('navbar/navbar.css')
-    ).pathname
-]);
 const OFFLINE_FALLBACK_URL = scopedUrl('index.html');
 function cacheKeyFor(request) {
     const url = new URL(typeof request === 'string' ? request : request.url);
@@ -318,33 +305,13 @@ function networkFirstNavigation(event) {
         });
     });
 }
-async function networkFirstStaticAsset(event) {
-    const request =
-        event.request;
-    const cache =
-        await caches.open(
-            CACHE_NAME
-        );
-    const cacheKey =
-        cacheKeyFor(request);
+async function networkFirstNavbarAsset(event) {
+    const request = event.request;
+    const cacheKey = cacheKeyFor(request);
+    const cache = await caches.open(CACHE_NAME);
     try {
-        const networkRequest =
-            new Request(
-                request,
-                {
-                    cache: 'reload'
-                }
-            );
-        const response =
-            await fetchCompleteResponseWithTimeout(
-                networkRequest,
-                NAVIGATION_FETCH_TIMEOUT_MS
-            );
-        if (
-            isCacheableResponse(
-                response
-            )
-        ) {
+        const response = await fetch(request);
+        if (isCacheableResponse(response)) {
             await cache.put(
                 cacheKey,
                 response.clone()
@@ -353,9 +320,7 @@ async function networkFirstStaticAsset(event) {
         return response;
     } catch (error) {
         const cached =
-            await cache.match(
-                cacheKey
-            );
+            await cache.match(cacheKey);
         if (cached) {
             return cached;
         }
@@ -378,6 +343,26 @@ function staleWhileRevalidate(event) {
     return cachedResponsePromise.then((cachedResponse) => cachedResponse || networkResponsePromise);
 }
 self.addEventListener('fetch', (event) => {
+    const navbarJsPath =
+        new URL(
+            scopedUrl('navbar/navbar.js')
+        ).pathname;
+    const navbarHtmlPath =
+        new URL(
+            scopedUrl('navbar/navbar.html')
+        ).pathname;
+    if (
+        requestUrl.origin === self.location.origin &&
+        (
+            requestUrl.pathname === navbarJsPath ||
+            requestUrl.pathname === navbarHtmlPath
+        )
+    ) {
+        event.respondWith(
+            networkFirstNavbarAsset(event)
+        );
+        return;
+    }
     const requestUrl = new URL(event.request.url);
     if (requestUrl.origin === self.location.origin && requestUrl.pathname.startsWith(MUSIC_STREAM_PREFIX)) {
         event.respondWith(streamDriveMusic(event, requestUrl));
@@ -386,34 +371,11 @@ self.addEventListener('fetch', (event) => {
     if (requestUrl.origin !== self.location.origin || event.request.method !== 'GET') return;
     if (event.request.headers.has('Range')) return;
     if (event.request.cache === 'only-if-cached' && event.request.mode !== 'same-origin') return;
-    if (
-    event.request.mode ===
-        'navigate'
-    ) {
-        event.respondWith(
-            networkFirstNavigation(event)
-        );
+    if (event.request.mode === 'navigate') {
+        event.respondWith(networkFirstNavigation(event));
         return;
     }
-    if (
-        NETWORK_FIRST_ASSET_PATHS.has(
-            requestUrl.pathname
-        )
-    ) {
-        event.respondWith(
-            networkFirstStaticAsset(event)
-        );
-
-        return;
-    }
-    const staticDestinations =
-        new Set([
-            'style',
-            'script',
-            'image',
-            'font',
-            'manifest'
-        ]);
+    const staticDestinations = new Set(['style', 'script', 'image', 'font', 'manifest']);
     const isPrecachedPath = PRECACHE_PATHS.has(requestUrl.pathname);
     if (!isPrecachedPath && !staticDestinations.has(event.request.destination)) return;
     event.respondWith(staleWhileRevalidate(event));
