@@ -61,11 +61,5 @@
       ]
     }
   ],
-  "fieldOverrides": [
-    {
-      "collectionGroup": "public_portfolios",
-      "fieldPath": "*",
-      "indexes": []
-    }
-  ]
+  "fieldOverrides": []
 }
