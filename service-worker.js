@@ -1,5 +1,5 @@
 const CACHE_PREFIX = 'creative-io-static-';
-const CACHE_NAME = CACHE_PREFIX + 'v23';
+const CACHE_NAME = CACHE_PREFIX + 'v25';
 const NAVIGATION_FETCH_TIMEOUT_MS = 8000;
 const PRECACHE_FETCH_TIMEOUT_MS = 15000;
 const SCOPE_URL = new URL(self.registration.scope);
@@ -30,8 +30,8 @@ const OPTIONAL_ASSETS = [
   'pages/script.html',
   'pages/notes.html',
   'pages/career.html',
-  'pages/portfolio.html',
   'pages/music.html',
+  'pages/video-lens-extractor.html',
   'pages/wallet.html',
   'pages/calculator.html',
   'pages/trash.html',
