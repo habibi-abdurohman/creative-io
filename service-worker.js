@@ -1,5 +1,5 @@
 const CACHE_PREFIX = 'creative-io-static-';
-const CACHE_NAME = CACHE_PREFIX + 'v25';
+const CACHE_NAME = CACHE_PREFIX + 'v26';
 const NAVIGATION_FETCH_TIMEOUT_MS = 8000;
 const PRECACHE_FETCH_TIMEOUT_MS = 15000;
 const SCOPE_URL = new URL(self.registration.scope);
