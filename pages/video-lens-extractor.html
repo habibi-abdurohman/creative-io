@@ -31,8 +31,15 @@
             if (localStorage.getItem('dashboard_theme') === 'dark') document.body.classList.add('dark');
         } catch (_) {}
     </script>
-    <div class="startup-restore-loader" id="startupRestoreLoader" aria-hidden="false">
-    <span class="startup-restore-spinner" aria-hidden="true"></span>
+    <div
+        class="startup-restore-loader"
+        id="startupRestoreLoader"
+        aria-hidden="false"
+    >
+        <span
+            class="startup-restore-spinner"
+            aria-hidden="true"
+        ></span>
     </div>
     <div id="navbar-container"></div>
     <div class="bg-glow one"></div>
@@ -76,122 +83,277 @@
         </div>
         <div class="video-layout">
             <div class="media-stage" id="mediaStage">
-            <div class="custom-video-player" id="customVideoPlayer" tabindex="0" aria-label="Pemutar video">
-                <video id="previewVideo" playsinline preload="metadata"></video>
-                <button class="video-center-toggle" id="videoCenterToggle" type="button" aria-label="Putar video">
-                <svg class="icon video-center-play-icon" viewBox="0 0 24 24" aria-hidden="true">
-                    <path d="m8 5 11 7-11 7V5Z"></path>
-                </svg>
-                <span class="video-buffer-spinner" aria-hidden="true"></span>
-                </button>
-                <div class="video-seek-feedback video-seek-back" id="videoSeekBackFeedback" aria-hidden="true">
-                <svg class="icon" viewBox="0 0 24 24">
-                    <path d="M9 7H4v5"></path>
-                    <path d="M4.5 11A8 8 0 1 0 7 5.3"></path>
-                </svg>
-                <span>5 detik</span>
-                </div>
-                <div class="video-seek-feedback video-seek-forward" id="videoSeekForwardFeedback" aria-hidden="true">
-                <span>5 detik</span>
-                <svg class="icon" viewBox="0 0 24 24">
-                    <path d="M15 7h5v5"></path>
-                    <path d="M19.5 11A8 8 0 1 1 17 5.3"></path>
-                </svg>
-                </div>
-                <div class="video-controls">
-                <div class="video-progress-wrap">
-                    <input class="video-progress-range" id="videoSeekRange" type="range" min="0" max="1000" step="1" value="0" aria-label="Posisi video" style="--video-progress: 0%">
-                </div>
-                <div class="video-control-row">
-                    <button class="video-control-btn" id="videoPlayToggle" type="button" aria-label="Putar video">
-                    <svg class="icon" id="videoPlayIcon" viewBox="0 0 24 24" aria-hidden="true">
-                        <path d="m8 5 11 7-11 7V5Z"></path>
-                    </svg>
-                    <svg class="icon hidden" id="videoPauseIcon" viewBox="0 0 24 24" aria-hidden="true">
-                        <path d="M9 5v14"></path>
-                        <path d="M15 5v14"></path>
-                    </svg>
-                    </button>
-                    <div class="video-time">
-                    <span id="videoCurrentTime">0:00</span>
-                    <span class="video-time-separator">/</span>
-                    <span id="videoDuration">0:00</span>
-                    </div>
-                    <div class="video-control-spacer"></div>
-                    <div class="video-volume-group">
-                    <button class="video-control-btn" id="videoMuteToggle" type="button" aria-label="Bisukan video">
-                        <svg class="icon" id="videoVolumeIcon" viewBox="0 0 24 24" aria-hidden="true">
-                        <path d="M11 5 6 9H3v6h3l5 4V5Z"></path>
-                        <path d="M15 9.5a4 4 0 0 1 0 5"></path>
-                        <path d="M17.5 7a7 7 0 0 1 0 10"></path>
+                <div
+                    class="custom-video-player"
+                    id="customVideoPlayer"
+                    tabindex="0"
+                    aria-label="Pemutar video"
+                >
+                    <video
+                        id="previewVideo"
+                        playsinline
+                        preload="metadata"
+                    ></video>
+                    <button
+                        class="video-center-toggle"
+                        id="videoCenterToggle"
+                        type="button"
+                        aria-label="Putar video"
+                    >
+                        <svg
+                            class="icon video-center-play-icon"
+                            viewBox="0 0 24 24"
+                            aria-hidden="true"
+                        >
+                            <path d="m8 5 11 7-11 7V5Z"></path>
                         </svg>
-                        <svg class="icon hidden" id="videoMutedIcon" viewBox="0 0 24 24" aria-hidden="true">
-                        <path d="M11 5 6 9H3v6h3l5 4V5Z"></path>
-                        <path d="m16 10 5 5"></path>
-                        <path d="m21 10-5 5"></path>
+                        <span
+                            class="video-buffer-spinner"
+                            aria-hidden="true"
+                        ></span>
+                    </button>
+                    <div
+                        class="video-seek-feedback video-seek-back"
+                        id="videoSeekBackFeedback"
+                        aria-hidden="true"
+                    >
+                        <svg class="icon" viewBox="0 0 24 24">
+                            <path d="M9 7H4v5"></path>
+                            <path d="M4.5 11A8 8 0 1 0 7 5.3"></path>
                         </svg>
-                    </button>
-                    <input class="video-volume-range" id="videoVolumeRange" type="range" min="0" max="1" step="0.05" value="1" aria-label="Volume video">
+                        <span>5 detik</span>
                     </div>
-                    <button class="video-control-btn" id="videoMoreToggle" type="button" aria-label="Opsi video" aria-expanded="false">
-                    <svg class="icon" viewBox="0 0 24 24" aria-hidden="true">
-                        <circle cx="12" cy="5" r="1"></circle>
-                        <circle cx="12" cy="12" r="1"></circle>
-                        <circle cx="12" cy="19" r="1"></circle>
-                    </svg>
-                    </button>
-                    <button class="video-control-btn" id="videoFullscreenToggle" type="button" aria-label="Layar penuh" aria-pressed="false">
-                    <svg class="icon" id="videoFullscreenEnterIcon" viewBox="0 0 24 24" aria-hidden="true">
-                        <path d="M8 3H3v5"></path>
-                        <path d="M16 3h5v5"></path>
-                        <path d="M8 21H3v-5"></path>
-                        <path d="M16 21h5v-5"></path>
-                    </svg>
-                    <svg class="icon hidden" id="videoFullscreenExitIcon" viewBox="0 0 24 24" aria-hidden="true">
-                        <path d="M3 8h5V3"></path>
-                        <path d="M21 8h-5V3"></path>
-                        <path d="M3 16h5v5"></path>
-                        <path d="M21 16h-5v5"></path>
-                    </svg>
-                    </button>
-                </div>
-                </div>
-                <div class="video-more-menu hidden" id="videoMoreMenu">
-                <div class="video-menu-section">
-                    <span class="video-menu-label">Kecepatan pemutaran</span>
-                    <div class="video-speed-options">
-                    <button type="button" data-video-speed="0.5">0.5×</button>
-                    <button type="button" data-video-speed="0.75">0.75×</button>
-                    <button class="active" type="button" data-video-speed="1">1×</button>
-                    <button type="button" data-video-speed="1.25">1.25×</button>
-                    <button type="button" data-video-speed="1.5">1.5×</button>
-                    <button type="button" data-video-speed="2">2×</button>
+                    <div
+                        class="video-seek-feedback video-seek-forward"
+                        id="videoSeekForwardFeedback"
+                        aria-hidden="true"
+                    >
+                        <span>5 detik</span>
+                        <svg class="icon" viewBox="0 0 24 24">
+                            <path d="M15 7h5v5"></path>
+                            <path d="M19.5 11A8 8 0 1 1 17 5.3"></path>
+                        </svg>
+                    </div>
+                    <div
+                        class="video-controls"
+                    >
+                        <div class="video-progress-wrap">
+                            <input
+                                class="video-progress-range"
+                                id="videoSeekRange"
+                                type="range"
+                                min="0"
+                                max="1000"
+                                step="1"
+                                value="0"
+                                aria-label="Posisi video"
+                                style="--video-progress: 0%"
+                            >
+                        </div>
+                        <div class="video-control-row">
+                            <button
+                                class="video-control-btn"
+                                id="videoPlayToggle"
+                                type="button"
+                                aria-label="Putar video"
+                            >
+                                <svg
+                                    class="icon"
+                                    id="videoPlayIcon"
+                                    viewBox="0 0 24 24"
+                                    aria-hidden="true"
+                                >
+                                    <path d="m8 5 11 7-11 7V5Z"></path>
+                                </svg>
+                                <svg
+                                    class="icon hidden"
+                                    id="videoPauseIcon"
+                                    viewBox="0 0 24 24"
+                                    aria-hidden="true"
+                                >
+                                    <path d="M9 5v14"></path>
+                                    <path d="M15 5v14"></path>
+                                </svg>
+                            </button>
+                            <div class="video-time">
+                                <span id="videoCurrentTime">0:00</span>
+                                <span class="video-time-separator">/</span>
+                                <span id="videoDuration">0:00</span>
+                            </div>
+                            <div class="video-control-spacer"></div>
+                            <div class="video-volume-group">
+                                <button
+                                    class="video-control-btn"
+                                    id="videoMuteToggle"
+                                    type="button"
+                                    aria-label="Bisukan video"
+                                >
+                                    <svg
+                                        class="icon"
+                                        id="videoVolumeIcon"
+                                        viewBox="0 0 24 24"
+                                        aria-hidden="true"
+                                    >
+                                        <path d="M11 5 6 9H3v6h3l5 4V5Z"></path>
+                                        <path d="M15 9.5a4 4 0 0 1 0 5"></path>
+                                        <path d="M17.5 7a7 7 0 0 1 0 10"></path>
+                                    </svg>
+                                    <svg
+                                        class="icon hidden"
+                                        id="videoMutedIcon"
+                                        viewBox="0 0 24 24"
+                                        aria-hidden="true"
+                                    >
+                                        <path d="M11 5 6 9H3v6h3l5 4V5Z"></path>
+                                        <path d="m16 10 5 5"></path>
+                                        <path d="m21 10-5 5"></path>
+                                    </svg>
+                                </button>
+                                <input
+                                    class="video-volume-range"
+                                    id="videoVolumeRange"
+                                    type="range"
+                                    min="0"
+                                    max="1"
+                                    step="0.05"
+                                    value="1"
+                                    aria-label="Volume video"
+                                >
+                            </div>
+                            <button
+                                class="video-control-btn"
+                                id="videoMoreToggle"
+                                type="button"
+                                aria-label="Opsi video"
+                                aria-expanded="false"
+                            >
+                                <svg
+                                    class="icon"
+                                    viewBox="0 0 24 24"
+                                    aria-hidden="true"
+                                >
+                                    <circle cx="12" cy="5" r="1"></circle>
+                                    <circle cx="12" cy="12" r="1"></circle>
+                                    <circle cx="12" cy="19" r="1"></circle>
+                                </svg>
+                            </button>
+                            <button
+                                class="video-control-btn"
+                                id="videoFullscreenToggle"
+                                type="button"
+                                aria-label="Layar penuh"
+                                aria-pressed="false"
+                            >
+                                <svg
+                                    class="icon"
+                                    id="videoFullscreenEnterIcon"
+                                    viewBox="0 0 24 24"
+                                    aria-hidden="true"
+                                >
+                                    <path d="M8 3H3v5"></path>
+                                    <path d="M16 3h5v5"></path>
+                                    <path d="M8 21H3v-5"></path>
+                                    <path d="M16 21h5v-5"></path>
+                                </svg>
+                                <svg
+                                    class="icon hidden"
+                                    id="videoFullscreenExitIcon"
+                                    viewBox="0 0 24 24"
+                                    aria-hidden="true"
+                                >
+                                    <path d="M3 8h5V3"></path>
+                                    <path d="M21 8h-5V3"></path>
+                                    <path d="M3 16h5v5"></path>
+                                    <path d="M21 16h-5v5"></path>
+                                </svg>
+                            </button>
+                        </div>
+                    </div>
+                    <div
+                        class="video-more-menu hidden"
+                        id="videoMoreMenu"
+                    >
+                        <div class="video-menu-section">
+                            <span class="video-menu-label">
+                                Kecepatan pemutaran
+                            </span>
+                            <div class="video-speed-options">
+                                <button type="button" data-video-speed="0.5">
+                                    0.5×
+                                </button>
+                                <button type="button" data-video-speed="0.75">
+                                    0.75×
+                                </button>
+                                <button
+                                    class="active"
+                                    type="button"
+                                    data-video-speed="1"
+                                >
+                                    1×
+                                </button>
+                                <button type="button" data-video-speed="1.25">
+                                    1.25×
+                                </button>
+                                <button type="button" data-video-speed="1.5">
+                                    1.5×
+                                </button>
+                                <button type="button" data-video-speed="2">
+                                    2×
+                                </button>
+                            </div>
+                        </div>
+                        <button
+                            class="video-menu-item"
+                            id="videoPipToggle"
+                            type="button"
+                            aria-pressed="false"
+                        >
+                            <svg
+                                class="icon icon-sm"
+                                viewBox="0 0 24 24"
+                                aria-hidden="true"
+                            >
+                                <rect x="3" y="5" width="18" height="14" rx="2"></rect>
+                                <rect x="12" y="11" width="7" height="5" rx="1"></rect>
+                            </svg>
+                            <span>Picture-in-Picture</span>
+                            <span
+                                class="video-menu-state"
+                                id="videoPipState"
+                            >
+                                Tersedia
+                            </span>
+                        </button>
+                        <button
+                            class="video-menu-item"
+                            id="videoLoopToggle"
+                            type="button"
+                            aria-pressed="false"
+                        >
+                            <svg
+                                class="icon icon-sm"
+                                viewBox="0 0 24 24"
+                                aria-hidden="true"
+                            >
+                                <path d="M17 2l4 4-4 4"></path>
+                                <path d="M3 11V9a3 3 0 0 1 3-3h15"></path>
+                                <path d="m7 22-4-4 4-4"></path>
+                                <path d="M21 13v2a3 3 0 0 1-3 3H3"></path>
+                            </svg>
+                            <span>Ulangi video</span>
+                            <span
+                                class="video-menu-state"
+                                id="videoLoopState"
+                            >
+                                Mati
+                            </span>
+                        </button>
                     </div>
                 </div>
-                <button class="video-menu-item" id="videoPipToggle" type="button" aria-pressed="false">
-                    <svg class="icon icon-sm" viewBox="0 0 24 24" aria-hidden="true">
-                    <rect x="3" y="5" width="18" height="14" rx="2"></rect>
-                    <rect x="12" y="11" width="7" height="5" rx="1"></rect>
-                    </svg>
-                    <span>Picture-in-Picture</span>
-                    <span class="video-menu-state" id="videoPipState">Tersedia</span>
-                </button>
-                <button class="video-menu-item" id="videoLoopToggle" type="button" aria-pressed="false">
-                    <svg class="icon icon-sm" viewBox="0 0 24 24" aria-hidden="true">
-                    <path d="M17 2l4 4-4 4"></path>
-                    <path d="M3 11V9a3 3 0 0 1 3-3h15"></path>
-                    <path d="m7 22-4-4 4-4"></path>
-                    <path d="M21 13v2a3 3 0 0 1-3 3H3"></path>
-                    </svg>
-                    <span>Ulangi video</span>
-                    <span class="video-menu-state" id="videoLoopState">Mati</span>
-                </button>
+                <div class="media-caption">
+                    <span id="videoCaptionName">Video</span>
+                    <small id="videoCaptionSize">0 MB</small>
                 </div>
-            </div>
-            <div class="media-caption">
-                <span id="videoCaptionName">Video</span>
-                <small id="videoCaptionSize">0 MB</small>
-            </div>
             </div>
             <aside class="settings-stack">
             <div class="info-card">
@@ -221,7 +383,7 @@
                     <span class="depth-copy"><strong>Maksimal</strong><span>Menyisir lebih agresif agar sumber tidak terlewat.</span></span>
                 </label>
                 </div>
-            </div>        
+            </div>
             <div class="warning-banner hidden" id="longVideoWarning">
                 <svg class="icon icon-sm" viewBox="0 0 24 24" aria-hidden="true"><path d="M10.3 3.7 2.2 18a2 2 0 0 0 1.7 3h16.2a2 2 0 0 0 1.7-3L13.7 3.7a2 2 0 0 0-3.4 0Z"></path><path d="M12 9v4"></path><path d="M12 17h.01"></path></svg>
                 <span>Video ini cukup panjang atau besar. Analisis dapat memerlukan waktu lebih lama; mode Cepat akan lebih ringan.</span>
@@ -246,7 +408,9 @@
             <div class="analysis-copy">
                 <strong id="analysisTitle">Menganalisis video...</strong>
                 <span id="analysisDetail">Menyiapkan pemrosesan lokal</span>
-                <span class="analysis-mode-badge" id="analysisModeBadge">Mode: Lengkap</span>
+                <span class="analysis-mode-badge" id="analysisModeBadge">
+                    Mode: Lengkap
+                </span>
             </div>
             </div>
             <div class="analysis-percent" id="analysisPercent">0%</div>
@@ -276,75 +440,89 @@
         </div>
         <details class="quality-summary" id="qualitySummary">
             <summary>
-            <span class="quality-summary-title">
-                <svg class="icon icon-sm" viewBox="0 0 24 24" aria-hidden="true">
-                <path d="M4 19V9"></path>
-                <path d="M10 19V5"></path>
-                <path d="M16 19v-7"></path>
-                <path d="M22 19V3"></path>
-                </svg>
-                Ringkasan kualitas analisis
-            </span>
-            <span class="quality-summary-headline" id="qualitySummaryHeadline">
-                Belum ada data kualitas.
-            </span>
+                <span class="quality-summary-title">
+                    <svg class="icon icon-sm" viewBox="0 0 24 24" aria-hidden="true">
+                        <path d="M4 19V9"></path>
+                        <path d="M10 19V5"></path>
+                        <path d="M16 19v-7"></path>
+                        <path d="M22 19V3"></path>
+                    </svg>
+                    Ringkasan kualitas analisis
+                </span>
+                <span class="quality-summary-headline" id="qualitySummaryHeadline">
+                    Belum ada data kualitas.
+                </span>
             </summary>
             <div class="quality-summary-body">
-            <div class="quality-summary-grid">
-                <div class="quality-summary-item">
-                <strong id="qualitySampledCount">0</strong>
-                <span>Sampel diperiksa</span>
+                <div class="quality-summary-grid">
+                    <div class="quality-summary-item">
+                        <strong id="qualitySampledCount">0</strong>
+                        <span>Sampel diperiksa</span>
+                    </div>
+                    <div class="quality-summary-item">
+                        <strong id="qualityDuplicateCount">0</strong>
+                        <span>Duplikat dibuang</span>
+                    </div>
+                    <div class="quality-summary-item">
+                        <strong id="qualityWeakCount">0</strong>
+                        <span>Kandidat lain disaring</span>
+                    </div>
+                    <div class="quality-summary-item">
+                        <strong id="qualityLowLightCount">0</strong>
+                        <span>Klip cahaya rendah</span>
+                    </div>
+                    <div class="quality-summary-item">
+                        <strong id="qualityFailureCount">0</strong>
+                        <span>Titik gagal dibaca</span>
+                    </div>
+                    <div class="quality-summary-item">
+                        <strong id="qualityFinalCount">0</strong>
+                        <span>Frame akhir</span>
+                    </div>
                 </div>
-                <div class="quality-summary-item">
-                <strong id="qualityDuplicateCount">0</strong>
-                <span>Duplikat dibuang</span>
-                </div>
-                <div class="quality-summary-item">
-                <strong id="qualityWeakCount">0</strong>
-                <span>Kandidat lain disaring</span>
-                </div>
-                <div class="quality-summary-item">
-                <strong id="qualityLowLightCount">0</strong>
-                <span>Klip cahaya rendah</span>
-                </div>
-                <div class="quality-summary-item">
-                <strong id="qualityFailureCount">0</strong>
-                <span>Titik gagal dibaca</span>
-                </div>
-                <div class="quality-summary-item">
-                <strong id="qualityFinalCount">0</strong>
-                <span>Frame akhir</span>
-                </div>
-            </div>
-            <p class="quality-summary-note" id="qualitySummaryNote">
-                Ringkasan ini menunjukkan bagaimana kandidat disaring sebelum hasil akhir ditampilkan.
-            </p>
+                <p class="quality-summary-note" id="qualitySummaryNote">
+                    Ringkasan ini menunjukkan bagaimana kandidat disaring sebelum hasil akhir ditampilkan.
+                </p>
             </div>
         </details>
         <div class="frame-failure-banner hidden" id="frameFailureBanner" role="status">
             <div class="frame-failure-status">
-            <span class="frame-retry-spinner hidden" id="frameRetrySpinner" aria-hidden="true">
-                <svg class="icon spin" viewBox="0 0 24 24">
-                <path d="M21 12a9 9 0 1 1-6.2-8.6"></path>
-                </svg>
-            </span>
-            <div class="frame-failure-copy">
-                <strong id="frameFailureText">Beberapa kandidat frame belum dapat diproses.</strong>
-                <span id="frameFailureDetail"></span>
-            </div>
+                <span class="frame-retry-spinner hidden" id="frameRetrySpinner" aria-hidden="true">
+                    <svg class="icon spin" viewBox="0 0 24 24">
+                        <path d="M21 12a9 9 0 1 1-6.2-8.6"></path>
+                    </svg>
+                </span>
+                <div class="frame-failure-copy">
+                    <strong id="frameFailureText">
+                        Beberapa kandidat frame belum dapat diproses.
+                    </strong>
+                    <span id="frameFailureDetail"></span>
+                </div>
             </div>
             <div class="frame-failure-actions">
-            <button class="btn btn-secondary" id="retryFailedFramesBtn" type="button">Coba Ulang</button>
-            <button class="btn btn-danger hidden" id="cancelFrameRetryBtn" type="button">Batalkan</button>
+                <button class="btn btn-secondary" id="retryFailedFramesBtn" type="button">
+                    Coba Ulang
+                </button>
+                <button class="btn btn-danger hidden" id="cancelFrameRetryBtn" type="button">
+                    Batalkan
+                </button>
             </div>
             <div class="frame-retry-progress hidden" id="frameRetryProgress">
-            <div class="frame-retry-progress-copy">
-                <span id="frameRetryProgressText">0 / 0</span>
-                <span id="frameRetryProgressPercent">0%</span>
-            </div>
-            <div class="progress-track" role="progressbar" aria-label="Progres percobaan ulang frame" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0" id="frameRetryProgressTrack">
-                <div class="progress-bar" id="frameRetryProgressBar"></div>
-            </div>
+                <div class="frame-retry-progress-copy">
+                    <span id="frameRetryProgressText">0 / 0</span>
+                    <span id="frameRetryProgressPercent">0%</span>
+                </div>
+                <div
+                    class="progress-track"
+                    role="progressbar"
+                    aria-label="Progres percobaan ulang frame"
+                    aria-valuemin="0"
+                    aria-valuemax="100"
+                    aria-valuenow="0"
+                    id="frameRetryProgressTrack"
+                >
+                    <div class="progress-bar" id="frameRetryProgressBar"></div>
+                </div>
             </div>
         </div>
         <details class="analysis-debug hidden" id="analysisDebugPanel">
@@ -366,8 +544,12 @@
             </span>
             </div>
             <div class="toolbar-actions">
-            <button class="btn btn-secondary" id="selectAllBtn" type="button">Pilih Semua</button>
-            <button class="btn btn-secondary hidden" id="clearSelectionBtn" type="button">Batal Pilih</button>
+            <button class="btn btn-secondary" id="selectAllBtn" type="button">
+                Pilih Semua
+            </button>
+            <button class="btn btn-secondary hidden" id="clearSelectionBtn" type="button">
+                Batal Pilih
+            </button>
             <button class="btn btn-primary toolbar-lens-btn" id="openBatchBtn" type="button">
                 <svg class="icon icon-sm" viewBox="0 0 24 24" aria-hidden="true">
                 <circle cx="11" cy="11" r="7"></circle>
@@ -427,8 +609,12 @@
                 Gunakan Seluruh Gambar
             </button>
             <div class="image-file-actions">
-                <button class="btn btn-secondary" id="replaceImageBtn" type="button">Ganti Gambar</button>
-                <button class="btn btn-danger" id="removeImageBtn" type="button">Hapus</button>
+                <button class="btn btn-secondary" id="replaceImageBtn" type="button">
+                    Ganti Gambar
+                </button>
+                <button class="btn btn-danger" id="removeImageBtn" type="button">
+                    Hapus
+                </button>
             </div>
             <div class="image-preview-card">
                 <img id="cropPreview" alt="Pratinjau hasil crop">
@@ -507,29 +693,47 @@
     </div>
     </dialog>
     <dialog class="app-dialog delete-confirm-dialog" id="deleteItemConfirmDialog" aria-labelledby="deleteItemConfirmTitle">
-    <div class="delete-confirm-body">
-        <div class="delete-confirm-icon" aria-hidden="true">
-        <svg class="icon" viewBox="0 0 24 24">
-            <path d="M4 7h16"></path>
-            <path d="M9 7V4h6v3"></path>
-            <path d="M6 7l1 14h10l1-14"></path>
-            <path d="M10 11v6"></path>
-            <path d="M14 11v6"></path>
-        </svg>
+        <div class="delete-confirm-body">
+            <div class="delete-confirm-icon" aria-hidden="true">
+                <svg class="icon" viewBox="0 0 24 24">
+                    <path d="M4 7h16"></path>
+                    <path d="M9 7V4h6v3"></path>
+                    <path d="M6 7l1 14h10l1-14"></path>
+                    <path d="M10 11v6"></path>
+                    <path d="M14 11v6"></path>
+                </svg>
+            </div>
+            <div class="delete-confirm-copy">
+                <h3 id="deleteItemConfirmTitle">
+                    Hapus item?
+                </h3>
+                <p id="deleteItemConfirmMessage">
+                    Item yang dihapus tidak dapat dikembalikan.
+                </p>
+            </div>
         </div>
-        <div class="delete-confirm-copy">
-        <h3 id="deleteItemConfirmTitle">Hapus item?</h3>
-        <p id="deleteItemConfirmMessage">Item yang dihapus tidak dapat dikembalikan.</p>
+        <div class="delete-confirm-actions">
+            <button class="btn btn-secondary" id="cancelDeleteItemBtn" type="button">
+                Batal
+            </button>
+            <button class="btn btn-danger" id="confirmDeleteItemBtn" type="button">
+                Hapus
+            </button>
         </div>
-    </div>
-    <div class="delete-confirm-actions">
-        <button class="btn btn-secondary" id="cancelDeleteItemBtn" type="button">Batal</button>
-        <button class="btn btn-danger" id="confirmDeleteItemBtn" type="button">Hapus</button>
-    </div>
     </dialog>
     <div class="status-popover hidden" id="statusPopover" role="listbox" aria-label="Status pencarian frame"></div>
-    <div class="clip-action-popover hidden" id="clipActionPopover" role="menu" aria-label="Tindakan klip"></div>
-    <div class="best-reason-popover hidden" id="bestReasonPopover" role="dialog" aria-label="Alasan pemilihan Frame Terbaik"></div>
+    <div
+        class="clip-action-popover hidden"
+        id="clipActionPopover"
+        role="menu"
+        aria-label="Tindakan klip"
+    ></div>
+    <div
+        class="best-reason-popover hidden"
+        id="bestReasonPopover"
+        role="dialog"
+        aria-label="Alasan pemilihan Frame Terbaik"
+    ></div>
     <button class="back-to-top" id="backToTopBtn" type="button" aria-label="Kembali ke atas">
     <svg class="icon" viewBox="0 0 24 24" aria-hidden="true">
         <path d="M12 19V5"></path>
