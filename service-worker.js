@@ -1,5 +1,5 @@
 const CACHE_PREFIX = 'creative-io-static-';
-const CACHE_NAME = CACHE_PREFIX + 'v44';
+const CACHE_NAME = CACHE_PREFIX + 'v46';
 const NAVBAR_ASSETS = ['navbar/navbar.js', 'navbar/navbar.html', 'navbar/navbar.css'];
 const NAVIGATION_FETCH_TIMEOUT_MS = 8000;
 const PRECACHE_FETCH_TIMEOUT_MS = 15000;
@@ -7,7 +7,6 @@ const SCOPE_URL = new URL(self.registration.scope);
 const MUSIC_STREAM_PREFIX = new URL(self.registration.scope).pathname.replace(/\/?$/, '/') + '__creative_music_stream__/';
 const musicStreamEntries = new Map();
 const MAX_MUSIC_STREAM_ENTRIES = 40;
-
 const CORE_ASSETS = [
   'index.html',
   'app.html',
@@ -22,11 +21,11 @@ const CORE_ASSETS = [
   'js/editor-scroll.js',
   ...NAVBAR_ASSETS
 ];
-
 const OPTIONAL_ASSETS = [
   'register.html',
   'forgot-password.html',
   'profil.html',
+  'js/account-deletion.js',
   'pages/dashboard.html',
   'pages/ideas.html',
   'pages/script.html',
@@ -46,7 +45,6 @@ const OPTIONAL_ASSETS = [
   'js/video-lens-ui.min.js',
   'js/career.js'
 ];
-
 const PRECACHE_ASSETS = [...CORE_ASSETS, ...OPTIONAL_ASSETS];
 const scopedUrl = (path) => new URL(path, SCOPE_URL).href;
 const NAVBAR_PATHS = new Set(NAVBAR_ASSETS.map((path) => new URL(scopedUrl(path)).pathname));
@@ -54,7 +52,6 @@ const PRECACHE_PATHS = new Set(
   PRECACHE_ASSETS.map((path) => new URL(scopedUrl(path)).pathname)
 );
 const OFFLINE_FALLBACK_URL = scopedUrl('index.html');
-
 function cacheKeyFor(request) {
   const url = new URL(typeof request === 'string' ? request : request.url);
   if (PRECACHE_PATHS.has(url.pathname)) {
@@ -64,15 +61,12 @@ function cacheKeyFor(request) {
   }
   return request;
 }
-
 function isCacheableResponse(response) {
   if (!response || !response.ok || response.status !== 200) return false;
   if (!['basic', 'default'].includes(response.type)) return false;
-
   const cacheControl = response.headers.get('Cache-Control') || '';
   return !/(?:^|,)\s*(?:no-store|private)\b/i.test(cacheControl);
 }
-
 async function fetchCompleteResponseWithTimeout(request, timeoutMs) {
   if (typeof AbortController === 'undefined') {
     let timeoutId = 0;
@@ -82,7 +76,6 @@ async function fetchCompleteResponseWithTimeout(request, timeoutMs) {
         timeoutMs
       );
     });
-
     try {
       const response = await Promise.race([
         fetch(request),
@@ -97,13 +90,11 @@ async function fetchCompleteResponseWithTimeout(request, timeoutMs) {
       clearTimeout(timeoutId);
     }
   }
-
   const controller = new AbortController();
   const timeoutId = setTimeout(
     () => controller.abort(),
     timeoutMs
   );
-
   try {
     const response = await fetch(request, {
       signal: controller.signal
@@ -115,7 +106,6 @@ async function fetchCompleteResponseWithTimeout(request, timeoutMs) {
     clearTimeout(timeoutId);
   }
 }
-
 async function fetchAndCache(cache, url, required) {
   try {
     const request = new Request(url, {
@@ -135,38 +125,36 @@ async function fetchAndCache(cache, url, required) {
     console.warn('PWA: Aset opsional tidak dapat dipra-cache:', url, error);
   }
 }
-
 async function precacheAppShell() {
   const cache = await caches.open(CACHE_NAME);
   await Promise.all(CORE_ASSETS.map((path) => fetchAndCache(cache, scopedUrl(path), true)));
   await Promise.all(OPTIONAL_ASSETS.map((path) => fetchAndCache(cache, scopedUrl(path), false)));
 }
-
 function replyToMessage(event, payload) {
   const port = event.ports && event.ports[0];
   if (port) port.postMessage(payload);
 }
-
 async function notifyMusicClient(clientId, payload) {
   if (!clientId) return;
   const client = await self.clients.get(clientId);
   if (client) client.postMessage(payload);
 }
-
 self.addEventListener('message', (event) => {
   const data = event.data || {};
-  
   if (data.type === 'PWA_ACTIVATE_UPDATE') {
     event.waitUntil(self.skipWaiting());
     replyToMessage(event, { ok: true });
     return;
   }
-  
   if (data.type === 'MUSIC_CLAIM_CLIENTS') {
     event.waitUntil(self.clients.claim().then(() => replyToMessage(event, { ok: true })));
     return;
   }
-  
+  if (data.type === 'MUSIC_DRIVE_STREAM_CLEAR_ALL') {
+    musicStreamEntries.clear();
+    replyToMessage(event, { ok: true });
+    return;
+  }
   if (data.type === 'MUSIC_DRIVE_STREAM_CLEAR') {
     const clientId = event.source && event.source.id;
     for (const [key, entry] of musicStreamEntries) {
@@ -175,23 +163,18 @@ self.addEventListener('message', (event) => {
     replyToMessage(event, { ok: true });
     return;
   }
-  
   if (data.type !== 'MUSIC_DRIVE_STREAM_PRIME') return;
-  
   const streamKey = String(data.streamKey || '');
   const file = data.file || {};
   const accessToken = String(data.accessToken || '');
-  
   if (!/^[a-zA-Z0-9-]{16,}$/.test(streamKey) || !file.id || !accessToken) {
     replyToMessage(event, { ok: false, error: 'STREAM_DATA_INVALID' });
     return;
   }
-  
   const now = Date.now();
   for (const [key, entry] of musicStreamEntries) {
     if (entry.expiresAt && entry.expiresAt <= now) musicStreamEntries.delete(key);
   }
-  
   musicStreamEntries.set(streamKey, {
     clientId: event.source && event.source.id || '',
     accessToken,
@@ -203,24 +186,20 @@ self.addEventListener('message', (event) => {
       size: Number(file.size || 0)
     }
   });
-  
   while (musicStreamEntries.size > MAX_MUSIC_STREAM_ENTRIES) {
     musicStreamEntries.delete(musicStreamEntries.keys().next().value);
   }
   replyToMessage(event, { ok: true });
 });
-
 function copyMusicResponseHeaders(upstream, entry, requestRange) {
   const headers = new Headers();
   ['Content-Type', 'Content-Length', 'Content-Range', 'Accept-Ranges', 'ETag', 'Last-Modified'].forEach((name) => {
     const value = upstream.headers.get(name);
     if (value) headers.set(name, value);
   });
-  
   if (!headers.has('Content-Type')) headers.set('Content-Type', entry.file.mimeType || 'audio/mpeg');
   headers.set('Accept-Ranges', 'bytes');
   headers.set('Cache-Control', 'private, no-store, max-age=0');
-  
   if (upstream.status === 206 && !headers.has('Content-Range') && entry.file.size && requestRange) {
     const match = /^bytes=(\d+)-(\d*)$/i.exec(requestRange);
     if (match) {
@@ -234,7 +213,6 @@ function copyMusicResponseHeaders(upstream, entry, requestRange) {
   }
   return headers;
 }
-
 async function streamDriveMusic(event, url) {
   let streamKey = '';
   try {
@@ -245,31 +223,25 @@ async function streamDriveMusic(event, url) {
       headers: { 'Cache-Control': 'no-store' }
     });
   }
-  
   const entry = musicStreamEntries.get(streamKey);
   if (!entry) {
     await notifyMusicClient(event.clientId, { type: 'MUSIC_DRIVE_STREAM_ERROR', reason: 'SESSION_MISSING' });
     return new Response('Sesi streaming perlu disiapkan ulang.', { status: 401, headers: { 'Cache-Control': 'no-store' } });
   }
-  
   if (entry.clientId && event.clientId && entry.clientId !== event.clientId) {
     return new Response('Sesi streaming tidak cocok dengan halaman ini.', { status: 403, headers: { 'Cache-Control': 'no-store' } });
   }
-  
   if (entry.expiresAt && entry.expiresAt <= Date.now()) {
     musicStreamEntries.delete(streamKey);
     await notifyMusicClient(entry.clientId || event.clientId, { type: 'MUSIC_DRIVE_STREAM_ERROR', reason: 'AUTH_EXPIRED', status: 401 });
     return new Response('Sesi Google Drive telah berakhir.', { status: 401, headers: { 'Cache-Control': 'no-store' } });
   }
-  
   const params = new URLSearchParams({ alt: 'media', supportsAllDrives: 'true' });
   const driveUrl = 'https://www.googleapis.com/drive/v3/files/' + encodeURIComponent(entry.file.id) + '?' + params.toString();
   const requestRange = event.request.headers.get('Range') || '';
   const headers = new Headers({ Authorization: 'Bearer ' + entry.accessToken });
-  
   if (requestRange) headers.set('Range', requestRange);
   if (entry.file.resourceKey) headers.set('X-Goog-Drive-Resource-Keys', entry.file.id + '/' + entry.file.resourceKey);
-  
   try {
     const upstream = await fetch(driveUrl, { headers, cache: 'no-store' });
     if (upstream.status === 401) {
@@ -288,11 +260,9 @@ async function streamDriveMusic(event, url) {
     return new Response('Streaming Google Drive tidak tersedia.', { status: 502, headers: { 'Cache-Control': 'no-store' } });
   }
 }
-
 self.addEventListener('install', (event) => {
   event.waitUntil(precacheAppShell());
 });
-
 self.addEventListener('activate', (event) => {
   event.waitUntil(
     Promise.all([
@@ -310,19 +280,16 @@ self.addEventListener('activate', (event) => {
     ])
   );
 });
-
 async function fetchNavigationWithTimeout(request) {
   return fetchCompleteResponseWithTimeout(
     request,
     NAVIGATION_FETCH_TIMEOUT_MS
   );
 }
-
 function networkFirstNavigation(event) {
   const request = event.request;
   const cachePromise = caches.open(CACHE_NAME);
   const networkPromise = fetchNavigationWithTimeout(request);
-
   event.waitUntil(
     networkPromise
       .then(async response => {
@@ -334,15 +301,12 @@ function networkFirstNavigation(event) {
         console.warn('PWA: Navigasi tidak dapat diperbarui di cache.', error);
       })
   );
-
   return networkPromise.catch(async () => {
     const cache = await cachePromise;
     const cachedPage = await cache.match(cacheKeyFor(request));
     if (cachedPage) return cachedPage;
-
     const fallback = await cache.match(OFFLINE_FALLBACK_URL);
     if (fallback) return fallback;
-
     return new Response('Creative.io sedang offline dan halaman ini belum tersimpan.', {
       status: 503,
       statusText: 'Offline',
@@ -350,14 +314,11 @@ function networkFirstNavigation(event) {
     });
   });
 }
-
 async function networkFirstNavbarAsset(event) {
   const request = event.request;
   const cacheKey = cacheKeyFor(request);
   const cache = await caches.open(CACHE_NAME);
-
   try {
-    // HTML, JS dan CSS navbar harus menggunakan versi jaringan yang sama.
     const response = await fetchCompleteResponseWithTimeout(
       new Request(request, { cache: 'reload' }),
       NAVIGATION_FETCH_TIMEOUT_MS
@@ -374,7 +335,6 @@ async function networkFirstNavbarAsset(event) {
     throw error;
   }
 }
-
 function staleWhileRevalidate(event) {
   const request = event.request;
   const cacheKey = cacheKeyFor(request);
@@ -387,14 +347,11 @@ function staleWhileRevalidate(event) {
     }
     return response;
   });
-
   event.waitUntil(networkResponsePromise.then(() => undefined).catch(() => undefined));
   return cachedResponsePromise.then((cachedResponse) => cachedResponse || networkResponsePromise);
 }
-
 self.addEventListener('fetch', (event) => {
   const requestUrl = new URL(event.request.url);
-
   if (
     requestUrl.origin === self.location.origin &&
     event.request.method === 'GET' &&
@@ -403,7 +360,6 @@ self.addEventListener('fetch', (event) => {
     event.respondWith(networkFirstNavbarAsset(event));
     return;
   }
-
   if (
     requestUrl.origin === self.location.origin &&
     requestUrl.pathname.startsWith(MUSIC_STREAM_PREFIX)
@@ -411,30 +367,23 @@ self.addEventListener('fetch', (event) => {
     event.respondWith(streamDriveMusic(event, requestUrl));
     return;
   }
-
   if (requestUrl.origin !== self.location.origin || event.request.method !== 'GET') {
     return;
   }
-
   if (event.request.headers.has('Range')) {
     return;
   }
-
   if (event.request.cache === 'only-if-cached' && event.request.mode !== 'same-origin') {
     return;
   }
-
   if (event.request.mode === 'navigate') {
     event.respondWith(networkFirstNavigation(event));
     return;
   }
-
   const staticDestinations = new Set(['style', 'script', 'image', 'font', 'manifest']);
   const isPrecachedPath = PRECACHE_PATHS.has(requestUrl.pathname);
-
   if (!isPrecachedPath && !staticDestinations.has(event.request.destination)) {
     return;
   }
-
   event.respondWith(staleWhileRevalidate(event));
 });
